@@ -103,17 +103,17 @@ func init() {
 
 	goazure.Router("/terminal_origin_message_list/", &controllers.DeveloperController{}, "get:TerminalOriginMessageList")
 
-	goazure.SetStaticPath("/assets", "../../AzureRelease/boiler-web/static/assets/")
-	goazure.SetStaticPath("/js", "../../AzureRelease/boiler-web/static/js/")
-	goazure.SetStaticPath("/css", "../../AzureRelease/boiler-web/static/css/")
-	goazure.SetStaticPath("/img", "../../AzureRelease/boiler-web/static/img/")
-	goazure.SetStaticPath("/images", "../../AzureRelease/boiler-web/static/images/")
-	goazure.SetStaticPath("/bower_components", "../../AzureRelease/boiler-web/static/bower_components/")
-	goazure.SetStaticPath("/res", "../../AzureRelease/boiler-web/static/res/")
-	goazure.SetStaticPath("/node_modules", "../../AzureRelease/boiler-web/static/node_modules/")
-	goazure.SetStaticPath("/views", "../../AzureRelease/boiler-web/views/views/")
-	goazure.SetStaticPath("/tpl", "../../AzureRelease/boiler-web/views/tpl/")
-	goazure.SetStaticPath("/directives", "../../AzureRelease/boiler-web/views/directives/")
+	goazure.SetStaticPath("/assets", "static/assets/")
+	goazure.SetStaticPath("/js", "static/js/")
+	goazure.SetStaticPath("/css", "static/css/")
+	goazure.SetStaticPath("/img", "static/img/")
+	goazure.SetStaticPath("/images", "static/images/")
+	goazure.SetStaticPath("/bower_components", "static/bower_components/")
+	goazure.SetStaticPath("/res", "static/res/")
+	goazure.SetStaticPath("/node_modules", "static/node_modules/")
+	goazure.SetStaticPath("/views", "views/views/")
+	goazure.SetStaticPath("/tpl", "views/tpl/")
+	goazure.SetStaticPath("/directives", "views/directives/")
 
 
 	initWeixinRoutes()
