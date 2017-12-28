@@ -26,5 +26,5 @@ deploy:
   on:
     branch: master
 
-after_deploy:
+after_script:
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
