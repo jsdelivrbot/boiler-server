@@ -9,5 +9,5 @@ logs
 node_modules
 #bower_components
 
-BoilerGo
-BoilerGo.exe
+boiler-server
+boiler-server.exe
