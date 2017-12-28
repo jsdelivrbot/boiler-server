@@ -24,7 +24,7 @@ deploy:
   script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc"
     --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
   on:
-    branch: research
+    branch: master
 
 after_deploy:
   - export GOPATH=/home/apps/go
