@@ -21,7 +21,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -azvPr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc"
+  script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc"
     --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
   on:
     branch: master
