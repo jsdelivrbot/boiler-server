@@ -1,5 +1,8 @@
 fuser -k 8080/tcp
 
+export GOPATH=/home/apps/go
+export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin
+
 echo $GOPATH
 echo $PATH
 

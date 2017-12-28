@@ -27,6 +27,4 @@ deploy:
     branch: master
 
 after_deploy:
-  - export GOPATH=/home/apps/go
-  - export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
