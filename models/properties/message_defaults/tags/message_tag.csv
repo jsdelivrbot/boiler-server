@@ -1,0 +1,151 @@
+TagId,Name,NameEn,Column,Length,DataType,Remark
+1,包头,Header,Header,2,HEX,用2个字节来表示协议头，0xAC 0xEB是信息帧开头的关键字
+2,有效数据长度,Content Length,ContentLength,2,HEX,代表当前数据包中的有效数据的长度，字节序使用BIG_ENDIAN
+3,流水号,Serial Number,SerialNumber,2,HEX,从零开始递增的流水号，逐条计数到0xFFFF后归为0，上传下发数据包分别计数
+4,状态消息码,Status,Status,1,HEX,表示本数据包的功能，16进制，为0xA0
+5,终端身份识别码,Identifier,Identifier,6,CHAR,终端身份识别码由平台产生
+6,响应数据,ResponseCode,ResponseCode,1,HEX,10：成功，00：失败原因A，01：失败原因B，02：失败原因C
+7,登录密码,Password,Password,2,HEX,在注册成功的情况下由平台分配登陆密码
+8,平台系统时间,Server Date,ServerDate,14,CHAR,在登陆成功的情况下，将平台时间下发至终端，每次登陆时进行一次时间校准
+9,数据格式版本号,Version,Version,1,HEX,V1.0：0x10，V2.0：0x20，V3.0:0x30
+10,锅炉编号,Boiler Number,BoilerNumber,2,CHAR,被监测锅炉的编号，采用ASCII码，用16进制表示
+11,上报时间,Upload Date,UploadDate,14,CHAR,终端设备在上报数据时的系统时间，采用ASCII码，并用16进制表示，如32 30 31 32 2D 30 37 2D 32 36 20 31 31 3A 33 35 3A 30 30代表的时间是2012-07-26 11:35:00
+101,温度通道1,Temperature Channel 1,TemperatureChannel1,2,HEX,具体参数由通道配置文件确定，缺省配置：蒸汽温度
+102,温度通道2,Temperature Channel 2,TemperatureChannel2,2,HEX,具体参数由通道配置文件确定，缺省配置：给水温度（冷水）
+103,温度通道3,Temperature Channel 3,TemperatureChannel3,2,HEX,具体参数由通道配置文件确定，缺省配置：给水温度（热水）
+104,温度通道4,Temperature Channel 4,TemperatureChannel4,2,HEX,具体参数由通道配置文件确定，缺省配置：排烟温度（节能器后）
+105,温度通道5,Temperature Channel 5,TemperatureChannel5,2,HEX,具体参数由通道配置文件确定，缺省配置：排烟温度（节能器前）
+106,温度通道6,Temperature Channel 6,TemperatureChannel6,2,HEX,具体参数由通道配置文件确定，缺省配置：环境温度
+107,温度通道7,Temperature Channel 7,TemperatureChannel7,2,HEX,具体参数由通道配置文件确定
+108,温度通道8,Temperature Channel 8,TemperatureChannel8,2,HEX,具体参数由通道配置文件确定
+109,温度通道9,Temperature Channel 9,TemperatureChannel9,2,HEX,具体参数由通道配置文件确定
+110,温度通道10,Temperature Channel 10,TemperatureChannel10,2,HEX,具体参数由通道配置文件确定
+111,温度通道11,Temperature Channel 11,TemperatureChannel11,2,HEX,具体参数由通道配置文件确定
+112,温度通道12,Temperature Channel 12,TemperatureChannel12,2,HEX,具体参数由通道配置文件确定
+201,模拟量通道1,Analogue Channel 1,AnalogueChannel1,2,HEX,具体参数由通道配置文件确定，缺省配置：蒸汽压力
+202,模拟量通道2,Analogue Channel 2,AnalogueChannel2,2,HEX,具体参数由通道配置文件确定，缺省配置：排烟氧量
+203,模拟量通道3,Analogue Channel 3,AnalogueChannel3,2,HEX,具体参数由通道配置文件确定
+204,模拟量通道4,Analogue Channel 4,AnalogueChannel4,2,HEX,具体参数由通道配置文件确定
+205,模拟量通道5,Analogue Channel 5,AnalogueChannel5,2,HEX,具体参数由通道配置文件确定
+206,模拟量通道6,Analogue Channel 6,AnalogueChannel6,2,HEX,具体参数由通道配置文件确定
+207,模拟量通道7,Analogue Channel 7,AnalogueChannel7,2,HEX,具体参数由通道配置文件确定
+208,模拟量通道8,Analogue Channel 8,AnalogueChannel8,2,HEX,具体参数由通道配置文件确定
+209,模拟量通道9,Analogue Channel 9,AnalogueChannel9,2,HEX,具体参数由通道配置文件确定
+210,模拟量通道10,Analogue Channel 10,AnalogueChannel10,2,HEX,具体参数由通道配置文件确定
+211,模拟量通道11,Analogue Channel 11,AnalogueChannel11,2,HEX,具体参数由通道配置文件确定
+212,模拟量通道12,Analogue Channel 12,AnalogueChannel12,2,HEX,具体参数由通道配置文件确定
+301,开关量输入通道1,Switch Signal Input Channel 1,SwitchSignalInputChannel1,2,HEX,具体参数由通道配置文件确定，缺省配置：锅炉运行
+302,开关量输入通道2,Switch Signal Input Channel 2,SwitchSignalInputChannel2,2,HEX,具体参数由通道配置文件确定，缺省配置：点火信号
+303,开关量输入通道3,Switch Signal Input Channel 3,SwitchSignalInputChannel3,2,HEX,具体参数由通道配置文件确定，缺省配置：极低水位报警
+304,开关量输入通道4,Switch Signal Input Channel 4,SwitchSignalInputChannel4,2,HEX,具体参数由通道配置文件确定，缺省配置：超高水位报警
+305,开关量输入通道5,Switch Signal Input Channel 5,SwitchSignalInputChannel5,2,HEX,具体参数由通道配置文件确定，缺省配置：超压报警
+306,开关量输入通道6,Switch Signal Input Channel 6,SwitchSignalInputChannel6,2,HEX,具体参数由通道配置文件确定，缺省配置：综合报警
+307,开关量输入通道7,Switch Signal Input Channel 7,SwitchSignalInputChannel7,2,HEX,具体参数由通道配置文件确定，缺省配置：熄火故障
+308,开关量输入通道8,Switch Signal Input Channel 8,SwitchSignalInputChannel8,2,HEX,具体参数由通道配置文件确定，缺省配置：软水硬度报警
+309,开关量输入通道9,Switch Signal Input Channel 9,SwitchSignalInputChannel9,2,HEX,具体参数由通道配置文件确定
+310,开关量输入通道10,Switch Signal Input Channel 10,SwitchSignalInputChannel10,2,HEX,具体参数由通道配置文件确定
+311,开关量输入通道11,Switch Signal Input Channel 11,SwitchSignalInputChannel11,2,HEX,具体参数由通道配置文件确定
+312,开关量输入通道12,Switch Signal Input Channel 12,SwitchSignalInputChannel12,2,HEX,具体参数由通道配置文件确定
+313,开关量输入通道13,Switch Signal Input Channel 13,SwitchSignalInputChannel13,2,HEX,具体参数由通道配置文件确定
+314,开关量输入通道14,Switch Signal Input Channel 14,SwitchSignalInputChannel14,2,HEX,具体参数由通道配置文件确定
+315,开关量输入通道15,Switch Signal Input Channel 15,SwitchSignalInputChannel15,2,HEX,具体参数由通道配置文件确定
+316,开关量输入通道16,Switch Signal Input Channel 16,SwitchSignalInputChannel16,2,HEX,具体参数由通道配置文件确定
+317,开关量输入通道17,Switch Signal Input Channel 17,SwitchSignalInputChannel17,2,HEX,具体参数由通道配置文件确定
+318,开关量输入通道18,Switch Signal Input Channel 18,SwitchSignalInputChannel18,2,HEX,具体参数由通道配置文件确定
+319,开关量输入通道19,Switch Signal Input Channel 19,SwitchSignalInputChannel19,2,HEX,具体参数由通道配置文件确定
+320,开关量输入通道20,Switch Signal Input Channel 20,SwitchSignalInputChannel20,2,HEX,具体参数由通道配置文件确定
+321,开关量输入通道21,Switch Signal Input Channel 21,SwitchSignalInputChannel21,2,HEX,具体参数由通道配置文件确定
+322,开关量输入通道22,Switch Signal Input Channel 22,SwitchSignalInputChannel22,2,HEX,具体参数由通道配置文件确定
+323,开关量输入通道23,Switch Signal Input Channel 23,SwitchSignalInputChannel23,2,HEX,具体参数由通道配置文件确定
+324,开关量输入通道24,Switch Signal Input Channel 24,SwitchSignalInputChannel24,2,HEX,具体参数由通道配置文件确定
+325,开关量输入通道25,Switch Signal Input Channel 25,SwitchSignalInputChannel25,2,HEX,具体参数由通道配置文件确定
+326,开关量输入通道26,Switch Signal Input Channel 26,SwitchSignalInputChannel26,2,HEX,具体参数由通道配置文件确定
+327,开关量输入通道27,Switch Signal Input Channel 27,SwitchSignalInputChannel27,2,HEX,具体参数由通道配置文件确定
+328,开关量输入通道28,Switch Signal Input Channel 28,SwitchSignalInputChannel28,2,HEX,具体参数由通道配置文件确定
+329,开关量输入通道29,Switch Signal Input Channel 29,SwitchSignalInputChannel29,2,HEX,具体参数由通道配置文件确定
+330,开关量输入通道30,Switch Signal Input Channel 30,SwitchSignalInputChannel30,2,HEX,具体参数由通道配置文件确定
+331,开关量输入通道31,Switch Signal Input Channel 31,SwitchSignalInputChannel31,2,HEX,具体参数由通道配置文件确定
+332,开关量输入通道32,Switch Signal Input Channel 32,SwitchSignalInputChannel32,2,HEX,具体参数由通道配置文件确定
+333,开关量输出通道1,Switch Signal Output Channel 1,SwitchSignalOutputChannel1,2,HEX,具体参数由通道配置文件确定
+334,开关量输出通道2,Switch Signal Output Channel 2,SwitchSignalOutputChannel2,2,HEX,具体参数由通道配置文件确定
+335,开关量输出通道3,Switch Signal Output Channel 3,SwitchSignalOutputChannel3,2,HEX,具体参数由通道配置文件确定
+336,开关量输出通道4,Switch Signal Output Channel 4,SwitchSignalOutputChannel4,2,HEX,具体参数由通道配置文件确定
+337,开关量输出通道5,Switch Signal Output Channel 5,SwitchSignalOutputChannel5,2,HEX,具体参数由通道配置文件确定
+338,开关量输出通道6,Switch Signal Output Channel 6,SwitchSignalOutputChannel6,2,HEX,具体参数由通道配置文件确定
+339,开关量输出通道7,Switch Signal Output Channel 7,SwitchSignalOutputChannel7,2,HEX,具体参数由通道配置文件确定
+340,开关量输出通道8,Switch Signal Output Channel 8,SwitchSignalOutputChannel8,2,HEX,具体参数由通道配置文件确定
+341,开关量输出通道9,Switch Signal Output Channel 9,SwitchSignalOutputChannel9,2,HEX,具体参数由通道配置文件确定
+342,开关量输出通道10,Switch Signal Output Channel 10,SwitchSignalOutputChannel10,2,HEX,具体参数由通道配置文件确定
+343,开关量输出通道11,Switch Signal Output Channel 11,SwitchSignalOutputChannel11,2,HEX,具体参数由通道配置文件确定
+344,开关量输出通道12,Switch Signal Output Channel 12,SwitchSignalOutputChannel12,2,HEX,具体参数由通道配置文件确定
+345,开关量输出通道13,Switch Signal Output Channel 13,SwitchSignalOutputChannel13,2,HEX,具体参数由通道配置文件确定
+346,开关量输出通道14,Switch Signal Output Channel 14,SwitchSignalOutputChannel14,2,HEX,具体参数由通道配置文件确定
+347,开关量输出通道15,Switch Signal Output Channel 15,SwitchSignalOutputChannel15,2,HEX,具体参数由通道配置文件确定
+348,开关量输出通道16,Switch Signal Output Channel 16,SwitchSignalOutputChannel16,2,HEX,具体参数由通道配置文件确定
+401,计算参数1,Calculation Parameter 1,CalculationParameter1,2,HEX,具体参数由通道配置文件确定，缺省配置：热效率（终端计算）
+402,计算参数2,Calculation Parameter 2,CalculationParameter2,2,HEX,具体参数由通道配置文件确定，缺省配置：q2（终端计算）
+403,计算参数3,Calculation Parameter 3,CalculationParameter3,2,HEX,具体参数由通道配置文件确定，缺省配置：q3（终端计算）
+404,计算参数4,Calculation Parameter 4,CalculationParameter4,2,HEX,具体参数由通道配置文件确定，缺省配置：q4（终端计算）
+405,计算参数5,Calculation Parameter 5,CalculationParameter5,2,HEX,具体参数由通道配置文件确定，缺省配置：q5（终端计算）
+406,计算参数6,Calculation Parameter 6,CalculationParameter6,2,HEX,具体参数由通道配置文件确定，缺省配置：q6（终端计算）
+407,计算参数7,Calculation Parameter 7,CalculationParameter7,2,HEX,具体参数由通道配置文件确定，缺省配置：排烟过量空气系数（终端计算）
+408,计算参数8,Calculation Parameter 8,CalculationParameter8,2,HEX,具体参数由通道配置文件确定
+409,计算参数9,Calculation Parameter 9,CalculationParameter9,2,HEX,具体参数由通道配置文件确定
+410,计算参数10,Calculation Parameter 10,CalculationParameter10,2,HEX,具体参数由通道配置文件确定
+411,计算参数11,Calculation Parameter 11,CalculationParameter11,2,HEX,具体参数由通道配置文件确定
+412,计算参数12,Calculation Parameter 12,CalculationParameter12,2,HEX,具体参数由通道配置文件确定
+441,燃料收到基低位发热量,Coal AR(As Received Basis) NCV(Net Calorific Value),CoalArNcv,2,HEX,缺省配置：Coal_QNETVAR燃料收到基低位发热量
+442,燃料收到基灰分,Coal AR(As Received Basis) AC(Ash Content),CoalArAc,2,HEX,缺省配置：Coal_AAR燃料收到基灰分
+443,燃料收到基水分,Coal AR(As Received Basis) Water Content,CoalArWaterContent,2,HEX,缺省配置：Coal_MAR燃料收到基水分
+444,干燥无灰基挥发分,Coal DAF(Dry Ash-Free Basis) Volatile Matter,CoalDafVolatileMatter,2,HEX,缺省配置：Coal_VDAF干燥无灰基挥发分
+445,炉渣可燃物含量,Coal UC(Unburned Combustible) in Slag,CoalUcSlag,2,HEX,缺省配置：Coal_CLZ炉渣可燃物含量
+446,漏煤可燃物含量,Coal UC(Unburned Combustible) in Leak,CoalUcLeak,2,HEX,缺省配置：Coal_CLM漏煤可燃物含量
+447,飞灰可燃物含量,Coal UC(Unburned Combustible) in Fly-Ash,CoalUcFlyAsh,2,HEX,缺省配置：Coal_CFH飞灰可燃物含量
+448,锅炉额定负荷（燃煤）,Coal Boiler Rated Load,CoalBoilerRatedLoad,2,HEX,缺省配置：Coal_DED锅炉额定负荷
+449,锅炉实测负荷（燃煤）,Coal Boiler Measured Load,CoalBoilerMeasuredLoad,2,HEX,缺省配置：Coal_DSC锅炉实测负荷
+450,炉渣含灰量占入炉煤总灰量百分比,Coal Slag/Charging AC(Ash Content) Percentage,CoalSlagChargeAcPercent,2,HEX,缺省配置：Coal_ALZ炉渣含灰量占入炉煤总灰量百分比
+451,漏煤含灰量占入炉煤总灰量百分比,Coal Leak/Charging AC(Ash Content) Percentage,CoalLeakChargeAcPercent,2,HEX,缺省配置：Coal_ALM漏煤含灰量占入炉煤总灰量百分比
+452,飞灰含灰量占入炉煤总灰量百分比,Coal Fly-Ash/Charging AC(Ash Content) Percentage,CoalFlyAshChargeAcPercent,2,HEX,缺省配置：Coal_AFH飞灰含灰量占入炉煤总灰量百分比
+453,气体未完全燃烧热损失（燃煤）,Coal Q3(Heat Loss due to Unburned Gas),CoalQ3,2,HEX,缺省配置：Coal_Q3气体未完全燃烧热损失
+454,燃料计算系数（燃煤）,Coal M(Calculation Coefficient),CoalM,2,HEX,缺省配置：Coal_M燃料计算系数
+455,燃料计算系数（燃煤）,Coal N(Calculation Coefficient),CoalN,2,HEX,缺省配置：Coal_N燃料计算系数
+456,炉渣温度,Coal Slag Temperature,CoalSlagTemperature,2,HEX,缺省配置：Coal_TLZ炉渣温度
+457,炉渣焓,Coal Slag Enthalpy,CoalSlagEnthalpy,2,HEX,缺省配置：Coal_CT_LZ炉渣焓
+458,锅炉额定负荷（燃气）,Gas Boiler Rated Load,GasBoilerRatedLoad,2,HEX,缺省配置：Gas_DED锅炉额定负荷
+459,锅炉实测负荷（燃气）,Gas Boiler Measured Load,GasBoilerMeasuredLoad,2,HEX,缺省配置：Gas_DSC锅炉实测负荷
+460,排烟处过量空气系数,Gas Excess-Air Coefficient of Exhaust,GasExcAirCoefficientExhaust,2,HEX,缺省配置：Gas_APY排烟处过量空气系数
+461,气体未完全燃烧热损失（燃气）,Gas Q3(Heat Loss due to Unburned Gas),GasQ3,2,HEX,缺省配置：Gas_Q3气体未完全燃烧热损失
+462,燃料计算系数（燃气）,Gas M(Calculation Coefficient),GasM,2,HEX,缺省配置：Gas_M燃料计算系数
+463,燃料计算系数（燃气）,Gas N(Calculation Coefficient),GasN,2,HEX,缺省配置：Gas_N燃料计算系数
+501,报警阀值1,Alarm Valve 1,AlarmValve1,2,HEX,
+502,报警阀值2,Alarm Valve 2,AlarmValve2,2,HEX,
+503,报警阀值3,Alarm Valve 3,AlarmValve3,2,HEX,
+504,报警阀值4,Alarm Valve 4,AlarmValve4,2,HEX,
+505,报警阀值5,Alarm Valve 5,AlarmValve5,2,HEX,
+506,报警阀值6,Alarm Valve 6,AlarmValve6,2,HEX,
+507,报警阀值7,Alarm Valve 7,AlarmValve7,2,HEX,
+508,报警阀值8,Alarm Valve 8,AlarmValve8,2,HEX,
+509,报警阀值9,Alarm Valve 9,AlarmValve9,2,HEX,
+510,报警阀值10,Alarm Valve 10,AlarmValve10,2,HEX,
+511,报警阀值11,Alarm Valve 11,AlarmValve11,2,HEX,
+512,报警阀值12,Alarm Valve 12,AlarmValve12,2,HEX,
+601,上报启闭,Upload On-Off,UploadOnOff,1,HEX,0x00：关闭主动上报，0x01：开启主动上报
+602,上报周期,Upload Period,UploadPeriod,2,HEX,0x0000~0xFFFF，单位为s
+603,配置参数预留1,Reserved Setting Parameter 1,ReservedSettingParameter 1,2,HEX,具体参数由通道配置文件确定
+604,配置参数预留2,Reserved Setting Parameter 2,ReservedSettingParameter 2,2,HEX,具体参数由通道配置文件确定
+605,配置参数预留3,Reserved Setting Parameter 3,ReservedSettingParameter 3,2,HEX,具体参数由通道配置文件确定
+606,配置参数预留4,Reserved Setting Parameter 4,ReservedSettingParameter 4,2,HEX,具体参数由通道配置文件确定
+607,配置参数预留5,Reserved Setting Parameter 5,ReservedSettingParameter 5,2,HEX,具体参数由通道配置文件确定
+608,配置参数预留6,Reserved Setting Parameter 6,ReservedSettingParameter 6,2,HEX,具体参数由通道配置文件确定
+609,配置参数预留7,Reserved Setting Parameter 7,ReservedSettingParameter 7,2,HEX,具体参数由通道配置文件确定
+610,配置参数预留8,Reserved Setting Parameter 8,ReservedSettingParameter 8,2,HEX,具体参数由通道配置文件确定
+611,配置参数预留9,Reserved Setting Parameter 9,ReservedSettingParameter 9,2,HEX,具体参数由通道配置文件确定
+612,配置参数预留10,Reserved Setting Parameter 10,ReservedSettingParameter 10,2,HEX,具体参数由通道配置文件确定
+700,终端故障,Terminal Error,TerminalError,1,HEX,0x00：无故障，0x01：故障A，0x02：故障B，0x03：故障
+701,终端重启,Terminal Restart,TerminalRestart,1,HEX,0x00：不重启，0x01：重启
+801,保留字1,Reserve 1,Reserve1,2,HEX,保留字段
+802,保留字2,Reserve 2,Reserve2,2,HEX,保留字段
+803,保留字3,Reserve 3,Reserve3,2,HEX,保留字段
+804,保留字4,Reserve 4,Reserve4,2,HEX,保留字段
+998,CRC校验,CRC,Crc,2,HEX,对有效数据的CRC校验
+999,包尾,Tailer,Tailer,2,HEX,用2个字节来表示协议尾，0xAF 0xED是信息帧结束的关键字

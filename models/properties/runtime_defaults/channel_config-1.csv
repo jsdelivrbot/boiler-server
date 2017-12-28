@@ -1,0 +1,11 @@
+Parameter,ChannelType,ChannelNumber,Signed,NegativeThreshold,IsDefault,Remark
+1001,1,1,1,65500,1,Temper1_channel
+1005,1,2,1,65500,1,Temper2_channel
+1006,1,3,1,65500,1,Temper3_channel
+1015,1,4,1,65500,1,Temper4_channel
+1014,1,5,1,65500,1,Temper5_channel
+1021,1,6,1,65500,1,Temper6_channel
+1002,2,1,1,65500,1,Analog1_channel
+1016,2,2,1,65500,1,Analog2_channel
+1003,2,3,1,65500,1,Analog3_channel
+1107,3,1,1,65500,1,Switches_channel

@@ -1,0 +1,31 @@
+language: go
+
+go:
+  - 1.x
+
+before_install:
+  - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
+  - export DHOST="101.132.143.0"
+  - export DPORT="2022"
+
+addons:
+  ssh_known_hosts: 101.132.143.0:2022
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_650b53d724df_key -iv $encrypted_650b53d724df_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 /tmp/deploy_rsa
+  - ssh-add /tmp/deploy_rsa
+  - chmod o+x build.sh
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+  on:
+    branch: research
+
+after_deploy:
+  - export GOPATH=/home/apps/go
+  - export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin
+  - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/BoilerGo/ && ./build.sh"

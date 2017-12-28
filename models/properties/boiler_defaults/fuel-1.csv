@@ -1,0 +1,8 @@
+1,燃煤,Coal,,,,
+FuelId,Name,NameEn,QNetVArMin,QNetVArMax,,
+101,烟煤Ⅱ,Bituminous Coal Ⅱ,17700,21000,,
+102,烟煤Ⅲ,Bituminous Coal Ⅲ,21000,,,
+103,贫煤,Meager Coal,17700,,,
+104,无烟煤Ⅱ,Anthracite Coal Ⅱ,21000,,,
+105,无烟煤Ⅲ,Anthracite Coal Ⅲ,21000,,,
+106,褐煤,Lignite,11500,,,
