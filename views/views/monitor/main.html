@@ -1,0 +1,161 @@
+<!-- BEGIN PAGE HEADER-->
+<script type="text/javascript">
+    App.startPageLoading({message: '正在加载数据...'});
+</script>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="monitor.dashboard">主页</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="monitor.dashboard">主监控台</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <!--
+        <div id="dashboard-report-range" class="pull-right tooltips btn btn-sm" data-container="body"
+             data-placement="bottom" data-original-title="Change dashboard date range">
+            <i class="icon-calendar"></i>&nbsp;
+            <span class="thin uppercase hidden-xs"></span>&nbsp;
+            <i class="fa fa-angle-down"></i>
+        </div>
+        -->
+        <!--
+        <i class="fa fa-cubes font-grey-cascade"></i> 燃煤
+        <i class="fa fa-tint font-grey-gallery"></i> 燃油
+        <i class="fa fa-database font-blue-soft"></i> 天然气
+        <i class="fa fa-leaf font-green-jungle"></i> 生物质
+        <i class="fa fa-sun-o font-grey"></i> 其他
+        -->
+    </div>
+    <!--
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" dropdown-menu-hover data-delay="1000" data-close-others="true"> Actions
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a href="#">
+                        <i class="icon-user"></i> New User </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon-present"></i> New Event
+                        <span class="badge badge-success">4</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon-basket"></i> New order </a>
+                </li>
+                <li class="divider"> </li>
+                <li>
+                    <a href="#">
+                        <i class="icon-flag"></i> Pending Orders
+                        <span class="badge badge-danger">4</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon-users"></i> Pending Users
+                        <span class="badge badge-warning">12</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    -->
+</div>
+<!--
+<h3 class="page-title"> 主监控台
+    <small>设备总览</small>
+</h3>
+-->
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<!--
+<div class="note note-info">
+    <h3>系统提醒:<br>
+        <small>
+            · 新增<a ui-sref="wiki">系统帮助（用户角色说明）</a><br>
+            · 修复锅炉终端无法设置的问题 <br>
+            · 修复专家咨询记录显示问题</small>
+        <hr>
+        <small>
+            [2017.2.21]v0.8更新：<br>
+            · 新增专家咨询模块 <br>
+            · 新增维保记录模块 <br>
+            · 修复了终端管理 <br>
+            · 对告警模块进行进一步优化</small>
+        <span class="close" data-close="note"></span>
+    </h3>
+    <p>˚
+        <span><span class="label label-danger">NOTE:</span> 当前有锅炉发出严重告警，请查看。</span>
+    </p>
+</div>
+-->
+<div ng-init="dashboard.getBoilers()" style="margin-top: 15px">
+    <!-- BEGIN MAIN CONTENT -->
+    <!--
+    <div class="row">
+        <div class="col-md-12">
+            <div class="note note-success">
+                <h4 class="block">维护通知</h4>
+                <p> 11月11-12日(本周末)，因服务器资源切割，本周末可能会出现部分数据刷新延迟的情况，造成的不便请大家谅解。 </p>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <div class="row">
+        <style type="text/css">
+            .portlet.light>.portlet-title>.nav-tabs>li>a {
+                padding-top: 0;
+                padding-bottom: 6px;
+            }
+
+            .portlet.light>.portlet-title {
+                min-height: 0;
+            }
+
+            .portlet-title.tabbable-line {
+                margin-top: -6px;
+            }
+        </style>
+        <div class="col-md-12">
+            <div class="portlet light">
+                <filter-monitor ng-show="$state.current.name != 'monitor.dashboard'"></filter-monitor>
+                <div ng-show="$state.current.name != 'monitor.dashboard'" class="portlet-title tabbable-line">
+                    <ul class="nav nav-tabs">
+                        <li ng-class="{'active': $state.current.name == 'monitor.thumb'}">
+                            <a ui-sref="monitor.thumb">
+                                <i class="fa fa-puzzle-piece"></i>
+                                图文模式
+                            </a>
+                        </li>
+                        <li ng-class="{'active': $state.current.name == 'monitor.list'}">
+                            <a ui-sref="monitor.list">
+                                <i class="fa fa-navicon"></i>
+                                列表模式
+                            </a>
+                        </li>
+                        <li ng-class="{'active': $state.current.name == 'monitor.map'}">
+
+                            <a ui-sref="monitor.map">
+                                <i class="fa fa-map-marker"></i>
+                                地图模式</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="portlet-body">
+                    <div ui-view class="profile-content fade-in-up"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+
+<!-- END MAIN CONTENT -->

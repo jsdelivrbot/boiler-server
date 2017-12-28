@@ -1,0 +1,59 @@
+<style type="text/css">
+    table#boiler_list_table td {
+        font-size: 13px;
+        text-align: left;
+    }
+    table#boiler_list_table div.status-icon{
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-3 col-sm-4 col-xs-6"
+         style="height: 500px; overflow-y: scroll; overflow-x: auto;">
+        <!--<table datatable="ng" dt-options="dashboard.mapOptions" dt-column-defs="dashboard.mapColumnDefs"-->
+        <!--class="table table-striped table-bordered table-hover order-column table-boiler"-->
+        <!--id="boiler_list_table">-->
+        <table class="table table-striped table-bordered table-hover order-column table-boiler"
+               id="boiler_list_table">
+            <tbody>
+            <tr ng-repeat="boiler in dashboard.filteredItems" id="b{{ boiler.num }}">
+                <td ng-click="dashboard.mapRowClicked(boiler)">
+                    <div class="row">
+                        <div class="col-md-9 col-sm-9 col-xs-9" style="padding-right: 0;">
+                            <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                                <span class="caption-subject font-grey-mint">{{ boiler.num }}. </span>
+                                <i ng-show="boiler.Fuel.Type.Id == 1" class="fa fa-cubes font-grey-cascade"></i>
+                                <i ng-show="boiler.Fuel.Type.Id == 2" class="fa fa-tint font-grey-gallery"></i>
+                                <i ng-show="boiler.Fuel.Type.Id == 3" class="fa fa-database font-blue-soft"></i>
+                                <i ng-show="boiler.Fuel.Type.Id == 4" class="fa fa-leaf font-green-jungle"></i>
+                                <i ng-show="boiler.Fuel.Type.Id > 4" class="fa fa-sun-o font-grey"></i>
+                                <span class="caption-subject font-grey-mint">{{ boiler.name }}</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-3" style="padding-left: 0; text-align: right;">
+                            <div class="status-icon" ng-class="{'success': true}"></div><div class="status-icon" ng-class="[{'success': boiler.isBurning}, {'danger': !boiler.isBurning}]"></div><div class="status-icon" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
+                        </div>
+                    </div>
+                    <span class="font-grey-gallery" style="font-size: 11px;">{{ boiler.Address ? boiler.Address.Location.LocationName + ' ' + boiler.Address.Address : '-' }}</span> <br>
+                    <span class="label label-ent label-sm label-default"
+                          ng-style="{'font-size': (boiler.Enterprise.Name.length >= 14 ? '9px' : '10px')}">{{ boiler.Enterprise.Name }}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-9 col-sm-8 col-xs-6">
+        <!-- 地址输入框 -->
+        <!--
+        ({{ longitude }}, {{ latitude }})
+        <div class="form-group">
+            <label class="control-label">地址：</label>
+            <input class="form-control input-md" name="address" ng-model="address"/>
+        </div>
+        -->
+        <!-- 百度地图显示区域 -->
+        <div class="form-group" id="map-container" ng-init="dashboard.initBap()" style="width: 100%; height: 500px;"></div>
+    </div>
+</div>

@@ -1,0 +1,122 @@
+<div ng-show="currentUser.Role.RoleId < 10" class="table-toolbar">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="btn-group">
+                <button id="editable_1_new" ng-click="terminal.new()" class="btn sbold green"> 添加
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <!--
+        <div class="col-md-6">
+            <div class="btn-group pull-right">
+                <button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">操作
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-print"></i> 打印 </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-file-pdf-o"></i> 另存为PDF </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-file-excel-o"></i> 导出为Excel </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        -->
+    </div>
+</div>
+
+<style type="text/css">
+    table.table-boiler th,
+    table.table-boiler tbody tr td
+    {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    table.table-boiler th
+    {
+        font-size: medium;
+    }
+    table.table-boiler td span.light-gray {
+        color: #aaa;
+    }
+</style>
+<table datatable="ng" dt-options="terminal.dtOptions" dt-column-defs="terminal.dtColumnDefs"
+       class="table table-striped table-bordered table-hover table-checkable order-column table-boiler"
+       id="terminal_table">
+    <thead>
+    <tr>
+        <th width="5%">序号</th>
+        <th width="26%">终端名称</th>
+        <th width="7%">终端编码</th>
+        <th width="8%">状态</th>
+        <th width="22%">监测锅炉</th>
+        <th width="10%">物联网卡号</th>
+        <th width="10%">IP地址</th>
+        <th width="2%">操作</th>
+    </tr>
+    </thead>
+
+    <tbody style="text-align: center">
+    <tr ng-repeat="data in terminal.datasource">
+        <td> {{ data.num }} </td>
+        <td> {{ data.Name }} </td>
+        <td> {{ data.code }} </td>
+        <td>
+            <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.online }}</span>
+        </td>
+        <td>
+            <!--<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">-->
+            <a ng-repeat="boiler in data.Boilers"
+               ui-sref="runtime.info({boiler: boiler.Uid, from: 'terminal'})"
+               class="label label-info label-sm"
+               style="margin: 4px 4px; display: inline-block; clear: both;">
+                {{ boiler.Name }}
+            </a>
+            <!--</a>-->
+        </td>
+        <td>
+            <span ng-class="[{'light-gray': data.SimNumber.length <= 0}]">{{ data.simNum }}</span>
+        </td>
+        <td>
+            <span ng-class="[{'light-gray': data.LocalIp.length <= 0}]">{{ data.ip }}</span>
+        </td>
+        <td style="min-width: 138px;">
+            <div class="btn-group">
+            <button ng-show="currentUser.Role.RoleId >= 10"
+                    ng-click="terminal.view(data)"
+                    class="btn edit btn-outline btn-circle btn-sm green">
+                <i class="fa fa-eye"></i> 查看
+            </button>
+            <button ng-show="currentUser.Role.RoleId < 10"
+                    ng-click="terminal.setting(data)"
+                    class="btn edit btn-outline btn-circle btn-sm blue"
+                    style="border-bottom-right-radius: 0px !important; border-top-right-radius: 0px !important;">
+                <i class="fa fa-cogs"></i> 配置
+            </button>
+            <button ng-show="currentUser.Role.RoleId < 10"
+                    ng-click="terminal.channel(data)"
+                    class="btn edit btn-outline btn-circle btn-sm blue-hoki"
+                    style="border-bottom-left-radius: 0px !important; border-top-left-radius: 0px !important;">
+                <i class="fa fa-server"></i> 通道
+            </button>
+            </div>
+            <!--
+            <a ng-show="currentUser.Role.RoleId < 10"
+               ng-click="org.delete(data)"
+               class="btn delete btn-outline btn-circle btn-sm red">
+                <i class="fa fa-trash-o"></i> 删除
+            </a>
+            -->
+        </td>
+    </tr>
+    </tbody>
+</table>

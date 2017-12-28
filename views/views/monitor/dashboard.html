@@ -1,0 +1,187 @@
+<style type="text/css">
+    div.boiler-frame {
+        height: 260px;
+        overflow: hidden;
+    }
+
+    div.stat div {
+        margin-bottom: 25px;
+    }
+
+</style>
+
+<!-- BEGIN DASHBOARD STATS -->
+<div ng-init="dashboard.getRuntimeCount(); dashboard.fetchTotal();">
+    <div class="row stat">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat blue">
+            <div class="visual">
+                <i class="fa fa-comments"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    {{ dashboard.runtimeCount }}
+                    <!--<span data-counter="counterup" data-value="1349">0</span>-->
+                </div>
+                <div class="desc"> 新增实时数据 </div>
+            </div>
+            <a class="more" ui-sref="monitor.thumb"> 查看详情
+                <i class="m-icon-swapright m-icon-white"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat red">
+            <div class="visual">
+                <i class="fa fa-bar-chart-o"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    {{ boilerAlarms.length }}
+                    <!--<span data-counter="counterup" data-value="12">0</span>-->
+                </div>
+                <div class="desc"> 异常报警 </div>
+            </div>
+            <a class="more" ui-sref="alarm"> 查看详情
+                <i class="m-icon-swapright m-icon-white"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat green">
+            <div class="visual">
+                <i class="fa fa-shopping-cart"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    {{ dashboard.datasource.length }}
+                    <!--<span data-counter="counterup" data-value="{{ dashboard.datasource.length }}">0</span>-->
+                </div>
+                <div class="desc"> 在用设备 </div>
+            </div>
+            <a class="more" ui-sref="monitor.thumb"> 查看详情
+                <i class="m-icon-swapright m-icon-white"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat purple">
+            <div class="visual">
+                <i class="fa fa-globe"></i>
+            </div>
+            <div class="details">
+                <!--<div class="number"> +-->
+                    <!--<span data-counter="counterup" data-value="12.6"></span>%-->
+                <!--</div>-->
+                <div class="number">
+                    {{ dashboard.runningTotal }}
+                    <!--<span data-counter="counterup" data-value="84.3"></span>%-->
+                </div>
+                <div class="desc"> 平台设备运行总时间 </div>
+            </div>
+            <a class="more" ui-sref="monitor.thumb"> 查看详情
+                <i class="m-icon-swapright m-icon-white"></i>
+            </a>
+        </div>
+    </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-7 col-md-7 col-xs-12 col-sm-12">
+            <div class="portlet light ">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject bold uppercase font-dark">热效率统计图</span>
+                        <!--<span class="caption-helper">distance stats...</span>-->
+                    </div>
+                    <div class="actions">
+                        <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
+                            <!--<i class="icon-cloud-upload"></i>-->
+                        <!--</a>-->
+                        <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
+                            <!--<i class="icon-wrench"></i>-->
+                        <!--</a>-->
+                        <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
+                            <!--<i class="icon-trash"></i>-->
+                        <!--</a>-->
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="#"> </a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div id="dashboard_amchart_3d" class="CSSAnimationChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-init="dashboard.initAmChartPie();"
+             class="col-lg-5 col-md-5 col-xs-12 col-sm-12">
+            <div class="portlet light ">
+                <div class="portlet-title">
+                    <div class="caption ">
+                        <span class="caption-subject font-dark bold uppercase">设备额定功率分布</span>
+                        <!--<span class="caption-helper">distance stats...</span>-->
+                    </div>
+                    <!--<div class="actions">-->
+                        <!--<a href="#" class="btn btn-circle green btn-outline btn-sm">-->
+                            <!--<i class="fa fa-pencil"></i> Export </a>-->
+                        <!--<a href="#" class="btn btn-circle green btn-outline btn-sm">-->
+                            <!--<i class="fa fa-print"></i> Print </a>-->
+                    <!--</div>-->
+                    <div class="actions">
+                        <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
+                        <!--<i class="icon-cloud-upload"></i>-->
+                        <!--</a>-->
+                        <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
+                        <!--<i class="icon-wrench"></i>-->
+                        <!--</a>-->
+                        <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
+                        <!--<i class="icon-trash"></i>-->
+                        <!--</a>-->
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="#"> </a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div id="dashboard_amchart_pie" class="CSSAnimationChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="col-lg-6 col-xs-12 col-sm-12">-->
+            <!--<div class="portlet light ">-->
+                <!--<div class="portlet-title">-->
+                    <!--<div class="caption ">-->
+                        <!--<span class="caption-subject font-dark bold uppercase">Finance</span>-->
+                        <!--<span class="caption-helper">distance stats...</span>-->
+                    <!--</div>-->
+                    <!--<div class="actions">-->
+                        <!--<a href="#" class="btn btn-circle green btn-outline btn-sm">-->
+                            <!--<i class="fa fa-pencil"></i> Export </a>-->
+                        <!--<a href="#" class="btn btn-circle green btn-outline btn-sm">-->
+                            <!--<i class="fa fa-print"></i> Print </a>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="portlet-body">-->
+                    <!--<div id="dashboard_amchart_3" class="CSSAnimationChart"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+</div>
+<!-- END DASHBOARD STATS -->
+<div class="clearfix"></div>
+
+<script>
+    // Handles counterup plugin wrapper
+    var handleCounterup = function () {
+        if (!$().counterUp) {
+            return;
+        }
+
+        $("[data-counter='counterup']").counterUp({
+            delay: 10,
+            time: 1000
+        });
+    };
+
+    handleCounterup(); // handle counterup instances
+</script>

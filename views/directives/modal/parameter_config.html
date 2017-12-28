@@ -1,0 +1,118 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title" style="display: inline-block;">{{ $modal.title }}</h3>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modal.data.Id }}</span>
+</div>
+<style type="text/css">
+    div.input-group.form-group,
+    div.btn-group.form-group {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .modal-body .input-group span.unit {
+        position: absolute;
+        left: auto;
+        right: 16px;
+        top: 8px;
+        float: right;
+        z-index: 10;
+        color: grey;
+    }
+
+    .modal-body .input-group a.addon,
+    .modal-section .input-group a.addon {
+        position: absolute;
+        left:auto;
+        right:6px;
+        top:6px;
+        float:right;
+        z-index: 10;
+        padding: 4px;
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        line-height: 1em;
+    }
+
+    .modal-section {
+        padding: 15px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    .modal-body hr {
+        margin-top: 6px;
+    }
+</style>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">参数名称</span>
+                <input type="text" ng-model="$modal.data.Name"
+                       maxlength="16"
+                       ng-disabled="!$modal.editing || $modal.data.Category.Id === 0"
+                       class="form-control ng-pristine ng-valid ng-touched has-success"
+                       placeholder="请输入参数名称" required>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">参数分类</span>
+                <select ng-model="$modal.data.Category.Id"
+                        ng-options="cate.Id as cate.Name for cate in $modal.categoryList"
+                        ng-change="$modal.categoryChanged();"
+                        ng-disabled="!$modal.editing || !$modal.isNew"
+                        class="form-control">
+                </select>
+            </div>
+        </div>
+    </div>
+    <hr ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
+    <div class="row"
+         ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
+        <div class="form-group col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">换算比例</span>
+                <input type="number"
+                       ng-model="$modal.data.Scale"
+                       ng-disabled="!$modal.editing"
+                       class="form-control ng-pristine ng-valid ng-touched has-success"
+                       placeholder="参数值 = 报文值 × 换算比例">
+            </div>
+        </div>
+        <div class="form-group form-selector col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">参数单位</span>
+                <input type="text"
+                       ng-model="$modal.data.Unit"
+                       ng-disabled="!$modal.editing"
+                       class="form-control ng-pristine ng-valid ng-touched has-success"
+                       placeholder="（可选）参数的计量单位">
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="form-group col-md-12">
+            <label><i class="icon-note"></i> 备注： </label>
+            <textarea ng-model="$modal.data.Remark"
+                      class="form-control ng-pristine ng-valid ng-touched has-success"
+                      placeholder="在这里输入备注内容">
+            </textarea>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn red" type="button"
+            ng-show="false && $modal.editing && !$modal.isNew"
+            ng-click="$modal.delete()">删除</button>
+    <button type="button" class="btn ladda-button"
+            ng-show="$modal.editing"
+            ng-disabled="$modal.data.Category.Id <= 0"
+            ng-class="[{'btn-primary': $modal.data.Category.Id > 0}, {'grey': $modal.data.Category.Id <= 0}]"
+            data-style="zoom-out"
+            id="boiler_ok" ng-click="$modal.commit()"><span class="ladda-label">提交</span></button>
+    <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
+</div>

@@ -1,0 +1,83 @@
+<div ng-show="currentUser.Role.RoleId < 10" class="table-toolbar">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="btn-group">
+                <button ng-click="info.new()" class="btn sbold green"> 添加
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <!--
+        <div class="col-md-6">
+            <div class="btn-group pull-right">
+                <button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">操作
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-print"></i> 打印 </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-file-pdf-o"></i> 另存为PDF </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-file-excel-o"></i> 导出为Excel </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        -->
+    </div>
+</div>
+
+<style type="text/css">
+    table.table-boiler th,
+    table.table-boiler tbody tr td
+    {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    table.table-boiler th
+    {
+        font-size: medium;
+    }
+</style>
+<table datatable="ng" dt-options="info.dtOptions" dt-column-defs="info.dtColumnDefs"
+       class="table table-striped table-bordered table-hover order-column table-boiler" id="boiler_table"
+       ng-init="info.refreshDataTables()">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>锅炉名称</th>
+        <th>制造企业</th>
+        <th>注册码</th>
+        <th>型号</th>
+        <th>燃料</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="data in info.datasource">
+        <td>{{ data.num }}</td>
+        <td>
+            {{ data.Name }} <br>
+            <span class="label label-sm label-default">
+                {{ data.Enterprise.Name }}
+            </span>
+        </td>
+        <td>{{ data.Factory.Name }}</td>
+        <td>{{ data.RegisterCode }}</td>
+        <td>{{ data.ModelCode }}</td>
+        <td>{{ data.Fuel.Name }}</td>
+        <td>
+            <a ng-click="info.viewInfo(data)" class="btn view btn-outline btn-circle blue">
+                <i class="fa fa-eye"></i> 查看
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>

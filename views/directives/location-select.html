@@ -1,0 +1,27 @@
+<div class="form-inline" ng-controller="LocationController as local">
+    <label>区域搜索：</label>
+    <div class="form-group">
+        <label> </label>
+        <select ng-model="local.province"
+                ng-options="prov.Name for prov in locations"
+                ng-change="local.changeProvince()"
+                class="form-control input-small">
+        </select>
+    </div>
+    <div class="form-group">
+        <label> </label>
+        <select ng-model="local.city"
+                ng-options="city.Name for city in local.province.cities"
+                ng-change="local.changeCity()"
+                class="form-control input-small">
+        </select>
+    </div>
+    <div class="form-group">
+        <label> </label>
+        <select ng-model="local.region"
+                ng-options="region.Name for region in local.city.regions"
+                ng-change="local.changeRegion()"
+                class="form-control input-small">
+        </select>
+    </div>
+</div>

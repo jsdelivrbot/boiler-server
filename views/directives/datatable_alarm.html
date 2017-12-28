@@ -1,0 +1,230 @@
+<style type="text/css">
+    /*
+    table#alarm_table tr.border-danger td {
+        background-color: #fef7f8;
+    }
+
+    table#alarm_table tr.border-warning td {
+        background-color: #fafadd;
+    }
+    */
+
+    table#alarm_table tr.border-info td.first,
+    table#alarm_history_table tr.border-info td.first {
+        border-left: 4px solid #8bb4e7;
+    }
+
+    table#alarm_table tr.border-danger td.first,
+    table#alarm_history_table tr.border-danger td.first {
+        border-left: 4px solid #f0868e;
+    }
+
+    table#alarm_table tr.border-warning td.first,
+    table#alarm_history_table tr.border-warning td.first {
+        border-left: 4px solid #f3cc31;
+    }
+
+    table#alarm_history_table tr.demo td {
+        color: #94a0b2;
+    }
+
+    #alarm_tabs.tabbable-line>.nav-tabs {
+        background: 0 0;
+        margin: 1px 0 0;
+        float: right;
+        display: inline-block;
+        border: 0;
+    }
+
+    #alarm_tabs.tabbable-line>.nav-tabs>li {
+        border-top: 4px solid transparent;
+        border-bottom: none;
+        position: relative;
+    }
+
+    #alarm_tabs.tabbable-line>.nav-tabs>li.active {
+        border-top-color: #36c6d3;
+    }
+
+    #alarm_tabs.tabbable-line>.nav-tabs>li.open,
+    #alarm_tabs.tabbable-line>.nav-tabs>li:hover {
+        border-top-color: #9fe4ea;
+    }
+
+    #alarm_tabs.tabbable-line>.nav-tabs>li>a {
+        padding-top: 6px;
+    }
+
+</style>
+
+<div class="row" style="margin-top: -18px;" >
+    <div class="col-md-6 col-sm-6">
+        <div ng-show="$state.current.name === 'runtime.alarm'"
+             class="form-group" style="margin-top: 10px;" >
+            <label class="control-label" style="font-size: 15px; margin-right: 6px;">订阅推送</label>
+            <input bs-switch
+                   ng-model="runtime.boiler.hasSubscribed"
+                   ng-change="runtime.setSubscribe(runtime.boiler)"
+                   type="checkbox"
+                   switch-on-text="打开"
+                   switch-off-text="关闭"
+                   switch-on-color="success"
+                   switch-off-color="default"
+                   switch-animate="{{ true }}"
+                   switch-size="{{ size }}"
+                   switch-label="{{ label }}"
+                   switch-icon="{{ icon }}"
+                   switch-radio-off="{{ true }}"
+                   switch-label-width="auto"
+                   switch-handle-width="auto"
+                   switch-wrapper="{{ wrapper }}"
+                   switch-inverse="false"
+                   style="width: 100%">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div id="alarm_tabs" class="tabbable-line">
+            <ul class="nav nav-tabs">
+                <li ng-class="{'active': alarm.mode === 'current'}">
+                    <a href ng-click="alarm.setMode('current');">
+                        <i class="fa fa-puzzle-piece"></i>
+                        当前告警列表
+                    </a>
+                </li>
+                <li ng-class="{'active': alarm.mode === 'history'}">
+                    <a href ng-click="alarm.setMode('history');">
+                        <i class="fa fa-navicon"></i>
+                        历史告警记录
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-init="alarm.setMode('current');">
+    <div ng-show="alarm.mode === 'current'"
+         class="col-md-12">
+        <table datatable="ng" id="alarm_table"
+               dt-options="alarm.dtOptions" dt-column-defs="alarm.dtColumnDefsCurrent"
+               class="table table-striped table-bordered table-hover table-checkable order-column table-boiler">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>告警锅炉</th>
+                <th>监测参数</th>
+                <th>优先级</th>
+                <th>告警时间</th>
+                <!--<th>告警信息</th>-->
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody style="text-align: center">
+            <tr ng-repeat='data in alarm.datasource'
+                ng-class="[{'border-danger': data.Priority >= 2}, {'border-warning': data.Priority === 1}, {'border-info': data.Priority <= 0}]">
+                <td class="first"> {{ data.num }} </td>
+                <td>
+                    <a ng-show="!alarm.query['boiler']" ui-sref="runtime.alarm({boiler: data['Boiler__Uid']})" class="font-grey-mint">{{ data['Boiler__Name'] }}</a>
+                    <span ng-show="alarm.query['boiler']" class="font-grey-mint">{{ data['Boiler__Name'] }}</span>
+                    <br>
+                    <span class="label label-ent label-sm label-default">{{ data['Boiler__Enterprise__Name'] }}</span>
+                </td>
+                <td>
+                    {{ data['Parameter__Name'] }}
+                </td>
+                <td>
+                    <div ng-repeat="p in alarm.priorityIcons[data.Priority]"
+                         class="status-icon"
+                         ng-class="[{'danger': data.Priority >= 2}, {'warning': data.Priority === 1}, {'info': data.Priority <= 0}]">
+                    </div>
+                </td>
+                <td>
+                    {{ data.StartText }} - {{ data.isValid ? '当前' : data.EndText}} <br>
+                    <span class="label label-sm label-info" style="display:inline-block; margin-top: 2px;">{{ data.DueText }}</span>
+                    <!--<span>{{data.start | amSubtract: data.end | amDateFormat : 'hh'}}</span>-->
+                    <!--<span>Scheduled {{data.start | amDifference : data.end : 'hours minutes' }} days from now</span>-->
+                    <!--<span>{{d.Duration | amDurationFormat : 'minutes' }}</span>-->
+                </td>
+                <!--<td> {{ data.Description }} </td>-->
+                <td>
+                    <span ng-class="['label', 'label-lg', {'label-default': data.State == 0 || data.State == 10}, {'label-warning': data.State == 1}, {'label-info': data.State == 2}, { 'label-success': data.State == 3}, {'label-danger': data.State == 4}, {'label-primary': data.State == 5} ]" >{{ alarm.statusTexts[data.State] }}</span>
+                </td>
+                <td>
+                    <a ng-click="alarm.confirm(data.Uid)" class="btn view btn-outline btn-circle blue">
+                        <i class="fa fa-eye"> 查看 </i>
+                    </a>
+                    <!--
+                    <a ng-show="data.State < 5" ng-disabled="data.State == 3" ng-click="alarm.confirm(data.Uid)" class="btn view btn-outline btn-circle green">
+                        <i ng-show="data.State != 3" class="fa fa-check-square-o"> 确认 </i>
+                        <i ng-show="data.State != 3" class="fa fa-eye"> 查看 </i>
+                        <i ng-show="data.State == 3" class="fa fa-hourglass-2"> 待审核 </i>
+                    </a>
+                    <a ng-show="data.State == 3" ng-click="alarm.check(data.Uid)" class="btn view btn-outline btn-circle green">
+                        <i class="fa fa-legal"> 审核 </i>
+                    </a>
+                    <a ng-show="data.State == 3" ng-click="alarm.reject(data.Uid)" class="btn view btn-outline btn-circle red">
+                        <i class="fa fa-hand-paper-o"> 驳回 </i>
+                    </a>
+                    -->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-show="alarm.mode === 'history'"
+         class="col-md-12">
+        <table datatable="ng" id="alarm_history_table"
+               dt-options="alarm.dtOptions" dt-column-defs="alarm.dtColumnDefsHistory"
+               class="table table-striped table-bordered table-hover table-checkable order-column table-boiler">
+            <!--ng-init="alarm.refreshDataTables();alarm.declareRefresh();">-->
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>告警锅炉</th>
+                <th>监测参数</th>
+                <th>优先级</th>
+                <th>告警时间</th>
+                <!--<th>操作</th>-->
+            </tr>
+            </thead>
+
+            <tbody style="text-align: center">
+            <tr ng-repeat='data in alarm.historyData'
+                ng-class="[{'border-danger': data.Priority >= 2}, {'border-warning': data.Priority == 1}, {'border-info': data.Priority <= 0}, {'demo': !!data.IsDemo}]">
+                <td class="first"> {{ data.num }} </td>
+                <td>
+                    <a ng-show="!alarm.query['boiler']" ui-sref="runtime.alarm({boiler: data['Boiler__Uid']})" ng-class="[{'font-grey-mint': !data.IsDemo}, {'font-blue-oleo': !!data.IsDemo}]">{{ data['Boiler__Name'] }}</a>
+                    <span ng-show="alarm.query['boiler']"
+                          ng-class="[{'font-grey-mint': !data.IsDemo}, {'font-blue-oleo': !!data.IsDemo}]">{{ data['Boiler__Name'] }}</span>
+                    <br>
+                    <span class="label label-ent label-sm label-default">{{ data['Boiler__Enterprise__Name'] }}</span>
+                </td>
+                <td>
+                    {{ data['Parameter__Name'] }}
+                </td>
+                <td>
+                    <div ng-repeat="p in alarm.priorityIcons[data.Priority]"
+                         class="status-icon"
+                         ng-class="[{'danger': data.Priority >= 2}, {'warning': data.Priority === 1}, {'info': data.Priority <= 0}]">
+                    </div>
+                </td>
+                <td>
+                    {{ data.StartText }} - {{ data.EndText }} <br>
+                    <span class="label label-sm" ng-class="[{'label-info': !data.IsDemo}, {'label-default': !!data.IsDemo}]" style="display:inline-block; margin-top: 2px;">{{ data.DueText }}</span>
+                </td>
+                <!--
+                <td>
+                    <a ng-click="alarm.view(data.Uid)"
+                       class="btn view btn-outline btn-circle"
+                       ng-class="[{'blue-hoki': !data.IsDemo}, {'blue-oleo': !!data.IsDemo}]">
+                        <i class="fa fa-eye"> 查看 </i>
+                    </a>
+                </td>
+                -->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

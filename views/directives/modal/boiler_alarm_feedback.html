@@ -1,0 +1,87 @@
+<div class="modal-header">
+    <div style="display:inline-block; text-align: right; margin-right: 15px; float: right;">
+        <span class="font-blue-madison bold" style="font-size: 14px;">{{ $modal.alarm['Boiler__Name'] }} ({{ $modal.alarm['Boiler__Enterprise__Name'] }})</span>
+        <br>
+        <span style="font-size: 14px; color: #333; margin-right: 16px;">{{ $modal.alarm.Description }}</span>
+        <span style="font-size: 13px; color: #999;">{{ $modal.alarm.StartDate | amDateFormat:$modal.alarm.startFormat }} - {{ $modal.alarm.isValid ? '当前' : ($modal.alarm.EndDate | amDateFormat:$modal.alarm.endFormat)}}</span>
+    </div>
+    <h3 class="modal-title" id="modal-title" style="font-weight: bold;">{{ $modal.title }}</h3>
+</div>
+<style type="text/css">
+    div.input-group.form-group,
+    div.btn-group.form-group{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    div.form-group.form-selector .control-label {
+        width: 15%;
+        margin-top: 6px;
+    }
+
+    div.form-group.form-selector select {
+        width: 85%;
+        float: right;
+    }
+
+    .mt-comments {
+        font-size: 14px;
+    }
+
+</style>
+<div class="modal-body" id="modal-body">
+    <div class="portlet-body">
+        <div class="row">
+            <chart-alarm></chart-alarm>
+        </div>
+
+        <!-- BEGIN: Comments -->
+        <div class="row">
+            <div class="mt-comments col-md-12">
+                <div class="mt-comment" ng-repeat="feedback in $modal.feedbacks">
+                    <div class="mt-comment-img">
+                        <img width="40px;" height="40px;" ng-src="{{ settings.layoutPath }}/img/{{ feedback.CreatedBy.Picture }}" /> </div>
+                    <div class="mt-comment-body">
+                        <div class="mt-comment-info">
+                            <span class="mt-comment-author">{{ feedback.CreatedBy.Name }}</span>
+                            <span class="mt-comment-date">{{ feedback.CreatedDate | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</span>
+                        </div>
+                        <div class="mt-comment-text"> {{ feedback.Content }} </div>
+                        <!--
+                        <div class="mt-comment-details">
+                            <span class="mt-comment-status mt-comment-status-pending">Pending</span>
+                            <ul class="mt-comment-actions">
+                                <li>
+                                    <a href="#">Quick Edit</a>
+                                </li>
+                                <li>
+                                    <a href="#">View</a>
+                                </li>
+                                <li>
+                                    <a href="#">Delete</a>
+                                </li>
+                            </ul>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Comments -->
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="control-label" style="font-size: 14px;"><i ng-class="[{ 'icon-note' : !$modal.dialogue }, { 'icon-action-redo' : $modal.dialogue }]"></i> {{ $modal.feedbackTitle }}：</label>
+                <textarea ng-model="$modal.content"
+                          class="form-control ng-pristine ng-valid ng-touched has-success"
+                          style="min-height: 120px;" placeholder="在这里输入内容">
+        </textarea>
+            </div>
+        </div>
+        <!-- END: Comments -->
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary ladda-button" data-style="zoom-out" type="button" id="boiler_ok"
+            ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
+    <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
+</div>

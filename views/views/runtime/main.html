@@ -1,0 +1,177 @@
+<!-- BEGIN PAGE HEADER-->
+<script src="../../../static/js/controllers/TerminalController.js"></script>
+<script type="text/javascript">
+    App.startPageLoading({message: '正在加载数据...'});
+</script>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="monitor.dashboard">主页</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="monitor.dashboard">主监控台</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="runtime.dashboard({boiler: runtime.boiler.Uid})">实时监控</a>
+            <i class="fa fa-circle"></i>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <!--<div id="dashboard-report-range" class="pull-right tooltips btn btn-sm" data-container="body"-->
+        <!--data-placement="bottom" data-original-title="Change dashboard date range">-->
+        <!--<i class="icon-calendar"></i>&nbsp;-->
+        <!--<span class="thin uppercase hidden-xs"></span>&nbsp;-->
+        <!--<i class="fa fa-angle-down"></i>-->
+        <!--</div>-->
+    </div>
+</div>
+<!--<h3 class="page-title"> {{runtime.boiler.Name}}-->
+<!--<small>运行参数</small>-->
+<!--</h3>-->
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<div ng-init="runtime.init();" style="margin-top: 15px">
+    <!--
+    <div class="row">
+        <div class="col-md-12">
+            <div class="note note-success">
+                <h4 class="block">维护通知</h4>
+                <p> 11月11-12日(本周末)，因服务器资源切割，本周末可能会出现部分数据刷新延迟的情况，造成的不便请大家谅解。 </p>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <!-- BEGIN DASHBOARD STATS 1-->
+    <div class="row ng-cloak" ng-cloak>
+        <div class="col-md-12" ng-init="runtime.fetchBoiler();">
+            <div class="portlet light portlet-fit bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-md font-red sbold uppercase"><i class="icon-settings"></i> {{runtime.boiler.Name}}</span>
+                        <span class="caption-subject font-dark uppercase">{{runtime.boiler.ModelCode}}</span>　
+                        <span class="caption-subject font-blue uppercase"><i class="fa fa-user font-blue-dark"></i> {{runtime.boiler.Contact.Name}}</span>　
+                        <span class="caption-subject font-blue uppercase"><i class="fa fa-phone font-blue-dark"></i> {{runtime.boiler.Contact.MobileNumber}}</span>
+                    </div>
+                    <!--a class="btn red btn-outline" href="https://github.com/tapmodo/Jcrop" target="_blank">进行故障排查</a-->
+                    <div class="actions">
+                        <div class="btn-group btn-group-devided" data-toggle="buttons">
+                            <a ui-sref="runtime.dashboard({boiler: runtime.boiler.Uid})"
+                               ui-sref-opts="{inherit: false}"
+                               class="btn blue btn-outline btn-circle btn-sm"
+                               ng-class="{'active': $state.current.name == 'runtime.dashboard'}">
+                                动画监测
+                            </a>
+                            <a ui-sref="runtime.stats({boiler: runtime.boiler.Uid})"
+                               ui-sref-opts="{inherit: false}"
+                               class="btn blue btn-outline btn-circle btn-sm"
+                               ng-class="{'active': ($state.current.name == 'runtime.stats' || $state.current.name == 'runtime.info') }">
+                                运行参数
+                            </a>
+                            <a ui-sref="runtime.history({boiler: runtime.boiler.Uid})"
+                               ui-sref-opts="{inherit: false}"
+                               class="btn blue btn-outline btn-circle btn-sm"
+                               ng-class="{'active': $state.current.name == 'runtime.history'}">
+                                历史数据
+                            </a>
+                            <!--
+                            <a ui-sref="runtime.info({boiler: runtime.boiler.Uid})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': $state.current.name == 'runtime.info'}">
+                                设备信息
+                            </a>
+                            -->
+                            <a ui-sref="runtime.alarm({boiler: runtime.boiler.Uid})"
+                               class="btn blue btn-outline btn-circle btn-sm"
+                               ng-class="{'active': $state.current.name == 'runtime.alarm'}">
+                                锅炉告警
+                            </a>
+                            <a ui-sref="runtime.maintain({boiler: runtime.boiler.Uid})"
+                               class="btn blue btn-outline btn-circle btn-sm"
+                               ng-class="{'active': $state.current.name == 'runtime.maintain'}">
+                                维保记录
+                            </a>
+                            <a ui-sref="runtime.developer({boiler: runtime.boiler.Uid})"
+                               ui-sref-opts="{inherit: false}"
+                               ng-show="currentUser.Role.RoleId <= 2"
+                               class="btn green btn-outline btn-circle btn-sm"
+                               ng-class="{'active': $state.current.name == 'runtime.developer'}">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <!-- BEGIN PROFILE CONTENT -->
+                    <div ui-view class="profile-content fade-in-up"> </div>
+                    <!-- END PROFILE CONTENT -->
+                    <!-- SVG BEGIN -->
+                    <span id="testGaugeContainer"></span>
+                    <!-- SVG END -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END DASHBOARD STATS 1-->
+
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS & CSS -->
+
+<!--<style>-->
+    <!--body {-->
+        <!--font: 10px arial;-->
+    <!--}-->
+<!--</style>-->
+
+<script type="text/javascript" src="/js/lib/d3/d3.v4.js"></script>
+<script type="text/javascript" src="/js/test/gauge.js"></script>
+
+<script>
+    var gauges = [];
+    function createGauge(name, label, min, max) {
+        var config = {
+            size: 120,
+            label: label,
+            min: undefined != min ? min : 0,
+            max: undefined != max ? max : 100,
+            minorTicks: 5
+        };
+
+        var range = config.max - config.min;
+        config.yellowZones = [{from: config.min + range * 0.75, to: config.min + range * 0.9}];
+        config.redZones = [{from: config.min + range * 0.9, to: config.max}];
+
+        gauges[name] = new Gauge(name + "GaugeContainer", config);
+        gauges[name].render();
+    }
+
+    function createGauges() {
+
+        createGauge("memory", "Memory");
+        createGauge("cpu", "CPU");
+        createGauge("network", "Network");
+        createGauge("test", "Test", -50, 50 );
+    }
+
+    function updateGauges() {
+        for (var key in gauges) {
+            var value = getRandomValue(gauges[key]);
+            gauges[key].redraw(value);
+        }
+    }
+
+    function getRandomValue(gauge) {
+        var overflow = 0; //10;
+        return gauge.config.min - overflow + (gauge.config.max - gauge.config.min + overflow * 2) * Math.random();
+    }
+
+    function initialize() {
+        createGauges();
+        setInterval(updateGauges, 5000);
+    }
+
+</script>
+
+<!-- END MAIN JS & CSS -->
+

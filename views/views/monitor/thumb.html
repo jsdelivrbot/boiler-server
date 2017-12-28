@@ -1,0 +1,88 @@
+<style type="text/css">
+    div.boiler-frame {
+        height: 260px;
+        overflow: hidden;
+    }
+
+    img.boiler-thumb {
+        margin: 0 auto;
+        max-width: 96%;
+        max-height: 160px;
+    }
+
+    table.table-boiler th,
+    table.table-boiler tbody tr td
+    {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    table.table-boiler th
+    {
+        font-size: medium;
+    }
+</style>
+
+<!-- BEGIN BOILER THUMB -->
+
+<div class="row">
+    <div ng-repeat="boiler in dashboard.pagedItems[dashboard.currentPage] | orderBy:dashboard.sortingOrder:reverse"
+         class="col-md-6 col-sm-12 col-xs-12">
+        <!-- BEGIN PORTLET-->
+        <div ng-init="dashboard.fetchStatus(boiler); dashboard.fetchThumbParam(boiler);" class="portlet light bordered boiler-frame">
+            <div class="portlet-title">
+                <div class="caption">
+                    <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                        <i ng-show="boiler.Fuel.Type.Id == 1" class="fa fa-cubes font-grey-cascade"></i>
+                        <i ng-show="boiler.Fuel.Type.Id == 2" class="fa fa-tint font-grey-gallery"></i>
+                        <i ng-show="boiler.Fuel.Type.Id == 3" class="fa fa-database font-blue-soft"></i>
+                        <i ng-show="boiler.Fuel.Type.Id == 4" class="fa fa-leaf font-green-jungle"></i>
+                        <i ng-show="boiler.Fuel.Type.Id > 4" class="fa fa-sun-o font-grey"></i>
+                        <span class="caption-subject font-grey-mint bold uppercase">{{ boiler.name }}</span>
+                    </a>
+                    <a ng-click="dashboard.open(boiler, 'lg')" class="caption-helper btn-outline btn-circle">
+                        <i class="fa fa-wrench"></i> 测算
+                    </a>
+                </div>
+                <div class="actions">
+                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                        <a class="btn btn-outline btn-circle btn-sm active"
+                           ng-class="[{'green': boiler.Terminal.IsOnline || boiler.isBurning}, { 'red': (!boiler.Terminal || !boiler.Terminal.IsOnline) && !boiler.isBurning}]">终端状态</a>
+                        <a ui-sref="runtime.dashboard({boiler: boiler.Uid})"
+                           class="btn btn-outline btn-sm btn-circle active"
+                           ng-class="[{'green': boiler.isBurning}, { 'red': !boiler.isBurning}]">燃烧状态</a>
+                        <a ui-sref="runtime.alarm({boiler: boiler.Uid})" ng-class="['btn', 'btn-outline', 'btn-sm', 'btn-circle', 'active', {'green': boiler.alarmLevel == 0}, { 'yellow-lemon': boiler.alarmLevel == 1}, { 'red': boiler.alarmLevel == 2}, { 'grey': boiler.alarmLevel == -1}]" >告警</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <table class="table table-scrollable-borderless table-hover table-light">
+                            <thead ng-repeat-start="rtms in boiler.runtime">
+                            <tr class="uppercase">
+                                <th ng-repeat="rtm in rtms">{{ rtm.name }}</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat-end>
+                            <tr>
+                                <td ng-repeat="rtm in rtms">
+                                    <span ng-class="[{'label': boiler.isBurning}, {'label-lg': boiler.isBurning}, {'label-success': rtm.alarmLevel == 0}, { 'label-warning': rtm.alarmLevel == 1}, {'label-danger': rtm.alarmLevel == 2} ]" >{{rtm.value}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6" style="text-align: center; vertical-align: middle">
+                        <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                            <img class="boiler-thumb" ng-src="../img/{{ boiler.img }}" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<paging-bar></paging-bar>

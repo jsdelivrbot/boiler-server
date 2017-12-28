@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title" style="display: inline-block;">锅炉设备绑定</h3>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modalBind.code }}</span>
+    <span class="ticket-id bold font-grey-mint font-lg" style="display: inline-block; margin-left: 16px;">{{ $modalBind.name }}</span>
+</div>
+<style type="text/css">
+    div.input-group.form-group,
+    div.btn-group.form-group{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    div.form-group.form-selector .control-label {
+        width: 15%;
+        margin-top: 6px;
+    }
+
+    div.form-group.form-selector select {
+        width: 85%;
+        float: right;
+    }
+
+</style>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <div class="form-group col-md-12">
+            <label class="control-label">选择锅炉</label>
+            <ui-select ng-model="$modalBind.boiler" theme="bootstrap">
+                <ui-select-match placeholder="请输入要绑定的锅炉名称...">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="boiler in $modalBind.boilers | filter: $select.search">
+                    <span ng-bind-html="boiler.Name | highlight: $select.search"></span>
+                    <small ng-bind-html="boiler.org | highlight: $select.search"></small>
+                </ui-select-choices>
+
+            </ui-select>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button"
+            ng-click="$modalBind.ok();"
+            ng-disabled="!$modalBind.boiler"
+            ng-class="['btn', {'grey-salsa': !$modalBind.boiler}, {'blue': $modalBind.boiler}]" >绑定</button>
+    <button class="btn btn-default" type="button" ng-click="$modalBind.cancel()">取消</button>
+</div>

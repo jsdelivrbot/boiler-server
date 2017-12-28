@@ -1,0 +1,142 @@
+
+<div class="table-toolbar">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="btn-group">
+                <button id="sample_editable_1_new" ng-click="maintain.new()" class="btn sbold green"> 添加
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!--<div class="btn-group pull-right">-->
+                <!--<button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">操作-->
+                    <!--<i class="fa fa-angle-down"></i>-->
+                <!--</button>-->
+                <!--<ul class="dropdown-menu pull-right">-->
+                    <!--<li>-->
+                        <!--<a href="javascript:;">-->
+                            <!--<i class="fa fa-print"></i> 打印 </a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="javascript:;">-->
+                            <!--<i class="fa fa-file-pdf-o"></i> 另存为PDF </a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="javascript:;">-->
+                            <!--<i class="fa fa-file-excel-o"></i> 导出为Excel </a>-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    table#boiler_maintain_table div.status-line{
+        height: 8px;
+        line-height: 8px;
+        margin-bottom: 2px;
+    }
+    table#boiler_maintain_table div.status-icon{
+        font-size: 8px;
+        width: 10px;
+        height: 8px;
+        border-radius: 3px;
+        margin-right: 2px;
+        line-height: 8px;
+    }
+</style>
+<table datatable="ng" dt-options="maintain.dtOptions" dt-column-defs="maintain.dtColumnDefs"
+       class="table table-striped table-bordered table-hover table-checkable order-column table-boiler"
+       id="boiler_maintain_table">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>维保锅炉</th>
+        <th>维保日期</th>
+        <th>维保人员</th>
+        <th>维保状态</th>
+        <th>简述</th>
+        <!--<th>现场附件</th>-->
+        <th>操作</th>
+    </tr>
+    </thead>
+
+    <tbody style="text-align: center">
+    <tr ng-repeat='data in maintain.datasource'>
+        <td> {{ data.num }} </td>
+        <td>
+            <a ng-show="!maintain.query['boiler']" ui-sref="runtime.maintain({boiler: data.Boiler.Uid})" class="font-grey-mint">{{ data.Boiler.Name }}</a>
+            <span ng-show="maintain.query['boiler']" class="font-grey-mint">{{ data.Boiler.Name }}</span>
+            <br>
+            <span class="label label-ent label-sm label-default">
+                {{ data.Boiler.Enterprise.Name }}
+            </span>
+        </td>
+        <td> {{ data.InspectDate | amDateFormat:'YYYY-MM-DD' }} </td>
+        <td> {{ data.CreatedBy.Name }} </td>
+        <td style="text-align: left; min-width: 84px; width: 84px;">
+            <div class="status-line">
+            <div ng-repeat="st in data.status.burner track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.importGrate track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.waterSoftener track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.waterPump track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.boilerBody track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.energySaver track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.airPreHeater track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.dustCatcher track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+            <div class="status-line">
+            <div ng-repeat="st in data.status.draughtFan track by $index"
+                 class="status-icon"
+                 ng-class="[{'success': st == 0}, {'danger': st == 1}, {'warning': st == 2}]"></div>
+            </div>
+        </td>
+        <td> {{ data.summary }} </td>
+        <!--<td>-->
+        <!--<span ng-class="['label', {'label-default': data.Status == 0}, {'label-warning': data.Status == 1}, {'label-primary': data.Status == 2}, {'label-success': data.Status == 3}, {'label-default': data.Status == 4}]">-->
+        <!--{{ data.statusText }}-->
+        <!--</span>-->
+        <!--</td>-->
+        <td>
+            <a ng-click="maintain.edit(data.Uid)" class="btn view btn-outline btn-circle green">
+                <i class="fa fa-edit"> 编辑 </i>
+            </a>
+            <a ng-click="maintain.delete(data.Uid)" class="btn view btn-outline btn-circle red">
+                <i class="fa fa-trash"> 删除 </i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
