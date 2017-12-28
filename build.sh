@@ -13,7 +13,7 @@ cd /home/apps/go/src/github.com/AzureRelease/boiler-server && nohup ./boiler-ser
 rm -rf common
 rm -rf controllers
 rm -rf models
-rm -rf dba
+rm -f dba/*.go
 rm -rf routers
 
 rm main.go
