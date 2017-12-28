@@ -115,7 +115,6 @@ func init() {
 	goazure.SetStaticPath("/tpl", "views/tpl/")
 	goazure.SetStaticPath("/directives", "views/directives/")
 
-
 	initWeixinRoutes()
 }
 
