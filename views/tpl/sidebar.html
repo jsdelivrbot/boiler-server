@@ -20,7 +20,7 @@
 <!-- BEGIN SIDEBAR -->
 <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-<div class="page-sidebar navbar-collapse collapse" header-fixed style="z-index: 61">
+<div class="page-sidebar" header-fixed style="z-index: 61">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
     <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
@@ -28,292 +28,296 @@
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <ul class="page-sidebar-menu page-header-fixed fixed" data-keep-expanded="true" data-auto-scroll="false" data-slide-speed="200" style="padding-top: 5px;">
-        <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-        <li class="sidebar-toggler-wrapper hide" style="margin: 12px auto;">
-            <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-            <div class="sidebar-toggler"> </div>
-            <!-- END SIDEBAR TOGGLER BUTTON -->
-        </li>
-        <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-        <li class="sidebar-search-wrapper">
-            <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-            <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-            <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-            <!--
-            <form class="sidebar-search sidebar-search-bordered" action="page_general_search_3.html" method="POST">
-                <a href="javascript:;" class="remove">
-                    <i class="icon-close"></i>
-                </a>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="锅炉搜索...">
-                    <span class="input-group-btn">
-                        <a href="javascript:;" class="btn submit">
-                            <i class="icon-magnifier"></i>
+    <div class="sidebar_inner">
+        <div class="collapse navbar-collapse">
+            <ul class="page-sidebar-menu page-header-fixed fixed" data-keep-expanded="true" data-auto-scroll="false" data-slide-speed="200" style="padding-top: 5px;">
+                <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+                <li class="sidebar-toggler-wrapper hide" style="margin: 12px auto;">
+                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                    <div class="sidebar-toggler"> </div>
+                    <!-- END SIDEBAR TOGGLER BUTTON -->
+                </li>
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <!--
+                    <form class="sidebar-search sidebar-search-bordered" action="page_general_search_3.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                            <i class="icon-close"></i>
                         </a>
-                    </span>
-                </div>
-            </form>
-            -->
-            <!-- END RESPONSIVE QUICK SEARCH FORM -->
-        </li>
-        <li class="heading">
-            <h3 class="uppercase">主监控台</h3>
-        </li>
-        <li class="nav-item start">
-            <a ui-sref="monitor.dashboard"  class="nav-link ">
-                <i class="icon-bar-chart"></i>
-                <span class="title">能效统计</span>
-                <span class="selected"></span>
-            </a>
-        </li>
-        <li class="nav-item start active open">
-            <a ui-sref="monitor.thumb" class="nav-link ">
-                <i class="fa fa-tachometer"></i>
-                <span class="title">设备概览</span>
-            </a>
-        </li>
-        <!--
-        <li class="nav-item start active open">
-            <a href class="nav-link nav-toggle">
-                <i class="icon-home"></i>
-                <span class="title">主监控台</span>
-                <span class="selected"></span>
-                <span class="arrow open"></span>
-            </a>
-            <ul class="sub-menu">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="锅炉搜索...">
+                            <span class="input-group-btn">
+                                <a href="javascript:;" class="btn submit">
+                                    <i class="icon-magnifier"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </form>
+                    -->
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li class="heading">
+                    <h3 class="uppercase">主监控台</h3>
+                </li>
                 <li class="nav-item start">
                     <a ui-sref="monitor.dashboard"  class="nav-link ">
                         <i class="icon-bar-chart"></i>
-                        <span class="title">平台总览</span>
+                        <span class="title">能效统计</span>
                         <span class="selected"></span>
                     </a>
                 </li>
                 <li class="nav-item start active open">
                     <a ui-sref="monitor.thumb" class="nav-link ">
                         <i class="fa fa-tachometer"></i>
-                        <span class="title">设备图文</span>
+                        <span class="title">设备概览</span>
                     </a>
                 </li>
-                <li class="nav-item start ">
-                    <a ui-sref="dashboard-stat" class="nav-link ">
-                        <i class="icon-graph"></i>
-                        <span class="title">能效统计</span>
-                        <span class="badge badge-success">5</span>
+                <!--
+                <li class="nav-item start active open">
+                    <a href class="nav-link nav-toggle">
+                        <i class="icon-home"></i>
+                        <span class="title">主监控台</span>
+                        <span class="selected"></span>
+                        <span class="arrow open"></span>
                     </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item start">
+                            <a ui-sref="monitor.dashboard"  class="nav-link ">
+                                <i class="icon-bar-chart"></i>
+                                <span class="title">平台总览</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item start active open">
+                            <a ui-sref="monitor.thumb" class="nav-link ">
+                                <i class="fa fa-tachometer"></i>
+                                <span class="title">设备图文</span>
+                            </a>
+                        </li>
+                        <li class="nav-item start ">
+                            <a ui-sref="dashboard-stat" class="nav-link ">
+                                <i class="icon-graph"></i>
+                                <span class="title">能效统计</span>
+                                <span class="badge badge-success">5</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-            </ul>
-        </li>
-        -->
-        <li class="heading">
-            <h3 class="uppercase">常用功能</h3>
-        </li>
-        <!--
-        <li class="nav-item  ">
-            <a href="javascript:;" class="nav-link nav-toggle">
-                <i class="icon-feed"></i>
-                <span class="title">实时监控</span>
-                <span class="arrow"></span>
-            </a>
-            <ul class="sub-menu">
+                -->
+                <li class="heading">
+                    <h3 class="uppercase">常用功能</h3>
+                </li>
+                <!--
                 <li class="nav-item  ">
-                    <a ui-sref="monitor" class="nav-link ">
-                        <i class="fa fa-bar-chart-o"></i>
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="icon-feed"></i>
                         <span class="title">实时监控</span>
-                        <span class="badge badge-success">5</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item  ">
+                            <a ui-sref="monitor" class="nav-link ">
+                                <i class="fa fa-bar-chart-o"></i>
+                                <span class="title">实时监控</span>
+                                <span class="badge badge-success">5</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="monitor-stat" class="nav-link ">
+                                <i class="icon-graph"></i>
+                                <span class="title">能效统计</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+                <li class="start nav-item">
+                    <a ui-sref="alarm">
+                        <i class="fa fa-bell"></i>
+                        <span class="title">告警信息</span>
+                        <span ng-show="boilerAlarms.length > 0"
+                              class="badge sbold badge-danger">{{ boilerAlarms.length }}</span>
                     </a>
                 </li>
-                <li class="nav-item  ">
-                    <a ui-sref="monitor-stat" class="nav-link ">
-                        <i class="icon-graph"></i>
-                        <span class="title">能效统计</span>
+                <li class="start nav-item">
+                    <a ui-sref="dialogue">
+                        <i class="fa fa-comments"></i>
+                        <span class="title">专家咨询</span>
                     </a>
                 </li>
-            </ul>
-        </li>
-        -->
-        <li class="start nav-item">
-            <a ui-sref="alarm">
-                <i class="fa fa-bell"></i>
-                <span class="title">告警信息</span>
-                <span ng-show="boilerAlarms.length > 0"
-                      class="badge sbold badge-danger">{{ boilerAlarms.length }}</span>
-            </a>
-        </li>
-        <li class="start nav-item">
-            <a ui-sref="dialogue">
-                <i class="fa fa-comments"></i>
-                <span class="title">专家咨询</span>
-            </a>
-        </li>
-        <li class="start nav-item">
-            <a ui-sref="boiler-maintain">
-                <i class="fa fa-calendar-plus-o"></i>
-                <span class="title">维保记录</span>
-            </a>
-        </li>
-        <!--
-        <li class="start nav-item">
-            <a ui-sref="public">
-                <i class="fa fa-newspaper-o"></i>
-                <span class="title">信息发布</span>
-            </a>
-        </li>
-        -->
+                <li class="start nav-item">
+                    <a ui-sref="boiler-maintain">
+                        <i class="fa fa-calendar-plus-o"></i>
+                        <span class="title">维保记录</span>
+                    </a>
+                </li>
+                <!--
+                <li class="start nav-item">
+                    <a ui-sref="public">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span class="title">信息发布</span>
+                    </a>
+                </li>
+                -->
 
-        <li ng-show="currentUser.Role.RoleId <= 10"
-            class="heading">
-            <h3 class="uppercase">信息维护</h3>
-        </li>
-        <!--
-        <li class="start nav-item">
-            <a href class="nav-link nav-toggle">
-                <i class="icon-feed"></i>
-                <span class="title">参数设置</span>
-                <span class="arrow"></span>
-            </a>
-            <ul class="sub-menu">
-                <li class="nav-item  ">
+                <li ng-show="currentUser.Role.RoleId <= 10"
+                    class="heading">
+                    <h3 class="uppercase">信息维护</h3>
+                </li>
+                <!--
+                <li class="start nav-item">
+                    <a href class="nav-link nav-toggle">
+                        <i class="icon-feed"></i>
+                        <span class="title">参数设置</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item  ">
+                            <a ui-sref="config-runtime-alarm" class="nav-link ">
+                                <i class="fa fa-bell-o"></i>
+                                <span class="title">告警规则设置</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="config-runtime-parameter" class="nav-link ">
+                                <i class="fa fa-bar-chart-o"></i>
+                                <span class="title">运行时参数设置</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+                <!--
+                <li ng-show="currentUser.Role.RoleId < 10" class="start nav-item">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="fa fa-suitcase"></i>
+                        <span class="title">企业信息</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item  ">
+                            <a ui-sref="organization({tid: 0})" class="nav-link ">
+                                <i class="fa fa-tasks"></i>
+                                <span class="title">企业信息总览</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="organization.enterprise({tid: 2})" class="nav-link ">
+                                <i class="fa fa-fire"></i>
+                                <span class="title">用能企业</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="organization.factory({tid: 1})" class="nav-link ">
+                                <i class="fa fa-industry"></i>
+                                <span class="title">锅炉制造厂</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="organization.installer({tid: 3})" class="nav-link ">
+                                <i class="fa fa-wrench"></i>
+                                <span class="title">安装企业</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="organization.government({tid: 4})" class="nav-link ">
+                                <i class="fa fa-university"></i>
+                                <span class="title">政府机关</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a ui-sref="organization.supervisor({tid: 5})" class="nav-link ">
+                                <i class="fa fa-legal"></i>
+                                <span class="title">监管部门</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+
+                <li ng-show="currentUser.Role.RoleId <= 10"
+                    class="start nav-item">
+                    <a ui-sref="organization.overview">
+                        <i class="fa fa-suitcase"></i>
+                        <span class="title">企业信息</span>
+                    </a>
+                </li>
+                <li ng-show="currentUser.Role.RoleId <= 10"
+                    class="start nav-item">
+                    <a ui-sref="boiler.dashboard">
+                        <i class="fa fa-industry"></i>
+                        <span class="title">锅炉信息</span>
+                    </a>
+                </li>
+                <li ng-show="currentUser.Role.RoleId <= 10"
+                    class="start nav-item">
+                    <a ui-sref="terminal.dashboard">
+                        <i class="fa fa-terminal"></i>
+                        <span class="title">终端管理</span>
+                    </a>
+                </li>
+
+
+                <li class="heading">
+                    <h3 class="uppercase">系统设置</h3>
+                </li>
+                <li class="start nav-item  ">
                     <a ui-sref="config-runtime-alarm" class="nav-link ">
                         <i class="fa fa-bell-o"></i>
-                        <span class="title">告警规则设置</span>
+                        <span class="title">告警规则</span>
                     </a>
                 </li>
-                <li class="nav-item  ">
-                    <a ui-sref="config-runtime-parameter" class="nav-link ">
+                <li ng-show="currentUser.Role.RoleId <= 10"
+                    class="start nav-item ">
+                    <a ui-sref="parameter.dashboard" class="nav-link ">
                         <i class="fa fa-bar-chart-o"></i>
-                        <span class="title">运行时参数设置</span>
+                        <span class="title">运行参数</span>
                     </a>
+                </li>
+                <li ng-show="currentUser.Role.RoleId <= 10"
+                    class="start nav-item">
+                    <a ui-sref="user-account">
+                        <i class="fa fa-group"></i>
+                        <span class="title">账号管理</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a ui-sref="profile.account" id="sidebar_menu_link_profile">
+                        <i class="fa fa-street-view"></i>
+                        <span class="title">用户信息</span>
+                    </a>
+                </li>
+                <!--
+                <li class="start nav-item">
+                    <a ui-sref="basic-info">
+                        <i class="fa fa-info-circle"></i>
+                        <span class="title">基本信息</span>
+                    </a>
+                </li>
+                -->
+                <li ng-show="currentUser.Role.RoleId < 10"
+                    class="start nav-item">
+                    <a ui-sref="wiki">
+                        <i class="fa fa-info-circle"></i>
+                        <span class="title">系统帮助</span>
+                        <span class="badge sbold badge-info">12.12</span>
+                    </a>
+                </li>
+
+                <!-- END SIDEBAR MENU -->
+                <!--<li class="nav-item"> <a ui-sref="wiki">-->
+                <!--<i class="fa fa-info-circle"></i>-->
+                <!--<span class="title">{{ windowWidth}}</span>-->
+                <!--</a> </li>-->
+                <li style=" text-align: center;">
+                    <img src="/images/logo/lu.png" style="width: 140px; margin: 10px auto; ">
                 </li>
             </ul>
-        </li>
-        -->
-        <!--
-        <li ng-show="currentUser.Role.RoleId < 10" class="start nav-item">
-            <a href="javascript:;" class="nav-link nav-toggle">
-                <i class="fa fa-suitcase"></i>
-                <span class="title">企业信息</span>
-                <span class="arrow"></span>
-            </a>
-            <ul class="sub-menu">
-                <li class="nav-item  ">
-                    <a ui-sref="organization({tid: 0})" class="nav-link ">
-                        <i class="fa fa-tasks"></i>
-                        <span class="title">企业信息总览</span>
-                    </a>
-                </li>
-                <li class="nav-item  ">
-                    <a ui-sref="organization.enterprise({tid: 2})" class="nav-link ">
-                        <i class="fa fa-fire"></i>
-                        <span class="title">用能企业</span>
-                    </a>
-                </li>
-                <li class="nav-item  ">
-                    <a ui-sref="organization.factory({tid: 1})" class="nav-link ">
-                        <i class="fa fa-industry"></i>
-                        <span class="title">锅炉制造厂</span>
-                    </a>
-                </li>
-                <li class="nav-item  ">
-                    <a ui-sref="organization.installer({tid: 3})" class="nav-link ">
-                        <i class="fa fa-wrench"></i>
-                        <span class="title">安装企业</span>
-                    </a>
-                </li>
-                <li class="nav-item  ">
-                    <a ui-sref="organization.government({tid: 4})" class="nav-link ">
-                        <i class="fa fa-university"></i>
-                        <span class="title">政府机关</span>
-                    </a>
-                </li>
-                <li class="nav-item  ">
-                    <a ui-sref="organization.supervisor({tid: 5})" class="nav-link ">
-                        <i class="fa fa-legal"></i>
-                        <span class="title">监管部门</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        -->
-
-        <li ng-show="currentUser.Role.RoleId <= 10"
-            class="start nav-item">
-            <a ui-sref="organization.overview">
-                <i class="fa fa-suitcase"></i>
-                <span class="title">企业信息</span>
-            </a>
-        </li>
-        <li ng-show="currentUser.Role.RoleId <= 10"
-            class="start nav-item">
-            <a ui-sref="boiler.dashboard">
-                <i class="fa fa-industry"></i>
-                <span class="title">锅炉信息</span>
-            </a>
-        </li>
-        <li ng-show="currentUser.Role.RoleId <= 10"
-            class="start nav-item">
-            <a ui-sref="terminal.dashboard">
-                <i class="fa fa-terminal"></i>
-                <span class="title">终端管理</span>
-            </a>
-        </li>
-
-
-        <li class="heading">
-            <h3 class="uppercase">系统设置</h3>
-        </li>
-        <li class="start nav-item  ">
-            <a ui-sref="config-runtime-alarm" class="nav-link ">
-                <i class="fa fa-bell-o"></i>
-                <span class="title">告警规则</span>
-            </a>
-        </li>
-        <li ng-show="currentUser.Role.RoleId <= 10"
-            class="start nav-item ">
-            <a ui-sref="parameter.dashboard" class="nav-link ">
-                <i class="fa fa-bar-chart-o"></i>
-                <span class="title">运行参数</span>
-            </a>
-        </li>
-        <li ng-show="currentUser.Role.RoleId <= 10"
-            class="start nav-item">
-            <a ui-sref="user-account">
-                <i class="fa fa-group"></i>
-                <span class="title">账号管理</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a ui-sref="profile.account" id="sidebar_menu_link_profile">
-                <i class="fa fa-street-view"></i>
-                <span class="title">用户信息</span>
-            </a>
-        </li>
-        <!--
-        <li class="start nav-item">
-            <a ui-sref="basic-info">
-                <i class="fa fa-info-circle"></i>
-                <span class="title">基本信息</span>
-            </a>
-        </li>
-        -->
-        <li ng-show="currentUser.Role.RoleId < 10"
-            class="start nav-item">
-            <a ui-sref="wiki">
-                <i class="fa fa-info-circle"></i>
-                <span class="title">系统帮助</span>
-                <span class="badge sbold badge-info">12.12</span>
-            </a>
-        </li>
-
-    <!-- END SIDEBAR MENU -->
-        <!--<li class="nav-item"> <a ui-sref="wiki">-->
-            <!--<i class="fa fa-info-circle"></i>-->
-            <!--<span class="title">{{ windowWidth}}</span>-->
-        <!--</a> </li>-->
-        <li style=" text-align: center;">
-            <img src="/images/logo/lu.png" style="width: 140px; margin: 10px auto; ">
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>
 <!-- END SIDEBAR -->
