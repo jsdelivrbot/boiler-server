@@ -55,6 +55,9 @@ boilerAdmin.directive('boilerModule', function () {
         var svgName = "/img/boiler_coal_double.svg";
         bModule.moduleId = BOILE_MODULE_COAL_DOUBLE;
         switch (bModule.boiler.Fuel.Type.Id) {
+            case 2:
+                bModule.moduleId = BOILE_MODULE_OIL;
+                break;
             case 3:
                 bModule.moduleId = BOILE_MODULE_GAS;
                 break;
@@ -79,6 +82,9 @@ boilerAdmin.directive('boilerModule', function () {
         switch (bModule.moduleId) {
             case BOILE_MODULE_COAL_DOUBLE:
                 svgName = "/img/boiler_coal_double.svg";
+                break;
+            case BOILE_MODULE_OIL:
+                svgName = "/img/boiler_oil.svg";
                 break;
             case BOILE_MODULE_GAS:
                 svgName = "/img/boiler_gas.svg";
@@ -444,6 +450,7 @@ boilerAdmin.directive('boilerModule', function () {
             }
 
             switch (bModule.moduleId) {
+                case BOILE_MODULE_OIL:
                 case BOILE_MODULE_GAS:
                     var swData = [];
                     var swOptions = copy(moduleOptionsDef);
@@ -684,6 +691,11 @@ boilerAdmin.directive('boilerModule', function () {
 
             if (bModule.boiler.isBurning) {
                 switch (bModule.moduleId) {
+                    case BOILE_MODULE_OIL:
+                        renderGasFire("#fire_container");
+                        renderOilDashes("#dash_container");
+                        renderGasSmokeDashes("#dash_smoke_container");
+                        break;
                     case BOILE_MODULE_GAS:
                         renderGasFire("#fire_container");
                         renderGasDashes("#dash_container");
@@ -985,6 +997,68 @@ boilerAdmin.directive('boilerModule', function () {
             });
         });
     };
+
+
+    var renderOilDashes = function (id) {
+        var size = 8;
+        var sec = 4096;
+
+        var color = "#fff";
+
+        var dashModule = bModule.svg.select(id);
+        if (!dashModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+            var dashSteam = function () {
+            dashModule
+            .append("circle").attr("cx", 611).attr("cy", 340).attr("r", size / 2).style("fill", color)
+            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 88)
+            .transition().duration(sec / 6).ease(d3.easeLinear).attr("cx", 540)
+            .remove();
+            };
+
+            var dashWater = function () {
+            dashModule
+            .append("circle").attr("cx", 1200).attr("cy", 377).attr("r", size / 2).style("fill", color)
+            .transition().duration(sec / 5).ease(d3.easeLinear).attr("cx", 1104)
+            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 626)
+            .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 1086)
+            .remove();
+
+                dashModule
+            .append("circle").attr("cx", 1002).attr("cy", 648).attr("r", size / 2).style("fill", color)
+            .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 981)
+            .transition().duration(sec / 1).ease(d3.easeLinear).attr("cy", 110)
+            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 672)
+            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 340)
+            .remove();
+
+
+                    };
+
+            var dashFuel = function () {
+            dashModule
+            .append("circle").attr("cx", 130).attr("cy", 514).attr("r", size / 2).style("fill", "#eee")
+            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 436)
+            .remove();
+                    };
+
+            dashModule
+             .transition().on("start", function repeat() {
+             dashModule
+             .transition().delay(260).on("start", function () {
+                dashSteam();
+                dashWater();
+                dashFuel();
+                repeat();
+                            });
+                    });
+            };
+
+
+
 
     var renderGasDashes = function (id) {
         var size = 8;
