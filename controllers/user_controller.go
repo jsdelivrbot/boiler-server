@@ -246,7 +246,7 @@ func (ctl *UserController) UserUpdate() {
 	//stat, _ := strconv.ParseInt(u.Status, 10, 64);
 	//usr.Username = u.Username
 	usr.Name = u.Fullname
-	usr.Role = role(int(u.RoleId))
+	//usr.Role = role(int(u.RoleId))
 	usr.Organization = org
 	if len(usr.Picture) == 0 {
 		usr.Picture  = "avatar0.png"
