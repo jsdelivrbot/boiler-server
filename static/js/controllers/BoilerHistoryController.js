@@ -212,7 +212,7 @@ angular.module('BoilerAdmin')
 
         var groupedItems = [];
         var itemsPerPage = 50;
-        var pageRange = 100;
+        var pageRange = 10;
 
         $scope.pagedItems = [];
         $scope.currentPage = 0;
