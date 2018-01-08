@@ -90,3 +90,20 @@ gulp.task('jsPlugins', function () {
         .pipe(gulp.dest('js'));
 });
 
+gulp.task('jsLayouts', function () {
+    gulp.src(['js/app.js','./assets/layouts/boiler/scripts/layout.min.js',
+        './assets/layouts/boiler/scripts/demo.min.js'
+    ])
+        .pipe(concat('layouts.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('js'));
+});
+
+gulp.task('jsLadda', function () {
+    gulp.src(['js/scripts/ladda/spin.min.js','js/scripts/ladda/ladda.min.js',
+        'js/scripts/ladda/core.js'
+    ])
+        .pipe(concat('ladda.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('js'));
+});
