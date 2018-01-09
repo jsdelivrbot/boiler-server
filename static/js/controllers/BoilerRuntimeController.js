@@ -200,7 +200,8 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     unit: d.Unit,
                     alarmLevel: alarmLevel,
                     alarmDesc: label,
-                    date: new Date(d.UpdatedDate)
+                    date: new Date(d.UpdatedDate),
+                    remark:d.Remark
                 });
 
                 bRuntime.instants = instants;
