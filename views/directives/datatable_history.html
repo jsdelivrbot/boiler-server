@@ -143,8 +143,13 @@
     <!--id="boiler_history_table">-->
 
     <div class="row" style="font-size: 14px;">
+        <div class="col-md-3 col-sm-3">
+            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage +
+                1}} 页 共 {{pagedItems.length}} 页
+            </div>
+        </div>
         <div class="col-md-9 col-sm-9">
-            <div class="dataTables_paginate paging_bootstrap_full_number">
+            <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                 <ul class="pagination" style="visibility: visible;">
                     <li ng-class="['prev', {'disabled': currentPage == 0}]">
                         <a href ng-click="setPage(1)" title="首页"><i class="fa fa-angle-double-left"></i></a>
@@ -167,11 +172,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-3 col-sm-3">
-            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage +
-                1}} 页 共 {{pagedItems.length}} 页
-            </div>
-        </div>
+
     </div>
 
     <div class="row" style="overflow-x: scroll; padding-left: 15px; padding-right: 15px;">
