@@ -79,9 +79,35 @@ angular.module('BoilerAdmin').controller('UserAccountController', function($root
             bAccount.currentData.aRole = bAccount.currentData.Role.RoleId;
             bAccount.currentData.aStat = bAccount.currentData.Status;
             bAccount.currentData.aOrg = bAccount.currentData.Organization ? bAccount.currentData.Organization.Uid : "";
-            $scope.$apply(function() {
-                someClickHandler(bAccount.currentData);
+            // $scope.$apply(function() {
+            //     someClickHandler(bAccount.currentData);
+            // });
+            var modalInstance = $uibModal.open({
+                templateUrl: 'myModalContent.html',
+                controller: 'userCtrl',
+                size: "",
+                windowClass: 'zindex',
+                resolve: {
+                    currentData: function () {
+                        return bAccount.currentData;
+                    },
+                    status:function () {
+                        return bAccount.status;
+                    },
+                    aRoles:function () {
+                        return bAccount.aRoles;
+                    }
+
+                }
             });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+                bAccount.refreshDataTables();
+            }, function () {
+
+            });
+
         });
         return nRow;
     }
@@ -349,3 +375,144 @@ angular.module('BoilerAdmin').component('modalComponent', {
         };
     }
 });
+
+angular.module('BoilerAdmin').controller('userCtrl', function($scope,$rootScope, $uibModalInstance,$http, currentData,status,aRoles) {
+    $scope.currentData= currentData;
+    $scope.editing = false;
+    $scope.currentUser = $rootScope.currentUser;
+    $scope.status = status;
+    $scope.aRoles = aRoles;
+
+    //在这里处理要进行的操作
+    $scope.saveRow = function() {
+        var aData = $scope.currentData;
+        var isOrgs = function () {
+            return $scope.currentData && Math.floor($scope.currentData.aRole / 10) === 1;
+        };
+        var org = '';
+        if (isOrgs()) {
+            org = aData.aOrg;
+        }
+
+        var data = {
+            uid: aData.Uid,
+            //username: username,
+            fullname: aData.aName,
+            role: aData.aRole,
+            stat: aData.aStat,
+            org: org
+        };
+
+        if (aData.aPassword && aData.aPassword.length > 0) {
+            data.password_new = aData.aPassword;
+        }
+
+        $http.post("/user_update/", data)
+            .then(function (res) {
+                bAccount.refreshDataTables();
+                swal({
+                    title: "用户" + aData.Username + "信息修改成功",
+                    type: "success"
+                }).then(function () {
+
+                });
+            }, function (err) {
+                swal({
+                    title: "修改用户信息失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+        $uibModalInstance.close();
+    };
+    $scope.resetRow = function() {
+        $scope.editing = false;
+        $scope.currentData.aName = $scope.currentData.Name;
+        $scope.currentData.aPassword = "";
+        $scope.currentData.resetPassowrd = false;
+        $scope.currentData.aRole = $scope.currentData.Role.RoleId;
+        $scope.currentData.aStat = $scope.currentData.Status;
+        $scope.currentData.aOrg = $scope.currentData.Organization ? $scope.currentData.Organization.Uid : "";
+
+    };
+    $scope.activeRow = function(){
+        var aData = $scope.currentData;
+
+        $http.post("/user_active/", {
+            uid: aData.Uid
+        }).then(function (res) {
+            swal({
+                title: "用户" + aData.Username + "激活成功",
+                type: "success"
+            }).then(function () {
+//	                bAccount.refreshDataTables();
+            });
+        }, function (err) {
+            swal({
+                title: "用户" + aData.Username + "激活失败",
+                text: err.data,
+                type: "error"
+            });
+        });
+    };
+
+    $scope.editRow = function() {
+
+        if (!$scope.currentData) {
+            return;
+        }
+
+        $scope.editing = true;
+    };
+    $scope.deleteRow = function(){
+        var aData = $scope.currentData;
+        swal({
+            title: "确认删除用户" + aData.Username + "？",
+            text: "注意：删除后将无法恢复",
+            type: "warning",
+            showCancelButton: true,
+            //confirmButtonClass: "btn-danger",
+            confirmButtonColor: "#d33",
+            cancelButtonText: "取消",
+            confirmButtonText: "删除",
+            closeOnConfirm: false
+        }).then(function () {
+            $http.post("/user_delete/", {
+                uid: aData.Uid
+            }).then(function (res) {
+                swal({
+                    title: "用户" + aData.Username + "删除成功",
+                    type: "success"
+                }).then(function () {
+                    // var idx = bAccount.datasource.indexOf(aData);
+                    // if (idx > -1) {
+                    //     bAccount.datasource.splice(idx, 1);
+                    // }
+
+                });
+            }, function (err) {
+                swal({
+                    title: "删除用户失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+        });
+        $uibModalInstance.close();
+    }
+    $scope.close = function(){
+        $uibModalInstance.dismiss('cancel');
+    }
+    $scope.resetPassword=function(){
+        if ($scope.currentData) {
+            $scope.currentData.resetPassword = true;
+        }
+    };
+});
+
+
+
+
+
+
+
