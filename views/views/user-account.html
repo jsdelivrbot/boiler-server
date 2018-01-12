@@ -206,13 +206,6 @@
                                 </table>
                             </div>
                             <div class="modal-footer" id="detail-actions">
-
-                                <!--<a href ng-show="!account.editing && account.currentData && currentUser.Role.RoleId < account.currentData.Role.RoleId" ng-click="account.editRow()" class="btn btn-outline btn-circle blue">-->
-                                <!--<i class="fa fa-edit"></i> 编辑-->
-                                <!--</a>-->
-                                <!--<a href ng-show="account.currentData && currentUser.Role.RoleId < account.currentData.Role.RoleId" ng-click="account.deleteRow()" class="btn delete btn-outline btn-circle red">-->
-                                <!--<i class="fa fa-trash-o"></i> 删除-->
-                                <!--</a>-->
                                 <a ng-show="editing" href ng-click="saveRow()" class="btn green">
                                     <i class="fa fa-save"></i> 保存
                                 </a>
@@ -225,7 +218,7 @@
                                 <a ng-show="!editing && currentData && currentUser.Role.RoleId < currentData.Role.RoleId" href ng-click="editRow()" class="btn blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
                                 </a>
-                                <a href ng-show=".currentData && currentUser.Role.RoleId < currentData.Role.RoleId" class="btn delete red delete_btn">
+                                <a href ng-show="currentData && currentUser.Role.RoleId < currentData.Role.RoleId" class="btn delete red delete_btn">
                                     <i class="fa fa-trash-o"></i> 删除
                                 </a>
                                 <a href ng-click="close()" class="btn grey-cascade">

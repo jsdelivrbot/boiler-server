@@ -405,10 +405,10 @@ div.detail-btn label.active.btn-red {
     background-color: #1abc9c;
     border-color: #1abc9c;
 }
-.margiv-top-10{
+profile-content .margiv-top-10{
     float: right;
 }
-.margin-top-10 {
+profile-content .margin-top-10 {
     float: right;
 }
 
@@ -431,4 +431,8 @@ div.detail-btn label.active.btn-red {
     color: #fff;
     background-color: #19bc9c;
 }
+#parameter .tabbable-line > .nav-tabs > li.active{
+    border-top: 4px solid #1abc9c;
+}
+
 
