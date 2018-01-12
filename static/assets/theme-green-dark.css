@@ -83,7 +83,9 @@
 .dashboard-stat .details .desc {
     text-align: center;
 }
-
+.CSSAnimationChart {
+    height: 400px;
+}
 
 
 
@@ -197,6 +199,25 @@
     cursor: default;
     background-color: #19bc9c;
     border-color: #19bc9c;
+}
+
+
+
+.modal .edit_btn:not(.btn-outline){
+    border-color: #5bb95c;
+    color: #FFFFFF;
+    background: #5bb95c;
+}
+.modal .edit_btn:not(.btn-outline):hover{
+    background-color: #4fab50;
+}
+.modal .btn.delete_btn:not(.btn-outline){
+    border-color: #e84b3b;
+    color: #FFFFFF;
+    background: #e84b3b;
+}
+.modal .btn.delete_btn:not(.btn-outline):hover{
+    background-color: #FF3F3F;
 }
 
 .btn.btn-outline.view_btn{
