@@ -449,6 +449,7 @@ boilerAdmin.directive('boilerModule', function () {
                 ];
             }
 
+            /*
             switch (bModule.moduleId) {
                 case BOILE_MODULE_OIL:
                 case BOILE_MODULE_GAS:
@@ -672,22 +673,22 @@ boilerAdmin.directive('boilerModule', function () {
                     steamOptions.baseY = 100;
 
                     break;
-            }
+            }*/
 
-            renderStatusModule("#status_container", statData, statOptions);
-            renderStatusModule("#instant_container", insData, insOptions);
-            renderStatusModule("#instant_g1_container", insG1Data, insG1Options);
-            renderStatusModule("#instant_g2_container", insG2Data, insG2Options);
+            // renderStatusModule("#status_container", statData, statOptions);
+            // renderStatusModule("#instant_container", insData, insOptions);
+            // renderStatusModule("#instant_g1_container", insG1Data, insG1Options);
+            // renderStatusModule("#instant_g2_container", insG2Data, insG2Options);
 
-            if (bModule.moduleId !== BOILE_MODULE_COAL_WATER) {
-                renderStatusModule("#steam_container", steamData, steamOptions);
-                renderStatusModule("#water_container", waterData, waterOptions);
-                if ($rootScope.statusMode !== 5) {
-                    renderStatusModule("#water_lv_container", waterLvData, waterLvOptions);
-                }
-                renderStatusModule("#smoke_container", smokeData, smokeOptions);
-                renderStatusModule("#fuel_container", fuelData, fuelOptions);
-            }
+            // if (bModule.moduleId !== BOILE_MODULE_COAL_WATER) {
+            //     renderStatusModule("#steam_container", steamData, steamOptions);
+            //     renderStatusModule("#water_container", waterData, waterOptions);
+            //     if ($rootScope.statusMode !== 5) {
+            //         renderStatusModule("#water_lv_container", waterLvData, waterLvOptions);
+            //     }
+            //     renderStatusModule("#smoke_container", smokeData, smokeOptions);
+            //     renderStatusModule("#fuel_container", fuelData, fuelOptions);
+            // }
 
             if (bModule.boiler.isBurning) {
                 switch (bModule.moduleId) {
