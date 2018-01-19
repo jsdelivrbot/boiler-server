@@ -1302,6 +1302,7 @@ var hasInitModule = false;
 var bModule;
 
 const BOILE_MODULE_COAL_DOUBLE = 1;
+const BOILE_MODULE_OIL = 2;
 const BOILE_MODULE_GAS = 3;
 const BOILE_MODULE_WATER = 4;
 const BOILE_MODULE_COAL_WATER = 6;

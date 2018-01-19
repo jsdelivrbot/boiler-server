@@ -226,12 +226,13 @@
     background: #3598dc;
     border-radius: 4px!important;
 }
-.btn.btn-outline.edit_btn{
+.btn.btn-outline.edit_btn,.btn.btn-outline.edit_btn:focus{
     border-color: #5bb95c;
     color: #FFFFFF;
     background: #5bb95c;
     border-radius: 4px!important;
 }
+
 .btn.btn-outline.edit_btn:hover{
     background-color: #4fab50;
 }
@@ -421,6 +422,12 @@ profile-content .margin-top-10 {
 }
 .portlet-state .caption .font-green,.portlet-state .caption .font-blue{
     color:#333333!important;
+}
+.portlet-state .label-success{
+    background-color: #5bb75b;
+}
+.portlet-state .label-danger{
+    background-color: #e84b3b;
 }
 .excel_export{
     background-color: #19bc9c;

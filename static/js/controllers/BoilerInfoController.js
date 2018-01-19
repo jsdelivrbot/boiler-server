@@ -169,7 +169,7 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
     };
 
     $rootScope.$watch('boilers', function () {
-        console.error("$rootScope.$watch('boilers'");
+        // console.error("$rootScope.$watch('boilers')");
         bInfo.refreshDataTables();
     });
 
