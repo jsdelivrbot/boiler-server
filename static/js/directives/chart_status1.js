@@ -11,7 +11,7 @@ boilerAdmin.directive('chartStatus1', function () {
     bChart.keys = [];
 
     var domId = "chart_status1";
-    var dataField = "data";
+    var dataField = "status1_data";
 
     $rootScope.$watch('instants', function (newVal, oldVal) {
         // console.error("Dynamic Instants:", $rootScope.instants);
@@ -36,12 +36,14 @@ boilerAdmin.directive('chartStatus1', function () {
             bChart.keys = [bChart.instants[idx].id];
         }
 
-        bChart.refreshChart(RUNTIME_RANGE_DEFAULT, bChart.keys);
+        if (bChart.range === RUNTIME_RANGE_DEFAULT) {
+            bChart.refreshChart(bChart.range, bChart.keys);
+        }
     });
 
     $rootScope.$watch('boilerRuntime', function () {
         if (bChart.range === RUNTIME_RANGE_DEFAULT) {
-            bChart.refreshChart(RUNTIME_RANGE_DEFAULT);
+            bChart.refreshChart(bChart.range);
         }
     });
 
@@ -322,7 +324,6 @@ boilerAdmin.directive('chartStatus1', function () {
             case RUNTIME_RANGE_DEFAULT:
             default:
                 $scope[dataField] = $rootScope.boilerRuntime;
-                bChart.refreshChartData();
                 break;
         }
     };

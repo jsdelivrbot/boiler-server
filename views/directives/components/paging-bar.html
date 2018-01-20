@@ -7,12 +7,8 @@
         -->
 
 <div class="row">
-    <div class="col-md-4 col-sm-4">
-        <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{dashboard.currentPage + 1}} 页 共 {{dashboard.pagedItems.length}} 页
-        </div>
-    </div>
     <div class="col-md-8 col-sm-8">
-        <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+        <div class="dataTables_paginate paging_bootstrap_full_number">
             <ul class="pagination" style="visibility: visible;">
                 <li ng-class="['prev', {'disabled': dashboard.currentPage == 0}]">
                     <a href ng-click="dashboard.setPage(1)" title="首页"><i class="fa fa-angle-double-left"></i></a>
@@ -35,5 +31,8 @@
             </ul>
         </div>
     </div>
-
+    <div class="col-md-4 col-sm-4">
+        <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{dashboard.currentPage + 1}} 页 共 {{dashboard.pagedItems.length}} 页
+        </div>
+    </div>
 </div>

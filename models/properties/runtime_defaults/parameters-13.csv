@@ -1,0 +1,3 @@
+13,状态量采集参数定义表,,,,,,,,,
+ParamId,Name,NameEn,CategoryId,MediumId,ApplicableBoilerTypes,Unit,Scale,Fix,Length,Remark
+1,燃烧状态,Burning Status,13,,,,1,2,2,

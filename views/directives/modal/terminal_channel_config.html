@@ -47,12 +47,18 @@
     #channel div.ui-select-container {
         display: inline-block;
         float: left;
-        width: 86%;
+        width: 72.8%;
+    }
+
+    #channel div.dropdown-group {
+        display: inline-block;
+        float: left;
+        width: 13.4%;
     }
 
     #channel button.btn-cell {
         /*border-left: 1px solid #ccc;*/
-        width: 13.6%;
+        width: 100%;
         padding: 6px 3px;
     }
 
@@ -120,6 +126,12 @@
                         开关通道
                     </a>
                 </li>
+                <li ng-class="{'active': $modal.category === 13}">
+                    <a ng-click="$modal.categoryChanged(13);">
+                        <i class="fa fa-pie-chart"></i>
+                        状态通道
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="row" style="padding: 0 15px;">
@@ -139,7 +151,7 @@
                     ng-init="outerIndex = $index">
                     <td width="10%"
                         style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-                        通道{{ outerIndex + 1 }}
+                        通道{{ outerIndex +1 }}
                     </td>
                     <td width="45%"
                         ng-repeat="chan in chan_row track by $index"
@@ -148,7 +160,7 @@
                         <div class="btn-group" uib-dropdown style="width: 100%;">
                             <button type="button" uib-dropdown-toggle
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
-                                    ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'blue-sharp': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"
+                                    ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"
                                     style="width: 11%;">
                                 <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
                                 <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
@@ -156,8 +168,9 @@
                             </button>
                             <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
-                                       theme="bootstrap">
-                                <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}}</ui-select-match>
+                                       theme="bootstrap"
+                                       style="width: 89%;">
+                            <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
                                 <ui-select-choices
                                         repeat="param in $modal.parameters[innerIndex] | filter: $select.search">
                                     <span ng-bind-html="param.Name | highlight: $select.search"></span>
@@ -173,8 +186,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i
-                                        class="fa fa-eye-slash"></i> 隐藏</a></li>
+                                <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
                                 <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
                                 <li class="divider"></li>
                                 <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
@@ -202,51 +214,139 @@
                     ng-init="outerIndex = $index">
                     <td width="10%"
                         style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-                        通道{{ outerIndex + 1 }}
+                        通道{{ outerIndex +1 }}
                     </td>
                     <td width="30%"
                         ng-repeat="chan in chan_row track by $index"
                         ng-show="$index >= 2 && $index < 5"
                         ng-init="innerIndex = $index; data = $modal.dataMatrix[outerIndex][innerIndex]">
-                        <div class="btn-group" uib-dropdown style="width: 100%;">
-                            <button type="button" uib-dropdown-toggle
-                                    ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
-                                    ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'blue-sharp': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]">
-                                <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
-                                <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
-                                <span class="sr-only">通道状态</span>
-                            </button>
-                            <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
+                        <div class="btn-group" style="width: 100%;">
+                            <div uib-dropdown class="dropdown-group">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
+                                        ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]">
+                                    <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
+                                    <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
+                                    <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li class="dropdown-submenu">
+                                        <a href><i class="fa fa-eye"></i> 关注</a>
+                                        <ul class="dropdown-menu" style="min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
+                                    <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
+                                    <li class="divider"></li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
+                                </ul>
+                            </div>
+                            <ui-select ng-show="innerIndex !== 2 || outerIndex !== 0" ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap">
-                                <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
                                 <ui-select-choices
                                         repeat="param in $modal.parameters[2] | filter: $select.search">
                                     <span ng-bind-html="param.Name | highlight: $select.search"></span>
                                     <small ng-bind-html="param.Id | highlight: $select.search"></small>
                                 </ui-select-choices>
                             </ui-select>
-                            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
-                                <li class="dropdown-submenu">
-                                    <a href><i class="fa fa-eye"></i> 关注</a>
-                                    <ul class="dropdown-menu" style="min-width: 44px;">
-                                        <li ng-repeat="priority in $modal.priorities">
-                                            <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i
-                                        class="fa fa-eye-slash"></i> 隐藏</a></li>
-                                <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
-                                <li class="divider"></li>
-                                <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
-                            </ul>
+                            <input type="text"
+                                   ng-show="innerIndex === 2 && outerIndex === 0"
+                                   ng-model="chan.Name"
+                                   ng-disabled="true"
+                                   class="form-control ng-pristine ng-valid ng-touched has-success"
+                                   placeholder="{{ chan.Name }}" style="width: 86.4%; border: none;">
+                            <div uib-dropdown ng-show="innerIndex !== 2 || outerIndex !== 0" class="dropdown-group">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0"
+                                        ng-class="['btn', 'btn-cell', {'blue': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'yellow-lemon': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]">
+                                    <i ng-class="['fa', {'fa-bolt': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'fa-warning': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]"></i>
+                                    <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 1);"><i class="fa fa-bolt"></i> 运行状态</a></li>
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 2);"><i class="fa fa-warning"></i> 故障状态</a></li>
+                                </ul>
+                            </div>
+
                         </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
             <!--SWITCH TABLE END-->
+
+            <!--RANGE TABLE BEGIN-->
+            <table ng-show="$modal.category === 13"
+                   class="table table-striped table-hover table-checkable order-column table-boiler">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>状态通道</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index"
+                    ng-show="$index < 12"
+                    ng-init="outerIndex = $index">
+                    <td width="10%"
+                        style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        通道{{ outerIndex + 1 }}
+                    </td>
+                    <td width="90%"
+                        ng-init="innerIndex = 5; data = $modal.dataMatrix[outerIndex][innerIndex];">
+                        <div class="btn-group" style="width: 100%;">
+                            <div class="dropdown-group" uib-dropdown style="width: 5%;">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
+                                        ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]">
+                                        <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
+                                        <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
+                                        <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li class="dropdown-submenu">
+                                        <a href><i class="fa fa-eye"></i> 关注</a>
+                                        <ul class="dropdown-menu" style="min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
+                                    <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
+                                    <li class="divider"></li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
+                                </ul>
+                            </div>
+
+                            <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
+                                       ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
+                                       theme="bootstrap"
+                                       style="width: 90%;">
+                                <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
+                                <ui-select-choices repeat="param in $modal.parameters[4] | filter: $select.search">
+                                    <span ng-bind-html="param.Name | highlight: $select.search"></span>
+                                    <small ng-bind-html="param.Id | highlight: $select.search"></small>
+                                </ui-select-choices>
+                            </ui-select>
+                            <button type="button"
+                                    ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
+                                    ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'blue-sharp': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"
+                                    ng-click="$modal.openRange($modal.dataMatrix[outerIndex][innerIndex], outerIndex)"
+                                    style="width: 5%;">
+                                <i ng-class="['fa', {'fa-calendar-plus-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'fa-calendar-check-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--RANGE TABLE END-->
         </div>
     </div>
 </div>
@@ -255,11 +355,10 @@
     <button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData"
             ng-click="matrixReset()" style="float: left">恢复默认
     </button>
-    <button type="button" class="btn ladda-button"
+    <button type="button" id="channel_ok"
+            class="btn ladda-button btn-primary"
             ng-show="$modal.editing"
-            ng-disabled="$modal.code.length !== 6"
-            ng-class="[{'btn-primary': $modal.code.length === 6}, {'grey': $modal.code.length !== 6}]"
             data-style="expand-right"
-            id="boiler_ok" ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
+            ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
     <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
 </div>

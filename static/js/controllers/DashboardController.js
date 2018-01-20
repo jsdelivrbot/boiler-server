@@ -60,7 +60,10 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             if (d.name.length > 12) {
                 d.name = d.name.substring(0, 10) + '...';
             }
-            bMonitor.fetchStatus(d);
+            // bMonitor.fetchStatus(d);
+            if (d.Status) {
+                d.isBurning = d.Status.IsBurning > 0;
+            }
         }
 
         bMonitor.initSearch();
@@ -79,6 +82,10 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         }
         bMonitor.getBoilers();
         bMonitor.initAmChartPie();
+    });
+
+    $rootScope.$watch('locations', function () {
+        bMonitor.initSearch();
     });
 
     bMonitor.getRuntimeCount = function () {
@@ -137,19 +144,6 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 unit: '%',
                 title: '达标率'
             }];
-            chart.colors= [
-                "#67b7dc",
-                "#c4e479",
-                "#84b761",
-                "#cc4748",
-                "#cd82ad",
-                "#2f4074",
-                "#448e4d",
-                "#b7b83f",
-                "#b9783f",
-                "#b93e3d",
-                "#913167"
-            ];
             // chart.legend = {
             //     position: "absolute",
             //     top: "10px",
@@ -161,13 +155,6 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             //     periodValueText: "total: [[value.sum]]"
             //
             // };
-            chart.legend = {
-                horizontalGap: 10,
-                useGraphSettings: true,
-                markerSize: 10,
-                valueWidth: 50,
-                equalWidths: false
-            };
             chart.startDuration = 1;
             // chart.graphs: graphs,
             chart.plotAreaFillAlphas = 0.1;
@@ -180,18 +167,18 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 // equalSpacing: true,
                 axisAlpha: 0.2,
                 gridPosition: "start",
-                title: "燃煤锅炉、生物质锅炉　　　　　　　　　　燃油锅炉、燃气锅炉"
+                title: "燃煤锅炉、生物质锅炉　　　　　　　　　　"
             };
-            // chart.allLabels = [
-            //     {
-            //         text: "燃油锅炉、燃气锅炉",
-            //         align: "right",
-            //         size: 12,
-            //         bold: true,
-            //         x: '92%',
-            //         y: 475
-            //     }
-            // ];
+            chart.allLabels = [
+                {
+                    text: "燃油锅炉、燃气锅炉",
+                    align: "right",
+                    size: 12,
+                    bold: true,
+                    x: '92%',
+                    y: 475
+                }
+            ];
             chart.export = {
                 enabled: true
             };
@@ -251,10 +238,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 var graph = new AmCharts.AmGraph();
                 graph.fillAlphas = 0.66;
                 graph.lineAlpha = 0.2;
-                graph.title = st;
-                graph.fillColorsField= "color";
-                // graph.title = "[[date + num]]";
-                // graph.highField = "count" + st;
+                //graph.title = "[[date + num]]";
+                graph.highField = "count" + st;
                 graph.labelText = "[[ high ]]";
                 graph.labelFunction = function (graphDataItem) {
                     var field = "count" + (graphDataItem.color === "#67b7dc" ? "Success" : "Failed");
@@ -263,7 +248,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                     return text + " 台";
                 };
                 graph.type = "column";
-                // graph.colorField = "color" + st;
+                graph.colorField = "color" + st;
                 graph.valueField = "percent" + st;
                 graph.balloonText = "[[value]]" + " %";
                 // graph.balloonFunction = balloneText;
@@ -499,17 +484,13 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     };
 
     bMonitor.fetchStatus = function (boiler) {
-        if (boiler.Status) {
-            boiler.isBurning = boiler.Status.IsBurning > 0;
-        } else {
-            $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
-                .then(function (res) {
-                    //console.log("Fetch Status Resp:", res.data);
-                    boiler.isBurning = (res.data.value === "true");
-                }, function (err) {
-                    console.error('Fetch Status Err!', err);
-                });
-        }
+        $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
+            .then(function (res) {
+                // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                boiler.isBurning = (res.data.value === "true");
+            }, function (err) {
+                console.error('Fetch Status Err!', err);
+            });
     };
 
     bMonitor.fetchThumbParam = function (boiler) {
@@ -667,6 +648,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             // console.error("FINALLY bMonitor.fetchThumbParam(boiler):", boiler);
 
             setTimeout(function () {
+                bMonitor.fetchStatus(boiler);
                 bMonitor.fetchThumbParam(boiler);
             }, 15000);
         });
@@ -674,17 +656,17 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
     bMonitor.changeProvince = function () {
         bMonitor.aLocation = bMonitor.aProvince;
-        // bMonitor.filterBoilers();
+        bMonitor.filterBoilers();
     };
 
     bMonitor.changeCity = function () {
         bMonitor.aLocation = bMonitor.aCity;
-        // bMonitor.filterBoilers();
+        bMonitor.filterBoilers();
     };
 
     bMonitor.changeRegion = function () {
         bMonitor.aLocation = bMonitor.aRegion;
-        // bMonitor.filterBoilers();
+        bMonitor.filterBoilers();
     };
 
     bMonitor.changeBurning = function () {
@@ -1059,7 +1041,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             ariaLabelledBy: 'modal-title',
             ariaDescribedBy: 'modal-body',
             templateUrl: modalTemplate,
-            controller: 'ModalCalcCtrl',
+            controller: 'ModalCalcCtl',
             controllerAs: '$modal',
             size: size,
             appendTo: parentElem,
@@ -1362,19 +1344,6 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             chart.valueField = "count";
             chart.titleField = "range";
 
-            chart.colors= [
-                "#84b761",
-                "#fdd400",
-                "#5fbfdb",
-                "#c4e479",
-                "#cd82ad",
-                "#2f4074",
-                "#448e4d",
-                "#b7b83f",
-                "#b9783f",
-                "#b93e3d",
-                "#913167"
-            ];
             chart.startDuration = 1;
 
             chart.plotAreaFillAlphas = 0.1;
@@ -1384,14 +1353,6 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             chart.labelRadius = 16;
             chart.radius = 120;
 
-            chart.legend={
-                position:"bottom",
-                marginRight:10,
-                markerSize: 10,
-                valueText: "",
-                align: "center",
-                autoMargins:false
-            };
             chart.accessibleLabel = "[[title]]<br>[[value]] 台 ([[percents]]%)";
             chart.labelText = "[[title]]<br>[[percents]]%";
             chart.balloonFunction = balloonText;
@@ -1408,7 +1369,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
 });
 
-angular.module('BoilerAdmin').controller('ModalCalcCtrl', function ($uibModalInstance, $rootScope, $http) {
+angular.module('BoilerAdmin').controller('ModalCalcCtl', function ($uibModalInstance, $rootScope, $http) {
     var $modal = this;
     $modal.editing = false;
     $modal.boiler = currentBoiler;
@@ -1418,7 +1379,7 @@ angular.module('BoilerAdmin').controller('ModalCalcCtrl', function ($uibModalIns
         return;
     }
 
-    // console.warn("ModalCalcCtrl:", $modal.boiler, $modal.boiler.Calculate);
+    // console.warn("ModalCalcCtl:", $modal.boiler, $modal.boiler.Calculate);
 
     $modal.initCalc = function () {
         $modal.data = {};

@@ -829,6 +829,7 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             '../assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js' + clientkey,
 
                             '../assets/pages/scripts/profile.min.js' + clientkey,
+                            'bower_components/ng-file-upload/ng-file-upload.min.js',
 
                             'js/controllers/UserProfileController.js' + clientkey
                         ]
@@ -963,19 +964,42 @@ boilerAdmin.run(["$rootScope", "$http", "$log", "$timeout", "settings", "$state"
                 });
         };
 
-        $http.get('/organization_list/')
-            .then(function (res) {
-                // console.warn("Get OrganizationList: ", res);
-                $rootScope.organizations = [];
-                for (var i = 0; i < res.data.length; i++) {
-                    var d = res.data[i];
-                    d.name = d.Name;
-                    d.type = d.Type.Name;
-                    $rootScope.organizations.push(d);
-                }
-            }, function (err) {
-                //alert("Get OrganizationList Err: " + err);
-            });
+        $rootScope.getOrganizationList = function () {
+            $http.get('/organization_list/')
+                .then(function (res) {
+                    // console.warn("Get OrganizationList: ", res);
+                    var orgs = [];
+                    for (var i in res.data) {
+                        var d = res.data[i];
+                        d.name = d.Name;
+                        d.type = d.Type.Name;
+                        d.typeId = d.Type.TypeId;
+                        orgs.push(d);
+                    }
+
+                    $rootScope.organizations = orgs;
+                }, function (err) {
+                    //alert("Get OrganizationList Err: " + err);
+                });
+
+            $http.get('/organization_type_list/')
+                .then(function (res) {
+                    // console.warn("Get OrganizationList: ", res);
+                    var types = [];
+                    for (var i in res.data) {
+                        var d = res.data[i];
+                        var da = {};
+                        da.id = d.TypeId;
+                        da.name = d.Name;
+                        types.push(da);
+                    }
+
+                    $rootScope.organizationTypes = types;
+                }, function (err) {
+                    //alert("Get OrganizationList Err: " + err);
+                });
+        };
+
 
         $http.get('/location_list/')
             .then(function (res) {
@@ -1013,4 +1037,5 @@ boilerAdmin.run(["$rootScope", "$http", "$log", "$timeout", "settings", "$state"
 
         $rootScope.getBoilerList();
         $rootScope.getParameterList();
+        $rootScope.getOrganizationList();
     }]);

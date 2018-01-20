@@ -91,6 +91,11 @@ angular.module('BoilerAdmin').controller('BoilerMaintainController', function($r
                 bMaintain.datasource = datasource;
 
                 bMaintain.isDone = true;
+
+                if (p["boiler"]) {
+                    bMaintain.currentBoilerId = p["boiler"];
+                }
+
             }, function (err) {
 
             });
@@ -178,9 +183,9 @@ angular.module('BoilerAdmin').controller('BoilerMaintainController', function($r
             appendTo: parentElem,
             windowClass: 'zindex',
             resolve: {
-                // boilers: function () {
-                //     return bMaintain.boilers;
-                // }
+                currentBoilerId: function () {
+                    return bMaintain.currentBoilerId;
+                }
             }
         });
 
@@ -195,10 +200,24 @@ angular.module('BoilerAdmin').controller('BoilerMaintainController', function($r
 var bMaintain;
 var currentData;
 
-angular.module('BoilerAdmin').controller('ModalMaintainCtrl', function ($uibModalInstance, $scope, $http/*, boilers*/) {
+angular.module('BoilerAdmin').controller('ModalMaintainCtrl', function ($uibModalInstance, $scope, $http, currentBoilerId) {
     var $modal = this;
     $modal.currentData = currentData;
-    $modal.boilers = bMaintain.boilers;
+    $modal.hasCurrentBoiler = false;
+
+    for (var i in bMaintain.boilers) {
+        var boiler = bMaintain.boilers[i];
+        if (boiler.Uid === currentBoilerId) {
+            $modal.boilers = [boiler];
+            $modal.boilerId = currentBoilerId;
+            $modal.hasCurrentBoiler = true;
+            break;
+        }
+    }
+
+    if (!$modal.hasCurrentBoiler) {
+        $modal.boilers = bMaintain.boilers;
+    }
 
     $modal.today = function() {
         $modal.inspectDate = new Date();
@@ -280,7 +299,7 @@ angular.module('BoilerAdmin').controller('ModalMaintainCtrl', function ($uibModa
 
         }).then(function (res) {
             swal({
-                title: "提交成功",
+                title: "锅炉维保记录提交成功",
                 type: "success"
             }).then(function () {
                 $uibModalInstance.close('success');
@@ -289,7 +308,7 @@ angular.module('BoilerAdmin').controller('ModalMaintainCtrl', function ($uibModa
             });
         }, function (err) {
             swal({
-                title: "提交失败",
+                title: "锅炉维保记录提交失败",
                 text: err.data,
                 type: "error"
             });

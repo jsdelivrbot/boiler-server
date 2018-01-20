@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-     preserveAspectRatio="none" x="0px" y="0px" width="96%" id="module_height" viewBox="0 0 1310 750">
+     preserveAspectRatio="none" width="96%" id="module_height" viewBox="0 -70 1310 880">
     <defs>
         <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="12.2" y1="73.26249999999999" x2="12.2" y2="147.2375" spreadMethod="pad">
             <stop  offset="0%" stop-color="#000000"/>
@@ -93,37 +93,37 @@
             <stop  offset="100%" stop-color="#000000"/>
         </linearGradient>
 
-        <image id="boiler_body" x="0" y="0" width="800" height="480" xlink:href="/img/module/boiler_oil_body.svg"/>
+        <image id="boiler_body" x="0" y="0" width="800" height="480" xlink:href="../img/module/boiler_gas_body.svg"/>
 
-        <image id="sensor" x="-50" y="-50" width="100" height="100" xlink:href="/img/module/sensor.svg"/>
+        <image id="sensor" x="-50" y="-50" width="100" height="100" xlink:href="../img/module/sensor.svg"/>
 
-        <image id="valve" x="-50" y="-50" width="100" height="100" xlink:href="/img/module/valve.svg"/>
+        <image id="valve" x="-50" y="-50" width="100" height="100" xlink:href="../img/module/valve.svg"/>
 
-        <image id="water_tank" x="-100" y="-100" width="200" height="200" xlink:href="/img/module/water_tank.svg"/>
+        <image id="water_tank" x="-100" y="-100" width="200" height="200" xlink:href="../img/module/water_tank.svg"/>
 
-        <image id="Image_image_74" x="0" y="0" width="80" height="227" xlink:href="/img/images/Image_image_74.png"/>
+        <image id="Image_image_74" x="0" y="0" width="80" height="227" xlink:href="../img/images/Image_image_74.png"/>
 
-        <image id="Image_image_75" x="0" y="0" width="131" height="129" xlink:href="/img/images/Image_image_75.png"/>
+        <image id="Image_image_75" x="0" y="0" width="131" height="129" xlink:href="../img/images/Image_image_75.png"/>
 
-        <image id="Image_image_336" x="0" y="0" width="147" height="64" xlink:href="/img/images/Image_image_336.png"/>
+        <image id="Image_image_336" x="0" y="0" width="147" height="64" xlink:href="../img/images/Image_image_336.png"/>
 
-        <image id="Image_image_72" x="0" y="0" width="80" height="228" xlink:href="/img/images/Image_image_72.png"/>
+        <image id="Image_image_72" x="0" y="0" width="80" height="228" xlink:href="../img/images/Image_image_72.png"/>
 
-        <image id="Image_image_73" x="0" y="0" width="132" height="131" xlink:href="/img/images/Image_image_73.png"/>
+        <image id="Image_image_73" x="0" y="0" width="132" height="131" xlink:href="../img/images/Image_image_73.png"/>
 
-        <image id="Image_image_341" x="0" y="0" width="147" height="64" xlink:href="/img/images/Image_image_341.png"/>
+        <image id="Image_image_341" x="0" y="0" width="147" height="64" xlink:href="../img/images/Image_image_341.png"/>
 
-        <image id="Image_image_350" x="0" y="0" width="132" height="79" xlink:href="/img/images/Image_image_350.png"/>
+        <image id="Image_image_350" x="0" y="0" width="132" height="79" xlink:href="../img/images/Image_image_350.png"/>
 
-        <image id="Image_image_83" x="0" y="0" width="80" height="228" xlink:href="/img/images/Image_image_83.png"/>
+        <image id="Image_image_83" x="0" y="0" width="80" height="228" xlink:href="../img/images/Image_image_83.png"/>
 
-        <image id="Image_image_82" x="0" y="0" width="132" height="131" xlink:href="/img/images/Image_image_82.png"/>
+        <image id="Image_image_82" x="0" y="0" width="132" height="131" xlink:href="../img/images/Image_image_82.png"/>
 
-        <image id="Image_image_354" x="0" y="0" width="400" height="490" xlink:href="/img/images/Image_image_354.png"/>
+        <image id="Image_image_354" x="0" y="0" width="400" height="490" xlink:href="../img/images/Image_image_354.png"/>
 
-        <image id="Image_image_356" x="0" y="0" width="125" height="64" xlink:href="/img/images/Image_image_356.png"/>
+        <image id="Image_image_356" x="0" y="0" width="125" height="64" xlink:href="../img/images/Image_image_356.png"/>
 
-        <image id="Image_image_85" x="0" y="0" width="80" height="227" xlink:href="/img/images/Image_image_85.png"/>
+        <image id="Image_image_85" x="0" y="0" width="80" height="227" xlink:href="../img/images/Image_image_85.png"/>
 
         <pattern id="Pattern_3" patternUnits="userSpaceOnUse" patternTransform="matrix( 0.449951171875, 0, 0, 0.6201324462890625, 877.5,187.8) " width="80" height="227">
             <use xlink:href="#Image_image_74"/>
@@ -293,8 +293,8 @@ L 39.45 -14.2 -38.5 -14.65 -38.5 -12.35 39.45 -12.75 Z"/>
 
         <g id="Pipe_Smoke_FILL">
             <path fill="url(#Pattern_3)" stroke="none" d="
-M 913.5 173.55
-L 877 173.55 877 328.6 913.5 328.6 913.5 173.55 Z"/>
+M 913.5 187.8
+L 877.5 187.8 877.5 328.6 913.5 328.6 913.5 187.8 Z"/>
             <path fill="url(#Pattern_4)" stroke="none" d="
 M 935.3 61.5
 L 877 61.85 877.25 120.05 935.55 119.7 935.3 61.5 Z"/>
@@ -460,8 +460,8 @@ L 1095.25 367.7 1095.2 397.2 1124.85 397.15 1124.85 367.6 Z"/>
 
         <g id="Graphic_shape_349_0_Layer7_0_FILL">
             <path fill="url(#Pattern_19)" stroke="none" d="
-M 990 129.35
-L 972 129.35 972 633.6 990 633.6 990 129.35 Z"/>
+M 990 247.35
+L 972 247.35 972 633.6 990 633.6 990 247.35 Z"/>
         </g>
 
         <g id="Graphic_shape_349_0_Layer6_0_FILL">
@@ -1379,9 +1379,9 @@ L 1892 1160 1769 912 1795 896 Z"/>
         </g>
     </g>-->
 
-    <!--<g transform="matrix( 0.0050048828125, -0.232086181640625, 0.36456298828125, 0.0078277587890625, 869.95,303.6) ">
+    <g transform="matrix( 0.0050048828125, -0.232086181640625, 0.36456298828125, 0.0078277587890625, 869.95,303.6) ">
         <use xlink:href="#sensor"/>
-    </g>-->
+    </g>
 
     <g transform="matrix( 1, 0, 0, 1, 0,0) ">
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
@@ -1405,7 +1405,7 @@ L 1892 1160 1769 912 1795 896 Z"/>
         </g>
     </g>
 
-    <!--<g transform="matrix( 0.004302978515625, -0.23211669921875, 0.36383056640625, 0.0067596435546875, 590.4,168.45) ">
+    <g transform="matrix( 0.004302978515625, -0.23211669921875, 0.36383056640625, 0.0067596435546875, 590.4,168.45) ">
         <use xlink:href="#sensor"/>
     </g>
 
@@ -1429,32 +1429,32 @@ L 1892 1160 1769 912 1795 896 Z"/>
         <use xlink:href="#sensor"/>
     </g>
 
-    
+    <!--
     <g transform="matrix( -0.0079345703125, -0.2319488525390625, 0.364288330078125, -0.012481689453125, 1087.4,390.65) ">
         <use xlink:href="#sensor"/>
     </g>
     -->
 
     <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-        <!--<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_340_0_Layer8_0_FILL"/>
-     </g>-->
+        </g>
 
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_340_0_Layer7_0_FILL"/>
         </g>
 
-        <!--<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_340_0_Layer6_0_FILL"/>
-        </g>-->
+        </g>
 
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_340_0_Layer5_0_FILL"/>
         </g>
 
-        <!--<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_340_0_Layer4_0_FILL"/>
-        </g>-->
+        </g>
 
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_340_0_Layer3_0_FILL"/>
@@ -1473,13 +1473,13 @@ L 1892 1160 1769 912 1795 896 Z"/>
         </g>
     </g>
 
-    <!--<g transform="matrix( -0.001861572265625, -0.23223876953125, 0.364776611328125, -0.0029449462890625, 962.75,587.45) ">
+    <g transform="matrix( -0.001861572265625, -0.23223876953125, 0.364776611328125, -0.0029449462890625, 962.75,587.45) ">
         <use xlink:href="#sensor"/>
     </g>
 
     <g transform="matrix( -0.0053558349609375, 0.2321624755859375, -0.364654541015625, -0.008392333984375, 997.75,239.75) ">
         <use xlink:href="#sensor"/>
-    </g>-->
+    </g>
 
 	<!--
     <g transform="matrix( 1, 0, 0, 1, 0,0) ">
@@ -1518,18 +1518,18 @@ L 1892 1160 1769 912 1795 896 Z"/>
         </g>
     </g>
 
-    <!--<g transform="matrix( 0.004302978515625, -0.23211669921875, 0.36383056640625, 0.0067596435546875, 869.85,253.2) ">
+    <g transform="matrix( 0.004302978515625, -0.23211669921875, 0.36383056640625, 0.0067596435546875, 869.85,253.2) ">
         <use xlink:href="#sensor"/>
-    </g>-->
+    </g>
 
     <g transform="matrix( 1, 0, 0, 1, 0,0) ">
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_349_0_Layer7_0_FILL"/>
         </g>
 
-        <!--<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_349_0_Layer6_0_FILL"/>
-     </g>-->
+        </g>
 
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <use xlink:href="#Graphic_shape_349_0_Layer5_0_FILL"/>
@@ -1666,7 +1666,7 @@ L 1892 1160 1769 912 1795 896 Z"/>
         </g>
     </g>
 
-    <!--<g transform="matrix( 1, 0, 0, 1, 928.45,176) ">
+    <g transform="matrix( 1, 0, 0, 1, 928.45,176) ">
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
             <clipPath id="Mask_Mask_8">
                 <rect x="-4" y="-2.7" width="64.15" height="36" fill="#FFFFFF" stroke="none"/>
@@ -1674,7 +1674,7 @@ L 1892 1160 1769 912 1795 896 Z"/>
 
             <text clip-path="url(#Mask_Mask_8)" writing-mode="lr"><tspan x="-2" y="13.05" baseline-shift="0%" kerning="0" font-family="SimSun_Bold" font-weight="bold" font-size="16" fill="#000000" xml:space="preserve">节</tspan><tspan baseline-shift="0%" kerning="0" font-family="_________Bold" font-weight="bold" font-size="16" fill="#000000" xml:space="preserve">能器</tspan><tspan baseline-shift="0%" kerning="0" font-family="_________Bold" font-weight="bold" font-size="16" fill="#000000" xml:space="preserve"></tspan></text>
         </g>
-    </g>-->
+    </g>
 
     <g transform="matrix( 1, 0, 0, 1, 1065.4,649.45) ">
         <g transform="matrix( 1, 0, 0, 1, 0,0) ">
@@ -1682,8 +1682,7 @@ L 1892 1160 1769 912 1795 896 Z"/>
                 <rect x="-4" y="-2.7" width="64.15" height="36" fill="#FFFFFF" stroke="none"/>
             </clipPath>
 
-            <text clip-path="url(#Mask_Mask_9)" writing-mode="lr"><tspan x="-2" y="13.05" baseline-shift="0%" kerning="0" font-family="SimSun_Bold" font-weight="bold" font-size="18" fill="#000000" xml:space="preserve">循环泵</tspan>           
-            </text>
+            <text clip-path="url(#Mask_Mask_9)" writing-mode="lr"><tspan x="-2" y="13.05" baseline-shift="0%" kerning="0" font-family="SimSun_Bold" font-weight="bold" font-size="16" fill="#000000" xml:space="preserve">给</tspan><tspan baseline-shift="0%" kerning="0" font-family="_________Bold" font-weight="bold" font-size="16" fill="#000000" xml:space="preserve">油</tspan><tspan baseline-shift="0%" kerning="0" font-family="SimSun_Bold" font-weight="bold" font-size="16" fill="#000000" xml:space="preserve">泵</tspan></text>
         </g>
     </g>
 
@@ -1767,25 +1766,13 @@ L 1892 1160 1769 912 1795 896 Z"/>
     <g id="status_container">
     </g>
 
-    <g id="steam_container">
+    <g id="instant_container">
     </g>
 
-    <g id="water_container">
+    <g id="instant_g1_container">
     </g>
 
-    <g id="water1_container">
-    </g>
-
-    <g id="water_lv_container">
-    </g>
-
-    <g id="smoke_container">
-    </g>
-
-    <g id="sw_container">
-    </g>
-
-    <g id="fuel_container">
+    <g id="instant_g2_container">
     </g>
 
     <g id="dash_container">
@@ -1798,10 +1785,10 @@ L 1892 1160 1769 912 1795 896 Z"/>
     <g id="dash_smoke_container">
     </g>
 
-    <!--<g transform="matrix( -0.7435150146484375, 0.007568359375, -0.0046234130859375, -1.311248779296875, 898.25,168.55) ">
+    <g transform="matrix( -0.7435150146484375, 0.007568359375, -0.0046234130859375, -1.311248779296875, 898.25,168.55) ">
         <use xlink:href="#Saver_FILL"/>
         <use xlink:href="#Saver_STROKES"/>
-    </g>-->
+    </g>
 
     <g transform="matrix( 0.625, 0, 0, 0.62, 431,324) ">
         <use xlink:href="#boiler_body"/>

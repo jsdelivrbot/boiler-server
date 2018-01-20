@@ -5,9 +5,9 @@ import "time"
 type Terminal struct {
 	MyUidObject
 
-	TerminalCode		int64
+	TerminalCode		int64			`orm:"index"`
 	Organization		*Organization	`orm:"rel(fk);null;index"`
-	Boilers				[]*Boiler		`orm:"reverse(many)"`
+	Boilers				[]*Boiler		`orm:"reverse(many);null;index;rel_through(BoilerGo/models.BoilerTerminalCombined)"`
 
 	LocalIp				string			`orm:"size(60);null"`
 	RemoteIp			string			`orm:"size(60);null"`
@@ -20,7 +20,9 @@ type Terminal struct {
 	UploadFlag			bool			`orm:"default(true)"`
 	UploadPeriod		int64			`orm:"default(45)"`
 
-	IsOnline			bool
+	IsOnline			bool			`orm:"index"`
+
+	TerminalSetId		int32			`orm:"-"`
 }
 
 func (term *Terminal) TableUnique() [][]string {

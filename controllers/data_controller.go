@@ -210,7 +210,7 @@ func (ctl *DataController) UpdateData(data models.DataInterface) error {
 		goazure.Error(msg)
 		e = errors.New(msg)
 	} else {
-		msg := fmt.Sprintf("Updated Data: %T, %v, %s", data, data, num)
+		msg := fmt.Sprintf("Updated Data: %T, %v, %d", data, data, num)
 		goazure.Info(msg)
 	}
 

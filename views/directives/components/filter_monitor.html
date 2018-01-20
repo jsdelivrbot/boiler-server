@@ -39,14 +39,14 @@
             <div class="form-group col-md-4 col-sm-4 col-xs-4">
                 <select ng-model="dashboard.aProvince"
                         ng-options="prov.Name for prov in dashboard.provinces"
-                        ng-change="dashboard.changeProvince(); dashboard.filterBoilers();"
+                        ng-change="dashboard.changeProvince();"
                         class="form-control">
                 </select>
             </div>
             <div class="form-group col-md-4 col-sm-4 col-xs-4">
                 <select ng-model="dashboard.aCity"
                         ng-options="city.Name for city in dashboard.aProvince.cities"
-                        ng-change="dashboard.changeCity(); dashboard.filterBoilers();"
+                        ng-change="dashboard.changeCity();"
                         ng-disabled="!dashboard.aProvince || dashboard.aProvince.LocationId == 0"
                         class="form-control">
                 </select>
@@ -54,7 +54,7 @@
             <div class="form-group col-md-4 col-sm-4 col-xs-4">
                 <select ng-model="dashboard.aRegion"
                         ng-options="region.Name for region in dashboard.aCity.regions"
-                        ng-change="dashboard.changeRegion(); dashboard.filterBoilers();"
+                        ng-change="dashboard.changeRegion();"
                         ng-disabled="!dashboard.aCity || dashboard.aCity.LocationId == 0"
                         class="form-control">
                 </select>
@@ -112,7 +112,7 @@
             <div class="form-group col-md-4 col-sm-4 col-xs-4">
                 <select ng-model="dashboard.aFuel"
                         ng-options="fuel.Name for fuel in dashboard.fuels"
-                        ng-change="dashboard.filterBoilers()"
+                        ng-change="dashboard.filterBoilers();"
                         class="form-control">
                 </select>
             </div>

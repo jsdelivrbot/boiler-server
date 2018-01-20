@@ -1,0 +1,69 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title" style="display: inline-block;">状态量通道配置</h3>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modalRange.number }}</span>
+</div>
+<style type="text/css">
+    div.input-group.form-group,
+    div.btn-group.form-group{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    div.form-group.form-selector .control-label {
+        width: 26%;
+        margin-top: 6px;
+        text-align: center;
+    }
+
+    div.form-group.form-selector select {
+        width: 74%;
+        float: right;
+    }
+</style>
+
+<div class="modal-body" id="modal-body">
+    <div class="note col-md-12"
+         ng-class="[{'note-info': $modalRange.isValid}, {'note-danger': !$modalRange.isValid}]">
+        <p> {{ $modalRange.comment }} </p>
+    </div>
+    <div ng-repeat="rg in $modalRange.ranges track by $index"
+         class="input-group form-group col-md-12">
+        <span class="input-group-addon" style="width: 12%">状态{{ $index + 1 }}</span>
+        <input type="number" ng-model="rg.Min"
+               ng-change="$modalRange.rangeChanged();"
+               class="form-control ng-pristine ng-valid ng-touched has-success"
+               style="width: 36%; color: #27a4b0;" placeholder="范围低值">
+        <input type="number" ng-model="rg.Max"
+               ng-change="$modalRange.rangeChanged();"
+               class="form-control ng-pristine ng-valid ng-touched has-success"
+               style="width: 36%; color: #f2784b;" placeholder="范围高值">
+        <input type="text" ng-model="rg.Name"
+               ng-change="$modalRange.rangeChanged();"
+               class="form-control ng-pristine ng-valid ng-touched has-success"
+               style="width: 24%; color: #67809f;" placeholder="状态名称">
+        <a ng-show="$index > 0"
+           ng-click="$modalRange.removeRange(rg);$modalRange.rangeChanged();"
+           class="addon btn btn-outline btn-circle red">
+            <i class="fa fa-minus"></i>
+        </a>
+    </div>
+    <div class="input-group form-group col-md-12">
+        <button type="button"
+                class="btn green"
+                ng-click="$modalRange.addNewRange();$modalRange.rangeChanged();"
+                style="width: 100%;">
+            <i class="fa fa-plus-circle"></i>
+            新增状态范围值
+        </button>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn ladda-button"
+            ng-show="$modalRange.editing"
+            ng-disabled="!$modalRange.isValid"
+            ng-class="[{'btn-primary': $modalRange.isValid}, {'grey': !$modalRange.isValid}]"
+            data-style="expand-right"
+            id="boiler_ok" ng-click="$modalRange.ok()"><span class="ladda-label">提交</span></button>
+    <button class="btn btn-default" type="button" ng-click="$modalRange.cancel()">取消</button>
+</div>

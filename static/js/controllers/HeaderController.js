@@ -13,7 +13,7 @@ app.controller('HeaderController', ['$rootScope', '$scope', '$http', '$cookies',
     $scope.$on('$includeContentLoaded', function() {
         Layout.initHeader(); // init header
 
-        $rootScope.getCurrentUser(header.refresh);
+        $rootScope.getCurrentUser();
     });
 
     $rootScope.getCurrentUser = function (fn) {
@@ -21,12 +21,12 @@ app.controller('HeaderController', ['$rootScope', '$scope', '$http', '$cookies',
         $http.get('/user')
             .then(function (res) {
                 $rootScope.currentUser = res.data;
-
-                if (fn !== null && fn !== undefined) {
-                    fn();
-                }
             });
     };
+
+    $rootScope.$watch("currentUser", function () {
+        header.refresh();
+    });
 
     $rootScope.isOrgs = function () {
         if ($rootScope.currentUser === null ||
@@ -81,8 +81,8 @@ app.controller('HeaderController', ['$rootScope', '$scope', '$http', '$cookies',
     };
 
     header.refresh = function () {
-        //alert($cookies.get('isLogin') + "|" + $cookies.get('username') + "（" + getUserRole() + "）");
-        if ((!$rootScope.currentUser || !$rootScope.currentUser.Uid) &&
+        if (!$rootScope.currentUser ||
+            !$rootScope.currentUser.Uid &&
             $rootScope.currentUser.Status !== 3) {
             console.error("CurrentUser is NULL!", $rootScope.currentUser);
             header.loginName = "登录";

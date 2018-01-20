@@ -68,7 +68,12 @@
     <tbody style="text-align: center">
     <tr ng-repeat="data in terminal.datasource">
         <td> {{ data.num }} </td>
-        <td> {{ data.Name }} </td>
+        <td>
+            {{ data.Name }} <br>
+            <span class="label label-sm label-default">
+            {{ data.Organization.Name }}
+            </span>
+        </td>
         <td> {{ data.code }} </td>
         <td>
             <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.online }}</span>

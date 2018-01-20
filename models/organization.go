@@ -18,4 +18,6 @@ type Organization struct {
 
 	Users				[]*User				`orm:"reverse(many);null"`
 	Boilers				[]*Boiler			`orm:"reverse(many);null"`
+
+	BoilersLinked		[]*Boiler			`orm:"reverse(many);null;index;rel_through(github.com/AzureRelease/boiler-server/models.BoilerOrganizationLinked)"`
 }

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-     preserveAspectRatio="none" width="96%" id="module_height" viewBox="0 0 1310 750">
+     preserveAspectRatio="none" width="96%" id="module_height" viewBox="0 0 1310 940">
     <defs>
         <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="2" y1="10" x2="102" y2="10"
                         spreadMethod="pad">
@@ -2625,66 +2625,6 @@ L 1.75 -2.4 2.5 -1.7 2.8 -1.15 2.95 -0.65 3.05 -0.05 2.8 1.15 2.15 2.1 1.25 2.7 
         </g>
     </g>
 
-    <g transform="matrix( 0.9855804443359375, 0, 0, 1.0911407470703125, 840.65,871.9) ">
-        <g id="panel_mc_FL_FL_FL_FL_FL_FL_FL_FL"
-           transform="matrix( 0.2621002197265625, 0, 0, 0.2617340087890625, -36.35,-21.5) ">
-            <use xlink:href="#Graphic_shape_6_0_Layer0_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_6_0_Layer0_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, -7.35,15.7) ">
-            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use xlink:href="#Graphic_shape_8_0_Layer0_0_FILL"/>
-
-                    <use xlink:href="#Graphic_shape_8_0_Layer0_0_1_STROKES"/>
-                </g>
-            </g>
-        </g>
-
-        <g id="yl" transform="matrix( 1, 0, 0, 1, 0.7,-0.95) ">
-            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer8_0_FILL"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer7_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer6_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer5_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer4_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer3_0_FILL"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer2_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer1_0_FILL"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_7)" xlink:href="#Graphic_shape_10_0_Layer0_0_FILL"/>
-                </g>
-            </g>
-        </g>
-    </g>
-
-
     <g id="status_container">
     </g>
 
@@ -2697,6 +2637,7 @@ L 1.75 -2.4 2.5 -1.7 2.8 -1.15 2.95 -0.65 3.05 -0.05 2.8 1.15 2.15 2.1 1.25 2.7 
     <g id="instant_g2_container">
     </g>
 
+    <!--
     <g id="gauge_container">
     </g>
 
@@ -2711,6 +2652,7 @@ L 1.75 -2.4 2.5 -1.7 2.8 -1.15 2.95 -0.65 3.05 -0.05 2.8 1.15 2.15 2.1 1.25 2.7 
 
     <g id="smoke_container">
     </g>
+    -->
 
     <!--
     <pattern id="Pattern_7" patternUnits="userSpaceOnUse"
@@ -2725,8 +2667,10 @@ L -22.5 23.5 22.5 23.5 22.5 -23.5 -22.5 -23.5 Z"/>
     </g>
     -->
 
+    <!--
     <g id="fuel_container">
     </g>
+    -->
 
     <g transform="matrix( 1, 0, 0, 1, 0,0) ">
         <use xlink:href="#Pipe_Smoke_FILL"/>

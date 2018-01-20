@@ -4,21 +4,21 @@
  Source Server         : MySQL @Aliyun
  Source Server Type    : MySQL
  Source Server Version : 50634
- Source Host           : rm-uf63a6pe498w6mi00o.mysql.rds.aliyuncs.com:3306
- Source Schema         : boiler_main
+ Source Host           : rm-uf63a6pe498w6mi00o.mysql.rds.aliyuncs.com
+ Source Database       : boiler_main
 
  Target Server Type    : MySQL
  Target Server Version : 50634
- File Encoding         : 65001
+ File Encoding         : utf-8
 
- Date: 28/11/2017 12:01:31
+ Date: 01/02/2018 12:41:30 PM
 */
 
-SET NAMES utf8mb4;
+SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for address
+--  Table structure for `address`
 -- ----------------------------
 DROP TABLE IF EXISTS `address`;
 CREATE TABLE `address` (
@@ -47,7 +47,7 @@ CREATE TABLE `address` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for application
+--  Table structure for `application`
 -- ----------------------------
 DROP TABLE IF EXISTS `application`;
 CREATE TABLE `application` (
@@ -86,7 +86,7 @@ CREATE TABLE `application` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler
+--  Table structure for `boiler`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler`;
 CREATE TABLE `boiler` (
@@ -138,11 +138,12 @@ CREATE TABLE `boiler` (
   KEY `boiler_terminal_id` (`terminal_id`),
   KEY `boiler_updated_date` (`updated_date`),
   KEY `boiler_terminal_code` (`terminal_code`),
-  KEY `boiler_terminal_set_id` (`terminal_set_id`)
+  KEY `boiler_terminal_set_id` (`terminal_set_id`),
+  KEY `boiler_evaporating_capacity` (`evaporating_capacity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_alarm
+--  Table structure for `boiler_alarm`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_alarm`;
 CREATE TABLE `boiler_alarm` (
@@ -196,7 +197,7 @@ CREATE TABLE `boiler_alarm` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_alarm_feedback
+--  Table structure for `boiler_alarm_feedback`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_alarm_feedback`;
 CREATE TABLE `boiler_alarm_feedback` (
@@ -227,7 +228,7 @@ CREATE TABLE `boiler_alarm_feedback` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_alarm_history
+--  Table structure for `boiler_alarm_history`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_alarm_history`;
 CREATE TABLE `boiler_alarm_history` (
@@ -275,7 +276,7 @@ CREATE TABLE `boiler_alarm_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_calculate_parameter
+--  Table structure for `boiler_calculate_parameter`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_calculate_parameter`;
 CREATE TABLE `boiler_calculate_parameter` (
@@ -341,7 +342,7 @@ CREATE TABLE `boiler_calculate_parameter` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_calculate_result
+--  Table structure for `boiler_calculate_result`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_calculate_result`;
 CREATE TABLE `boiler_calculate_result` (
@@ -390,10 +391,10 @@ CREATE TABLE `boiler_calculate_result` (
   KEY `boiler_calculate_result_boiler_id` (`boiler_id`),
   KEY `boiler_calculate_result_fuel_id` (`fuel_id`),
   KEY `boiler_calculate_result_based_parameter_id` (`based_parameter_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1102712 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1859330 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_config
+--  Table structure for `boiler_config`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_config`;
 CREATE TABLE `boiler_config` (
@@ -421,7 +422,7 @@ CREATE TABLE `boiler_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_fuel_record
+--  Table structure for `boiler_fuel_record`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_fuel_record`;
 CREATE TABLE `boiler_fuel_record` (
@@ -456,7 +457,7 @@ CREATE TABLE `boiler_fuel_record` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_m160
+--  Table structure for `boiler_m160`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_m160`;
 CREATE TABLE `boiler_m160` (
@@ -466,10 +467,10 @@ CREATE TABLE `boiler_m160` (
   `Boiler_term_id` char(6) CHARACTER SET utf8 NOT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18877 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20261 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_m163
+--  Table structure for `boiler_m163`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_m163`;
 CREATE TABLE `boiler_m163` (
@@ -536,7 +537,7 @@ CREATE TABLE `boiler_m163` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_m176
+--  Table structure for `boiler_m176`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_m176`;
 CREATE TABLE `boiler_m176` (
@@ -551,7 +552,7 @@ CREATE TABLE `boiler_m176` (
 ) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_maintenance
+--  Table structure for `boiler_maintenance`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_maintenance`;
 CREATE TABLE `boiler_maintenance` (
@@ -593,7 +594,7 @@ CREATE TABLE `boiler_maintenance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_medium
+--  Table structure for `boiler_medium`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_medium`;
 CREATE TABLE `boiler_medium` (
@@ -619,18 +620,20 @@ CREATE TABLE `boiler_medium` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_message_subscriber
+--  Table structure for `boiler_message_subscriber`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_message_subscriber`;
 CREATE TABLE `boiler_message_subscriber` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `boiler_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id`),
+  KEY `boiler_message_subscriber_boiler_id` (`boiler_id`),
+  KEY `boiler_message_subscriber_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=149 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime
+--  Table structure for `boiler_runtime`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime`;
 CREATE TABLE `boiler_runtime` (
@@ -662,7 +665,7 @@ CREATE TABLE `boiler_runtime` (
   KEY `boiler_runtime_uid` (`uid`) USING BTREE,
   KEY `boiler_runtime_main` (`boiler_id`,`parameter_id`,`created_date`) USING BTREE,
   KEY `boiler_runtime_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=241337509 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=284974829 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 /*!50100 PARTITION BY RANGE (YEARWEEK(`created_date`))
 SUBPARTITION BY HASH (`parameter_id`)
 SUBPARTITIONS 6
@@ -671,7 +674,7 @@ SUBPARTITIONS 6
  PARTITION p2 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_environment_temperature
+--  Table structure for `boiler_runtime_cache_environment_temperature`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_environment_temperature`;
 CREATE TABLE `boiler_runtime_cache_environment_temperature` (
@@ -708,10 +711,10 @@ CREATE TABLE `boiler_runtime_cache_environment_temperature` (
   KEY `boiler_runtime_cache_environment_temperature_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_environment_temperature_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_environment_temperature_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=15939520 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17991988 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_excess_air
+--  Table structure for `boiler_runtime_cache_excess_air`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_excess_air`;
 CREATE TABLE `boiler_runtime_cache_excess_air` (
@@ -748,10 +751,10 @@ CREATE TABLE `boiler_runtime_cache_excess_air` (
   KEY `boiler_runtime_cache_excess_air_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_excess_air_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_excess_air_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=14393240 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16466288 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_flow
+--  Table structure for `boiler_runtime_cache_flow`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_flow`;
 CREATE TABLE `boiler_runtime_cache_flow` (
@@ -788,10 +791,10 @@ CREATE TABLE `boiler_runtime_cache_flow` (
   KEY `boiler_runtime_cache_flow_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_flow_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_flow_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=16074373 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18361344 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_flow_daily
+--  Table structure for `boiler_runtime_cache_flow_daily`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_flow_daily`;
 CREATE TABLE `boiler_runtime_cache_flow_daily` (
@@ -831,10 +834,10 @@ CREATE TABLE `boiler_runtime_cache_flow_daily` (
   KEY `boiler_runtime_cache_flow_daily_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_flow_daily_alarm_description` (`alarm_description`),
   KEY `boiler_runtime_cache_flow_daily_date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=51007808 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=78663578 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_heat
+--  Table structure for `boiler_runtime_cache_heat`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_heat`;
 CREATE TABLE `boiler_runtime_cache_heat` (
@@ -871,10 +874,10 @@ CREATE TABLE `boiler_runtime_cache_heat` (
   KEY `boiler_runtime_cache_heat_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_heat_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_heat_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=14107713 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16173506 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_heat_daily
+--  Table structure for `boiler_runtime_cache_heat_daily`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_heat_daily`;
 CREATE TABLE `boiler_runtime_cache_heat_daily` (
@@ -913,10 +916,10 @@ CREATE TABLE `boiler_runtime_cache_heat_daily` (
   KEY `boiler_runtime_cache_heat_daily_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_heat_daily_alarm_description` (`alarm_description`),
   KEY `boiler_runtime_cache_heat_daily_date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=14436492 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42092262 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_history
+--  Table structure for `boiler_runtime_cache_history`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_history`;
 CREATE TABLE `boiler_runtime_cache_history` (
@@ -1144,235 +1147,7 @@ CREATE TABLE `boiler_runtime_cache_history` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15266250 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_history_bak
--- ----------------------------
-DROP TABLE IF EXISTS `boiler_runtime_cache_history_bak`;
-CREATE TABLE `boiler_runtime_cache_history_bak` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `name_en` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `remark` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_by_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_by_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_demo` tinyint(1) NOT NULL DEFAULT '0',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `boiler_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
-  `p1001` double NOT NULL DEFAULT '0',
-  `p1002` double NOT NULL DEFAULT '0',
-  `p1003` double NOT NULL DEFAULT '0',
-  `p1004` double NOT NULL DEFAULT '0',
-  `p1005` double NOT NULL DEFAULT '0',
-  `p1006` double NOT NULL DEFAULT '0',
-  `p1007` double NOT NULL DEFAULT '0',
-  `p1008` double NOT NULL DEFAULT '0',
-  `p1009` double NOT NULL DEFAULT '0',
-  `p1010` double NOT NULL DEFAULT '0',
-  `p1011` double NOT NULL DEFAULT '0',
-  `p1012` double NOT NULL DEFAULT '0',
-  `p1013` double NOT NULL DEFAULT '0',
-  `p1014` double NOT NULL DEFAULT '0',
-  `p1015` double NOT NULL DEFAULT '0',
-  `p1016` double NOT NULL DEFAULT '0',
-  `p1017` double NOT NULL DEFAULT '0',
-  `p1018` double NOT NULL DEFAULT '0',
-  `p1019` double NOT NULL DEFAULT '0',
-  `p1020` double NOT NULL DEFAULT '0',
-  `p1021` double NOT NULL DEFAULT '0',
-  `p1022` double NOT NULL DEFAULT '0',
-  `p1023` double NOT NULL DEFAULT '0',
-  `p1024` double NOT NULL DEFAULT '0',
-  `p1025` double NOT NULL DEFAULT '0',
-  `p1026` double NOT NULL DEFAULT '0',
-  `p1027` double NOT NULL DEFAULT '0',
-  `p1028` double NOT NULL DEFAULT '0',
-  `p1029` double NOT NULL DEFAULT '0',
-  `p1030` double NOT NULL DEFAULT '0',
-  `p1031` double NOT NULL DEFAULT '0',
-  `p1032` double NOT NULL DEFAULT '0',
-  `p1033` double NOT NULL DEFAULT '0',
-  `p1034` double NOT NULL DEFAULT '0',
-  `p1035` double NOT NULL DEFAULT '0',
-  `p1036` double NOT NULL DEFAULT '0',
-  `p1037` double NOT NULL DEFAULT '0',
-  `p1038` double NOT NULL DEFAULT '0',
-  `p1039` double NOT NULL DEFAULT '0',
-  `p1040` double NOT NULL DEFAULT '0',
-  `p1041` double NOT NULL DEFAULT '0',
-  `p1042` double NOT NULL DEFAULT '0',
-  `p1043` double NOT NULL DEFAULT '0',
-  `p1044` double NOT NULL DEFAULT '0',
-  `p1045` double NOT NULL DEFAULT '0',
-  `p1046` double NOT NULL DEFAULT '0',
-  `p1047` double NOT NULL DEFAULT '0',
-  `p1048` double NOT NULL DEFAULT '0',
-  `p1049` double NOT NULL DEFAULT '0',
-  `p1050` double NOT NULL DEFAULT '0',
-  `p1051` double NOT NULL DEFAULT '0',
-  `p1052` double NOT NULL DEFAULT '0',
-  `p1053` double NOT NULL DEFAULT '0',
-  `p1054` double NOT NULL DEFAULT '0',
-  `p1055` double NOT NULL DEFAULT '0',
-  `p1056` double NOT NULL DEFAULT '0',
-  `p1057` double NOT NULL DEFAULT '0',
-  `p1058` double NOT NULL DEFAULT '0',
-  `p1059` double NOT NULL DEFAULT '0',
-  `p1060` double NOT NULL DEFAULT '0',
-  `p1061` double NOT NULL DEFAULT '0',
-  `p1062` double NOT NULL DEFAULT '0',
-  `p1063` double NOT NULL DEFAULT '0',
-  `p1064` double NOT NULL DEFAULT '0',
-  `p1065` double NOT NULL DEFAULT '0',
-  `p1066` double NOT NULL DEFAULT '0',
-  `p1067` double NOT NULL DEFAULT '0',
-  `p1068` double NOT NULL DEFAULT '0',
-  `p1069` double NOT NULL DEFAULT '0',
-  `p1070` double NOT NULL DEFAULT '0',
-  `p1071` double NOT NULL DEFAULT '0',
-  `p1072` double NOT NULL DEFAULT '0',
-  `p1073` double NOT NULL DEFAULT '0',
-  `p1101` double NOT NULL DEFAULT '0',
-  `p1102` double NOT NULL DEFAULT '0',
-  `p1103` double NOT NULL DEFAULT '0',
-  `p1104` double NOT NULL DEFAULT '0',
-  `p1105` double NOT NULL DEFAULT '0',
-  `p1106` double NOT NULL DEFAULT '0',
-  `p1107` double NOT NULL DEFAULT '0',
-  `p1108` double NOT NULL DEFAULT '0',
-  `p1109` double NOT NULL DEFAULT '0',
-  `p1110` double NOT NULL DEFAULT '0',
-  `p1201` double NOT NULL DEFAULT '0',
-  `p1202` double NOT NULL DEFAULT '0',
-  `p1203` double NOT NULL DEFAULT '0',
-  `p1204` double NOT NULL DEFAULT '0',
-  `p1205` double NOT NULL DEFAULT '0',
-  `p1206` double NOT NULL DEFAULT '0',
-  `p1207` double NOT NULL DEFAULT '0',
-  `a1001` int(11) NOT NULL DEFAULT '0',
-  `a1002` int(11) NOT NULL DEFAULT '0',
-  `a1003` int(11) NOT NULL DEFAULT '0',
-  `a1004` int(11) NOT NULL DEFAULT '0',
-  `a1005` int(11) NOT NULL DEFAULT '0',
-  `a1006` int(11) NOT NULL DEFAULT '0',
-  `a1007` int(11) NOT NULL DEFAULT '0',
-  `a1008` int(11) NOT NULL DEFAULT '0',
-  `a1009` int(11) NOT NULL DEFAULT '0',
-  `a1010` int(11) NOT NULL DEFAULT '0',
-  `a1011` int(11) NOT NULL DEFAULT '0',
-  `a1012` int(11) NOT NULL DEFAULT '0',
-  `a1013` int(11) NOT NULL DEFAULT '0',
-  `a1014` int(11) NOT NULL DEFAULT '0',
-  `a1015` int(11) NOT NULL DEFAULT '0',
-  `a1016` int(11) NOT NULL DEFAULT '0',
-  `a1017` int(11) NOT NULL DEFAULT '0',
-  `a1018` int(11) NOT NULL DEFAULT '0',
-  `a1019` int(11) NOT NULL DEFAULT '0',
-  `a1020` int(11) NOT NULL DEFAULT '0',
-  `a1021` int(11) NOT NULL DEFAULT '0',
-  `a1022` int(11) NOT NULL DEFAULT '0',
-  `a1023` int(11) NOT NULL DEFAULT '0',
-  `a1024` int(11) NOT NULL DEFAULT '0',
-  `a1025` int(11) NOT NULL DEFAULT '0',
-  `a1026` int(11) NOT NULL DEFAULT '0',
-  `a1027` int(11) NOT NULL DEFAULT '0',
-  `a1028` int(11) NOT NULL DEFAULT '0',
-  `a1029` int(11) NOT NULL DEFAULT '0',
-  `a1030` int(11) NOT NULL DEFAULT '0',
-  `a1031` int(11) NOT NULL DEFAULT '0',
-  `a1032` int(11) NOT NULL DEFAULT '0',
-  `a1033` int(11) NOT NULL DEFAULT '0',
-  `a1034` int(11) NOT NULL DEFAULT '0',
-  `a1035` int(11) NOT NULL DEFAULT '0',
-  `a1036` int(11) NOT NULL DEFAULT '0',
-  `a1037` int(11) NOT NULL DEFAULT '0',
-  `a1038` int(11) NOT NULL DEFAULT '0',
-  `a1039` int(11) NOT NULL DEFAULT '0',
-  `a1040` int(11) NOT NULL DEFAULT '0',
-  `a1041` int(11) NOT NULL DEFAULT '0',
-  `a1042` int(11) NOT NULL DEFAULT '0',
-  `a1043` int(11) NOT NULL DEFAULT '0',
-  `a1044` int(11) NOT NULL DEFAULT '0',
-  `a1045` int(11) NOT NULL DEFAULT '0',
-  `a1046` int(11) NOT NULL DEFAULT '0',
-  `a1047` int(11) NOT NULL DEFAULT '0',
-  `a1048` int(11) NOT NULL DEFAULT '0',
-  `a1049` int(11) NOT NULL DEFAULT '0',
-  `a1050` int(11) NOT NULL DEFAULT '0',
-  `a1051` int(11) NOT NULL DEFAULT '0',
-  `a1052` int(11) NOT NULL DEFAULT '0',
-  `a1053` int(11) NOT NULL DEFAULT '0',
-  `a1054` int(11) NOT NULL DEFAULT '0',
-  `a1055` int(11) NOT NULL DEFAULT '0',
-  `a1056` int(11) NOT NULL DEFAULT '0',
-  `a1057` int(11) NOT NULL DEFAULT '0',
-  `a1058` int(11) NOT NULL DEFAULT '0',
-  `a1059` int(11) NOT NULL DEFAULT '0',
-  `a1060` int(11) NOT NULL DEFAULT '0',
-  `a1061` int(11) NOT NULL DEFAULT '0',
-  `a1062` int(11) NOT NULL DEFAULT '0',
-  `a1063` int(11) NOT NULL DEFAULT '0',
-  `a1064` int(11) NOT NULL DEFAULT '0',
-  `a1065` int(11) NOT NULL DEFAULT '0',
-  `a1066` int(11) NOT NULL DEFAULT '0',
-  `a1067` int(11) NOT NULL DEFAULT '0',
-  `a1068` int(11) NOT NULL DEFAULT '0',
-  `a1069` int(11) NOT NULL DEFAULT '0',
-  `a1070` int(11) NOT NULL DEFAULT '0',
-  `a1071` int(11) NOT NULL DEFAULT '0',
-  `a1072` int(11) NOT NULL DEFAULT '0',
-  `a1073` int(11) NOT NULL DEFAULT '0',
-  `a1101` int(11) NOT NULL DEFAULT '0',
-  `a1102` int(11) NOT NULL DEFAULT '0',
-  `a1103` int(11) NOT NULL DEFAULT '0',
-  `a1104` int(11) NOT NULL DEFAULT '0',
-  `a1105` int(11) NOT NULL DEFAULT '0',
-  `a1106` int(11) NOT NULL DEFAULT '0',
-  `a1107` int(11) NOT NULL DEFAULT '0',
-  `a1108` int(11) NOT NULL DEFAULT '0',
-  `a1109` int(11) NOT NULL DEFAULT '0',
-  `a1110` int(11) NOT NULL DEFAULT '0',
-  `a1201` int(11) NOT NULL DEFAULT '0',
-  `a1202` int(11) NOT NULL DEFAULT '0',
-  `a1203` int(11) NOT NULL DEFAULT '0',
-  `a1204` int(11) NOT NULL DEFAULT '0',
-  `a1205` int(11) NOT NULL DEFAULT '0',
-  `a1206` int(11) NOT NULL DEFAULT '0',
-  `a1207` int(11) NOT NULL DEFAULT '0',
-  `p1080` double NOT NULL DEFAULT '0',
-  `a1080` int(11) NOT NULL DEFAULT '0',
-  `p1090` double NOT NULL,
-  `p1091` double NOT NULL,
-  `p1092` double NOT NULL,
-  `p1093` double NOT NULL,
-  `p1094` double NOT NULL,
-  `p1095` double NOT NULL,
-  `p1096` double NOT NULL,
-  `p1097` double NOT NULL,
-  `p1098` double NOT NULL,
-  `p1099` double NOT NULL,
-  `a1090` int(11) NOT NULL,
-  `a1091` int(11) NOT NULL,
-  `a1092` int(11) NOT NULL,
-  `a1093` int(11) NOT NULL,
-  `a1094` int(11) NOT NULL,
-  `a1095` int(11) NOT NULL,
-  `a1096` int(11) NOT NULL,
-  `a1097` int(11) NOT NULL,
-  `a1098` int(11) NOT NULL,
-  `a1099` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `history_main` (`boiler_id`,`updated_date`) USING BTREE,
-  KEY `boiler_runtime_cache_history_name` (`name`),
-  KEY `boiler_runtime_cache_history_created_date` (`created_date`),
-  KEY `boiler_runtime_cache_history_updated_date` (`updated_date`),
-  KEY `boiler_runtime_cache_history_is_demo` (`is_demo`),
-  KEY `boiler_runtime_cache_history_is_deleted` (`is_deleted`),
-  KEY `boiler_runtime_cache_history_boiler_id` (`boiler_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
--- Table structure for boiler_runtime_cache_instant
+--  Table structure for `boiler_runtime_cache_instant`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_instant`;
 CREATE TABLE `boiler_runtime_cache_instant` (
@@ -1410,10 +1185,10 @@ CREATE TABLE `boiler_runtime_cache_instant` (
   KEY `boiler_runtime_cache_instant_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_instant_boiler_id_parameter_id_updated_date` (`boiler_id`,`parameter_id`,`updated_date`),
   KEY `boiler_runtime_cache_instant_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=159259619 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=202896892 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_smoke_component
+--  Table structure for `boiler_runtime_cache_smoke_component`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_smoke_component`;
 CREATE TABLE `boiler_runtime_cache_smoke_component` (
@@ -1449,10 +1224,10 @@ CREATE TABLE `boiler_runtime_cache_smoke_component` (
   KEY `boiler_runtime_cache_smoke_component_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_smoke_component_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_smoke_component_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=54837352 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60938367 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_smoke_temperature
+--  Table structure for `boiler_runtime_cache_smoke_temperature`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_smoke_temperature`;
 CREATE TABLE `boiler_runtime_cache_smoke_temperature` (
@@ -1488,10 +1263,10 @@ CREATE TABLE `boiler_runtime_cache_smoke_temperature` (
   KEY `boiler_runtime_cache_smoke_temperature_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_smoke_temperature_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_smoke_temperature_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=31856606 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35882396 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_status
+--  Table structure for `boiler_runtime_cache_status`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_status`;
 CREATE TABLE `boiler_runtime_cache_status` (
@@ -1527,10 +1302,10 @@ CREATE TABLE `boiler_runtime_cache_status` (
   KEY `boiler_runtime_cache_status_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_status_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_status_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=22504862 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31870833 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_status_running
+--  Table structure for `boiler_runtime_cache_status_running`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_status_running`;
 CREATE TABLE `boiler_runtime_cache_status_running` (
@@ -1569,10 +1344,10 @@ CREATE TABLE `boiler_runtime_cache_status_running` (
   KEY `boiler_runtime_cache_status_running_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_status_running_alarm_description` (`alarm_description`),
   KEY `boiler_runtime_cache_status_running_date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=1831841 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2093861 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_steam_pressure
+--  Table structure for `boiler_runtime_cache_steam_pressure`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_steam_pressure`;
 CREATE TABLE `boiler_runtime_cache_steam_pressure` (
@@ -1609,10 +1384,10 @@ CREATE TABLE `boiler_runtime_cache_steam_pressure` (
   KEY `boiler_runtime_cache_steam_pressure_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_steam_pressure_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_steam_pressure_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=16015190 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18097169 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_steam_temperature
+--  Table structure for `boiler_runtime_cache_steam_temperature`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_steam_temperature`;
 CREATE TABLE `boiler_runtime_cache_steam_temperature` (
@@ -1649,10 +1424,10 @@ CREATE TABLE `boiler_runtime_cache_steam_temperature` (
   KEY `boiler_runtime_cache_steam_temperature_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_steam_temperature_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_steam_temperature_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=15991160 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17939062 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_cache_water_temperature
+--  Table structure for `boiler_runtime_cache_water_temperature`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_cache_water_temperature`;
 CREATE TABLE `boiler_runtime_cache_water_temperature` (
@@ -1688,10 +1463,10 @@ CREATE TABLE `boiler_runtime_cache_water_temperature` (
   KEY `boiler_runtime_cache_water_temperature_alarm_id` (`alarm_id`),
   KEY `boiler_runtime_cache_water_temperature_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_water_temperature_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=31895256 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35800754 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_runtime_copy
+--  Table structure for `boiler_runtime_copy`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_copy`;
 CREATE TABLE `boiler_runtime_copy` (
@@ -1731,7 +1506,7 @@ SUBPARTITIONS 6
  PARTITION p2 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
--- Table structure for boiler_runtime_history
+--  Table structure for `boiler_runtime_history`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_runtime_history`;
 CREATE TABLE `boiler_runtime_history` (
@@ -1755,10 +1530,10 @@ CREATE TABLE `boiler_runtime_history` (
   KEY `boiler_runtime_history_is_demo` (`is_demo`),
   KEY `boiler_runtime_history_is_deleted` (`is_deleted`),
   KEY `boiler_runtime_history_boiler_id` (`boiler_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13138454 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20126608 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_template
+--  Table structure for `boiler_template`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_template`;
 CREATE TABLE `boiler_template` (
@@ -1784,7 +1559,7 @@ CREATE TABLE `boiler_template` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_term_status
+--  Table structure for `boiler_term_status`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_term_status`;
 CREATE TABLE `boiler_term_status` (
@@ -1798,7 +1573,26 @@ CREATE TABLE `boiler_term_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_type
+--  Table structure for `boiler_terminal_combined`
+-- ----------------------------
+DROP TABLE IF EXISTS `boiler_terminal_combined`;
+CREATE TABLE `boiler_terminal_combined` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `boiler_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `terminal_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `terminal_code` bigint(20) NOT NULL DEFAULT '0',
+  `terminal_set_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `boiler_id` (`boiler_id`,`terminal_id`),
+  UNIQUE KEY `terminal_code` (`terminal_code`,`terminal_set_id`),
+  KEY `boiler_terminal_combined_boiler_id` (`boiler_id`),
+  KEY `boiler_terminal_combined_terminal_id` (`terminal_id`),
+  KEY `boiler_terminal_combined_terminal_code` (`terminal_code`),
+  KEY `boiler_terminal_combined_terminal_set_id` (`terminal_set_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=239955 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+--  Table structure for `boiler_type`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_type`;
 CREATE TABLE `boiler_type` (
@@ -1824,7 +1618,7 @@ CREATE TABLE `boiler_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_type_form
+--  Table structure for `boiler_type_form`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_type_form`;
 CREATE TABLE `boiler_type_form` (
@@ -1852,7 +1646,7 @@ CREATE TABLE `boiler_type_form` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for boiler_usage
+--  Table structure for `boiler_usage`
 -- ----------------------------
 DROP TABLE IF EXISTS `boiler_usage`;
 CREATE TABLE `boiler_usage` (
@@ -1878,7 +1672,7 @@ CREATE TABLE `boiler_usage` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for contact
+--  Table structure for `contact`
 -- ----------------------------
 DROP TABLE IF EXISTS `contact`;
 CREATE TABLE `contact` (
@@ -1907,7 +1701,7 @@ CREATE TABLE `contact` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for dialogue
+--  Table structure for `dialogue`
 -- ----------------------------
 DROP TABLE IF EXISTS `dialogue`;
 CREATE TABLE `dialogue` (
@@ -1935,7 +1729,7 @@ CREATE TABLE `dialogue` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for dialogue_comment
+--  Table structure for `dialogue_comment`
 -- ----------------------------
 DROP TABLE IF EXISTS `dialogue_comment`;
 CREATE TABLE `dialogue_comment` (
@@ -1967,7 +1761,7 @@ CREATE TABLE `dialogue_comment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for fuel
+--  Table structure for `fuel`
 -- ----------------------------
 DROP TABLE IF EXISTS `fuel`;
 CREATE TABLE `fuel` (
@@ -1996,7 +1790,7 @@ CREATE TABLE `fuel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for fuel_type
+--  Table structure for `fuel_type`
 -- ----------------------------
 DROP TABLE IF EXISTS `fuel_type`;
 CREATE TABLE `fuel_type` (
@@ -2022,7 +1816,7 @@ CREATE TABLE `fuel_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for location
+--  Table structure for `location`
 -- ----------------------------
 DROP TABLE IF EXISTS `location`;
 CREATE TABLE `location` (
@@ -2051,7 +1845,7 @@ CREATE TABLE `location` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message
+--  Table structure for `message`
 -- ----------------------------
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -2089,7 +1883,7 @@ CREATE TABLE `message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message_16bit
+--  Table structure for `message_16bit`
 -- ----------------------------
 DROP TABLE IF EXISTS `message_16bit`;
 CREATE TABLE `message_16bit` (
@@ -2153,7 +1947,7 @@ CREATE TABLE `message_16bit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message_32bit
+--  Table structure for `message_32bit`
 -- ----------------------------
 DROP TABLE IF EXISTS `message_32bit`;
 CREATE TABLE `message_32bit` (
@@ -2196,7 +1990,7 @@ CREATE TABLE `message_32bit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message_formatter
+--  Table structure for `message_formatter`
 -- ----------------------------
 DROP TABLE IF EXISTS `message_formatter`;
 CREATE TABLE `message_formatter` (
@@ -2228,7 +2022,7 @@ CREATE TABLE `message_formatter` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message_log
+--  Table structure for `message_log`
 -- ----------------------------
 DROP TABLE IF EXISTS `message_log`;
 CREATE TABLE `message_log` (
@@ -2253,7 +2047,7 @@ CREATE TABLE `message_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message_tag
+--  Table structure for `message_tag`
 -- ----------------------------
 DROP TABLE IF EXISTS `message_tag`;
 CREATE TABLE `message_tag` (
@@ -2282,7 +2076,7 @@ CREATE TABLE `message_tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for message_type
+--  Table structure for `message_type`
 -- ----------------------------
 DROP TABLE IF EXISTS `message_type`;
 CREATE TABLE `message_type` (
@@ -2309,7 +2103,7 @@ CREATE TABLE `message_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for organization
+--  Table structure for `organization`
 -- ----------------------------
 DROP TABLE IF EXISTS `organization`;
 CREATE TABLE `organization` (
@@ -2343,7 +2137,7 @@ CREATE TABLE `organization` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for organization_type
+--  Table structure for `organization_type`
 -- ----------------------------
 DROP TABLE IF EXISTS `organization_type`;
 CREATE TABLE `organization_type` (
@@ -2369,7 +2163,7 @@ CREATE TABLE `organization_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for pf_atomic_data
+--  Table structure for `pf_atomic_data`
 -- ----------------------------
 DROP TABLE IF EXISTS `pf_atomic_data`;
 CREATE TABLE `pf_atomic_data` (
@@ -2389,7 +2183,7 @@ CREATE TABLE `pf_atomic_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for pf_message_data
+--  Table structure for `pf_message_data`
 -- ----------------------------
 DROP TABLE IF EXISTS `pf_message_data`;
 CREATE TABLE `pf_message_data` (
@@ -2407,7 +2201,7 @@ CREATE TABLE `pf_message_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for pf_message_list
+--  Table structure for `pf_message_list`
 -- ----------------------------
 DROP TABLE IF EXISTS `pf_message_list`;
 CREATE TABLE `pf_message_list` (
@@ -2424,7 +2218,7 @@ CREATE TABLE `pf_message_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for runtime_alarm_rule
+--  Table structure for `runtime_alarm_rule`
 -- ----------------------------
 DROP TABLE IF EXISTS `runtime_alarm_rule`;
 CREATE TABLE `runtime_alarm_rule` (
@@ -2469,7 +2263,7 @@ CREATE TABLE `runtime_alarm_rule` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for runtime_parameter
+--  Table structure for `runtime_parameter`
 -- ----------------------------
 DROP TABLE IF EXISTS `runtime_parameter`;
 CREATE TABLE `runtime_parameter` (
@@ -2501,10 +2295,10 @@ CREATE TABLE `runtime_parameter` (
   KEY `runtime_parameter_param_id` (`param_id`),
   KEY `runtime_parameter_category_id` (`category_id`),
   KEY `runtime_parameter_medium_id` (`medium_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10127 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13103 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for runtime_parameter_boiler_mediums
+--  Table structure for `runtime_parameter_boiler_mediums`
 -- ----------------------------
 DROP TABLE IF EXISTS `runtime_parameter_boiler_mediums`;
 CREATE TABLE `runtime_parameter_boiler_mediums` (
@@ -2512,10 +2306,10 @@ CREATE TABLE `runtime_parameter_boiler_mediums` (
   `runtime_parameter_id` bigint(20) NOT NULL,
   `boiler_medium_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=462 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=599 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for runtime_parameter_category
+--  Table structure for `runtime_parameter_category`
 -- ----------------------------
 DROP TABLE IF EXISTS `runtime_parameter_category`;
 CREATE TABLE `runtime_parameter_category` (
@@ -2535,10 +2329,10 @@ CREATE TABLE `runtime_parameter_category` (
   KEY `runtime_parameter_category_updated_date` (`updated_date`),
   KEY `runtime_parameter_category_is_demo` (`is_demo`),
   KEY `runtime_parameter_category_is_deleted` (`is_deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for runtime_parameter_channel_config
+--  Table structure for `runtime_parameter_channel_config`
 -- ----------------------------
 DROP TABLE IF EXISTS `runtime_parameter_channel_config`;
 CREATE TABLE `runtime_parameter_channel_config` (
@@ -2579,7 +2373,39 @@ CREATE TABLE `runtime_parameter_channel_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for runtime_parameter_medium
+--  Table structure for `runtime_parameter_channel_config_range`
+-- ----------------------------
+DROP TABLE IF EXISTS `runtime_parameter_channel_config_range`;
+CREATE TABLE `runtime_parameter_channel_config_range` (
+  `uid` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `name_en` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `remark` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `created_date` datetime NOT NULL,
+  `created_by_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_date` datetime NOT NULL,
+  `updated_by_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_demo` tinyint(1) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `channel_config_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `min` bigint(20) NOT NULL DEFAULT '0',
+  `max` bigint(20) NOT NULL DEFAULT '0',
+  `value` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `channel_config_id` (`channel_config_id`,`min`,`max`),
+  KEY `runtime_parameter_channel_config_range_name` (`name`),
+  KEY `runtime_parameter_channel_config_range_created_date` (`created_date`),
+  KEY `runtime_parameter_channel_config_range_updated_date` (`updated_date`),
+  KEY `runtime_parameter_channel_config_range_is_demo` (`is_demo`),
+  KEY `runtime_parameter_channel_config_range_is_deleted` (`is_deleted`),
+  KEY `runtime_parameter_channel_config_range_channel_config_id` (`channel_config_id`),
+  KEY `runtime_parameter_channel_config_range_min` (`min`),
+  KEY `runtime_parameter_channel_config_range_max` (`max`),
+  KEY `runtime_parameter_channel_config_range_value` (`value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+--  Table structure for `runtime_parameter_medium`
 -- ----------------------------
 DROP TABLE IF EXISTS `runtime_parameter_medium`;
 CREATE TABLE `runtime_parameter_medium` (
@@ -2602,7 +2428,7 @@ CREATE TABLE `runtime_parameter_medium` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for terminal
+--  Table structure for `terminal`
 -- ----------------------------
 DROP TABLE IF EXISTS `terminal`;
 CREATE TABLE `terminal` (
@@ -2637,11 +2463,13 @@ CREATE TABLE `terminal` (
   KEY `terminal_name` (`name`),
   KEY `terminal_is_demo` (`is_demo`),
   KEY `terminal_organization_id` (`organization_id`),
-  KEY `terminal_updated_date` (`updated_date`)
+  KEY `terminal_updated_date` (`updated_date`),
+  KEY `terminal_terminal_code` (`terminal_code`),
+  KEY `terminal_is_online` (`is_online`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for user
+--  Table structure for `user`
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -2679,7 +2507,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for user_login
+--  Table structure for `user_login`
 -- ----------------------------
 DROP TABLE IF EXISTS `user_login`;
 CREATE TABLE `user_login` (
@@ -2700,16 +2528,19 @@ CREATE TABLE `user_login` (
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `is_demo` tinyint(1) NOT NULL DEFAULT '0',
   `login_method` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `is_login` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`uid`),
   KEY `user_login_created_date` (`created_date`),
   KEY `user_login_is_deleted` (`is_deleted`),
   KEY `user_login_name` (`name`),
   KEY `user_login_is_demo` (`is_demo`),
-  KEY `user_login_updated_date` (`updated_date`)
+  KEY `user_login_updated_date` (`updated_date`),
+  KEY `user_login_is_login` (`is_login`),
+  KEY `user_login_is_success` (`is_success`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for user_role
+--  Table structure for `user_role`
 -- ----------------------------
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
@@ -2735,7 +2566,7 @@ CREATE TABLE `user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for user_session
+--  Table structure for `user_session`
 -- ----------------------------
 DROP TABLE IF EXISTS `user_session`;
 CREATE TABLE `user_session` (
@@ -2769,7 +2600,7 @@ CREATE TABLE `user_session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for user_third
+--  Table structure for `user_third`
 -- ----------------------------
 DROP TABLE IF EXISTS `user_third`;
 CREATE TABLE `user_third` (
@@ -2820,31 +2651,31 @@ CREATE TABLE `user_third` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- View structure for boiler_runtime_flow_daily
+--  View structure for `boiler_runtime_flow_daily`
 -- ----------------------------
 DROP VIEW IF EXISTS `boiler_runtime_flow_daily`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`azureadmin`@`%` SQL SECURITY DEFINER VIEW `boiler_runtime_flow_daily` AS select `boiler_runtime`.`boiler_id` AS `boiler_id`,(avg(`boiler_runtime`.`value`) * hour(max(`boiler_runtime`.`created_date`))) AS `flow`,cast(`boiler_runtime`.`created_date` as date) AS `date` from `boiler_runtime` where (`boiler_runtime`.`parameter_id` = 1003) group by `boiler_runtime`.`boiler_id`,cast(`boiler_runtime`.`created_date` as date);
 
 -- ----------------------------
--- View structure for boiler_runtime_heat_avg_yearweek
+--  View structure for `boiler_runtime_heat_avg_yearweek`
 -- ----------------------------
 DROP VIEW IF EXISTS `boiler_runtime_heat_avg_yearweek`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`azureadmin`@`%` SQL SECURITY DEFINER VIEW `boiler_runtime_heat_avg_yearweek` AS select `boiler`.`uid` AS `uid`,`boiler`.`name` AS `name`,`boiler`.`evaporating_capacity` AS `evaporte`,`fuel`.`type_id` AS `fuel_type_id`,avg(`heat`.`value`) AS `heats`,yearweek(`heat`.`created_date`,0) AS `week` from ((`boiler` join `fuel`) join `boiler_runtime_cache_heat` `heat`) where ((`boiler`.`fuel_id` = `fuel`.`uid`) and (`boiler`.`uid` = `heat`.`boiler_id`)) group by `heat`.`boiler_id`,yearweek(`heat`.`created_date`,0);
 
 -- ----------------------------
--- View structure for boiler_runtime_heat_month
+--  View structure for `boiler_runtime_heat_month`
 -- ----------------------------
 DROP VIEW IF EXISTS `boiler_runtime_heat_month`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`azureadmin`@`%` SQL SECURITY DEFINER VIEW `boiler_runtime_heat_month` AS select `boiler_runtime`.`boiler_id` AS `boiler_id`,cast(`boiler_runtime`.`created_date` as date) AS `date`,avg(`boiler_runtime`.`value`) AS `heat` from `boiler_runtime` where (`boiler_runtime`.`parameter_id` = 1201) group by `boiler_runtime`.`boiler_id`,cast(`boiler_runtime`.`created_date` as date);
 
 -- ----------------------------
--- View structure for boiler_runtime_view
+--  View structure for `boiler_runtime_view`
 -- ----------------------------
 DROP VIEW IF EXISTS `boiler_runtime_view`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`azureadmin`@`%` SQL SECURITY DEFINER VIEW `boiler_runtime_view` AS select `runtime`.`id` AS `Id`,`runtime`.`boiler_id` AS `Boiler`,`runtime`.`parameter_id` AS `Parameter`,`runtime`.`alarm_id` AS `Alarm`,round((`param`.`scale` * `runtime`.`value`),`param`.`fix`) AS `Value`,`param`.`name` AS `ParameterName`,`param`.`unit` AS `Unit`,`alarm`.`alarm_level` AS `AlarmLevel`,`alarm`.`description` AS `AlarmDescription`,`runtime`.`created_date` AS `CreatedDate`,`runtime`.`created_by_id` AS `CreatedBy`,`runtime`.`updated_date` AS `UpdatedDate`,`runtime`.`updated_by_id` AS `UpdatedBy`,`runtime`.`is_deleted` AS `IsDeleted`,`runtime`.`is_demo` AS `IsDemo` from ((`boiler_runtime` `runtime` left join `runtime_parameter` `param` on((`runtime`.`parameter_id` = `param`.`id`))) left join `boiler_alarm` `alarm` on((`runtime`.`alarm_id` = `alarm`.`uid`))) where (`runtime`.`created_date` >= cast(now() as date)) order by `runtime`.`created_date`;
 
 -- ----------------------------
--- Function structure for check_boilerid_null
+--  Function structure for `check_boilerid_null`
 -- ----------------------------
 DROP FUNCTION IF EXISTS `check_boilerid_null`;
 delimiter ;;
@@ -2859,12 +2690,12 @@ BEGIN
     END IF;
 
     RETURN ts;
-END;
-;;
+END
+ ;;
 delimiter ;
 
 -- ----------------------------
--- Event structure for delete_cache_remain_today
+--  Event structure for `delete_cache_remain_today`
 -- ----------------------------
 DROP EVENT IF EXISTS `delete_cache_remain_today`;
 delimiter ;;
@@ -2896,12 +2727,12 @@ CREATE DEFINER=`azureadmin`@`%` EVENT `delete_cache_remain_today` ON SCHEDULE EV
 	DELETE 
 	FROM	`boiler_runtime_cache_water_temperature`
 	WHERE 	`created_date` < DATE(NOW());
-END;
-;;
+END
+ ;;
 delimiter ;
 
 -- ----------------------------
--- Event structure for delete_demo_runtime_physical
+--  Event structure for `delete_demo_runtime_physical`
 -- ----------------------------
 DROP EVENT IF EXISTS `delete_demo_runtime_physical`;
 delimiter ;;
@@ -2917,78 +2748,12 @@ CREATE DEFINER=`azureadmin`@`%` EVENT `delete_demo_runtime_physical` ON SCHEDULE
 	DELETE 
 	FROM	`boiler_alarm_history`
 	WHERE 	`is_demo` = 1 AND `is_deleted` = 1;
-END;
-;;
+END
+ ;;
 delimiter ;
 
 -- ----------------------------
--- Event structure for delete_runtime_is_demo_over_month
--- ----------------------------
-DROP EVENT IF EXISTS `delete_runtime_is_demo_over_month`;
-delimiter ;;
-CREATE DEFINER=`azureadmin`@`%` EVENT `delete_runtime_is_demo_over_month` ON SCHEDULE EVERY 1 DAY STARTS '2017-11-02 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
-	DELETE FROM `boiler_runtime` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 1000000;
-	DELETE FROM `boiler_runtime_cache_history_backup` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 500000;
-	DELETE FROM `boiler_runtime_cache_history` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 500000;
-END;
-;;
-delimiter ;
-
--- ----------------------------
--- Event structure for move_old_alarm_to_history
--- ----------------------------
-DROP EVENT IF EXISTS `move_old_alarm_to_history`;
-delimiter ;;
-CREATE DEFINER=`azureadmin`@`%` EVENT `move_old_alarm_to_history` ON SCHEDULE EVERY 1 HOUR STARTS '2017-05-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
-	INSERT IGNORE `boiler_alarm_history`
-	(`uid`, `name`, `name_en`, `remark`,
-	 `is_demo`, `is_deleted`,
-	 `boiler_id`, `parameter_id`, `trigger_rule_id`,
-	 `start_date`, `end_date`,
-	 `confirmed_date`, `confirmed_by_id`, `verified_date`, `verified_by_id`,
-	 `alarm_level`, `priority`, `description`)
-	SELECT 	
-	 `uid`, `name`, `name_en`, `remark`,
-	 `is_demo`, `is_deleted`,
-	 `boiler_id`, `parameter_id`, `trigger_rule_id`,
-	 `start_date`, `end_date`,
-	 `confirmed_date`, `confirmed_by_id`, `verified_date`, `verified_by_id`,
-	 `alarm_level`, `priority`, `description`
-	FROM	`boiler_alarm`
-	WHERE	`end_date` < (NOW() - INTERVAL 4 HOUR);
-
-	DELETE  `alarm`.*
-	FROM	`boiler_alarm` AS `alarm`, `boiler_alarm_history` AS `history`
-	WHERE	`alarm`.`uid` = `history`.`uid`;
-END;
-;;
-delimiter ;
-
--- ----------------------------
--- Event structure for set_delete_sign_of_alarm_orphans
--- ----------------------------
-DROP EVENT IF EXISTS `set_delete_sign_of_alarm_orphans`;
-delimiter ;;
-CREATE DEFINER=`azureadmin`@`%` EVENT `set_delete_sign_of_alarm_orphans` ON SCHEDULE EVERY 6 HOUR STARTS '2017-06-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
-	UPDATE	`boiler_alarm` AS `alarm`
-	SET	`is_deleted` = true
-	WHERE	NOT EXISTS 
-		(SELECT DISTINCT(`alarm`.`uid`) 
-		FROM	`boiler_runtime` AS `runtime`
-		WHERE	`runtime`.`alarm_id` = `alarm`.`uid`);
-
-	UPDATE	`boiler_alarm_history` AS `alarm`
-	SET	`is_deleted` = true
-	WHERE	NOT EXISTS 
-		(SELECT DISTINCT(`alarm`.`uid`) 
-		FROM	`boiler_runtime` AS `runtime`
-		WHERE	`runtime`.`alarm_id` = `alarm`.`uid`);
-END;
-;;
-delimiter ;
-
--- ----------------------------
--- Event structure for update_daily_flow_and_heat
+--  Event structure for `update_daily_flow_and_heat`
 -- ----------------------------
 DROP EVENT IF EXISTS `update_daily_flow_and_heat`;
 delimiter ;;
@@ -3021,16 +2786,107 @@ CREATE DEFINER=`azureadmin`@`%` EVENT `update_daily_flow_and_heat` ON SCHEDULE E
 		FROM `boiler_runtime_cache_flow`
 		GROUP BY `day`, `hour`, `boiler_id`, `is_demo`) AS `flow`
 	GROUP BY `flow`.`day`, `flow`.`boiler_id`, `flow`.`is_demo`;
-END;
-;;
+END
+ ;;
 delimiter ;
 
 -- ----------------------------
--- Triggers structure for table boiler
+--  Event structure for `move_old_alarm_to_history`
+-- ----------------------------
+DROP EVENT IF EXISTS `move_old_alarm_to_history`;
+delimiter ;;
+CREATE DEFINER=`azureadmin`@`%` EVENT `move_old_alarm_to_history` ON SCHEDULE EVERY 1 HOUR STARTS '2017-05-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+	INSERT IGNORE `boiler_alarm_history`
+	(`uid`, `name`, `name_en`, `remark`,
+	 `is_demo`, `is_deleted`,
+	 `boiler_id`, `parameter_id`, `trigger_rule_id`,
+	 `start_date`, `end_date`,
+	 `confirmed_date`, `confirmed_by_id`, `verified_date`, `verified_by_id`,
+	 `alarm_level`, `priority`, `description`)
+	SELECT 	
+	 `uid`, `name`, `name_en`, `remark`,
+	 `is_demo`, `is_deleted`,
+	 `boiler_id`, `parameter_id`, `trigger_rule_id`,
+	 `start_date`, `end_date`,
+	 `confirmed_date`, `confirmed_by_id`, `verified_date`, `verified_by_id`,
+	 `alarm_level`, `priority`, `description`
+	FROM	`boiler_alarm`
+	WHERE	`end_date` < (NOW() - INTERVAL 4 HOUR);
+
+	DELETE  `alarm`.*
+	FROM	`boiler_alarm` AS `alarm`, `boiler_alarm_history` AS `history`
+	WHERE	`alarm`.`uid` = `history`.`uid`;
+END
+ ;;
+delimiter ;
+
+-- ----------------------------
+--  Event structure for `set_delete_sign_of_alarm_orphans`
+-- ----------------------------
+DROP EVENT IF EXISTS `set_delete_sign_of_alarm_orphans`;
+delimiter ;;
+CREATE DEFINER=`azureadmin`@`%` EVENT `set_delete_sign_of_alarm_orphans` ON SCHEDULE EVERY 6 HOUR STARTS '2017-06-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+	UPDATE	`boiler_alarm` AS `alarm`
+	SET	`is_deleted` = true
+	WHERE	NOT EXISTS 
+		(SELECT DISTINCT(`alarm`.`uid`) 
+		FROM	`boiler_runtime` AS `runtime`
+		WHERE	`runtime`.`alarm_id` = `alarm`.`uid`);
+
+	UPDATE	`boiler_alarm_history` AS `alarm`
+	SET	`is_deleted` = true
+	WHERE	NOT EXISTS 
+		(SELECT DISTINCT(`alarm`.`uid`) 
+		FROM	`boiler_runtime` AS `runtime`
+		WHERE	`runtime`.`alarm_id` = `alarm`.`uid`);
+END
+ ;;
+delimiter ;
+
+-- ----------------------------
+--  Event structure for `delete_runtime_is_demo_over_month`
+-- ----------------------------
+DROP EVENT IF EXISTS `delete_runtime_is_demo_over_month`;
+delimiter ;;
+CREATE DEFINER=`azureadmin`@`%` EVENT `delete_runtime_is_demo_over_month` ON SCHEDULE EVERY 1 DAY STARTS '2017-11-02 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+	DELETE FROM `boiler_runtime` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 1000000;
+	DELETE FROM `boiler_runtime_cache_history_backup` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 500000;
+	DELETE FROM `boiler_runtime_cache_history` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 500000;
+END
+ ;;
+delimiter ;
+
+-- ----------------------------
+--  Event structure for `insert_m163_range_channel_sample`
+-- ----------------------------
+DROP EVENT IF EXISTS `insert_m163_range_channel_sample`;
+delimiter ;;
+CREATE DEFINER=`azureadmin`@`%` EVENT `insert_m163_range_channel_sample` ON SCHEDULE EVERY 15 SECOND STARTS '2017-12-29 23:29:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+	INSERT INTO `boiler_main`.`boiler_m163` 
+		(`Boiler_term_id`, `Boiler_boiler_id`, `Term_sys_time`, `Boiler_sn`, `Boiler_data_fmt_ver`, `Boiler_status_code`, `Boiler_term_err_code`, 
+		`Temper1_channel`, `Temper2_channel`, `Temper3_channel`, `Temper4_channel`, `Temper5_channel`, `Temper6_channel`, `Temper7_channel`, `Temper8_channel`, `Temper9_channel`, `Temper10_channel`, `Temper11_channel`, `Temper12_channel`, 
+		`Analog1_channel`, `Analog2_channel`, `Analog3_channel`, `Analog4_channel`, `Analog5_channel`, `Analog6_channel`, `Analog7_channel`, `Analog8_channel`, `Analog9_channel`, `Analog10_channel`, `Analog11_channel`, `Analog12_channel`, 
+		`C1_calculate_parm`, `C2_calculate_parm`, `C3_calculate_parm`, `C4_calculate_parm`, `C5_calculate_parm`, `C6_calculate_parm`, `C7_calculate_parm`, `C8_calculate_parm`, `C9_calculate_parm`, `C10_calculate_parm`, `C11_calculate_parm`, `C12_calculate_parm`, 
+		`Switch_in_1_16_channel`, `Switch_in_17_32_channel`, `Switch_out_1_16_channel`, 
+		`Reserved1_filler`, `Reserved2_filler`, `Reserved3_filler`, `Reserved4_filler`, 
+		`need_reload`, `TS`)
+	VALUES	('700010', '01', NOW(), 668, 80, 'a3', 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		444, 333, 444, 555, 666, 777, 888, 999, 10101, 20202, 30303, 40404,
+		711, 554, 29837,
+		0, 0, 0, 0,
+		TRUE, NOW());
+END
+ ;;
+delimiter ;
+
+-- ----------------------------
+--  Triggers structure for table boiler
 -- ----------------------------
 DROP TRIGGER IF EXISTS `boiler_after_insert`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `boiler_after_insert` AFTER INSERT ON `boiler` FOR EACH ROW BEGIN
+CREATE TRIGGER `boiler_after_insert` AFTER INSERT ON `boiler` FOR EACH ROW BEGIN
 	INSERT INTO `boiler_config`
 	SET	`uid` = UUID(),
 		`boiler_id` = NEW.`uid`,
@@ -3059,15 +2915,11 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `boiler_after_insert` AFTER INSERT ON 
 		`updated_by_id` = NEW.`updated_by_id`,
 		`is_demo` = `is_demo`;
 END
-;;
+ ;;
 delimiter ;
-
--- ----------------------------
--- Triggers structure for table boiler
--- ----------------------------
 DROP TRIGGER IF EXISTS `boiler_after_update`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `boiler_after_update` AFTER UPDATE ON `boiler` FOR EACH ROW BEGIN
+CREATE TRIGGER `boiler_after_update` AFTER UPDATE ON `boiler` FOR EACH ROW BEGIN
 	IF NEW.`is_deleted` = 1 THEN
 		UPDATE 	`boiler_runtime`
 		SET	`is_deleted` = 1
@@ -3102,15 +2954,11 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `boiler_after_update` AFTER UPDATE ON 
 		WHERE	`boiler_id` = NEW.`uid`;
 	END IF;
 END
-;;
+ ;;
 delimiter ;
-
--- ----------------------------
--- Triggers structure for table boiler
--- ----------------------------
 DROP TRIGGER IF EXISTS `boiler_after_delete`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `boiler_after_delete` AFTER DELETE ON `boiler` FOR EACH ROW BEGIN
+CREATE TRIGGER `boiler_after_delete` AFTER DELETE ON `boiler` FOR EACH ROW BEGIN
 	DELETE FROM `boiler_runtime`
 	WHERE	`boiler_id` = OLD.`uid`;
 
@@ -3135,41 +2983,43 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `boiler_after_delete` AFTER DELETE ON 
 	DELETE FROM `boiler_config`
 	WHERE	`boiler_id` = OLD.`uid`;
 END
-;;
+ ;;
 delimiter ;
 
+delimiter ;;
 -- ----------------------------
--- Triggers structure for table boiler_alarm
+--  Triggers structure for table boiler_alarm
 -- ----------------------------
+ ;;
+delimiter ;
 DROP TRIGGER IF EXISTS `alarm_after_updated`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `alarm_after_updated` AFTER UPDATE ON `boiler_alarm` FOR EACH ROW BEGIN
+CREATE TRIGGER `alarm_after_updated` AFTER UPDATE ON `boiler_alarm` FOR EACH ROW BEGIN
 	IF NEW.`is_deleted` = 1 THEN
 		UPDATE	`boiler_alarm_feedback`
 		SET	`is_deleted` = 1
 		WHERE	`alarm_id` = NEW.`uid`;
 	END IF;
 END
-;;
+ ;;
 delimiter ;
 
+delimiter ;;
 -- ----------------------------
--- Triggers structure for table boiler_m163
+--  Triggers structure for table boiler_m163
 -- ----------------------------
+ ;;
+delimiter ;
 DROP TRIGGER IF EXISTS `uid`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `uid` BEFORE INSERT ON `boiler_m163` FOR EACH ROW BEGIN
+CREATE TRIGGER `uid` BEFORE INSERT ON `boiler_m163` FOR EACH ROW BEGIN
 	SET NEW.`uid` = UUID();
 END
-;;
+ ;;
 delimiter ;
-
--- ----------------------------
--- Triggers structure for table boiler_m163
--- ----------------------------
 DROP TRIGGER IF EXISTS `runtime`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `runtime` AFTER INSERT ON `boiler_m163` FOR EACH ROW BEGIN
+CREATE TRIGGER `runtime` AFTER INSERT ON `boiler_m163` FOR EACH ROW BEGIN
 	SET 	@boilerId = NULL;
 	SELECT 	`boiler`.`uid` INTO @boilerId
 	FROM 	`boiler`, `terminal`
@@ -3187,14 +3037,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `runtime` AFTER INSERT ON `boiler_m163
 			`parameter_id` = 1003,
 			`value` = NEW.`Analog3_channel` * 0.6;
 		END IF;
-			
-		INSERT IGNORE `boiler_runtime`
-		SET 	`uid` = UUID(),
-			`boiler_id` = @boilerId,
-			`remark` = 'm163.Switch_in_1_16_channel',
-			`created_date` = NEW.`TS`,
-			`parameter_id` = 1107,
-			`value` = NEW.`Switch_in_1_16_channel`;
 
 		SET	@fuelType = 0;
 		SET	@q2 = 0;
@@ -3328,15 +3170,18 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `runtime` AFTER INSERT ON `boiler_m163
 		END IF;
 	END IF;
 END
-;;
+ ;;
 delimiter ;
 
+delimiter ;;
 -- ----------------------------
--- Triggers structure for table boiler_runtime
+--  Triggers structure for table boiler_runtime
 -- ----------------------------
+ ;;
+delimiter ;
 DROP TRIGGER IF EXISTS `alarm`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `alarm` BEFORE INSERT ON `boiler_runtime` FOR EACH ROW BEGIN
+CREATE TRIGGER `alarm` BEFORE INSERT ON `boiler_runtime` FOR EACH ROW BEGIN
 	SELECT '' INTO @ruleId;
 	SELECT '' INTO @existAlarmId;
 	SELECT 0 INTO @priority;
@@ -3417,15 +3262,11 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `alarm` BEFORE INSERT ON `boiler_runti
 		END IF;
 	END IF;
 END
-;;
+ ;;
 delimiter ;
-
--- ----------------------------
--- Triggers structure for table boiler_runtime
--- ----------------------------
 DROP TRIGGER IF EXISTS `caches`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runtime` FOR EACH ROW BEGIN
+CREATE TRIGGER `caches` AFTER INSERT ON `boiler_runtime` FOR EACH ROW BEGIN
 	/* INSTANTS */
 	INSERT IGNORE `boiler_runtime_cache_instant`(
 		`runtime_id` ,
@@ -3439,7 +3280,8 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		`parameter_name` ,
 		`unit` ,
 		`alarm_level` ,
-		`alarm_description`
+		`alarm_description`,
+		`remark`
 		)
 	VALUES
 		(
@@ -3458,7 +3300,8 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		(SELECT `param`.`name` FROM `runtime_parameter` AS `param` WHERE `param`.id = NEW.`parameter_id`) ,
 		(SELECT `param`.`unit` FROM `runtime_parameter` AS `param` WHERE `param`.id = NEW.`parameter_id`) ,
 		(SELECT `alarm`.`priority` FROM `boiler_alarm` AS `alarm` WHERE `alarm`.uid = NEW.`alarm_id`) ,
-		(SELECT `alarm`.`description` FROM `boiler_alarm` AS `alarm` WHERE `alarm`.uid = NEW.`alarm_id`)
+		(SELECT `alarm`.`description` FROM `boiler_alarm` AS `alarm` WHERE `alarm`.uid = NEW.`alarm_id`),
+		NEW.`remark`
 	);
 
 	UPDATE 	`boiler_runtime_cache_instant`
@@ -3468,8 +3311,11 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		`value`	= (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
 			FROM `runtime_parameter` AS `param` 
 		   	WHERE `param`.id = NEW.`parameter_id`) ,
+		`name` = (SELECT `param`.`name` FROM `runtime_parameter` AS `param` WHERE `param`.id = NEW.`parameter_id`) ,
+		`unit` = (SELECT `param`.`unit` FROM `runtime_parameter` AS `param` WHERE `param`.id = NEW.`parameter_id`) ,
 		`alarm_level` = IFNULL((SELECT `alarm`.`priority` FROM `boiler_alarm` AS `alarm` WHERE `alarm`.`uid` = NEW.alarm_id LIMIT 1), 0) ,
-		`alarm_description` = IFNULL((SELECT `alarm`.`description` FROM `boiler_alarm` AS `alarm` WHERE `alarm`.`uid` = NEW.alarm_id LIMIT 1), '')
+		`alarm_description` = IFNULL((SELECT `alarm`.`description` FROM `boiler_alarm` AS `alarm` WHERE `alarm`.`uid` = NEW.alarm_id LIMIT 1), ''),
+		`remark` = NEW.`remark`
 	WHERE	`boiler_id` = NEW.`boiler_id` 
 	AND	`parameter_id` = NEW.`parameter_id` 
 	AND	NEW.`created_date` > `updated_date`;
@@ -3541,19 +3387,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE 	`boiler_runtime_cache_steam_temperature`
 		SET 	`alarm_description` = ''
 		WHERE 	`alarm_description` IS NULL;
-		
-		/*
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1001` = (SELECT `cache`.`value`
-				FROM `boiler_runtime_cache_steam_temperature` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`),
-			`a1001` = (SELECT `cache`.`alarm_level` 
-				FROM `boiler_runtime_cache_steam_temperature` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`)
-		WHERE	`history`.`boiler_id` = NEW.`boiler_id` 
-			AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-			AND `history`.`created_date` <= NOW();
-		*/
 	END IF;
 
 	IF NEW.parameter_id = 1002 THEN
@@ -3601,19 +3434,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE 	`boiler_runtime_cache_steam_pressure`
 		SET 	`alarm_description` = ''
 		WHERE 	`alarm_description` IS NULL;
-
-		/*
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1002` = (SELECT `cache`.`value`
-				FROM `boiler_runtime_cache_steam_pressure` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`),
-			`a1002` = (SELECT `cache`.`alarm_level` 
-				FROM `boiler_runtime_cache_steam_pressure` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-			AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-			AND `history`.`created_date` <= NOW();
-		*/
 	END IF;
 
 	IF NEW.`parameter_id` = 1003 THEN
@@ -3661,19 +3481,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE `boiler_runtime_cache_flow`
 		SET `alarm_description` = ''
 		WHERE `alarm_description` IS NULL;
-
-		/*
-		UPDATE `boiler_runtime_cache_history` AS `history`
-		SET `p1003` = (SELECT `cache`.`value`
-				FROM `boiler_runtime_cache_flow` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`),
-			`a1003` = (SELECT `cache`.`alarm_level` 
-				FROM `boiler_runtime_cache_flow` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`)
-		WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-			AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-			AND `history`.`created_date` <= NOW();
-		*/
 	END IF;
 
 
@@ -3722,32 +3529,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE boiler_runtime_cache_water_temperature
 		SET `alarm_description` = ''
 		WHERE `alarm_description` IS NULL;
-
-		/*
-		IF NEW.parameter_id = 1005 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1005` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_water_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1005` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_water_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		ELSEIF NEW.parameter_id = 1006 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1006` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_water_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1006` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_water_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		END IF;
-		*/
 	END IF;
 
 	IF NEW.parameter_id = 1014 OR NEW.parameter_id = 1015 THEN
@@ -3795,32 +3576,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE boiler_runtime_cache_smoke_temperature
 		SET `alarm_description` = ''
 		WHERE `alarm_description` IS NULL;
-
-		/*
-		IF NEW.parameter_id = 1014 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1014` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_smoke_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1014` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_smoke_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		ELSEIF NEW.parameter_id = 1015 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1015` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_smoke_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1015` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_smoke_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		END IF;
-		*/
 	END IF;
 
 	IF NEW.parameter_id = 1016 OR NEW.parameter_id = 1017 OR NEW.parameter_id = 1018 OR NEW.parameter_id = 1019 THEN
@@ -3868,54 +3623,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE boiler_runtime_cache_smoke_component
 		SET `alarm_description` = ''
 		WHERE `alarm_description` IS NULL;
-
-		/*
-		IF NEW.parameter_id = 1016 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1016` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1016` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		ELSEIF NEW.parameter_id = 1017 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1017` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1017` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		ELSEIF NEW.parameter_id = 1018 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1018` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1018` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		ELSEIF NEW.parameter_id = 1019 THEN
-			UPDATE `boiler_runtime_cache_history` AS `history`
-			SET `p1019` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1019` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_smoke_component` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		END IF;
-		*/
 	END IF;
 
 	IF NEW.`parameter_id` = 1021 OR NEW.`parameter_id` = 1022 THEN
@@ -3963,45 +3670,7 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE 	`boiler_runtime_cache_environment_temperature`
 		SET 	`alarm_description` = ''
 		WHERE 	`alarm_description` IS NULL;
-
-		/*
-		IF NEW.`parameter_id` = 1021 THEN
-			UPDATE 	`boiler_runtime_cache_history` AS `history`
-			SET 	`p1021` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_environment_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1021` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_environment_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		ELSEIF NEW.`parameter_id` = 1022 THEN
-			UPDATE 	`boiler_runtime_cache_history` AS `history`
-			SET 	`p1022` = (SELECT `cache`.`value`
-					FROM `boiler_runtime_cache_environment_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`),
-				`a1022` = (SELECT `cache`.`alarm_level` 
-					FROM `boiler_runtime_cache_environment_temperature` AS `cache`
-					WHERE `cache`.`runtime_id` = NEW.`id`)
-			WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-		END IF;
-		*/
 	END IF;
-
-	/*
-	IF NEW.`parameter_id` = 1080 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1080` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-			AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-			AND `history`.`created_date` <= NOW();
-	END IF;
-	*/
 
 	IF NEW.`parameter_id` = 1201 THEN
 		INSERT IGNORE `boiler_runtime_cache_heat`
@@ -4048,19 +3717,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE 	`boiler_runtime_cache_heat`
 		SET 	`alarm_description` = ''
 		WHERE 	`alarm_description` IS NULL;
-
-		/*
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1201` = (SELECT `cache`.`value`
-				FROM `boiler_runtime_cache_heat` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`),
-			`a1201` = (SELECT `cache`.`alarm_level` 
-				FROM `boiler_runtime_cache_heat` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`)
-		WHERE `history`.`boiler_id` = NEW.`boiler_id` 
-			AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-			AND `history`.`created_date` <= NOW();
-		*/
 	END IF;
 
 	IF NEW.parameter_id = 1202 THEN
@@ -4108,19 +3764,6 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		UPDATE 	`boiler_runtime_cache_excess_air`
 		SET 	`alarm_description` = ''
 		WHERE 	`alarm_description` IS NULL;
-
-		/*
-		UPDATE	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1202` = (SELECT `cache`.`value`
-				FROM `boiler_runtime_cache_excess_air` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`),
-			`a1202` = (SELECT `cache`.`alarm_level` 
-				FROM `boiler_runtime_cache_excess_air` AS `cache`
-				WHERE `cache`.`runtime_id` = NEW.`id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-			AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-			AND `history`.`created_date` <= NOW();
-		*/
 	END IF;
 
 	IF NEW.`parameter_id` DIV 100 = 11 THEN
@@ -4167,100 +3810,19 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `caches` AFTER INSERT ON `boiler_runti
 		SET `alarm_description` = ''
 		WHERE `alarm_description` IS NULL;
 	END IF;
-
-	/*
-	IF NEW.`parameter_id` = 1090 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1090` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1091 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1091` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1092 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1092` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1093 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1093` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1094 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1094` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1095 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1095` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1096 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1096` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1097 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1097` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1098 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1098` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	ELSEIF NEW.parameter_id = 1099 THEN
-		UPDATE 	`boiler_runtime_cache_history` AS `history`
-		SET 	`p1099` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`) 
-				FROM `runtime_parameter` AS `param`
-				WHERE `param`.`id` = NEW.`parameter_id`)
-		WHERE 	`history`.`boiler_id` = NEW.`boiler_id` 
-				AND `history`.`created_date` > (NOW() - INTERVAL 5 MINUTE) 
-				AND `history`.`created_date` <= NOW();
-	END IF;
-	*/
 END
-;;
+ ;;
 delimiter ;
 
+delimiter ;;
 -- ----------------------------
--- Triggers structure for table boiler_runtime_cache_status
+--  Triggers structure for table boiler_runtime_cache_status
 -- ----------------------------
+ ;;
+delimiter ;
 DROP TRIGGER IF EXISTS `running_duration`;
 delimiter ;;
-CREATE DEFINER = `azureadmin`@`%` TRIGGER `running_duration` BEFORE INSERT ON `boiler_runtime_cache_status` FOR EACH ROW BEGIN
+CREATE TRIGGER `running_duration` BEFORE INSERT ON `boiler_runtime_cache_status` FOR EACH ROW BEGIN
 	IF NEW.`parameter_id` = 1107 THEN
 		SELECT 	`status`.`id`, `status`.`value` INTO @statusId, @statusValue
 		FROM	`boiler_runtime_cache_status_running` AS `status`
@@ -4291,7 +3853,7 @@ CREATE DEFINER = `azureadmin`@`%` TRIGGER `running_duration` BEFORE INSERT ON `b
 		END IF;
 	END IF;
 END
-;;
+ ;;
 delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;

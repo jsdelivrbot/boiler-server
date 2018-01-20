@@ -9,43 +9,69 @@ import (
 	_ "github.com/AzureRelease/boiler-server/dba"
 	_ "github.com/AzureRelease/boiler-server/models"
 	_ "github.com/AzureRelease/boiler-server/controllers"
+	_ "github.com/AzureRelease/boiler-server/log"
 	"time"
 )
 
+var wechatServerEnabled = true
+
 func main() {
-	//go controllers.BoilerCtrl.InitBoilerDefaults()
-	//go controllers.RtmCtrl.InitRuntimeParameters()
+	//go controllers.BlrCtl.InitBoilerDefaults()
+	//go controllers.RtmCtl.InitRuntimeParameters()
+
+	//goazure.EnableAdmin = true
+	//go controllers.RtmCtl.:RefreshRuntimeStatusRunning()
+
+	//go generateRandomData(true)
+
+	initWechatServer()
 
 	//屏蔽错误页详细信息
 	goazure.ErrorController(&controllers.ErrorController{})
 
-	//go initDefaultData()
+	//controllers.OrgCtrl.InitOrganizationDefaults()
+	go initDefaultData()
+	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
+
+	//go controllers.ParamCtrl.InitParameterChannelConfig(600)
+
+	//goazure.Warn(fmt.Sprintf("%2x", 17867))
+	//goazure.Warn(fmt.Sprintf("%x", 17867))
+
+	//go controllers.RtmCtl.GetBoilerRank()
+	//go controllers.RtmCtl.GetRunningDuration()
 
 	goazure.Run()
 }
 
+func initWechatServer() {
+	if !wechatServerEnabled {
+		return
+	}
+
+	go controllers.AlmCtl.InitAlarmSendService()
+	go controllers.WxCtl.InitWechatService()
+}
+
 func initDefaultData() {
-	controllers.BoilerCtrl.InitBoilerDefaults()
-	controllers.RtmCtrl.InitRuntimeParameters()
+	controllers.BlrCtl.InitBoilerDefaults()
+	controllers.RtmCtl.InitRuntimeParameters()
 	controllers.MsgCtl.InitMessageTags()
 	controllers.OrgCtrl.InitOrganizationDefaults()
-	controllers.AlarmCtl.InitAlarmRules()
+	controllers.AlmCtl.InitAlarmRules()
 
 	trimBoilerData()
 	//go generateRandomData(true)
 }
 
 func generateRandomData(isOn bool) {
-	go controllers.RtmCtrl.GenerateBoilerStatus(isOn)
-	go controllers.RtmCtrl.GenerateBoilerRuntime(isOn)
+	go controllers.RtmCtl.GenerateBoilerStatus(isOn)
+	go controllers.RtmCtl.GenerateBoilerRuntime(isOn)
 
-	go controllers.RtmCtrl.UpdateRuntimeHistory(time.Time{}, time.Time{})
-
+	go controllers.RtmCtl.UpdateRuntimeHistory(time.Time{}, time.Time{})
 	//controllers.RtmCtl.UpdateRuntimeHistory(time.Now().Add(time.Hour * time.Duration(-hours)), time.Time{})
 }
 
 func trimBoilerData() {
 	controllers.UsrCtl.UpdateUserName()
-
-	controllers.BoilerCtrl.UpdatedBoilerModel()
 }

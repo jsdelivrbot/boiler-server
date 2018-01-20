@@ -13,8 +13,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"github.com/AzureRelease/boiler-server/dba"
 	"strconv"
+	"time"
 
 	"errors"
+	"reflect"
 )
 
 type UserController struct {
@@ -32,8 +34,8 @@ var UsrCtl *UserController
 //var CurrentUser *models.User
 
 func init()  {
-	//var role models.UserRole
-	//DataCtl.GenerateDefaultData(reflect.TypeOf(role), userDefautlsPath, "role", nil)
+	var role models.UserRole
+	DataCtl.GenerateDefaultData(reflect.TypeOf(role), userDefautlsPath, "role", nil)
 	UsrCtl.getSysUser()
 }
 
@@ -42,7 +44,7 @@ func (ctl *UserController) Get() {
 	fmt.Println("Get User!", usr)
 	//ctl.setCookiesWithUser(usr)
 
-	ctl.Data["json"] = usr;
+	ctl.Data["json"] = usr
 	ctl.ServeJSON()
 }
 
@@ -119,10 +121,11 @@ func (ctl *UserController) UserList() {
 
 func (ctl *UserController) UserRoleList() {
 	var roles []models.UserRole
-	qs := dba.BoilerOrm.QueryTable("user_role")
 
-	if _, err := qs.OrderBy("RoleId").All(&roles); err != nil {
-		fmt.Println("Fetch UserRoles List Error: ", err)
+	if 	_, err := dba.BoilerOrm.QueryTable("user_role").
+		Filter("RoleId__in", []int32{0, 1, 2, 10, 11}).
+		OrderBy("RoleId").All(&roles); err != nil {
+		goazure.Error("Fetch UserRoles List Error: ", err)
 	}
 
 	ctl.Data["json"] = roles
@@ -130,6 +133,7 @@ func (ctl *UserController) UserRoleList() {
 }
 
 func (ctl *UserController) UserActive() {
+	us := ctl.GetCurrentUser()
 	var u Usr
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -150,6 +154,7 @@ func (ctl *UserController) UserActive() {
 	}
 
 	usr.Status = models.USER_STATUS_NORMAL
+	usr.UpdatedBy = us
 
 	if err := DataCtl.AddData(&usr, true); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -161,6 +166,7 @@ func (ctl *UserController) UserActive() {
 }
 
 func (ctl *UserController) UserDelete() {
+	us := ctl.GetCurrentUser()
 	var u Usr
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -176,7 +182,9 @@ func (ctl *UserController) UserDelete() {
 	}
 
 	DataCtl.ReadData(&usr)
+
 	usr.Username = usr.Username + "_deleted"
+	usr.UpdatedBy = us
 	DataCtl.UpdateData(&usr)
 
 	if err := DataCtl.DeleteData(&usr); err != nil {
@@ -189,6 +197,8 @@ func (ctl *UserController) UserDelete() {
 }
 
 func (ctl *UserController) UserUpdate() {
+	us := ctl.GetCurrentUser()
+
 	var u Usr
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -207,7 +217,7 @@ func (ctl *UserController) UserUpdate() {
 		return
 	}
 
-	if u.RoleId != models.USER_ROLE_ORG_USER && u.RoleId != models.USER_ROLE_ORG_ADMIN {
+	if u.RoleId <= models.USER_ROLE_SUPERADMIN || u.RoleId >= models.USER_ROLE_USER {
 		org = nil
 	}
 
@@ -228,12 +238,13 @@ func (ctl *UserController) UserUpdate() {
 		usr.Status = int(u.Status)
 	} else {
 		usr.Username = u.Username
-		if err := DataCtl.ReadData(&usr, "Username"); err != nil || usr.IsDeleted {
+		if 	err := DataCtl.ReadData(&usr, "Username"); err != nil || usr.IsDeleted {
 			e := fmt.Sprintln("Find Update Username Error!", err)
 			goazure.Warn(e)
 			usr.IsDeleted = false
 			usr.Password = ctl.hashedPassword(u.Password)
 			usr.Status = models.USER_STATUS_NORMAL
+			usr.CreatedBy = us
 		} else {
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("用户名已经存在，请重新输入"))
@@ -246,8 +257,9 @@ func (ctl *UserController) UserUpdate() {
 	//stat, _ := strconv.ParseInt(u.Status, 10, 64);
 	//usr.Username = u.Username
 	usr.Name = u.Fullname
-	//usr.Role = role(int(u.RoleId))
+	usr.Role = role(int(u.RoleId))
 	usr.Organization = org
+	usr.UpdatedBy = us
 	if len(usr.Picture) == 0 {
 		usr.Picture  = "avatar0.png"
 	}
@@ -372,15 +384,18 @@ func (ctl *UserController) Login(u *Usr) (*models.User, error) {
 			return "Accepted"
 		}
 	}
-	login := models.UserLogin{}
+	var login models.UserLogin
+
 	login.User = &usr
 
 	login.Name = u.Username
 	login.Remark = resBody
 	login.CreatedBy = &usr
 
-	login.LoginPassword = loginPwd()
+	login.IsLogin = true
 	login.IsSuccess = isSuccess
+
+	login.LoginPassword = loginPwd()
 	login.LoginIp = u.IpAddress
 
 	if err := DataCtl.InsertData(&login); err != nil {
@@ -613,6 +628,54 @@ func (ctl *UserController) UpdateUserName() {
 	}
 }
 
+
+func (ctl *UserController) UserImageUpload() {
+	usr := ctl.GetCurrentUser()
+
+	if file, header, er := ctl.GetFile("file"); er != nil {
+		e := fmt.Sprintln("Upload Image File Failed:", er)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	} else {
+		//goazure.Warn("Upload Image Success:", file, header)
+		if file == nil {
+			e := fmt.Sprintln("File Is Null!")
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+			return
+		}
+
+		// get the filename
+		fileName := "headImage_" + time.Now().Format("20060102150405") + ".png"
+		basePath := "static/images/upload/"
+		filePath := basePath + fileName
+		// save to server
+		if err := ctl.SaveToFile("file", filePath); err != nil {
+			e := fmt.Sprintln("Save File Error:", err, fileName)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+			return
+		}
+
+		usr.Picture = "/upload/" + fileName
+
+		if 	err := DataCtl.UpdateData(usr); err != nil {
+			e := fmt.Sprintln("Updated User Image Error:", err, fileName)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+			return
+		}
+
+		//ctl.UpdateCurrentUser(usr)
+		goazure.Info("Save Done:", header.Filename, fileName)
+	}
+}
+
 func addUser(usr models.User) (error) {
 	err := DataCtl.AddData(&usr, true, "Uid")
 	if err != nil {
@@ -628,5 +691,5 @@ func role(roleId int) *models.UserRole {
 		fmt.Println("Read Role Error", err)
 	}
 
-	return &r;
+	return &r
 }
