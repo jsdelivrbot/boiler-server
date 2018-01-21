@@ -8,7 +8,6 @@ import (
 
 	"github.com/AzureRelease/boiler-server/models"
 
-	"github.com/pborman/uuid"
 	"encoding/json"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/AzureRelease/boiler-server/dba"
@@ -36,7 +35,6 @@ var UsrCtl *UserController
 func init()  {
 	var role models.UserRole
 	DataCtl.GenerateDefaultData(reflect.TypeOf(role), userDefautlsPath, "role", nil)
-	UsrCtl.getSysUser()
 }
 
 func (ctl *UserController) Get() {
@@ -541,65 +539,6 @@ func (ctl *UserController) setCookiesWithUser(usr *models.User) error {
 	}
 
 	return err
-}
-
-//*===================
-func (ctl *UserController) initSysUser() (error) {
-	role := models.UserRole{ RoleId: 0 }
-	err := DataCtl.ReadData(&role, "RoleId")
-
-	sysUser := models.User {}
-	sysUser.Role = &role
-	sysUser.Username = "sys"
-	sysUser.Password = ctl.hashedPassword("9S4kl2d6")
-	sysUser.Status = models.USER_STATUS_NORMAL
-
-	sysUser.Uid = uuid.New()
-	sysUser.Name = "system"
-	sysUser.NameEn = "system"
-
-	sysUser.Picture = "avatar.png"
-
-	sysUser.Supervisor = nil
-	sysUser.CreatedBy = nil
-	sysUser.UpdatedBy = nil
-
-	addUser(sysUser)
-
-	fmt.Println("Added SYS User = ", sysUser)
-
-	return err
-}
-
-func (ctl *UserController) getSysUser() (*models.User) {
-	var err error
-	role := models.UserRole{ RoleId: 0 }
-	err = DataCtl.ReadData(&role, "RoleId")
-	if err != nil {
-		fmt.Println("GetSysRole Error: ", err)
-	}
-
-	usr := models.User{ Role: &role}
-	err = DataCtl.ReadData(&usr, "Role")
-
-	if err != nil {
-		fmt.Println("GetSysUsr Error: ", err)
-	}
-
-	switch err {
-	case orm.ErrNoRows:
-		fallthrough
-	case orm.ErrMissPK:
-		err = ctl.initSysUser()
-		err = DataCtl.ReadData(&usr, "Role")
-	default:
-	}
-
-	if err != nil {
-		fmt.Println("GetSysUsr Error: ", err)
-	}
-
-	return &usr
 }
 
 func (ctl *UserController) hashedPassword(pwd string) string {
