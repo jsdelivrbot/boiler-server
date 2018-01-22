@@ -207,11 +207,19 @@
             </div>
             <!-- END CONTENT -->
             <!-- BEGIN QUICK SIDEBAR -->
-            <a href class="page-quick-sidebar-toggler">
-                <i class="icon-login"></i>
-            </a>
+            <!--<a href class="page-quick-sidebar-toggler">-->
+                <!--<i class="icon-login"></i>-->
+            <!--</a>-->
             <!-- END QUICK SIDEBAR -->
         </div>
+
+
+        <link rel="stylesheet" href="assets/theme-green-dark.css" ng-if="theme">
+        <div class="table-grid mb" style="position: fixed; right: 10px; top: 60px; z-index: 99; width: 100px;">
+            <input type="checkbox" ng-model="theme" ng-init="theme = true">
+            <span style="display: inline-block; width: 15px; height: 15px; background-color: #19bc9b;"></span>
+        </div>
+
         <!-- END CONTAINER -->
         <!-- BEGIN FOOTER -->
         <!--<div data-ng-include="'tpl/footer.html'" data-ng-controller="FooterController" class="page-footer"> </div>-->
