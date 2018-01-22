@@ -406,11 +406,13 @@ div.detail-btn label.active.btn-red {
     background-color: #1abc9c;
     border-color: #1abc9c;
 }
-profile-content .margiv-top-10{
-    float: right;
+
+.profile-content .margiv-top-10{
+    text-align: right;
 }
-profile-content .margin-top-10 {
-    float: right;
+
+.profile-content .margin-top-10 {
+    text-align: right;
 }
 
 /*运行参数*/
