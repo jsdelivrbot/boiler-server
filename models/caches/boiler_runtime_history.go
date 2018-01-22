@@ -18,7 +18,7 @@ type BoilerRuntimeHistory struct {
 
 type History struct {
 	ParameterId		int64				`json:"pid"`
-	Value			float64				`json:"val"`
+	Value			interface{}			`json:"val"`
 	Alarm			int					`json:"alm"`
 }
 

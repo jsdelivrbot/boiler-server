@@ -13,9 +13,40 @@ boilerAdmin.directive('boilerModule', function () {
     bModule = this;
 
     bModule.valueLabels = {};
+    bModule.statusLabels = {};
+    bModule.switchLabels = {};
+
+    var copy = function (obj) {
+        var aObj = {};
+
+        for (var i = 0; i < Object.keys(obj).length; i++) {
+            var key = Object.keys(obj)[i];
+            var value = obj[key];
+            aObj[key] = ((typeof value) === 'object' ? copy(value) : value);
+        }
+
+        return aObj;
+    };
+
+    var moduleOptionsDef = {
+        align: "left",  //"left", "justify"
+
+        baseWidth: 110,
+        height: 54,
+        gap: 8,
+
+        baseX: 0,
+        baseY: 0
+    };
 
     $rootScope.$watch('boiler', function () {
-        // console.error("$rootScope.$watch('instants')", $rootScope.boiler, bModule.boiler);
+        // console.error("$rootScope.$watch('boiler')", $rootScope.boiler, bModule.boiler);
+        if (!$rootScope.boiler || bModule.boiler === $rootScope.boiler) {
+            return;
+        }
+
+        bModule.boiler = $rootScope.boiler;
+
         bModule.initModule();
     });
 
@@ -26,16 +57,25 @@ boilerAdmin.directive('boilerModule', function () {
         }
         bModule.instants = $rootScope.instants;
 
-        bModule.updateLabelText();
+        bModule.updateStatusLabels();
+        bModule.updateLabels();
+    });
+
+    $rootScope.$watch('isBoilerBurning', function () {
+        // console.error("$rootScope.$watch('isBoilerBurning')", $rootScope.isBoilerBurning);
+        bModule.isBoilerBurning = $rootScope.isBoilerBurning;
+
+        bModule.renderAnimations();
+        bModule.updateStatusLabels();
     });
 
     bModule.initModule = function () {
-        if (!$rootScope.boiler ||
-            !$rootScope.instants || $rootScope.instants.length <= 0 ||
-            bModule.boiler === $rootScope.boiler || bModule.instants === $rootScope.instants) {
+        if (!bModule.boiler ||
+            !$rootScope.instants ||
+            $rootScope.instants.length <= 0 ||
+            bModule.instants === $rootScope.instants) {
             return;
         }
-        bModule.boiler = $rootScope.boiler;
         bModule.instants = $rootScope.instants;
 
         console.error("Runtime initModule!", bModule.instants);
@@ -96,16 +136,15 @@ boilerAdmin.directive('boilerModule', function () {
                 svgName = "/img/boiler_coal_water.svg";
                 break;
             case BOILE_MODULE_HEAT_WATER_SYSTEM:
-                svgName = "/img/boiler_xiangneng.svg";
+                svgName = "/img/electricity.svg";
                 break;
             default:
                 svgName = "/img/boiler_coal_double.svg";
                 break;
         }
 
-        if  ($rootScope.statusMode === 5) {
-            bModule.moduleId = BOILE_MODULE_COAL_DOUBLE;
-            svgName = "/img/boiler_coal_water.svg";
+        if  (bModule.boiler.TerminalCode == 680071) {
+            svgName = "/img/boiler_gas_temp.svg";
         }
 
         // svgName = "/img/boiler_module_test.svg";
@@ -152,40 +191,17 @@ boilerAdmin.directive('boilerModule', function () {
              gauges[name].render();
              */
 
-            var moduleOptionsDef = {
-                align: "left",  //"left", "justify"
-
-                baseWidth: 110,
-                height: 54,
-                gap: 8,
-
-                baseX: 0,
-                baseY: 0
-            };
-
-            var copy = function (obj) {
-                var aObj = {};
-
-                for (var i = 0; i < Object.keys(obj).length; i++) {
-                    var key = Object.keys(obj)[i];
-                    var value = obj[key];
-                    aObj[key] = ((typeof value) === 'object' ? copy(value) : value);
-                }
-
-                return aObj;
-            };
-
             var isTerminalConnected = (bModule.boiler.Terminal && bModule.boiler.Terminal.IsOnline) || bModule.boiler.isBurning;
             var statData = [
                 [
-                    {id: 0, name: "终端状态", text: isTerminalConnected ? "已连接" : "未连接", type: "status", value: !!isTerminalConnected},
-                    {id: 0, name: "燃烧状态", text: bModule.boiler.isBurning ? "已点燃" : "未点燃", type: "status", value: bModule.boiler.isBurning},
-                    {id: 0, name: "告警状态", text: "", type: "status", value: bModule.boiler.alarmLevel}
-                ],
+                    {id: 1, name: "终端状态", text: isTerminalConnected ? "已连接" : "未连接", type: "status", value: !!isTerminalConnected},
+                    {id: 2, name: "燃烧状态", text: bModule.boiler.isBurning ? "已点燃" : "未点燃", type: "status", value: bModule.boiler.isBurning},
+                    {id: 3, name: "告警状态", text: "", type: "status", value: bModule.boiler.alarmLevel}
+                ]/*,
                 [
                     {id: 0, name: "热效率(正平衡)"},
                     {id: 1201, name: "热效率(反平衡)"}
-                ]
+                ]*/
                 // "蒸汽超压", "环境温度",
                 // "运行时间(每天)", "运行时间(累积)"
             ];
@@ -206,6 +222,7 @@ boilerAdmin.directive('boilerModule', function () {
             var insG2Row = 1;
             var insG2Col = 6;
 
+            var insG0X = 0;
             var insG0Y = 160;
 
             var insG1X = 820;
@@ -216,10 +233,22 @@ boilerAdmin.directive('boilerModule', function () {
 
             switch (bModule.moduleId) {
                 case BOILE_MODULE_COAL_DOUBLE:
-                case BOILE_MODULE_COAL_WATER:
                     insG0Row = 2;
                     insG1Row = 6;
                     insG1Col = 2;
+                    break;
+                case BOILE_MODULE_COAL_WATER:
+                    insG0Row = 3;
+                    insG0Y = 120;
+
+                    insG1Col = 2;
+                    insG1Row = 6;
+
+                    insG2Row = 3;
+                    insG2Col = 11;
+                    insG2X = 0;
+                    insG2Y = 750;
+
                     break;
                 case BOILE_MODULE_GAS:
                     insG0Row = 6;
@@ -228,7 +257,6 @@ boilerAdmin.directive('boilerModule', function () {
 
                     insG1Row = 2;
                     insG1Col = 8;
-
                     insG1X = 370;
                     insG1Y = 0;
 
@@ -245,7 +273,6 @@ boilerAdmin.directive('boilerModule', function () {
 
                     insG1Row = 2;
                     insG1Col = 8;
-
                     insG1X = 370;
                     insG1Y = 0;
 
@@ -255,7 +282,10 @@ boilerAdmin.directive('boilerModule', function () {
                     insG2Y = 760;
                     break;
                 case BOILE_MODULE_HEAT_WATER_SYSTEM:
-
+                    insG0Row = 3;
+                    insG0Col = 8;
+                    insG0X = 370;
+                    insG0Y = 0;
                     break;
                 default:
 
@@ -277,9 +307,15 @@ boilerAdmin.directive('boilerModule', function () {
                         id: ins.id,
                         name: ins.name
                     };
-                    if (ins.category === 11) {
-                        iData.type = "switch";
+                    switch (ins.category) {
+                        case 11:
+                            iData.type = "switch";
+                            break;
+                        case 13:
+                            iData.type = "range";
+                            break;
                     }
+
                     switch (ins.id) {
                         case 1021:
                             iData.name = "环境温度";
@@ -294,15 +330,6 @@ boilerAdmin.directive('boilerModule', function () {
                 insData.push(rowData);
             }
 
-            if ($rootScope.statusMode === 5) {
-                insData = [
-                    [
-                        {id: 1021, name: "环境温度"},
-                        {id: 1080, name: "空气湿度"}
-                    ]
-                ];
-            }
-
             for (var i = 0; i < Math.min((bModule.instants.length - insG0Num) / insG1Col, insG1Row); i++) {
                 var rowData = [];
                 for (var j = 0; j < insG1Col; j++) {
@@ -315,8 +342,13 @@ boilerAdmin.directive('boilerModule', function () {
                         id: ins.id,
                         name: ins.name
                     };
-                    if (ins.category === 11) {
-                        iData.type = "switch";
+                    switch (ins.category) {
+                        case 11:
+                            iData.type = "switch";
+                            break;
+                        case 13:
+                            iData.type = "range";
+                            break;
                     }
 
                     switch (ins.id) {
@@ -344,8 +376,14 @@ boilerAdmin.directive('boilerModule', function () {
                         id: ins.id,
                         name: ins.name
                     };
-                    if (ins.category === 11) {
-                        iData.type = "switch";
+
+                    switch (ins.category) {
+                        case 11:
+                            iData.type = "switch";
+                            break;
+                        case 13:
+                            iData.type = "range";
+                            break;
                     }
                     console.warn("insG2:", ins, i, j, idx);
                     switch (ins.id) {
@@ -363,48 +401,8 @@ boilerAdmin.directive('boilerModule', function () {
             }
 
             var insOptions = copy(moduleOptionsDef);
+            insOptions.baseX = insG0X;
             insOptions.baseY = insG0Y;
-
-            /*
-            if (bModule.moduleId === 11) {
-                insData = [
-                    [
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                    ],
-                    [
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                    ],
-                    [
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                        {id: 1021, name: "环境温度"},
-                    ]
-                ];
-
-                insOptions.baseX = 380;
-                insOptions.baseY = 0;
-                insOptions.gap = 6;
-            }
-            */
 
             var insG1Options = copy(moduleOptionsDef);
             insG1Options.baseX = insG1X;
@@ -585,13 +583,6 @@ boilerAdmin.directive('boilerModule', function () {
                                 {id: 0, name: "蒸汽流量(累计)"}
                             ]
                         ];
-                    } else if ($rootScope.statusMode === 5) {
-                        steamData = [
-                            [
-                                {id: 1096, name: "供水温度"},
-                                {id: 1098, name: "供水压力"}
-                            ]
-                        ];
                     } else {
                         steamData = [
                             [
@@ -605,112 +596,62 @@ boilerAdmin.directive('boilerModule', function () {
                         ];
                     }
 
-                    if ($rootScope.statusMode === 5) {
-                        smokeData = [
-                            [
-                                {id: 1092, name: "#1排烟温度"},
-                                {id: 1093, name: "#2排烟温度"},
-                                {id: 1090, name: "#1省煤器"},
-                                {id: 1091, name: "#2省煤器"},
-                                {id: 1094, name: "#1氧化锆"}
-                            ]
-                        ];
+                    waterData = [
+                        [{id: 0, type: "status", text: "", name: "软水硬度", value: -1}],
 
-                        if (bModule.boiler.TerminalCode == 680500) {
-                            smokeData[0].push({id: 10127, name: "二氧化硫"});
-                        } else {
-                            smokeData[0].push({id: 1095, name: "#2氧化锆"});
-                        }
+                        [{id: 1006, name: "给水温度(热)"}],
+                        [{id: 1005, name: "给水温度(冷)"}],
+                        [{id: 1010, name: "给水流量(瞬时)"}],
+                        [{id: 0, name: "给水流量(累计)"}]
+                    ];
 
-                        smokeOptions.baseX = 480;
-                        smokeOptions.baseY = 680;
+                    smokeData = [
+                        [
+                            {id: 1202, name: "过量空气系数"},
+                            {id: 1016, name: "排烟氧量"},
+                            {id: 1014, name: "排烟温度(前)"},
+                            {id: 1015, name: "排烟温度(后)"}
+                        ]
+                    ];
 
-                        waterData = [
-                            [{id: 1097, name: "回水温度"}],
-                            [{id: 1099, name: "回水压力"}]
-                        ];
+                    fuelData = [
+                        [{id: 0, name: "进煤量(瞬时)"}],
+                        [{id: 0, name: "进煤量(累计)"}]
+                    ];
 
-                        waterOptions.baseX = 850;
-                        waterOptions.baseY = 200;
-                    } else {
-                        waterData = [
-                            [{id: 0, type: "status", text: "", name: "软水硬度", value: -1}],
+                    waterLvOptions.baseX = 20;
+                    waterLvOptions.baseY = 300;
 
-                            [{id: 1006, name: "给水温度(热)"}],
-                            [{id: 1005, name: "给水温度(冷)"}],
-                            [{id: 1010, name: "给水流量(瞬时)"}],
-                            [{id: 0, name: "给水流量(累计)"}]
-                        ];
+                    waterOptions.baseX = 850;
+                    waterOptions.baseY = 128;
 
-                        smokeData = [
-                            [
-                                {id: 1202, name: "过量空气系数"},
-                                {id: 1016, name: "排烟氧量"},
-                                {id: 1014, name: "排烟温度(前)"},
-                                {id: 1015, name: "排烟温度(后)"}
-                            ]
-                        ];
+                    smokeOptions.baseX = 640;
+                    smokeOptions.baseY = 680;
 
-                        fuelData = [
-                            [{id: 0, name: "进煤量(瞬时)"}],
-                            [{id: 0, name: "进煤量(累计)"}]
-                        ];
-
-                        waterLvOptions.baseX = 20;
-                        waterLvOptions.baseY = 300;
-
-                        waterOptions.baseX = 850;
-                        waterOptions.baseY = 128;
-
-                        smokeOptions.baseX = 640;
-                        smokeOptions.baseY = 680;
-
-                        fuelOptions.baseX = 20;
-                        fuelOptions.baseY = 440;
-                    }
+                    fuelOptions.baseX = 20;
+                    fuelOptions.baseY = 440;
 
                     steamOptions.baseX = 490;
                     steamOptions.baseY = 100;
 
                     break;
-            }*/
-
-            // renderStatusModule("#status_container", statData, statOptions);
-            // renderStatusModule("#instant_container", insData, insOptions);
-            // renderStatusModule("#instant_g1_container", insG1Data, insG1Options);
-            // renderStatusModule("#instant_g2_container", insG2Data, insG2Options);
-
-            // if (bModule.moduleId !== BOILE_MODULE_COAL_WATER) {
-            //     renderStatusModule("#steam_container", steamData, steamOptions);
-            //     renderStatusModule("#water_container", waterData, waterOptions);
-            //     if ($rootScope.statusMode !== 5) {
-            //         renderStatusModule("#water_lv_container", waterLvData, waterLvOptions);
-            //     }
-            //     renderStatusModule("#smoke_container", smokeData, smokeOptions);
-            //     renderStatusModule("#fuel_container", fuelData, fuelOptions);
-            // }
-
-            if (bModule.boiler.isBurning) {
-                switch (bModule.moduleId) {
-                    case BOILE_MODULE_OIL:
-                        renderGasFire("#fire_container");
-                        renderOilDashes("#dash_container");
-                        renderGasSmokeDashes("#dash_smoke_container");
-                        break;
-                    case BOILE_MODULE_GAS:
-                        renderGasFire("#fire_container");
-                        renderGasDashes("#dash_container");
-                        renderGasSmokeDashes("#dash_smoke_container");
-                        break;
-                    case BOILE_MODULE_WATER:
-                        renderWaterFire("#fire_container");
-                        renderWaterDashes("#dash_container");
-                        break;
-                    default:
-                        renderCoalDashes("#dash_container");
-                        break;
-                }
             }
+
+            renderStatusModule("#status_container", statData, statOptions);
+            renderStatusModule("#instant_container", insData, insOptions);
+            renderStatusModule("#instant_g1_container", insG1Data, insG1Options);
+            renderStatusModule("#instant_g2_container", insG2Data, insG2Options);
+
+            if (bModule.moduleId !== BOILE_MODULE_COAL_WATER) {
+                renderStatusModule("#steam_container", steamData, steamOptions);
+                renderStatusModule("#water_container", waterData, waterOptions);
+                renderStatusModule("#water_lv_container", waterLvData, waterLvOptions);
+                renderStatusModule("#smoke_container", smokeData, smokeOptions);
+                renderStatusModule("#fuel_container", fuelData, fuelOptions);
+            }
+            */
+
+            bModule.renderAnimations();
 
         });
     };
@@ -772,7 +713,8 @@ boilerAdmin.directive('boilerModule', function () {
 
                 var d = rowData[col];
 
-                var barColor = (d.type === "status" && d.value >= 0) || d.type === "switch" ? "#4c87b9" : "#bfcad1";
+                // var barColor = (d.type === "status" && d.value >= 0) || d.type === "switch" ? "#4c87b9" : "#bfcad1";
+                var barColor = "#4c87b9";
                 var text = (d.type === "switch" ? "" : (d.type === "status" ? d.text : "未测定"));
                 var textColor = d.type === "status" ? "#fff" : "#aaa";
                 if (bModule.boiler.isBurning &&
@@ -828,7 +770,7 @@ boilerAdmin.directive('boilerModule', function () {
                         }
                     }
 
-                    statusModule.append("rect")
+                    var statusLabel = statusModule.append("rect")
                         .attr("x", cx + 4)
                         .attr("y", cy + height / 2 + 4)
                         .attr("width", width - 8)
@@ -836,6 +778,9 @@ boilerAdmin.directive('boilerModule', function () {
                         .attr("rx", 6)
                         .attr("ry", 6)
                         .style("fill", bgColor);
+
+                    bModule.statusLabels[d.id] = {};
+                    bModule.statusLabels[d.id].label = statusLabel;
                 }
 
                 if (d.type === "switch") {
@@ -850,10 +795,34 @@ boilerAdmin.directive('boilerModule', function () {
                     var bgColor = "#cfdae1";
                     // console.error("SwitchValue:", ins);
                     if (typeof ins.value === "boolean") {
-                        bgColor = ins.value ? "#f7ca18" : "#cfdae1";
+                        bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
                     } else if (typeof ins.value === "number") {
-                        bgColor = ins.value > 0 ? "#f7ca18" : "#cfdae1";
+                        bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
                     }
+
+                    var switchLabel = statusModule.append("rect")
+                        .attr("x", cx + 4)
+                        .attr("y", cy + height / 2 + 4)
+                        .attr("width", width - 8)
+                        .attr("height", height / 2 - 8)
+                        .attr("rx", 6)
+                        .attr("ry", 6)
+                        .style("fill", bgColor);
+
+                    bModule.switchLabels[d.id] = switchLabel;
+                }
+
+                if (d.type === "range") {
+                    //StatusColor Drawing
+                    var ins;
+                    for (var i = 0; i < bModule.instants.length; i++) {
+                        if (d.id === bModule.instants[i].id) {
+                            ins = bModule.instants[i];
+                        }
+                    }
+
+                    var bgColor = "#32c5d2";
+                    textColor = "#fff";
 
                     statusModule.append("rect")
                         .attr("x", cx + 4)
@@ -865,7 +834,7 @@ boilerAdmin.directive('boilerModule', function () {
                         .style("fill", bgColor);
                 }
 
-                //Label Drawing
+                //Bar Drawing
                 var barSize = fontSize;
                 if (d.name.length > 7) {
                     barSize -= 2 * (d.name.length - 7);
@@ -896,19 +865,57 @@ boilerAdmin.directive('boilerModule', function () {
                     .style("fill", textColor)
                     .style("stroke-width", "0px");
 
-                bModule.valueLabels[d.id] = valueLabel;
+                if (d.type !== "switch" && d.type !== "status") {
+                    bModule.valueLabels[d.id] = valueLabel;
+                } else if (d.type === "status") {
+                    bModule.statusLabels[d.id].value = valueLabel;
+                }
                 valueLabel.text(text);
             }
         }
     };
 
+    bModule.renderAnimations = function () {
+        if (!bModule.isBoilerBurning) {
+            return;
+        }
+
+        if (!bModule.svg) {
+            return;
+        }
+
+        switch (bModule.moduleId) {
+            case BOILE_MODULE_OIL:
+                renderGasFire("#fire_container");
+                renderOilDashes("#dash_container");
+                renderGasSmokeDashes("#dash_smoke_container");
+                break;
+            case BOILE_MODULE_GAS:
+                renderGasFire("#fire_container");
+                renderGasDashes("#dash_container");
+                renderGasSmokeDashes("#dash_smoke_container");
+                break;
+            case BOILE_MODULE_WATER:
+                renderWaterFire("#fire_container");
+                renderWaterDashes("#dash_container");
+                break;
+            case BOILE_MODULE_HEAT_WATER_SYSTEM:
+                renderElectricDashes("#dash_container");
+                break;
+            default:
+                renderCoalDashes("#dash_container");
+                break;
+        }
+    };
+
     var renderCoalDashes = function (id) {
+        var dashModule = bModule.svg.select(id);
+
         var size = 8;
         var sec = 4096;
 
         var color = "#fff";
 
-        var dashModule = bModule.svg.select(id);
         if (!dashModule) {
             console.warn("There IS NO " + id + "!");
             return;
@@ -988,17 +995,19 @@ boilerAdmin.directive('boilerModule', function () {
 
         dashModule
             .transition().on("start", function repeat() {
-            dashModule
-                .transition().delay(260).on("start", function () {
-                dashSteam();
-                dashWater();
-                dashSmoke();
-                dashAir();
-                repeat();
+                if (!bModule.isBoilerBurning) {
+                    return;
+                }
+                dashModule
+                    .transition().delay(260).on("start", function () {
+                        dashSteam();
+                        dashWater();
+                        dashSmoke();
+                        dashAir();
+                        repeat();
             });
         });
     };
-
 
     var renderOilDashes = function (id) {
         var size = 8;
@@ -1012,54 +1021,51 @@ boilerAdmin.directive('boilerModule', function () {
             return;
         }
 
-            var dashSteam = function () {
+        var dashSteam = function () {
             dashModule
-            .append("circle").attr("cx", 611).attr("cy", 340).attr("r", size / 2).style("fill", color)
-            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 88)
-            .transition().duration(sec / 6).ease(d3.easeLinear).attr("cx", 540)
-            .remove();
-            };
+                .append("circle").attr("cx", 611).attr("cy", 340).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 88)
+                .transition().duration(sec / 6).ease(d3.easeLinear).attr("cx", 540)
+                .remove();
+        };
 
-            var dashWater = function () {
+        var dashWater = function () {
             dashModule
-            .append("circle").attr("cx", 1200).attr("cy", 377).attr("r", size / 2).style("fill", color)
-            .transition().duration(sec / 5).ease(d3.easeLinear).attr("cx", 1104)
-            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 626)
-            .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 1086)
-            .remove();
-
-                dashModule
-            .append("circle").attr("cx", 1002).attr("cy", 648).attr("r", size / 2).style("fill", color)
-            .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 981)
-            .transition().duration(sec / 1).ease(d3.easeLinear).attr("cy", 110)
-            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 672)
-            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 340)
-            .remove();
-
-
-                    };
-
-            var dashFuel = function () {
-            dashModule
-            .append("circle").attr("cx", 130).attr("cy", 514).attr("r", size / 2).style("fill", "#eee")
-            .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 436)
-            .remove();
-                    };
+                .append("circle").attr("cx", 1200).attr("cy", 377).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 5).ease(d3.easeLinear).attr("cx", 1104)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 626)
+                .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 1086)
+                .remove();
 
             dashModule
-             .transition().on("start", function repeat() {
-             dashModule
-             .transition().delay(260).on("start", function () {
+                .append("circle").attr("cx", 1002).attr("cy", 648).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 981)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cy", 110)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 672)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 340)
+                .remove();
+
+
+        };
+
+        var dashFuel = function () {
+            dashModule
+                .append("circle").attr("cx", 130).attr("cy", 514).attr("r", size / 2).style("fill", "#eee")
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 436)
+                .remove();
+        };
+
+        dashModule
+            .transition().on("start", function repeat() {
+            dashModule
+                .transition().delay(260).on("start", function () {
                 dashSteam();
                 dashWater();
                 dashFuel();
                 repeat();
-                            });
-                    });
-            };
-
-
-
+            });
+        });
+    };
 
     var renderGasDashes = function (id) {
         var size = 8;
@@ -1114,6 +1120,9 @@ boilerAdmin.directive('boilerModule', function () {
 
         dashModule
             .transition().on("start", function repeat() {
+            if (!bModule.isBoilerBurning) {
+                return;
+            }
             dashModule
                 .transition().delay(260).on("start", function () {
                 dashSteam();
@@ -1144,6 +1153,9 @@ boilerAdmin.directive('boilerModule', function () {
 
         dashSmokeModule
             .transition().on("start", function repeat() {
+            if (!bModule.isBoilerBurning) {
+                return;
+            }
             dashSmokeModule
                 .transition().delay(260).on("start", function () {
                 dashSmoke();
@@ -1211,12 +1223,51 @@ boilerAdmin.directive('boilerModule', function () {
 
         dashModule
             .transition().on("start", function repeat() {
+            if (!bModule.isBoilerBurning) {
+                return;
+            }
             dashModule
                 .transition().delay(360).on("start", function () {
                 dashWaterIn();
                 dashWaterOut();
                 dashSmoke();
                 dashFuel();
+                repeat();
+            });
+        });
+    };
+
+    var renderElectricDashes = function (id) {
+        var size = 6;
+        var sec = 4096;
+        var color = "#fff";
+
+        var dashModule = bModule.svg.select(id);
+        if (!dashModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var dashWater = function () {
+            dashModule.append("circle").attr("cx", 263).attr("cy", 270).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 6).ease(d3.easeLinear).attr("cx", 294)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 441)
+                .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 400)
+                .remove();
+
+            dashModule.append("circle").attr("cx", 402).attr("cy", 540).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 260)
+                .remove();
+        };
+
+        dashModule
+            .transition().on("start", function repeat() {
+            if (!bModule.isBoilerBurning) {
+                return;
+            }
+            dashModule
+                .transition().delay(260).on("start", function () {
+                dashWater();
                 repeat();
             });
         });
@@ -1250,6 +1301,10 @@ boilerAdmin.directive('boilerModule', function () {
         };
 
         d3.interval(function () {
+            if (!bModule.isBoilerBurning) {
+                fire.remove();
+                return;
+            }
             burn();
         }, sec);
     };
@@ -1282,19 +1337,84 @@ boilerAdmin.directive('boilerModule', function () {
         };
 
         d3.interval(function () {
+            if (!bModule.isBoilerBurning) {
+                fire.remove();
+                return;
+            }
             burn();
         }, sec);
     };
 
-    bModule.updateLabelText = function () {
+    bModule.updateStatusLabels = function () {
+        if (!bModule.boiler) {
+            if (!$rootScope.boiler) {
+                return
+            }
+
+            bModule.boiler = $rootScope.boiler;
+        }
+
+        var isTerminalConnected = (bModule.boiler.Terminal && bModule.boiler.Terminal.IsOnline) || bModule.isBoilerBurning;
+
+        for (var i in bModule.statusLabels) {
+            var statusLabel = bModule.statusLabels[i];
+            var text = "";
+            var bgColor = "#32c5d2";
+
+            switch (parseInt(i, 10)) {
+                case 1:
+                    text = isTerminalConnected ? "已连接" : "未连接";
+                    bgColor = isTerminalConnected ? "#32c5d2" : "#bfcad1";
+                    break;
+                case 2:
+                    text = bModule.isBoilerBurning ? "已点燃" : "未点燃";
+                    bgColor = bModule.isBoilerBurning ? "#32c5d2" : "#e7505a";
+                    break;
+                case 3:
+                    switch (bModule.boiler.alarmLevel) {
+                        case -1:
+                            bgColor = "#cfdae1";
+                            break;
+                        case 0:
+                            bgColor = "#32c5d2";
+                            break;
+                        case 1:
+                            bgColor = "#f3c200";
+                            break;
+                        case 2:
+                            bgColor = "#e7505a";
+                            break;
+                    }
+                    break;
+            }
+
+            // console.error("updateStatusLabels", i, text, bgColor, statusLabel);
+
+            statusLabel.value.text(text);
+            statusLabel.label.style("fill", bgColor);
+        }
+    };
+
+    bModule.updateLabels = function () {
         // $log.error("updateWaterText()", bModule.valueLabels, new Date());
-        for (var i = 0; i < bModule.instants.length; i++) {
+        for (var i in bModule.instants) {
             var ins = bModule.instants[i];
             if (bModule.valueLabels[ins.id] &&
                 ins.category !== 11) {
                 bModule.valueLabels[ins.id].text(ins.value + ins.unit);
             }
 
+            if (bModule.switchLabels[ins.id]) {
+                var bgColor = "#cfdae1";
+                // console.error("SwitchValue:", ins);
+                if (typeof ins.value === "boolean") {
+                    bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+                } else if (typeof ins.value === "number") {
+                    bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+                }
+
+                bModule.switchLabels[ins.id].style("fill", bgColor);
+            }
         }
     };
 });

@@ -1,7 +1,0 @@
-SELECT COUNT(*) FROM `boiler_runtime` WHERE `created_date` > CURDATE() - INTERVAL 1 MONTH;
-
-SELECT COUNT(*) FROM `boiler_runtime` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH;
-
-DELETE FROM `boiler_runtime` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH LIMIT 100000;
-
-SELECT COUNT(*) FROM `boiler_runtime_cache_history_backup` WHERE `is_demo` = 1 AND `created_date` < CURDATE() - INTERVAL 1 MONTH;

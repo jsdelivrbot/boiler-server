@@ -2,14 +2,64 @@
 
 // sass compile
 var gulp = require('gulp');
-var minifyCss = require("gulp-clean-css");
+var sass = require('gulp-sass');
+var prettify = require('gulp-prettify');
+var minifyCss = require("gulp-minify-css");
 var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
-var concat = require("gulp-concat");
+var rtlcss = require("gulp-rtlcss");  
+var connect = require('gulp-connect');
 
+//*** Localhost server tast
+gulp.task('localhost', function() {
+  connect.server();
+});
 
+gulp.task('localhost-live', function() {
+  connect.server({
+    livereload: true
+  });
+});
 
-//*** CSS  minify task
+//*** SASS compiler task
+gulp.task('sass', function () {
+  // bootstrap compilation
+	gulp.src('./sass/bootstrap.scss').pipe(sass()).pipe(gulp.dest('./assets/global/plugins/bootstrap/css/'));
+
+  // select2 compilation using bootstrap variables
+	gulp.src('./assets/global/plugins/select2/sass/select2-bootstrap.min.scss').pipe(sass({outputStyle: 'compressed'})).pipe(gulp.dest('./assets/global/plugins/select2/css/'));
+
+  // global theme stylesheet compilation
+	gulp.src('./sass/global/*.scss').pipe(sass()).pipe(gulp.dest('./assets/global/css'));
+	gulp.src('./sass/apps/*.scss').pipe(sass()).pipe(gulp.dest('./assets/apps/css'));
+	gulp.src('./sass/pages/*.scss').pipe(sass()).pipe(gulp.dest('./assets/pages/css'));
+
+  // theme layouts compilation
+	gulp.src('./sass/layouts/boiler/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/boiler/css'));
+  gulp.src('./sass/layouts/boiler/themes/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/boiler/css/themes'));
+
+  gulp.src('./sass/layouts/layout2/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout2/css'));
+  gulp.src('./sass/layouts/layout2/themes/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout2/css/themes'));
+
+  gulp.src('./sass/layouts/layout3/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout3/css'));
+  gulp.src('./sass/layouts/layout3/themes/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout3/css/themes'));
+
+  gulp.src('./sass/layouts/layout4/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout4/css'));
+  gulp.src('./sass/layouts/layout4/themes/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout4/css/themes'));
+
+  gulp.src('./sass/layouts/layout5/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout5/css'));
+
+  gulp.src('./sass/layouts/layout6/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout6/css'));
+
+  gulp.src('./sass/layouts/layout7/*.scss').pipe(sass()).pipe(gulp.dest('./assets/layouts/layout7/css'));
+});
+
+//*** SASS watch(realtime) compiler task
+gulp.task('sass:watch', function () {
+	gulp.watch('./sass/**/*.scss', ['sass']);
+});
+
+//*** CSS & JS minify task
 gulp.task('minify', function () {
     // css minify 
     gulp.src(['./assets/apps/css/*.css', '!./assets/apps/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/apps/css/'));
@@ -22,95 +72,61 @@ gulp.task('minify', function () {
 
     gulp.src(['./assets/global/plugins/bootstrap/css/*.css','!./assets/global/plugins/bootstrap/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/global/plugins/bootstrap/css/'));
 
-   
+    //js minify
+    gulp.src(['./assets/apps/scripts/*.js','!./assets/apps/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/apps/scripts/'));
+    gulp.src(['./assets/global/scripts/*.js','!./assets/global/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/global/scripts'));
+    gulp.src(['./assets/pages/scripts/*.js','!./assets/pages/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/pages/scripts'));
+    gulp.src(['./assets/layouts/**/scripts/*.js','!./assets/layouts/**/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/layouts/'));
 });
 
-//合并压缩css
-gulp.task('minCss',function(){
-    gulp.src(['assets/global/plugins/datatables/datatables.css','assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css',
-        'assets/global/plugins/bootstrap/css/bootstrap.min.css',
-        'assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css','assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css',
-        'assets/global/plugins/fullcalendar/fullcalendar.min.css',
-        'bower_components/sweetalert2/dist/sweetalert2.css',
-        'bower_components/angular-ui-select/dist/select.css',
-        '/js/scripts/ladda/ladda-themeless.min.css',
-        'assets/global/css/components-rounded.min.css',
-        'assets/global/css/plugins.min.css',
-        'assets/layouts/boiler/css/layout.min.css',
-        'assets/layouts/boiler/css/themes/darkblue.min.css'
-        ])
-        .pipe(concat('base.min.css'))
-        .pipe(minifyCss())
-        .pipe(gulp.dest('assets'));
-})
+//*** RTL convertor task
+gulp.task('rtlcss', function () {
 
+  gulp
+    .src(['./assets/apps/css/*.css', '!./assets/apps/css/*-rtl.min.css', '!./assets/apps/css/*-rtl.css', '!./assets/apps/css/*.min.css'])
+    .pipe(rtlcss())
+    .pipe(rename({suffix: '-rtl'}))
+    .pipe(gulp.dest('./assets/apps/css'));
 
+  gulp
+    .src(['./assets/pages/css/*.css', '!./assets/pages/css/*-rtl.min.css', '!./assets/pages/css/*-rtl.css', '!./assets/pages/css/*.min.css'])
+    .pipe(rtlcss())
+    .pipe(rename({suffix: '-rtl'}))
+    .pipe(gulp.dest('./assets/pages/css'));
 
-//合并压缩js插件
-gulp.task('jsBase', function () {
-    gulp.src(['./assets/global/plugins/jquery.min.js','./assets/global/plugins/bootstrap/js/bootstrap.min.js',
-        './assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js',
+  gulp
+    .src(['./assets/global/css/*.css', '!./assets/global/css/*-rtl.min.css', '!./assets/global/css/*-rtl.css', '!./assets/global/css/*.min.css'])
+    .pipe(rtlcss())
+    .pipe(rename({suffix: '-rtl'}))
+    .pipe(gulp.dest('./assets/global/css'));
 
-        './assets/global/plugins/js.cookie.min.js',
-        './assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js',
-        './assets/global/plugins/angularjs/angular.min.js',
-        './assets/global/plugins/angularjs/i18n/angular-locale_zh-cn.js',
-        './assets/global/plugins/angularjs/angular-sanitize.min.js',
-        './assets/global/plugins/angularjs/angular-touch.min.js',
-        './assets/global/plugins/angularjs/angular-cookies.min.js',
-        './assets/global/plugins/angular-ui-router.min.js',
-        './assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js',
-        'js/lib/angular-ui-bootstrap/ui-bootstrap-tpls-2.5.0.min.js'
-        ])
-        .pipe(concat('base.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('js'));
+  gulp
+    .src(['./assets/layouts/**/css/*.css', '!./assets/layouts/**/css/*-rtl.css', '!./assets/layouts/**/css/*-rtl.min.css', '!./assets/layouts/**/css/*.min.css'])
+    .pipe(rtlcss())
+    .pipe(rename({suffix: '-rtl'}))
+    .pipe(gulp.dest('./assets/layouts'));
+
+  gulp
+    .src(['./assets/layouts/**/css/**/*.css', '!./assets/layouts/**/css/**/*-rtl.css', '!./assets/layouts/**/css/**/*-rtl.min.css', '!./assets/layouts/**/css/**/*.min.css'])
+    .pipe(rtlcss())
+    .pipe(rename({suffix: '-rtl'}))
+    .pipe(gulp.dest('./assets/layouts'));
+
+  gulp
+    .src(['./assets/global/plugins/bootstrap/css/*.css', '!./assets/global/plugins/bootstrap/css/*-rtl.css', '!./assets/global/plugins/bootstrap/css/*.min.css'])
+    .pipe(rtlcss())
+    .pipe(rename({suffix: '-rtl'}))
+    .pipe(gulp.dest('./assets/global/plugins/bootstrap/css')); 
 });
 
-gulp.task('jsPlugins', function () {
-    gulp.src(['bower_components/moment/moment.js','bower_components/moment/locale/zh-cn.js',
-        'bower_components/angular-moment/angular-moment.min.js',
-        'bower_components/angular-ui-select/dist/select.js',
-
-        './assets/global/plugins/datatables/datatables.min.js',
-        'bower_components/sweetalert2/dist/sweetalert2.min.js',
-        'bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.min.js',
-        'js/lib/angular-datatables/angular-datatables.min.js',
-        'js/lib/amcharts/amcharts.js',
-        'js/lib/amcharts/serial.js',
-        'js/lib/amcharts/pie.js',
-        'js/lib/amcharts/themes/light.js',
-        'js/lib/amcharts/lang/zh.js'
-    ])
-        .pipe(concat('plugins.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('js'));
-});
-
-gulp.task('jsAmcharts', function () {
-    gulp.src([
-
-    ])
-        .pipe(concat('amcharts.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('js'));
-});
-
-
-gulp.task('jsLayouts', function () {
-    gulp.src(['js/app.js','./assets/layouts/boiler/scripts/layout.min.js',
-        './assets/layouts/boiler/scripts/demo.min.js'
-    ])
-        .pipe(concat('layouts.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('js'));
-});
-
-gulp.task('jsLadda', function () {
-    gulp.src(['js/scripts/ladda/spin.min.js','js/scripts/ladda/ladda.min.js',
-        'js/scripts/ladda/core.js'
-    ])
-        .pipe(concat('ladda.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('js'));
+//*** HTML formatter task
+gulp.task('prettify', function() {
+  	
+  	gulp.src('./**/*.html').
+  	  	pipe(prettify({
+    		indent_size: 4, 
+    		indent_inner_html: true,
+    		unformatted: ['pre', 'code']
+   		})).
+   		pipe(gulp.dest('./'));
 });

@@ -1,4 +1,3 @@
-
 <style>
     .portlet{
         margin-bottom: 0px;
@@ -7,9 +6,8 @@
         white-space: nowrap;
         font-size: 13px;
     }
-
-
 </style>
+
 <div class="row">
     <div class="col-md-3" style="padding: 0; padding-left: 10px; ">
         <div ng-controller="statusModule" id="status_1" style="height: 60px;">
@@ -43,12 +41,10 @@
                                 <td> {{d.name}} </td>
                                 <td>
                                     <span ng-class="['label', 'label-sm', {'label-success': d.alarmLevel == 0}, {'label-default': d.alarmLevel == -1}, {'label-warning': d.alarmLevel == 1}, {'label-danger': d.alarmLevel == 2} ]">
-                                        {{d.remark}}
+                                    {{d.remark}}
                                     </span>
                                 </td>
                             </tr>
-
-
 
                             </tbody>
                         </table>
@@ -69,7 +65,7 @@
                               class="label label-sm ng-binding ng-scope"
                               ng-class="{'label-warning': d.value, 'label-default': !d.value}"
                               style="margin: 4px 4px; display: inline-block;">
-                            {{ d.name }}
+                        {{ d.name }}
                         </span>
             </div>
 

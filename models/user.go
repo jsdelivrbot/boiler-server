@@ -20,10 +20,10 @@ type User struct {
 
 	RegisterIp	string		`orm:"size(20)"`
 
-	Thirds			[]*UserThird	`orm:"reverse(many)"`
-	Sessions		[]*UserSession	`orm:"reverse(many)"`
-	Logins			[]*UserLogin	`orm:"reverse(many)"`
-	SubscribeBoilers	[]*Boiler	`orm:"reverse(many);rel_through(BoilerGo/models.BoilerMessageSubscriber)"`
+	Thirds				[]*UserThird	`orm:"reverse(many)"`
+	Sessions			[]*UserSession	`orm:"reverse(many)"`
+	Logins				[]*UserLogin	`orm:"reverse(many)"`
+	SubscribeBoilers	[]*Boiler		`orm:"reverse(many);rel_through(BoilerGo/models.BoilerMessageSubscriber)"`
 }
 
 const (
@@ -38,11 +38,10 @@ const (
 	USER_STATUS_NORMAL = 1
 	USER_STATUS_BANNED = 2
 	USER_STATUS_THIRD = 3
-	//USER_STATUS_SUPER = 99
 )
 
 func (usr *User) IsAdmin() bool {
-	return usr.Role.RoleId <= USER_ROLE_SUPERVISOR
+	return usr.Role.RoleId <= USER_ROLE_SUPERADMIN
 }
 
 func (usr *User) IsOrganizationUser() bool {

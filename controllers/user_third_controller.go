@@ -440,7 +440,6 @@ func (ctl *UserThirdController) UserRegisterBindThird() {
 }
 
 func (ctl *UserThirdController) UserUnbindWeixin() {
-	goazure.Debug("Ready to Unbind Weixin!!!")
 	var token string
 	var openid string
 	usr := ctl.GetCurrentUser()
@@ -462,31 +461,62 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 	}
 
 	if ctl.Input()["openid"] != nil && len(ctl.Input()["openid"]) > 0 {
-		openid = ctl.Input()["token"][0]
+		openid = ctl.Input()["openid"][0]
 	}
 
-	var thirds []*models.UserThird
-	qs := dba.BoilerOrm.QueryTable("user_third").Filter("Platform", "weixin")
+	var oThirds, uThirds []*models.UserThird
+	qs := dba.BoilerOrm.QueryTable("user_third").Filter("Platform", "weixin").Filter("IsDeleted", false)
 	if len(openid) <= 0 {
 		qs = qs.Filter("User__Uid", usr.Uid)
 	} else {
 		qs = qs.Filter("OpenId", openid)
 	}
-	if num, err := qs.All(&thirds); err != nil || num == 0 {
-		goazure.Error("Get UserThird For Delete Error:", err, num)
+
+	if num, err := qs.All(&oThirds); err != nil || num == 0 {
+		e := fmt.Sprintln("Get UserThird By OpenId For Delete Error:", err, num)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+
+		return
 	}
-	for _, t := range thirds {
-		if t.Platform == "weixin" {
+
+	var th *models.UserThird
+	for _, t := range oThirds {
+		if len(t.UnionId) > 0 {
+			th = t
+		}
+	}
+
+	if th == nil || len(th.UnionId) <= 0 {
+		e := fmt.Sprintln("Get UnionId for Delete Error!")
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+
+		return
+	}
+
+	if num, err := dba.BoilerOrm.QueryTable("user_third").Filter("UnionId", th.UnionId).All(&uThirds); err != nil || num == 0 {
+		e := fmt.Sprintln("Get UserThird By UnionId For Delete Error:", err, num)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+
+		return
+	}
+
+	for _, t := range uThirds {
 			t.User = nil
 			t.IsDeleted = true
 			DataCtl.UpdateData(t)
-		}
 	}
 
 	ctl.UpdateCurrentUser(usr)
 }
 
 func (ctl *UserThirdController) UserLoginWeixinMini() {
+	goazure.Error("Ready to UserLoginWeixinMini()")
 	third := models.UserThird{}
 
 	info := WeixinUserInfo{}
@@ -526,7 +556,7 @@ func (ctl *UserThirdController) UserLoginWeixinMini() {
 
 		var ath models.UserThird
 		if err := dba.BoilerOrm.QueryTable("user_third").Filter("UnionId", sif.UnionId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&ath); err != nil {
-			goazure.Warn("Not Get UnionId!", ath)
+			goazure.Error("Not Get UnionId!", ath)
 			//usr.Status = models.USER_STATUS_THIRD
 			//usr.Role = role(models.USER_ROLE_USER)
 			//usr.Thirds = append(usr.Thirds, &third)
@@ -598,7 +628,7 @@ func (ctl *UserThirdController) UserDataDecryptBase64(key, encryptedData, iv str
 	// CryptBlocks can work in-place if the two arguments are the same.
 	mode.CryptBlocks(ciphertext, ciphertext)
 	//goazure.Error("ciphertext", fmt.Sprintf("%s", ciphertext))
-	goazure.Warn(ciphertext)
+	//goazure.Warn(ciphertext)
 
 	if idx := bytes.LastIndexByte(ciphertext, byte(125)); idx > -1 {
 		//goazure.Warn("Find Last '}' Index:", idx)
@@ -618,9 +648,9 @@ func (ctl *UserThirdController) UserDataDecryptBase64(key, encryptedData, iv str
 }
 
 func (ctl *UserThirdController) UserBindWeixinMini() {
-	third := models.UserThird{}
+	var third models.UserThird
 
-	u := Usr{}
+	var u Usr
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Login Json Error!"))
@@ -637,17 +667,18 @@ func (ctl *UserThirdController) UserBindWeixinMini() {
 
 	usr, err := ctl.Login(&u)
 	if err != nil {
-		goazure.Warn("Weixin Mini Login Error:", err)
+		e := fmt.Sprintln("Weixin Mini Login Error:", err)
+		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(403)
-		ctl.Ctx.Output.Body([]byte(err.Error()))
+		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
 
-	third.OpenId = u.OpenId
-	if err := DataCtl.ReadData(&third, "OpenId"); err != nil {
-		goazure.Error("Read UserThird Error", err, third.User, third.IsDeleted)
+	if err := dba.BoilerOrm.QueryTable("user_third").Filter("OpenId", u.OpenId).One(&third); err != nil {
+		e := fmt.Sprintln("Read UserThird Error", err, third.User, third.IsDeleted)
+		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(403)
-		ctl.Ctx.Output.Body([]byte(err.Error()))
+		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
 
@@ -810,7 +841,7 @@ func GetWeixinAccess(app *models.Application, code string, isTemplate bool) (*We
 	}
 
 	goazure.Info("WeixinAccess:", wa)
-	return &wa, err;
+	return &wa, err
 }
 
 func GetWeixinUserInfo(wa *WeixinAccess) (*WeixinUserInfo, error) {

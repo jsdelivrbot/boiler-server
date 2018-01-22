@@ -131,7 +131,7 @@
 
             </div>
             <div class="col-md-2 col-sm-2">
-                <button type="button" class="btn btn-success excel_export" ng-click="history.excelExport();">导出</button>
+                <button type="button" class="btn btn-success" ng-click="history.excelExport();">导出</button>
             </div>
         </div>
     </div>
@@ -143,13 +143,8 @@
     <!--id="boiler_history_table">-->
 
     <div class="row" style="font-size: 14px;">
-        <div class="col-md-3 col-sm-3">
-            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage +
-                1}} 页 共 {{pagedItems.length}} 页
-            </div>
-        </div>
         <div class="col-md-9 col-sm-9">
-            <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+            <div class="dataTables_paginate paging_bootstrap_full_number">
                 <ul class="pagination" style="visibility: visible;">
                     <li ng-class="['prev', {'disabled': currentPage == 0}]">
                         <a href ng-click="setPage(1)" title="首页"><i class="fa fa-angle-double-left"></i></a>
@@ -172,18 +167,22 @@
                 </ul>
             </div>
         </div>
-
+        <div class="col-md-3 col-sm-3">
+            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage +
+                1}} 页 共 {{pagedItems.length}} 页
+            </div>
+        </div>
     </div>
 
-    <div class="cd-table-container" id="cd-table" >
-    <table class="table table-striped table-bordered table-hover table-checkable order-column table-boiler cd-table-wrapper"
+    <div class="row" style="overflow-x: scroll; padding-left: 15px; padding-right: 15px;">
+    <table class="table table-striped table-bordered table-hover table-checkable order-column table-boiler"
            id="boiler_history_table">
         <thead>
         <tr>
             <th width="4%"></th>
             <th width="10%"> 采样时间</th>
 
-            <th width="7.81%" ng-repeat="param in history.parameters">
+            <th width="7.81%" ng-repeat="param in history.parameters track by $index">
                 {{ param.Name }}
                 {{ param.Unit }}
             </th>
@@ -198,7 +197,7 @@
         </tr>
         </tbody>
         <tbody ng-show="!history.isEmpty" style="text-align: center">
-        <tr ng-repeat="d in pagedItems[currentPage]">
+        <tr ng-repeat="d in pagedItems[currentPage] track by $index">
             <td> {{ d.num }}</td>
             <td> {{ d.date | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
 
@@ -211,6 +210,4 @@
         </tbody>
     </table>
     </div>
-    <em class="cd-scroll-left"></em>
-    <em class="cd-scroll-right"></em>
 </div>

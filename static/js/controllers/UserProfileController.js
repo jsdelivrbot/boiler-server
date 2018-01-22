@@ -1,5 +1,5 @@
-angular.module('BoilerAdmin').controller('UserProfileController', function($rootScope, $scope, $http, $timeout, $state, $window, moment) {
-    profile = this;
+angular.module('BoilerAdmin').controller('UserProfileController', function($rootScope, $scope, $http, $timeout, $state, $window, Upload, moment) {
+    bProfile = this;
 
     $rootScope.$on('$viewContentLoading',
         function(event, viewConfig){
@@ -13,53 +13,66 @@ angular.module('BoilerAdmin').controller('UserProfileController', function($root
         Layout.setAngularJsSidebarMenuActiveLink('set', $('#sidebar_menu_link_profile'), $state); // set profile link active in sidebar menu
 
         if (!$rootScope.currentUser) {
-            $rootScope.getCurrentUser(refreshData);
+            $rootScope.getCurrentUser();
         } else {
             refreshData();
         }
     });
 
+    $rootScope.$watch("currentUser", function () {
+        refreshData();
+    });
+
     var refreshData = function () {
-        profile.aUsername = $rootScope.currentUser.Username;
-        profile.aRole = $rootScope.currentUser.Role.RoleId;
-        profile.aOrg = $rootScope.currentUser.Organization ? $rootScope.currentUser.Organization.Uid : "";
+        bProfile.aUsername = $rootScope.currentUser.Username;
+        bProfile.aRole = $rootScope.currentUser.Role.RoleId;
+        bProfile.aOrg = $rootScope.currentUser.Organization ? $rootScope.currentUser.Organization.Uid : "";
 
-        profile.aName = $rootScope.currentUser.Name;
-        profile.aMobile = $rootScope.currentUser.MobileNumber;
-        profile.aEmail = $rootScope.currentUser.Email;
+        bProfile.aName = $rootScope.currentUser.Name;
+        bProfile.aMobile = $rootScope.currentUser.MobileNumber;
+        bProfile.aEmail = $rootScope.currentUser.Email;
 
-        profile.loginName = $rootScope.currentUser.Username;
+        bProfile.loginName = $rootScope.currentUser.Username;
         if ($rootScope.currentUser.Status == 0) {
-            profile.loginName += "(未激活)";
+            bProfile.loginName += "(未激活)";
         }
 
-        profile.picture = $rootScope.settings.layoutPath + "/img/" + "avatar0.png";
+        bProfile.picture = $rootScope.settings.layoutPath + "/img/" + "avatar0.png";
         if ($rootScope.currentUser.Picture.indexOf("avatar") > -1) {
-            profile.picture = $rootScope.settings.layoutPath + "/img/" + $rootScope.currentUser.Picture;
+            bProfile.picture = $rootScope.settings.layoutPath + "/img/" + $rootScope.currentUser.Picture;
         } else {
-            profile.picture = $rootScope.currentUser.Picture;
+            bProfile.picture = $rootScope.currentUser.Picture;
         }
 
-        profile.roleName = $rootScope.currentUser.Role.Name + (
+        bProfile.roleName = $rootScope.currentUser.Role.Name + (
                 $rootScope.isOrgs() ? ("|" + $rootScope.currentUser.Organization.Type.Name) : "");
 
-        profile.hasWeixin = false;
-        profile.weixinName = "未绑定";
+        bProfile.hasWeixin = false;
+        bProfile.weixinName = "未绑定";
 
         angular.forEach($rootScope.currentUser.Thirds, function (third, key) {
             if (third.Platform === "weixin") {
-                profile.hasWeixin = true;
-                profile.weixinName = third.Name;
+                bProfile.hasWeixin = true;
+                bProfile.weixinName = third.Name;
                 return;
             }
         });
     };
 
-    profile.updateUser = function() {
+    bProfile.avatarChanged = function () {
+        console.warn("Init avatarChanged");
+        console.warn(bProfile.avatar);
+    };
+
+    bProfile.removeAvatar = function () {
+        bProfile.avatar = undefined;
+    };
+
+    bProfile.updateUser = function() {
         $http.post("/user_profile_update/", {
-            fullname: profile.aName,
-            mobile: profile.aMobile,
-            email: profile.aEmail
+            fullname: bProfile.aName,
+            mobile: bProfile.aMobile,
+            email: bProfile.aEmail
         }).then(function (res) {
             swal({
                 title: "您的个人信息修改成功",
@@ -76,14 +89,47 @@ angular.module('BoilerAdmin').controller('UserProfileController', function($root
         });
     };
 
-    profile.updateUserPassword = function() {
-        if (profile.password.length <= 0 || profile.password_new.length < 0 ||
-            profile.password_new != profile.password_new_confirm) {
+    // upload on file select or drop
+    bProfile.uploadAvatar = function () {
+        if (!bProfile.avatar) {
+            return;
+        }
+
+        Upload.upload({
+            url: '/user_image_upload/',
+            data: {
+                uid: $rootScope.currentUser.Uid,
+                file: bProfile.avatar,
+            }
+        }).then(function (resp) {
+            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+            swal({
+                title: "头像上传成功",
+                type: "success"
+            }).then(function () {
+                $rootScope.getCurrentUser();
+            });
+        }, function (err) {
+            console.log('Error status: ' + err.status);
+            swal({
+                title: "头像上传失败",
+                text: err.data,
+                type: "error"
+            });
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        });
+    };
+
+    bProfile.updateUserPassword = function() {
+        if (bProfile.password.length <= 0 || bProfile.password_new.length < 0 ||
+            bProfile.password_new != bProfile.password_new_confirm) {
             return;
         }
         $http.post("/user_password_update/", {
-            password: profile.password,
-            password_new: profile.password_new,
+            password: bProfile.password,
+            password_new: bProfile.password_new,
         }).then(function (res) {
             swal({
                 title: "密码修改成功",
@@ -100,12 +146,12 @@ angular.module('BoilerAdmin').controller('UserProfileController', function($root
         });
     };
 
-    profile.resetUser = function() {
+    bProfile.resetUser = function() {
         refreshData();
     };
 
-    profile.weixinClick = function () {
-        if (profile.hasWeixin) {
+    bProfile.weixinClick = function () {
+        if (bProfile.hasWeixin) {
             swal({
                 title: "是否解除微信账号的绑定？",
                 text: "",//"解绑后，该用户将不能用微信扫码登录",
@@ -155,7 +201,7 @@ angular.module('BoilerAdmin').controller('UserProfileController', function($root
         }
     };
 
-    profile.bindWeixin = function () {
+    bProfile.bindWeixin = function () {
 
     };
 
@@ -165,4 +211,4 @@ angular.module('BoilerAdmin').controller('UserProfileController', function($root
 }); 
 
 
-var profile;
+var bProfile;

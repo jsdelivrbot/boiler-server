@@ -106,7 +106,7 @@
 
 <div class="modal-footer">
     <button class="btn red" type="button"
-            ng-show="false && $modal.editing && !$modal.isNew"
+            ng-show="$modal.editing && !$modal.isNew"
             ng-click="$modal.delete()">删除</button>
     <button type="button" class="btn ladda-button"
             ng-show="$modal.editing"

@@ -3,30 +3,13 @@ angular.module('BoilerAdmin').controller('OrganizationController', function($roo
     organization.isDone = false;
     organization.tid = 0;
 
-    $rootScope.orgTypes = [
-        {
-            id: -1,
-            name: "企业类型（请选择）"
-        }, {
-            id: 0,
-            name: "默认企业"
-        }, {
-            id: 1,
-            name: "锅炉制造厂"
-        }, {
-            id: 2,
-            name: "用能企业"
-        }, {
-            id: 3,
-            name: "安装企业"
-        }, {
-            id: 4,
-            name: "政府机关"
-        }, {
-            id: 5,
-            name: "监管部门"
+    $rootScope.$watch("organizations", function () {
+        if (!$rootScope.organizations) {
+            return;
         }
-    ];
+
+        organization.refreshDataTables();
+    });
 
     var p = $location.search();
     if (!p['tid'] || p['tid'].length === 0) {
@@ -47,33 +30,36 @@ angular.module('BoilerAdmin').controller('OrganizationController', function($roo
 
     organization.titles = [
         '企业总表',
-        '锅炉制造厂列表',
-        '用能企业列表',
-        '安装企业列表',
-        '政府机关列表',
-        '监管部门列表'
+        '锅炉制造企业列表',
+        '锅炉使用企业列表',
+        '锅炉安装企业列表',
+        '控制柜供应商列表',
+        '锅炉维保企业列表',
+        '能源管理企业列表',
+        '政府监管部门列表'
     ];
 
     organization.refreshDataTables = function () {
-        $http.get('/organization_list/?tid=' + organization.tid)
-            .then(function (res) {
-                // console.warn("Get Organization List:", res);
-                var datasource = res.data;
-                var num = 0;
-                angular.forEach(datasource, function (d, key) {
-                    d.num = ++num;
-                });
+        var orgs = [];
+        for (var i in $rootScope.organizations) {
+            var og = $rootScope.organizations[i];
+            og.num = parseInt(i, 10) + 1;
 
-                organization.datasource = datasource;
+            if (organization.tid > 0) {
+                if (og.typeId == organization.tid) {
+                    orgs.push(og);
+                }
+            } else {
+                orgs.push(og);
+            }
+        }
 
-                organization.isDone = true;
+        organization.datasource = orgs;
+        organization.isDone = true;
 
-            }, function(err) {
-                console.error('Get Organization List Error', err);
-            });
         setTimeout(function () {
             App.stopPageLoading();
-        }, 1500);
+        }, 500);
     };
 
     organization.dtOptions = DTOptionsBuilder.newOptions()
@@ -203,19 +189,41 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
     $modal.aProvince.Name = "所在区域";
     $modal.location = $modal.aProvince;
 
+    $rootScope.$watch("organizationTypes", function () {
+        if (!$rootScope.organizationTypes) {
+            return;
+        }
+
+        $modal.refreshOrganizationTypes();
+    });
+
+    $modal.refreshOrganizationTypes = function () {
+        $modal.organizationTypes = $rootScope.organizationTypes;
+
+        var def = {
+            id: -1,
+            name: "企业类型（请选择）"
+        };
+
+        if ($modal.organizationTypes.length <= 0 ||
+            $modal.organizationTypes[0].id >= 0) {
+            $modal.organizationTypes.unshift(def);
+        }
+    };
+
     $modal.changeProvince = function () {
         $modal.location = $modal.aProvince;
-        // dashboard.filterBoilers();
+        dashboard.filterBoilers();
     };
 
     $modal.changeCity = function () {
         $modal.location = $modal.aCity;
-        // dashboard.filterBoilers();
+        dashboard.filterBoilers();
     };
 
     $modal.changeRegion = function () {
         $modal.location = $modal.aRegion;
-        // dashboard.filterBoilers();
+        dashboard.filterBoilers();
     };
 
     var getLocation = function (locationId, locationList, locationScope) {
@@ -271,7 +279,6 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
         var locationId = $modal.location.LocationId;
         getLocation(locationId, $rootScope.locations, "province");
     }
-
 
     /*
      MyUidObject
@@ -360,6 +367,8 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
                     text: err.data,
                     type: "error"
                 });
+            }, function () {
+                $rootScope.getOrganizationList();
             });
         Ladda.create(document.getElementById('boiler_ok')).stop();
     };

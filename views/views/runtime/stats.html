@@ -130,7 +130,7 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="d in runtime.instants"
-                            ng-show="d.category !== 11">
+                            ng-show="d.category !== 11 && d.category != 13">
                             <td> {{d.name}} </td>
                             <td> {{d.value}} </td>
                             <td> {{d.unit}} </td>
@@ -141,12 +141,32 @@
                         </tbody>
                     </table>
 
+                    <table ng-show="runtime.boiler.hasRangeValue"
+                           class="table table-hover table-light"
+                           style="margin-top: 15px;">
+                        <thead>
+                        <tr>
+                            <th> 测量项目</th>
+                            <th> 状态值</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="d in runtime.instants"
+                            ng-show="d.category === 13">
+                            <td> {{d.name}} </td>
+                            <td>
+                                <span ng-class="['label', 'label-sm', 'label-success']"> {{d.value}} </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                     <div ng-show="runtime.boiler.hasSwitchValue"
                          style="margin-top: 12px;">
                         <span ng-repeat="d in runtime.instants"
                               ng-show="d.category === 11"
                               class="label label-sm ng-binding ng-scope"
-                              ng-class="{'label-warning': d.value, 'label-default': !d.value}"
+                              ng-class="{'label-info': d.value && (d.switchFlag <= 1 || !d.switchFlag), 'label-warning': d.value && d.switchFlag >= 2, 'label-default': !d.value}"
                               style="margin: 4px 4px; display: inline-block;">
                             {{ d.name }}
                         </span>

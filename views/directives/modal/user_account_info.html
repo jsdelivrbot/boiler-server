@@ -44,9 +44,10 @@
     <div class="row">
         <div class="form-group col-md-6">
             <div class="input-group">
-                <span class="input-group-addon">登录名</span>
+                <span class="input-group-addon">登录账号</span>
                 <input type="text" ng-model="$modal.data.username"
                        maxlength="16"
+                       ng-change="$modal.dataChanged();"
                        class="form-control ng-pristine ng-valid ng-touched has-success"
                        placeholder="请输入用户登录名" required>
             </div>
@@ -56,6 +57,7 @@
                 <span class="input-group-addon">登录密码</span>
                 <input type="password" ng-model="$modal.data.password"
                        maxlength="16"
+                       ng-change="$modal.dataChanged();"
                        class="form-control ng-pristine ng-valid ng-touched has-success"
                        placeholder="请输入初始密码" required>
             </div>
@@ -65,8 +67,9 @@
     <div class="row">
         <div class="form-group col-md-6">
             <div class="input-group">
-                <span class="input-group-addon">真实名称</span>
+                <span class="input-group-addon">用户名称</span>
                 <input type="text" ng-model="$modal.data.fullname"
+                       ng-change="$modal.dataChanged();"
                        class="form-control ng-pristine ng-valid ng-touched has-success"
                        placeholder="请输入用户真实名称">
             </div>
@@ -75,7 +78,9 @@
             <div class="input-group">
                 <span class="input-group-addon">用户角色</span>
                 <select ng-model="$modal.data.role"
-                        ng-options="role.id as role.name for role in $modal.roles" class="form-control"></select>
+                        ng-options="role.id as role.name for role in $modal.roles"
+                        ng-change="$modal.dataChanged();"
+                        class="form-control"></select>
             </div>
         </div>
 
@@ -83,7 +88,8 @@
             <div class="input-group">
                 <span class="input-group-addon">所属企业</span>
                 <ui-select ng-model="$modal.data.org"
-                           ng-disabled="$modal.data.role < 10 || $modal.data.role >= 20"
+                           ng-disabled="$modal.data.role < 2 || $modal.data.role >= 20"
+                           ng-change="$modal.dataChanged();"
                            theme="bootstrap">
                     <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
                     <ui-select-choices group-by="'type'" repeat="org.Uid as org in organizations | filter: $select.search">
@@ -98,8 +104,12 @@
 <div class="modal-footer">
     <!--<button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.reboot()" style="float: left">重新启动</button>-->
     <!--<button class="btn red" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.delete()">删除</button>-->
-    <button class="btn btn-primary ladda-button" data-style="zoom-out" type="button"
-            id="boiler_ok" ng-click="$modal.ok()">
+    <button type="button" id="boiler_ok"
+            class="btn ladda-button"
+            ng-class="[{'btn-primary': $modal.isValid}, {'grey': !$modal.isValid}]"
+            data-style="zoom-out"
+            ng-disabled="!$modal.isValid"
+            ng-click="$modal.commit()">
         <span class="ladda-label">提交</span></button>
     <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
 </div>

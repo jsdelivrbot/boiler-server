@@ -2,7 +2,6 @@ package models
 
 type BoilerRuntime struct {
 	MyIdObject
-
 	//Uid 			string				`orm:"size(36);index"`
 
 	Boiler			*Boiler				`orm:"rel(fk);index"`

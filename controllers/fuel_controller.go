@@ -78,14 +78,14 @@ func (ctl *FuelController) FuelRecordList() {
 	var records []*models.BoilerFuelRecord
 	qs := dba.BoilerOrm.QueryTable("boiler_fuel_record")
 	qs = qs.RelatedSel("Fuel__Type").
-		RelatedSel("Boiler__Factory").RelatedSel("Boiler__Enterprise").RelatedSel("Boiler__Installed")
+		RelatedSel("Boiler__Factory").RelatedSel("Boiler__Enterprise").RelatedSel("Boiler__Maintainer")
 	if usr.IsCommonUser() ||
 		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
 		qs = qs.Filter("Boiler__IsDemo", true)
 	} else {
 		qs = qs.Filter("Boiler__IsDemo", false)
 		if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Boiler__Enterprise__Uid", usr.Organization.Uid).Or("Boiler__Factory__Uid", usr.Organization.Uid).Or("Boiler__Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Boiler__Enterprise__Uid", usr.Organization.Uid).Or("Boiler__Factory__Uid", usr.Organization.Uid).Or("Boiler__Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond)
 		}

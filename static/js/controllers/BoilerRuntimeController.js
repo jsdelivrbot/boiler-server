@@ -60,13 +60,14 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
         $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
             .then(function (res) {
-                console.log("Fetch BurningStatus Resp:", res.data);
+                console.info("Fetch BurningStatus Resp:", res.data);
                 boiler.isBurning = (res.data.value === "true");
             }, function (err) {
                 console.error('Fetch Status Err!', err);
                 boiler.isBurning = false;
             })
             .then(function () {
+                $rootScope.isBoilerBurning = boiler.isBurning;
                 bRuntime.fetchRuntime(bRuntime.boiler);
             });
 
@@ -115,12 +116,6 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 case 680064:
                     $rootScope.statusMode = 3;
                     break;
-                case 680500:
-                case 680053:
-                case 680501:
-                case 680502:
-                    $rootScope.statusMode = 5;
-                    break;
             }
         }
 
@@ -137,6 +132,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
             boiler.alarmLevel = boiler.isBurning ? 0 : -1;
             boiler.hasSwitchValue = false;
+            boiler.hasRangeValue = false;
 
             var instants = [];
             for (var i = 0; i < res.data.length; i++) {
@@ -154,6 +150,11 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 }
                 */
                 value = d.Value;
+                if (d.ParameterCategory === 11) {
+                    d.SwitchFlag = d.AlarmLevel;
+                    d.AlarmLevel = 0;
+                }
+
                 alarmLevel = d.AlarmLevel;
 
                 if (alarmLevel > boiler.alarmLevel) {
@@ -192,11 +193,16 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     boiler.hasSwitchValue = true;
                 }
 
+                if (d.ParameterCategory === 13) {
+                    boiler.hasRangeValue = true;
+                }
+
                 instants.push({
                     id: d.Parameter,
                     name: name,
                     category: d.ParameterCategory,
-                    value: value,
+                    value: d.ParameterCategory !== 13 ? value : d.Remark,
+                    switchFlag: d.SwitchFlag,
                     unit: d.Unit,
                     alarmLevel: alarmLevel,
                     alarmDesc: label,
@@ -395,6 +401,7 @@ function boiler_module_height() {
 //window.onresize = function () {
 //    boiler_module_height();
 //};
+
 
 angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootScope) {
 
@@ -617,10 +624,3 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
     console.log(moduleStatus);
 
 })
-
-
-
-
-
-
-
