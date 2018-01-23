@@ -35,6 +35,9 @@
 .page-sidebar .page-sidebar-menu>li.active>a:hover{
     background: #19bc9c;
 }
+.logo_lu{
+    display: none;
+}
 
 .credit{
     display: none;

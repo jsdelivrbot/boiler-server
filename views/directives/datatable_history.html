@@ -175,8 +175,8 @@
 
     </div>
 
-    <div class="row" style="overflow-x: scroll; padding-left: 15px; padding-right: 15px;">
-    <table class="table table-striped table-bordered table-hover table-checkable order-column table-boiler"
+    <div class="cd-table-container" id="cd-table" ng-class="{'table_responsive':history.pids.length >= 9,'table-end':history.pids.length < 9}">
+    <table class="table table-striped table-bordered table-hover table-checkable order-column table-boiler cd-table-wrapper"
            id="boiler_history_table">
         <thead>
         <tr>
@@ -211,4 +211,6 @@
         </tbody>
     </table>
     </div>
+    <em class="cd-scroll-left" ng-show="history.pids.length >= 9" ng-click="scLeft()" style="position: fixed;left:270px; top: auto; bottom: 40%;"></em>
+    <em class="cd-scroll-right" ng-show="history.pids.length >= 9" ng-click="scRight()" style="position: fixed;right: 30px; top: auto; bottom: 40%;"></em>
 </div>
