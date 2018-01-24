@@ -203,7 +203,7 @@
                                     <i class="fa fa-reply"></i> 取消
                                 </button>
                                 -->
-                                <button ng-click="info.edit('basic')" class="btn btn-outline btn-circle blue">
+                                <button ng-click="info.edit('basic')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
                                 </button>
                             </td>
@@ -247,7 +247,7 @@
                         </tr>
                         <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 10">
                             <td colspan="4" align="center">
-                                <button ng-click="info.edit('location')" class="btn btn-outline btn-circle blue">
+                                <button ng-click="info.edit('location')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
                                 </button>
                             </td>
@@ -332,7 +332,7 @@
                         -->
                         <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 10">
                             <td colspan="4" align="center">
-                                <button ng-click="info.edit('maintain')" class="btn btn-outline btn-circle blue">
+                                <button ng-click="info.edit('maintain')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
                                 </button>
                             </td>
@@ -376,7 +376,7 @@
                             <td>{{ terminal.Name }}</td>
                             <td>{{ terminal.setId }}</td>
                             <td><a ng-click="info.unbind(terminal)"
-                                   class="btn btn-sm btn-outline btn-circle red">
+                                   class="btn btn-sm btn-outline btn-circle red delete_btn">
                                 <i class="fa fa-minus"></i> 解绑
                             </a></td>
                         </tr>
@@ -527,14 +527,14 @@
     <div class="row">
         <div class="btn-group btn-group-devided" style="text-align: center">
             <button ng-click="info.back()"
-                    class="btn btn-circle grey-gallery">
+                    class="btn btn-circle grey-gallery back_btn">
                 <i class="fa fa-reply"></i> 返回
             </button>
             <button ng-show="info.dataMode == 'edit'"
                     id="boiler_delete"
                     data-style="expand-right"
                     ng-click="info.delete()"
-                    class="btn ladda-button btn-circle red">
+                    class="btn ladda-button btn-circle red delete_btn">
                 <i class="fa fa-trash-o"></i> 删除
             </button>
         </div>

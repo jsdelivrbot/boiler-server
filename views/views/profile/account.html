@@ -77,7 +77,7 @@
                                 -->
                             <div class="margiv-top-10">
                                 <a href ng-click="profile.updateUser()" class="btn green-haze"> 保存更新 </a>
-                                <a href ng-click="profile.resetUser()" class="btn default"> 取消 </a>
+                                <!--<a href ng-click="profile.resetUser()" class="btn default"> 取消 </a>-->
                             </div>
                         </form>
                     </div>
@@ -120,7 +120,7 @@
                                    ng-disabled="!profile.avatar"
                                    ng-click="profile.uploadAvatar();"
                                    ng-class="['btn', {'green-haze': !!profile.avatar}, {'grey': !profile.avatar}]"> 上传头像 </a>
-                                <a href class="btn default"> 取消 </a>
+                                <!--<a href class="btn default"> 取消 </a>-->
                             </div>
                         </form>
                     </div>
@@ -139,7 +139,7 @@
                                 <input type="password" class="form-control" ng-model="profile.password_new_confirm"/> </div>
                             <div class="margin-top-10">
                                 <a href ng-click="profile.updateUserPassword()" ng-disabled="profile.password.length <= 0 || profile.password_new.length < 0 || profile.password_new != profile.password_new_confirm" class="btn green-haze"> 修改密码 </a>
-                                <a href ng-click="profile.resetUserPassword()" class="btn default"> 取消 </a>
+                                <!--<a href ng-click="profile.resetUserPassword()" class="btn default"> 取消 </a>-->
                             </div>
                         </form>
                     </div>
