@@ -7,6 +7,8 @@ before_install:
   - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
   - if [[ $TRAVIS_BRANCH == "master" ]]; then export DHOST="47.100.0.27" else export DHOST="101.132.143.0"; fi
   - export DPORT="2022"
+  - echo "111"
+  - echo $DHOST
 
 addons:
   ssh_known_hosts:
@@ -25,7 +27,7 @@ deploy:
   skip_cleanup: true
   script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
   on:
-    tags: true
+  # tags: true
     all_branches: true
 
 after_deploy:
