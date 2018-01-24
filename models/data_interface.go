@@ -1,8 +1,8 @@
 package models
 
 type DataInterface interface {
-	GetObject()		interface{}
+	GetObject()				interface{}
 
-	GetKey() 		interface{}
+	GetKey() 				interface{}
 	SetKey(key interface{})
 }

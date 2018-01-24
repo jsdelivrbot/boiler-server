@@ -26,7 +26,7 @@
 <!-- BEGIN BOILER THUMB -->
 
 <div class="row thumb_con">
-    <div ng-repeat="boiler in dashboard.pagedItems[dashboard.currentPage] | orderBy:dashboard.sortingOrder:reverse"
+    <div ng-repeat="boiler in dashboard.pagedItems[dashboard.currentPage-1] | orderBy:dashboard.sortingOrder:reverse"
          class="col-md-6 col-sm-12 col-xs-12">
         <!-- BEGIN PORTLET-->
         <div ng-init="dashboard.fetchStatus(boiler); dashboard.fetchThumbParam(boiler);" class="portlet light bordered boiler-frame">

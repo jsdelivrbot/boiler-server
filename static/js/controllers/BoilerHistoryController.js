@@ -157,20 +157,6 @@ angular.module('BoilerAdmin')
                 bHistory.isDone = true;
                 bHistory.isEmpty = false;
                 $log.warn("History Data1:", bHistory);
-
-                //表格滚动样式
-                var scrollLeftTarget = angular.element(document.getElementById("cd-table"));
-                var scrollLeftBtn = angular.element(document.getElementsByClassName("cd-scroll-right"));
-                if(bHistory.pids.length >= 9) {
-                    scrollLeftTarget.addClass("table_responsive").removeClass("table-end");
-                    scrollLeftBtn.css("display", "block");
-                } else {
-                    scrollLeftTarget.removeClass("table_responsive").addClass("table-end");
-                    scrollLeftBtn.css("display", "none");
-                };
-
-
-
             });
         };
 
@@ -226,12 +212,16 @@ angular.module('BoilerAdmin')
 
         var groupedItems = [];
         var itemsPerPage = 50;//每页数量
-        var pageRange = 10;//显示页数
+        var pageRange = 5;//显示页数
 
         $scope.pagedItems = [];//所有页码对应数据，每页一组数组
-        $scope.currentPage = 0;
+        $scope.currentPage = 1;
         $scope.filterLen = 0;
         //bMonitor.rangedPages = [];
+
+        $scope.maxSize = pageRange;//最大显示页数
+        $scope.pageSize = itemsPerPage;//每页数量
+        $scope.totalItems = bHistory.datasource.length;//数据总数
 
         $scope.matchNum = 0;
 
@@ -286,8 +276,8 @@ angular.module('BoilerAdmin')
                 return;
             }
             //alert('page:' + page + '|' + this.n);
-            $scope.currentPage = page - 1;
-            $scope.range();
+            $scope.currentPage = page;
+            // $scope.range();
         };
 
         // functions have been describe process the data for display
@@ -466,21 +456,22 @@ angular.module('BoilerAdmin')
         });
 
         //scroll the table (scroll value equal to column width) when clicking on the .cd-scroll-right arrow
-        scLeftArrow.on('click', function() {
+        $scope.scRight = function() {
             var column_width = scLeft.find('td').eq(2).css('width').replace('px', '')*3,
                 new_left_scroll = parseInt(scLeft.scrollLeft()) + parseInt(column_width);
             scLeft.animate({
                 scrollLeft: new_left_scroll
             }, 200);
-        });
-        scLeftArrow2.on('click', function() {
+        };
+        $scope.scLeft = function() {
             var column_width = scLeft.find('td').eq(2).css('width').replace('px', '')*3,
                 new_left_scroll = parseInt(scLeft.scrollLeft()) - parseInt(column_width);
             console.log(column_width);
             scLeft.animate({
                 scrollLeft: new_left_scroll
             }, 200);
-        });
+        };
+
 
     });
 

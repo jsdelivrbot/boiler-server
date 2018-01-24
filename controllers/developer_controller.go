@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/AzureTech/goazure"
 	"github.com/AzureTech/goazure/orm"
+	"reflect"
+	"strconv"
 )
 
 type DeveloperController struct {
@@ -56,8 +58,33 @@ func (ctl *DeveloperController) TerminalOriginMessageList() {
 		goazure.Error(e)
 	}
 
-	goazure.Warn("Get Origin Messages:", messages)
+	for _, m := range messages {
+		m["Switch_1_channel"] = binaryValueDisplay(m, "Switch_in_1_16_channel")
+		m["Switch_2_channel"] = binaryValueDisplay(m, "Switch_in_17_32_channel")
+		m["Switch_3_channel"] = binaryValueDisplay(m, "Switch_out_1_16_channel")
+	}
+
+	//goazure.Warn("Get Origin Messages:", messages)
 
 	ctl.Data["json"] = messages
 	ctl.ServeJSON()
+}
+
+func binaryValueDisplay(obj orm.Params, col string) string {
+	var bVal int64
+	switch reflect.ValueOf(obj[col]).Kind() {
+	case reflect.String:
+		bVal, _ = strconv.ParseInt(obj[col].(string), 10, 64)
+	case reflect.Int:
+		bVal = int64(obj[col].(int))
+	case reflect.Int32:
+		bVal = int64(obj[col].(int32))
+	case reflect.Int64:
+		bVal = obj[col].(int64)
+	}
+
+	val := fmt.Sprintf("%16b", bVal)
+	//goazure.Warn("BinaryValue:", val)
+
+	return val
 }

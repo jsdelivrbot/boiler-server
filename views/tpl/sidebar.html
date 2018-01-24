@@ -1,6 +1,7 @@
 <style type="text/css">
-    /*.page-sidebar .page-sidebar-menu li>a>.badge {
-        margin-top: 5px;
+    /*
+    .page-sidebar .page-sidebar-menu li>a>.badge {
+         margin-top: 5px;
     }
 
     .page-sidebar .page-sidebar-menu.page-header-fixed.fixed {
@@ -9,8 +10,8 @@
 
     .page-sidebar .page-sidebar-menu>li.heading, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.heading {
         padding: 10px 15px;
-    }*/
-
+    }
+*/
     .page-sidebar .page-sidebar-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li>a {
         padding: 0px 15px;
     }
@@ -20,14 +21,7 @@
 <!-- BEGIN SIDEBAR -->
 <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-<div class="page-sidebar" >
-    <!-- BEGIN SIDEBAR MENU -->
-    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+<div class="page-sidebar">
     <div class="sidebar_inner">
         <div class="collapse navbar-collapse">
             <ul class="page-sidebar-menu page-header-fixed fixed" data-keep-expanded="true" data-auto-scroll="false" data-slide-speed="200" style="padding-top: 5px;">
@@ -299,30 +293,34 @@
                     </a>
                 </li>
                 -->
-                <!--
                 <li ng-show="currentUser.Role.RoleId < 10"
                     class="start nav-item">
                     <a ui-sref="wiki">
                         <i class="fa fa-info-circle"></i>
                         <span class="title">系统帮助</span>
-                        <span class="badge sbold badge-info">12.12</span>
+                        <span class="badge sbold badge-info">12.30</span>
                     </a>
                 </li>
-                -->
 
                 <!-- END SIDEBAR MENU -->
                 <!--<li class="nav-item"> <a ui-sref="wiki">-->
                 <!--<i class="fa fa-info-circle"></i>-->
                 <!--<span class="title">{{ windowWidth}}</span>-->
                 <!--</a> </li>-->
-                <!--<li style=" text-align: center;">-->
-                    <!--<img src="/images/logo/lu.png" style="width: 140px; margin: 10px auto; ">-->
-                <!--</li>-->
+                <li class="logo_lu" style=" text-align: center;">
+                    <img src="/images/logo/lu.png" style="width: 140px; margin: 10px auto; ">
+                </li>
             </ul>
-            <div class="credit">
-                <img src="/images/logo/lu.png" />
-            </div>
         </div>
+
     </div>
+    <!-- BEGIN SIDEBAR MENU -->
+    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+
 </div>
 <!-- END SIDEBAR -->

@@ -144,13 +144,12 @@
 
     <div class="row" style="font-size: 14px;">
         <div class="col-md-3 col-sm-3">
-            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage +
-                1}} 页 共 {{pagedItems.length}} 页
+            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage }} 页 共 {{pagedItems.length}} 页
             </div>
         </div>
         <div class="col-md-9 col-sm-9">
             <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                <ul class="pagination" style="visibility: visible;">
+                <!--<ul class="pagination" style="visibility: visible;">
                     <li ng-class="['prev', {'disabled': currentPage == 0}]">
                         <a href ng-click="setPage(1)" title="首页"><i class="fa fa-angle-double-left"></i></a>
                     </li>
@@ -169,13 +168,18 @@
                         <a href ng-click="setPage(pagedItems.length)" title="末页"><i
                                 class="fa fa-angle-double-right"></i></a>
                     </li>
+                </ul>-->
+                <ul uib-pagination boundary-links="true" total-items="totalItems" boundary-link-numbers="true"
+                    ng-model="currentPage" items-per-page="pageSize"
+                    max-size="maxSize" num-pages="totalPage"
+                    previous-text="&lt;" next-text="&gt;" first-text="&laquo;" last-text="&raquo;">
                 </ul>
             </div>
         </div>
 
     </div>
 
-    <div class="cd-table-container" id="cd-table" >
+    <div class="cd-table-container" id="cd-table" ng-class="{'table_responsive':history.pids.length >= 9,'table-end':history.pids.length < 9}">
     <table class="table table-striped table-bordered table-hover table-checkable order-column table-boiler cd-table-wrapper"
            id="boiler_history_table">
         <thead>
@@ -183,7 +187,7 @@
             <th width="4%"></th>
             <th width="10%"> 采样时间</th>
 
-            <th width="7.81%" ng-repeat="param in history.parameters">
+            <th width="7.81%" ng-repeat="param in history.parameters track by $index">
                 {{ param.Name }}
                 {{ param.Unit }}
             </th>
@@ -198,7 +202,7 @@
         </tr>
         </tbody>
         <tbody ng-show="!history.isEmpty" style="text-align: center">
-        <tr ng-repeat="d in pagedItems[currentPage]">
+        <tr ng-repeat="d in pagedItems[currentPage-1] track by $index">
             <td> {{ d.num }}</td>
             <td> {{ d.date | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
 
@@ -211,6 +215,6 @@
         </tbody>
     </table>
     </div>
-    <em class="cd-scroll-left"></em>
-    <em class="cd-scroll-right"></em>
+    <em class="cd-scroll-left" ng-show="history.pids.length >= 9" ng-click="scLeft()" style="position: fixed;left:270px; top: auto; bottom: 40%;"></em>
+    <em class="cd-scroll-right" ng-show="history.pids.length >= 9" ng-click="scRight()" style="position: fixed;right: 30px; top: auto; bottom: 40%;"></em>
 </div>

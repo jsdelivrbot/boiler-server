@@ -155,7 +155,7 @@ angular.module('BoilerAdmin').controller('UserAccountController', function($root
     };
 
     bAccount.isOrgs = function () {
-        return bAccount.currentData && Math.floor(bAccount.currentData.aRole / 10) === 1;
+        return bAccount.currentData && bAccount.currentData.aRole > 1;
     };
 
     bAccount.activeRow = function() {
@@ -305,17 +305,39 @@ var bAccount;
 
 angular.module('BoilerAdmin').controller('ModalAccountCtrl', function ($uibModalInstance, $rootScope, $http, $log, currentData, roles) {
     var $modal = this;
+
+    $modal.isValid = false;
     $modal.data = {};
     $modal.roles = roles;
+
     console.warn("init ModalAccountCtrl with roles:", roles);
     if ($modal.roles.length === 1 && $modal.roles[0]) {
         $modal.data.role = $modal.roles[0].id;
     }
-    if (Math.floor($rootScope.currentUser.Role.RoleId / 10) === 1) {
+    if ($rootScope.currentUser.Role.RoleId > 1) {
         $modal.data.org = $rootScope.currentUser.Organization.Uid;
     }
 
-    $modal.ok = function () {
+
+    $modal.dataChanged = function () {
+        if ($modal.data.username.length < 6 || $modal.data.username.length > 16 ||
+            $modal.data.password.length < 6 || $modal.data.username.length > 16 ||
+            !$modal.data.role ||
+            $modal.data.role <= $rootScope.currentUser.Role.RoleId ||
+            ($modal.data.role > 1 && $modal.data.org.length <= 0)) {
+            $modal.isValid = false;
+
+            return;
+        }
+
+        $modal.isValid = true;
+    };
+
+    $modal.commit = function () {
+        if (!$modal.isValid) {
+            return
+        }
+
         Ladda.create(document.getElementById('boiler_ok')).start();
         $modal.data.uid = "";
         $http.post("/user_update/", $modal.data)
@@ -375,6 +397,7 @@ angular.module('BoilerAdmin').component('modalComponent', {
         };
     }
 });
+
 
 angular.module('BoilerAdmin').controller('userCtrl', function($scope,$rootScope, $uibModalInstance,$http, currentData,status,aRoles) {
     $scope.currentData= currentData;
@@ -509,10 +532,4 @@ angular.module('BoilerAdmin').controller('userCtrl', function($scope,$rootScope,
         }
     };
 });
-
-
-
-
-
-
 

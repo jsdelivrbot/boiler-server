@@ -79,8 +79,7 @@ type WeixinMessage struct {
 }
 
 //var app *models.Application = &models.Application{}
-
-var WXCtrl *WechatController = &WechatController{}
+var WxCtl *WechatController = &WechatController{}
 
 var (
 	identity		string
@@ -128,8 +127,8 @@ func (ctl *WechatController) InitWechatService() {
 
 	fmt.Println(base.GetCallbackIP(wechatClient))
 
-	WXCtrl.SyncUserList()
-	WXCtrl.SyncMenu()
+	WxCtl.SyncUserList()
+	WxCtl.SyncMenu()
 }
 
 func textMsgHandler(ctx *core.Context) {
@@ -328,6 +327,7 @@ func (ctl *WechatController) SyncUserList() {
 	list, err := user.List(wechatClient, "")
 	if err != nil {
 		goazure.Error("Get Wechat User List Error", err)
+		return
 	}
 
 	goazure.Warn("WechatUserList: ", list)
@@ -549,15 +549,15 @@ func dealwith(req *Request) (resp *Response, err error) {
 	goazure.Info(req.Content)
 	if req.MsgType == Text {
 		if strings.Trim(strings.ToLower(req.Content), " ") == "help" || req.Content == "Hello2BizUser" || req.Content == "subscribe" {
-			resp.Content = "目前支持包的使用说明及例子的说明，这些例子和说明来自于github.com/astaxie/gopkg，例如如果你想查询strings有多少函数，你可以发送：strings，你想查询strings.ToLower函数，那么请发送：strings.ToLower"
+			resp.Content = "目前支持包的使用说明及例子的说明，这些例子和说明来自于github.com/AzureTech/gopkg，例如如果你想查询strings有多少函数，你可以发送：strings，你想查询strings.ToLower函数，那么请发送：strings.ToLower"
 			return resp, nil
 		}
 		strs := strings.Split(req.Content, ".")
 		var resurl string
 		var a item
 		if len(strs) == 1 {
-			resurl = "https://raw.github.com/astaxie/gopkg/master/" + strings.Trim(strings.ToLower(strs[0]), " ") + "/README.md"
-			a.Url = "https://github.com/astaxie/gopkg/tree/master/" + strings.Trim(strings.ToLower(strs[0]), " ") + "/README.md"
+			resurl = "https://raw.github.com/AzureTech/gopkg/master/" + strings.Trim(strings.ToLower(strs[0]), " ") + "/README.md"
+			a.Url = "https://github.com/AzureTech/gopkg/tree/master/" + strings.Trim(strings.ToLower(strs[0]), " ") + "/README.md"
 		} else {
 			var other []string
 			for k, v := range strs {
@@ -567,8 +567,8 @@ func dealwith(req *Request) (resp *Response, err error) {
 					other = append(other, strings.Trim(strings.Title(v), " "))
 				}
 			}
-			resurl = "https://raw.github.com/astaxie/gopkg/master/" + strings.Join(other, "/") + ".md"
-			a.Url = "https://github.com/astaxie/gopkg/tree/master/" + strings.Join(other, "/") + ".md"
+			resurl = "https://raw.github.com/AzureTech/gopkg/master/" + strings.Join(other, "/") + ".md"
+			a.Url = "https://github.com/AzureTech/gopkg/tree/master/" + strings.Join(other, "/") + ".md"
 		}
 		goazure.Info(resurl)
 		rsp, err := http.Get(resurl)
@@ -808,7 +808,7 @@ const (
 )
 
 const (
-	TOKEN    = "astaxiefromqqweixin"
+	TOKEN    = "AzureTechfromqqweixin"
 	Text     = "text"
 	Location = "location"
 	Image    = "image"

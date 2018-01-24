@@ -18,6 +18,10 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
         {
             Id: PARAMETER_CATEGORY_CALCULATE,
             Name: '计算量'
+        },
+        {
+            Id: PARAMETER_CATEGORY_STATUS,
+            Name: '状态量'
         }
     ];
 
@@ -109,6 +113,9 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
             appendTo: parentElem,
             windowClass: 'zindex',
             resolve: {
+                parameter: function () {
+                    return bParameter;
+                },
                 isNew: function () {
                     return isNew;
                 },
@@ -142,7 +149,7 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
     });
 });
 
-angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibModalInstance, $uibModal, $rootScope, $http, $log, isNew, editing, currentData, categoryList) {
+angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibModalInstance, $uibModal, $rootScope, $http, $log, parameter, isNew, editing, currentData, categoryList) {
     var $modal = this;
     $modal.data = currentData;
     $modal.categoryList = categoryList;
@@ -235,43 +242,35 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
     };
 
     $modal.delete = function () {
-        if (!currentData.Boilers || currentData.Boilers.length === 0) {
-            swal({
-                title: "确认删除该参数？",
-                text: "注意：删除后将无法恢复，无法接收来自此终端的所有设备信息。",
-                type: "warning",
-                showCancelButton: true,
-                //confirmButtonClass: "btn-danger",
-                confirmButtonColor: "#d33",
-                cancelButtonText: "取消",
-                confirmButtonText: "删除",
-                closeOnConfirm: false
-            }).then(function () {
-                $http.post("/terminal_delete/", {
-                    uid: currentData.Uid
-                }).then(function (res) {
-                    swal({
-                        title: "终端删除成功",
-                        type: "success"
-                    }).then(function () {
-                        terminal.refreshDataTables();
-                    });
-                }, function (err) {
-                    swal({
-                        title: "删除终端失败",
-                        text: err.data,
-                        type: "error"
-                    });
+        swal({
+            title: "确认删除该参数？",
+            text: "注意：删除后将无法恢复，且和此参数相关的数据通道将废止使用。",
+            type: "warning",
+            showCancelButton: true,
+            //confirmButtonClass: "btn-danger",
+            confirmButtonColor: "#d33",
+            cancelButtonText: "取消",
+            confirmButtonText: "删除",
+            closeOnConfirm: false
+        }).then(function () {
+            $http.post("/runtime_parameter_delete/", {
+                Id: $modal.data.Id
+            }).then(function (res) {
+                swal({
+                    title: "参数删除成功",
+                    type: "success"
+                }).then(function () {
+                    $uibModalInstance.close('success');
+                    $rootScope.getParameterList();
+                });
+            }, function (err) {
+                swal({
+                    title: "删除参数失败",
+                    text: err.data,
+                    type: "error"
                 });
             });
-        } else {
-            swal({
-                title: "无法删除该终端",
-                text: "尚有" + currentData.Boilers.length + "台锅炉设备与该终端绑定，如需删除该终端，请先解绑其所有设备。",
-                type: "error"
-            });
-        }
-
+        });
     };
 
     $modal.cancel = function () {
@@ -285,3 +284,4 @@ const PARAMETER_CATEGORY_UNDEFINED  = 0;
 const PARAMETER_CATEGORY_ANALOG     = 10;
 const PARAMETER_CATEGORY_SWITCH     = 11;
 const PARAMETER_CATEGORY_CALCULATE  = 12;
+const PARAMETER_CATEGORY_STATUS     = 13;

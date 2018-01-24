@@ -2,8 +2,8 @@
 /*header*/
 
 .page-header.navbar{
-	border-radius: 0;
-	margin: 0;
+    border-radius: 0;
+    margin: 0;
     background-color:#096e7a ;
     color: #FFFFFF;
 }
@@ -12,7 +12,7 @@
 /*NAVIGATION MENU*/
 
 .navbar a{
-	color: #EEEEEE;
+    color: #EEEEEE;
 }
 
 .page-header.navbar .top-menu .navbar-nav>li.dropdown:hover .dropdown-toggle,.page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle:hover{
@@ -24,20 +24,23 @@
 /*sidebar*/
 
 .page-sidebar .page-sidebar-menu>li.active.open>a, .page-sidebar .page-sidebar-menu>li.active>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active.open>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active>a{
-	background-color: #19bc9c;
+    background-color: #19bc9c;
 }
 .page-sidebar .nav-item.active a{
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 .page-sidebar li.active a i{
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 .page-sidebar .page-sidebar-menu>li.active>a:hover{
     background: #19bc9c;
 }
+.page-sidebar .page-sidebar-menu>li.logo_lu{
+    display: none;
+}
 
 .credit{
-	display: none;
+    display: none;
 }
 
 
@@ -107,7 +110,7 @@
     font-weight: bold;
 }
 .portlet.light>.portlet-title>.caption>i{
-	color: #19bb9b;
+    color: #19bb9b;
 }
 .font-blue-madison {
     color: #19bb9b!important;
@@ -122,6 +125,14 @@
 .icon-settings:not(.runtime_icon):before {
     content: "\f00a";
 }
+
+.pop_green .tooltip-inner {
+    background-color: #19bc9b;
+}
+.pop_green.tooltip.top .tooltip-arrow {
+    border-top-color: #19bc9b;
+}
+
 
 
 /*搜索框*/
@@ -406,11 +417,16 @@ div.detail-btn label.active.btn-red {
     background-color: #1abc9c;
     border-color: #1abc9c;
 }
-profile-content .margiv-top-10{
-    float: right;
+
+.profile-content .form-group .margin-top-10{
+    text-align: left;
 }
-profile-content .margin-top-10 {
-    float: right;
+.profile-content .margiv-top-10{
+    text-align: right;
+}
+
+.profile-content .margin-top-10 {
+    text-align: right;
 }
 
 /*运行参数*/

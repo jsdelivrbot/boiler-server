@@ -31,8 +31,6 @@ import (
 type RuntimeController struct {
 	MainController
 
-	Parameters 				[]*models.RuntimeParameter
-
 	StatusRunningDuration	map[string]time.Duration
 
 	BoilerRanks				[]orm.Params
@@ -49,70 +47,334 @@ type Status struct {
 	}
 }
 
-var RtmCtrl *RuntimeController = &RuntimeController{}
+var RtmCtl *RuntimeController = &RuntimeController{}
 
 const rtmDefaultsPath string = "models/properties/runtime_defaults/"
 
 func init() {
-	RtmCtrl.MainController = *MainCtrl
-
-	go RtmCtrl.RefreshParameters()
+	RtmCtl.MainController = *MainCtrl
 }
 
 func (ctl *RuntimeController) GetBoilerRank() {
 	ticker := time.NewTicker(time.Minute * 15)
 	tick := func() {
 		for t := range ticker.C {
-			RtmCtrl.RefreshBoilerHeatRank(t)
+			RtmCtl.RefreshBoilerHeatRank(t)
 		}
 	}
 
 	go tick()
-	go RtmCtrl.RefreshBoilerHeatRank(time.Now())
+	go RtmCtl.RefreshBoilerHeatRank(time.Now())
 }
 
-func (ctl *RuntimeController) GetRunningDuration() {
+func (ctl *RuntimeController)GetRunningDuration() {
 	ticker := time.NewTicker(time.Minute * 30)
 	tick := func() {
 		for t := range ticker.C {
-			RtmCtrl.RefreshStatusRunningDuration(t)
+			RtmCtl.RefreshStatusRunningDuration(t)
 		}
 	}
 
 	go tick()
-	go RtmCtrl.RefreshStatusRunningDuration(time.Now())
+	go RtmCtl.RefreshStatusRunningDuration(time.Now())
 }
 
-func (ctl *RuntimeController) RefreshParameters() {
-	RtmCtrl.bWaitGroup.Add(1)
-
-	var params []*models.RuntimeParameter
-	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
-	if num, err := qs.RelatedSel("Category").OrderBy("Id").All(&params); err != nil || num == 0 {
-		goazure.Error("Get RuntimeParameterList Error:", num, err)
-	}
-
-	for i, v := range params {
-		if num, err := dba.BoilerOrm.LoadRelated(v, "BoilerMediums"); err != nil && num == 0 {
-			goazure.Error("[",i,"]", v, num, err)
-		}
-
-		for _, b := range v.BoilerMediums {
-			b.Name = strings.TrimSuffix(b.Name, "锅炉")
+func (ctl *RuntimeController) RuntimeReload() {
+	ticker := time.NewTicker(time.Second * 30)
+	tick := func() {
+		for t := range ticker.C {
+			go runtimeReload(t)
 		}
 	}
 
-	RtmCtrl.Parameters = params
-
-	RtmCtrl.bWaitGroup.Done()
+	go tick()
 }
 
-func (ctl *RuntimeController) RuntimeParameterList() {
-	goazure.Warning("Ready to Get RuntimeParameterList")
-	RtmCtrl.bWaitGroup.Wait()
+func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
+	v := float64(rtm.Value) * float64(rtm.Parameter.Scale)
+	var val interface{}
+	pow10_n := math.Pow10(int(rtm.Parameter.Fix))
+	val = math.Trunc(v * pow10_n + 0.5) / pow10_n
 
-	ctl.Data["json"] = RtmCtrl.Parameters
-	ctl.ServeJSON()
+	if rtm.Parameter.Category.Id == models.RUNTIME_PARAMETER_CATEGORY_RANGE {
+		val = rtm.Remark
+	}
+
+	//goazure.Error("reload value:", rtm.Value, v, val)
+	//time.Sleep(time.Second * 5)
+
+	//TODO: Alarm Has ISSUES
+	/*
+	var alarm 	models.BoilerAlarm
+	var rule 	models.RuntimeAlarmRule
+
+	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
+	condFm := orm.NewCondition().Or("BoilerForm__Id", rtm.Boiler.Form.Id).Or("BoilerForm__Id", 0)
+	condMed := orm.NewCondition().Or("BoilerMedium__Id", rtm.Boiler.Medium.Id).Or("BoilerMedium__Id", 0)
+	condFt := orm.NewCondition().Or("BoilerFuelType__Id", rtm.Boiler.Fuel.Type.Id).Or("BoilerFuelType__Id", rtm.Boiler.Fuel.Type.Id)
+	condEvapDummy := orm.NewCondition().And("BoilerCapacityMin", 0).And("BoilerCapacityMax", 0)
+	condEvapValid := orm.NewCondition().And("BoilerCapacityMin__lte", rtm.Boiler.EvaporatingCapacity).And("BoilerCapacityMax__gte", rtm.Boiler.EvaporatingCapacity)
+	condEva := orm.NewCondition().OrCond(condEvapDummy).OrCond(condEvapValid)
+
+	cond := orm.NewCondition().AndCond(condFm).AndCond(condMed).AndCond(condFt).AndCond(condEva)
+	goazure.Info(condEva)
+	qr = qr.SetCond(cond)
+	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false)
+	if err := qr.One(&rule); err != nil {
+		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
+	} else {
+		//goazure.Info("===>Get AlarmRule:\n", rule, "\n", rtm.Boiler)
+
+		var alarmDesc	string
+		if rule.Warning > rule.Normal && val > float64(rule.Warning) {
+			alarmDesc = "过高"
+		}
+		if rule.Warning < rule.Normal && val < float64(rule.Warning) {
+			alarmDesc = "过低"
+		}
+
+		qa := dba.BoilerOrm.QueryTable("boiler_alarm")
+		qa = qa.Filter("TriggerRule__Uid", rule.Uid).Filter("Boiler__Uid", rtm.Boiler.Uid).Filter("EndDate__gte", time.Now().Add(time.Hour * -4)).Filter("IsDeleted", false)
+		if er := qa.One(&alarm); er != nil {
+			goazure.Warning("Get Exist Alarm Error:", alarm)
+			alarm.Uid = uuid.New()
+			alarm.Boiler = rtm.Boiler
+			alarm.Parameter = rule.Parameter
+			alarm.TriggerRule = &rule
+			alarm.Description = alarmDesc
+			alarm.AlarmLevel = 1
+			alarm.Priority = rule.Priority
+			alarm.State = models.BOILER_ALARM_STATE_NEW
+			alarm.NeedSend = rule.NeedSend
+
+			alarm.StartDate = time.Now()
+			alarm.EndDate = time.Now()
+		} else {
+			alarm.EndDate = time.Now()
+		}
+
+		if e := DataCtl.AddData(&alarm, true); e != nil {
+			goazure.Error("Added/Updated Alarm Error:", err, "\n", alarm)
+		}
+
+		rtm.Alarm = &alarm
+	}
+	*/
+
+	//rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
+	//
+	//if err := DataCtl.UpdateData(rtm); err != nil {
+	//	goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
+	//}
+
+	/*
+	IF NEW.`parameter_id` = 1001 THEN
+	SELECT 'boiler_runtime_cache_steam_temperature' INTO @tableName;
+
+	IF NEW.parameter_id = 1002 THEN
+	INSERT IGNORE `boiler_runtime_cache_steam_pressure`
+
+	IF NEW.`parameter_id` = 1003 THEN
+	INSERT IGNORE `boiler_runtime_cache_flow`
+
+	IF NEW.parameter_id = 1005 OR NEW.parameter_id = 1006 THEN
+	INSERT IGNORE `boiler_runtime_cache_water_temperature`
+
+	IF NEW.parameter_id = 1014 OR NEW.parameter_id = 1015 THEN
+	INSERT IGNORE boiler_runtime_cache_smoke_temperature
+
+	IF NEW.parameter_id = 1016 OR NEW.parameter_id = 1017 OR NEW.parameter_id = 1018 OR NEW.parameter_id = 1019 THEN
+	INSERT IGNORE boiler_runtime_cache_smoke_component
+
+	IF NEW.`parameter_id` = 1021 OR NEW.`parameter_id` = 1022 THEN
+	INSERT IGNORE `boiler_runtime_cache_environment_temperature`
+
+	IF NEW.`parameter_id` = 1201 THEN
+	INSERT IGNORE `boiler_runtime_cache_heat`
+
+	IF NEW.parameter_id = 1202 THEN
+	INSERT IGNORE boiler_runtime_cache_excess_air
+	SET 	`runtime_id` = NEW.`id`,
+		`boiler_id` = NEW.`boiler_id`,
+		`parameter_id` = NEW.`parameter_id`,
+		`alarm_id` = NEW.`alarm_id`,
+
+		`created_date` = NEW.`created_date`,
+		`created_by_id` = NEW.`created_by_id`,
+		`updated_date` = NEW.`updated_date`,
+		`updated_by_id` = NEW.`updated_by_id`,
+		`is_deleted` = NEW.`is_deleted`,
+		`is_demo` = NEW.`is_demo`,
+
+		`name_en` = NEW.`name_en`,
+		`remark` = NEW.`remark`,
+		`name` = (SELECT `boiler`.`name`
+	FROM `boiler`
+	WHERE `boiler`.uid = NEW.boiler_id),
+
+	`value` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`)
+	FROM `runtime_parameter` AS `param`
+	WHERE `param`.id = NEW.parameter_id),
+	`parameter_name` = (SELECT `param`.`name`
+	FROM `runtime_parameter` AS `param`
+	WHERE `param`.id = NEW.parameter_id),
+	`unit` = (SELECT `param`.`unit`
+	FROM `runtime_parameter` AS `param`
+	WHERE `param`.id = NEW.parameter_id),
+
+	`alarm_level` = (SELECT `alarm`.`alarm_level`
+	FROM `boiler_alarm` AS `alarm`
+	WHERE `alarm`.uid = NEW.alarm_id),
+	`alarm_description` = (SELECT `alarm`.`description`
+	FROM `boiler_alarm` AS `alarm`
+	WHERE `alarm`.uid = NEW.alarm_id)
+	;
+
+	UPDATE 	`boiler_runtime_cache_excess_air`
+	SET 	`alarm_level` = 0
+	WHERE 	`alarm_level` IS NULL;
+
+	UPDATE 	`boiler_runtime_cache_excess_air`
+	SET 	`alarm_description` = ''
+	WHERE 	`alarm_description` IS NULL;
+	END IF;
+	*/
+
+	/* CACHES */
+	/*
+	var cache caches.BoilerRuntimeCacheInterface
+	var isDefault bool = false
+
+	switch rtm.Parameter.Id {
+	case 1001:
+		cache = &caches.BoilerRuntimeCacheSteamTemperature{}
+
+	case 1002:
+		cache = &caches.BoilerRuntimeCacheSteamPressure{}
+
+	case 1003:
+		cache = &caches.BoilerRuntimeCacheFlow{}
+
+	case 1005:
+		fallthrough
+	case 1006:
+		cache = &caches.BoilerRuntimeCacheWaterTemperature{}
+
+	case 1014:
+		fallthrough
+	case 1015:
+		cache = &caches.BoilerRuntimeCacheSmokeTemperature{}
+
+	case 1016:
+		fallthrough
+	case 1017:
+		fallthrough
+	case 1018:
+		fallthrough
+	case 1019:
+		cache = &caches.BoilerRuntimeCacheSmokeComponent{}
+
+	case 1201:
+		cache = &caches.BoilerRuntimeCacheHeat{}
+
+	case 1202:
+		cache = &caches.BoilerRuntimeCacheExcessAir{}
+
+	default:
+		cache = &caches.BoilerRuntimeCache{}
+		isDefault = true
+	}
+
+	aCache := cache.GetCache().(*caches.BoilerRuntimeCache)
+
+	aCache.Runtime = rtm
+
+	aCache.Boiler = rtm.Boiler
+	aCache.Name = rtm.Boiler.Name
+	aCache.NameEn = rtm.Boiler.NameEn
+	aCache.CreatedDate = rtm.CreatedDate
+	aCache.Remark = rtm.Remark
+
+	aCache.IsDeleted = rtm.IsDeleted
+	aCache.IsDemo = rtm.IsDemo
+
+	aCache.Parameter = rtm.Parameter
+	aCache.ParameterName = rtm.Parameter.Name
+	aCache.Unit = rtm.Parameter.Unit
+
+	aCache.Value = v
+
+	goazure.Error("============ bCache:", cache, "\n", reflect.TypeOf(cache), "||", rtm.Parameter.Id, "||", isDefault)
+
+	if !isDefault {
+		if err := DataCtl.AddData(cache.(models.DataInterface), true); err != nil {
+			goazure.Error("Added/Updated Cache Failed:", err)
+		}
+	}
+	*/
+
+	/* HISTORY */
+	var history caches.BoilerRuntimeHistory
+	history.Boiler = rtm.Boiler
+	history.Name = rtm.Boiler.Name
+	history.Remark = rtm.Remark
+	history.CreatedDate = rtm.CreatedDate
+
+	if err := dba.BoilerOrm.QueryTable("boiler_runtime_history").
+		Filter("Boiler__Uid", rtm.Boiler.Uid).
+		Filter("CreatedDate__lte", rtm.CreatedDate.Add(time.Minute * 4)).Filter("CreatedDate__gte", rtm.CreatedDate.Add(time.Minute * -1)).
+		One(&history); err != nil {
+		goazure.Warning("History Data Read Error:", err)
+	} else {
+		history.Unmarshal()
+	}
+
+	his := &caches.History{}
+	var isMatched bool = false
+
+	for _, h := range history.Histories {
+		if h.ParameterId == rtm.Parameter.Id {
+			his = h
+			isMatched = true
+			break
+		}
+	}
+
+	his.Value = val
+	//his.Alarm = int(alarm.Priority)
+
+	if !isMatched {
+		his.ParameterId = rtm.Parameter.Id
+		history.Histories = append(history.Histories, his)
+	}
+
+	history.Marshal()
+
+	if err := DataCtl.AddData(&history, true); err != nil {
+		goazure.Error("Added/Updated History Failed:", err)
+	}
+
+	rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
+
+	if err := DataCtl.UpdateData(rtm); err != nil {
+		goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
+	}
+}
+
+func runtimeReload(t time.Time) {
+	var runtime []*models.BoilerRuntime
+
+	if num, err := dba.BoilerOrm.QueryTable("boiler_runtime").
+		RelatedSel("Boiler__Fuel").RelatedSel("Parameter").
+		Filter("Status", models.RUNTIME_STATUS_NEW).Limit(1000).All(&runtime); err != nil {
+		goazure.Error("Get Runtime Data NEW Error:", err, num)
+	}
+
+	for _, rtm := range runtime {
+		RtmCtl.RuntimeDataReload(rtm)
+	}
+
+
 }
 
 func (ctl *RuntimeController) BoilerRuntimeCount() {
@@ -130,7 +392,7 @@ func (ctl *RuntimeController) BoilerRuntimeCount() {
 			usr.Status == models.USER_STATUS_NEW {
 			qs = qs.Filter("IsDemo", true)
 		} else if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond).Filter("IsDemo", false)
 		}
@@ -159,6 +421,36 @@ func (ctl *RuntimeController) BoilerRuntimeCount() {
 	if num == 0 || err != nil {
 		goazure.Error("Read RuntimeCount Error: ", num, err)
 	}
+
+	/*
+	raw := "SELECT COUNT(*) FROM `boiler_runtime_view`"
+	if !usr.IsAdmin() || len(boilerUid) > 0 {
+		raw += " WHERE `boiler_id` IN "
+		bList := "("
+		for i, b := range boilers {
+			bList += "'" + b.Uid + "'"
+			if i < len(boilers) - 1 {
+				bList += ", "
+			}
+		}
+		bList += ")"
+		raw += bList
+	}
+
+	goazure.Info("RuntimeCount Raw:", raw)
+
+	var count orm.Params
+	err := dba.BoilerOrm.Raw(raw).QueryRow(&count)
+	if err != nil {
+		goazure.Error("Read RuntimeCount Error: ", err)
+		//panic("Read RuntimeCount Error: ")
+	}
+
+	res, err := dba.BoilerOrm.Raw(raw).Exec()
+	num, _ := res.RowsAffected()
+	id, _ := res.LastInsertId()
+	goazure.Warn("Exec()", num, id, err)
+	*/
 
 	ctl.Data["json"] = num
 	ctl.ServeJSON()
@@ -306,6 +598,10 @@ func (ctl *RuntimeController) BoilerRuntimeList() {
 
 	var aRuntimes 	[][]orm.Params
 
+	if len(b.RuntimeQueue) == 0 {
+		b.RuntimeQueue = ParamCtrl.ParamQueueWithBoiler(boiler)
+	}
+
 	params := parameters(b.RuntimeQueue...)
 
 	//fmt.Println("\n\nPARAMs:", params, "\nRTMs: \n", rtms)
@@ -365,13 +661,13 @@ func (ctl *RuntimeController) RefreshStatusRunningDuration(t time.Time) {
 func (ctl *RuntimeController) BoilerStatusRunningDuration() {
 	usr := ctl.GetCurrentUser()
 	duration := map[string]time.Duration{}
-	boilers, err := BoilerCtrl.CurrentBoilerList(usr)
+	boilers, err := BlrCtl.CurrentBoilerList(usr)
 	if err != nil {
 		goazure.Error("get current boiler list error!")
 	}
 
 	for _, b := range boilers {
-		duration[b.Uid] = RtmCtrl.StatusRunningDuration[b.Uid]
+		duration[b.Uid] = RtmCtl.StatusRunningDuration[b.Uid]
 	}
 
 	ctl.Data["json"] = duration
@@ -380,6 +676,8 @@ func (ctl *RuntimeController) BoilerStatusRunningDuration() {
 
 func (ctl *RuntimeController) BoilerRuntimeHistory() {
 	//goazure.Info("=== Ready to get Runtime History ===")
+	usr := ctl.GetCurrentUser()
+
 	b := bBoiler{}
 	resStatus := 200
 	resBody := "Success"
@@ -390,8 +688,26 @@ func (ctl *RuntimeController) BoilerRuntimeHistory() {
 		return
 	}
 
+	var isMatched bool = false
+	var boiler models.Boiler
+	boilers, _ := BlrCtl.CurrentBoilerList(usr)
+	for _, cb := range boilers {
+		if cb.Uid == b.Uid {
+			boiler = *cb
+			isMatched = true
+		}
+	}
+	if !isMatched {
+		e := fmt.Sprintln("Permission Error")
+		ctl.Ctx.Output.SetStatus(403)
+		ctl.Ctx.Output.Body([]byte(e))
+		goazure.Error(e)
+
+		return
+	}
+
 	if len(b.RuntimeQueue) == 0 {
-		b.RuntimeQueue = []int{1001, 1002, 1003, 1005, 1006, 1015, 1014, 1016, 1021, 1202, 1201}
+		b.RuntimeQueue = ParamCtrl.ParamQueueWithBoiler(&boiler)
 	}
 
 	var	 histories	[]*caches.BoilerRuntimeHistory
@@ -447,7 +763,13 @@ func (ctl *RuntimeController) BoilerRuntimeHistory() {
 }
 
 func (ctl *RuntimeController) BoilerRuntimeInstants() {
+	var boiler *models.Boiler
+	var scope string
 	//goazure.Error("Instants Param:", ctl.Input())
+	if ctl.Input()["scope"] != nil && len(ctl.Input()["scope"]) > 0 {
+		scope = ctl.Input()["scope"][0]
+	}
+
 	var b bBoiler
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &b); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -456,8 +778,45 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 		return
 	}
 
+	for _, mb := range MainCtrl.Boilers {
+		if mb.Uid == b.Uid {
+			boiler = mb
+			break
+		}
+	}
+
 	if len(b.RuntimeQueue) <= 0 {
-		b.RuntimeQueue = []int{1201, 1015, 1002, 1202}
+		b.RuntimeQueue = ParamCtrl.ParamQueueWithBoiler(boiler)
+		switch scope {
+		case "thumb":
+			if len(b.RuntimeQueue) >= 4 {
+				b.RuntimeQueue = b.RuntimeQueue[:4]
+			}
+
+			for i, v := range b.RuntimeQueue {
+				ids := strconv.FormatInt(int64(v), 10)
+				if strings.HasPrefix(ids, strconv.FormatInt(int64(models.RUNTIME_PARAMETER_CATEGORY_RANGE), 10)) {
+					b.RuntimeQueue = b.RuntimeQueue[:i]
+					break
+				}
+				if strings.HasPrefix(ids, strconv.FormatInt(int64(models.RUNTIME_PARAMETER_CATEGORY_SWITCH), 10)) {
+					b.RuntimeQueue = b.RuntimeQueue[:i]
+					break
+				}
+			}
+
+			if len(b.RuntimeQueue) <= 0 {
+				b.RuntimeQueue = []int{1201, 1015, 1002, 1202}
+			}
+
+			//goazure.Error("RuntimeQueue:", b.RuntimeQueue)
+		case "wxapp":
+			if len(b.RuntimeQueue) <= 0 {
+				b.RuntimeQueue = []int{1201, 1002, 1015, 1202, 1016, 1001, 1004, 1003}
+			}
+		default:
+			b.RuntimeQueue = ParamCtrl.ParamQueueWithBoiler(boiler)
+		}
 	}
 
 	runtimes := func() []orm.Params {
@@ -468,7 +827,7 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 		if len(b.RuntimeQueue) > 0 {
 			q = q.Filter("Parameter__Id__in", b.RuntimeQueue)
 		}
-		q = q.Filter("UpdatedDate__gt", time.Now().Add(time.Hour * -12))
+		//q = q.Filter("UpdatedDate__gt", time.Now().Add(time.Hour * -6))
 		if num, err := q.Filter("IsDeleted", false).OrderBy("Parameter__Id").Values(&ins);
 			/* "Runtime", "Boiler", "Parameter", "Alarm",
 			"Value", //"CreatedDate",
@@ -489,8 +848,10 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 	rtms := []orm.Params{}
 	for _, paramId := range b.RuntimeQueue {
 		num := 0
+		param := runtimeParameter(paramId)
 		for _, r := range rs {
-			if r["Parameter"] == int64(paramId) {
+			if  r["Parameter"] == int64(paramId) {
+				r["ParameterCategory"] = param.Category.Id
 				rtms = append(rtms, r)
 				num++
 				break
@@ -499,9 +860,9 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 
 		if num == 0 {
 			in := orm.Params{}
-			param := runtimeParameter(paramId)
 			in["Parameter"] = param.Id
 			in["ParameterName"] = param.Name
+			in["ParameterCategory"] = param.Category.Id
 
 			rtms = append(rtms, in)
 		}
@@ -551,8 +912,24 @@ func (ctl *RuntimeController) BoilerRuntimeDaily() {
 }
 
 func (ctl *RuntimeController) BoilerRuntimeDailyTotal() {
-	//TODO: Index Of Date Not Boiler
+	//limit := 7
+	//type DailyTotal struct {
+	//	Boilers		[]*models.Boiler
+	//	Parameters	[]*models.RuntimeParameter
+	//	Flows		[][]orm.Params
+	//	Heats		[][]orm.Params
+	//}
 
+	//dt := DailyTotal{}
+	//params := parameters(1003, 1201)
+	//boilers, _ := ctl.boilers()
+
+	//dt.Boilers = boilers
+	//dt.Parameters = params
+
+	//TODO: Index Of Date Not Boiler
+	//var aFlows [][]orm.Params
+	//var aHeats [][]orm.Params
 
 	raw := "SELECT 	`flows`.`date`, AVG(`flows`.`value`) AS `flow`, AVG(`heats`.`value`) AS `heat` "
 	raw += "FROM	`boiler_runtime_cache_flow_daily` AS `flows`, `boiler_runtime_cache_heat_daily` AS `heats` "
@@ -564,8 +941,7 @@ func (ctl *RuntimeController) BoilerRuntimeDailyTotal() {
 		Date		time.Time
 		Flow		float64
 		Heat		float64
-	}	//var aFlows [][]orm.Params
-	//var aHeats [][]orm.Params
+	}
 
 	var ttls []*total
 	if num, err := dba.BoilerOrm.Raw(raw).QueryRows(&ttls); err != nil {
@@ -580,7 +956,7 @@ func (ctl *RuntimeController) BoilerHeatRank() {
 	boilers, _ := ctl.boilers()
 	heats := []*BoilerHeatAvg{}
 
-	for _, ht := range RtmCtrl.BoilerHeats {
+	for _, ht := range RtmCtl.BoilerHeats {
 		for _, b := range boilers {
 			if ht.Uid == b.Uid {
 				heats = append(heats, ht)
@@ -621,7 +997,7 @@ func (ctl *RuntimeController) BoilerHeatRank() {
 		goazure.Warning(h)
 	}
 	
-	ranks := RtmCtrl.BoilerRanks
+	ranks := RtmCtl.BoilerRanks
 
 	ctl.Data["json"] = ranks
 	ctl.ServeJSON()
@@ -637,7 +1013,7 @@ func (ctl *RuntimeController) RefreshBoilerRank(t time.Time) {
 		return
 	} else {
 		sqlCoal = string(buf)
-		goazure.Info("Read SQL:", sqlCoal)
+		//goazure.Info("Read SQL:", sqlCoal)
 	}
 
 	if buf, err := ioutil.ReadFile(fileNameGas); err != nil {
@@ -658,7 +1034,7 @@ func (ctl *RuntimeController) RefreshBoilerRank(t time.Time) {
 
 	ranks := append(ranksCoal, ranksGas...)
 
-	RtmCtrl.BoilerRanks = ranks
+	RtmCtl.BoilerRanks = ranks
 }
 
 func (ctl *RuntimeController) RefreshBoilerHeatRank(t time.Time) {
@@ -678,7 +1054,7 @@ func (ctl *RuntimeController) RefreshBoilerHeatRank(t time.Time) {
 		goazure.Error("Select Boiler Heat Rank Error:", err, num)
 	}
 
-	RtmCtrl.BoilerHeats = heats
+	RtmCtl.BoilerHeats = heats
 }
 
 func (ctl *RuntimeController) boilers() ([]*models.Boiler, error) {
@@ -702,7 +1078,7 @@ func (ctl *RuntimeController) boilers() ([]*models.Boiler, error) {
 	var boilers []*models.Boiler
 	var err error
 
-	if boilers, err = BoilerCtrl.CurrentBoilerList(usr); err != nil {
+	if boilers, err = BlrCtl.CurrentBoilerList(usr); err != nil {
 		goazure.Error("Get CurrentBoilerList Error:", err)
 	}
 
@@ -762,43 +1138,6 @@ func runtimeDaily(boilerId string, limit int, offset int, pid int) []orm.Params 
 	return rtm
 }
 
-func runtimeParameter(pid int) *models.RuntimeParameter {
-	param := models.RuntimeParameter{}
-
-	if  err := dba.BoilerOrm.QueryTable("runtime_parameter").
-		RelatedSel("Category").
-		Filter("Id", pid).Filter("IsDeleted", false).
-		One(&param); err != nil {
-		goazure.Error("Read Parameter Error: ", err)
-		return nil
-	}
-
-	return &param
-}
-
-func runtimeParameterCategory(cateId int64) *models.RuntimeParameterCategory {
-	var category models.RuntimeParameterCategory
-	if err := dba.BoilerOrm.QueryTable("runtime_parameter_category").Filter("Id", cateId).One(&category); err != nil {
-		e := fmt.Sprintln("Read ParameterCategory Error", err, cateId)
-		goazure.Error(e)
-
-		return nil
-	}
-
-	return &category
-}
-
-func runtimeParameterMedium(medId int64) *models.RuntimeParameterMedium {
-	med := models.RuntimeParameterMedium{}
-	med.Id = medId
-	err := DataCtl.ReadData(&med)
-	if err != nil {
-		fmt.Println("Read Error: ", err)
-	}
-
-	return &med
-}
-
 //******************************* Init
 
 func (ctl *RuntimeController) InitRuntimeParameters() {
@@ -808,7 +1147,7 @@ func (ctl *RuntimeController) InitRuntimeParameters() {
 }
 
 func generateDefaultRuntimeParameterCategories() {
-	var cate10, cate11, cate12 models.RuntimeParameterCategory
+	var cate10, cate11, cate12, cate13 models.RuntimeParameterCategory
 	cate10.Id = 10
 	cate10.Name = "模拟量采集参数"
 	cate10.NameEn = "Analogue Collection Parameters"
@@ -821,9 +1160,14 @@ func generateDefaultRuntimeParameterCategories() {
 	cate12.Name = "计算参数"
 	cate12.NameEn = "Calculation Parameters"
 
+	cate13.Id = 13
+	cate13.Name = "状态量采集参数"
+	cate13.NameEn = "Status Parameters"
+
 	addRuntimeParameterCategory(cate10)
 	addRuntimeParameterCategory(cate11)
 	addRuntimeParameterCategory(cate12)
+	addRuntimeParameterCategory(cate13)
 }
 
 func generateDefaultRuntimeParameterMediums() {
@@ -1148,11 +1492,11 @@ func (ctl *RuntimeController) GenerateBoilerStatus(isOn bool) {
 		statTicker := time.NewTicker(time.Minute * 5)
 		statGen := func(t time.Time) {
 			for i, b := range MainCtrl.Boilers {
-				if !BoilerCtrl.IsGenerateData(b.Uid) {
+				if !BlrCtl.IsGenerateData(b.Uid) {
 					continue
 				}
 
-				value := int64((i + t.Hour()) % 3)
+				value := int64((i + t.Minute()) % 3)
 				//goazure.Error("go generateBoilerStatus:", stat, t, b.Name, value)
 				generateBoilerStatus(b, t, value, stat)
 			}
@@ -1164,12 +1508,12 @@ func (ctl *RuntimeController) GenerateBoilerStatus(isOn bool) {
 		}
 	}
 
-	BoilerCtrl.RefreshGlobalBoilerList()
+	BlrCtl.RefreshGlobalBoilerList()
 	for _, st := range status {
 		go generateStatus(time.Now(), st)
 	}
 
-	ticker := time.NewTicker(time.Hour * 3)
+	ticker := time.NewTicker(time.Minute * 30)
 	for t := range ticker.C {
 		for _, st := range status {
 			generateStatus(t, st)
@@ -1254,11 +1598,11 @@ func (ctl *RuntimeController) GenerateBoilerRuntime(isOn bool) {
 	generateRuntime := func(date time.Time, rtm Runtime) {
 		var currentValue int64 = rtm.BaseValue + int64(float64(rtm.DynamicValue) * 0.4)
 		for _, b := range MainCtrl.Boilers {
-			if !BoilerCtrl.IsGenerateData(b.Uid) {
+			if !BlrCtl.IsGenerateData(b.Uid) {
 				continue
 			}
 
-			if !BoilerCtrl.IsBurning(b.Uid) {
+			if !BlrCtl.IsBurning(b.Uid) {
 				continue
 			}
 
@@ -1274,7 +1618,7 @@ func (ctl *RuntimeController) GenerateBoilerRuntime(isOn bool) {
 	tickBoiler := time.NewTicker(time.Minute * 15)
 	bTick := func() {
 		for range tickBoiler.C {
-			BoilerCtrl.RefreshGlobalBoilerList()
+			BlrCtl.RefreshGlobalBoilerList()
 		}
  	}
 
@@ -1340,9 +1684,9 @@ func generateBoilerRuntime(boiler *models.Boiler, date time.Time, run Runtime, c
 	//value := int64(float32(run.BaseValue) + fl * float32(run.DynamicValue))
 	param := runtimeParameter(int(run.Pid))
 
-	//if param.Category.Id == int32(11) && value > 0 {
-	//	value = 1
-	//}
+	if param.Category.Id == 11 && value > 0 {
+		value = 1
+	}
 
 	rtm := models.BoilerRuntime {}
 
@@ -1365,6 +1709,8 @@ func generateBoilerRuntime(boiler *models.Boiler, date time.Time, run Runtime, c
 		goazure.Error("Add Runtime", rtm.Parameter.Name, "Error:", err)
 	}
 
+	go RtmCtl.RuntimeDataReload(&rtm)
+
 	return value
 }
 
@@ -1374,6 +1720,12 @@ func generateBoilerStatus(boiler *models.Boiler, date time.Time, value int64, ru
 	}
 
 	param := runtimeParameter(int(run.Pid))
+
+	if param == nil {
+		goazure.Error("Get Param", run.Pid, "Error!")
+
+		return
+	}
 
 	rtm := models.BoilerRuntime {}
 

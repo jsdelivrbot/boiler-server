@@ -5,16 +5,13 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/AzureTech/goazure/orm"
-
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/models/caches"
-	"github.com/AzureRelease/boiler-server/common"
-
 	"net/url"
+	"github.com/AzureRelease/boiler-server/common"
 )
 
 var MyORM 		orm.Ormer
-
 var BoilerOrm 	orm.Ormer
 
 func init() {
@@ -49,6 +46,8 @@ func init() {
 		new(models.BoilerMaintenance),
 
 		new(models.BoilerMessageSubscriber),
+		new(models.BoilerTerminalCombined),
+		new(models.BoilerOrganizationLinked),
 
 		new(models.Fuel),
 		new(models.FuelType),
@@ -87,6 +86,7 @@ func init() {
 		new(models.RuntimeParameterCategory),
 		new(models.RuntimeParameterMedium),
 		new(models.RuntimeParameterChannelConfig),
+		new(models.RuntimeParameterChannelConfigRange),
 		new(models.RuntimeAlarmRule),
 
 		new(models.Message),
@@ -104,7 +104,7 @@ func init() {
 		new(models.DialogueComment),
 	)
 
-	orm.Debug = false
+	orm.Debug = false//!conf.IsRelease
 
 	MyORM = orm.NewOrm()
 	MyORM.Using("default")

@@ -291,7 +291,7 @@
 
 
 
-/**/
+/*global*/
 .zindex {
     z-index: 12000 !important;
 }
@@ -479,6 +479,13 @@ table#alarm_history_table tr.demo td {
 
 #parameter .tabbable-line>.nav-tabs {
     margin-top: -18px;
+}
+
+
+
+/*用户信息*/
+.profile-usertitle-job{
+    padding-top:10px;
 }
 
 

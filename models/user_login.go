@@ -6,12 +6,13 @@ type UserLogin struct {
 	MyUidObject
 
 	User			*User			`orm:"rel(fk);null"`
-	LoginPassword		string		`orm:"size(60)"`
-	IsSuccess		bool
+	IsLogin			bool			`orm:"index"`
+	IsSuccess		bool			`orm:"index"`
 
-	Sessions		[]*UserSession	`orm:"reverse(many)"`
-
+	LoginPassword	string			`orm:"size(60)"`
 	LoginMethod		string
 	LoginIp			string			`orm:"size(20)"`
 	LoginDate		time.Time		`orm:"auto_now_add;type(datetime)"`
+
+	Sessions		[]*UserSession	`orm:"reverse(many)"`
 }

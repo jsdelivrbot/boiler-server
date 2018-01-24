@@ -11,18 +11,18 @@ var concat = require("gulp-concat");
 
 //*** CSS  minify task
 gulp.task('minify', function () {
-    // css minify 
+    // css minify
     gulp.src(['./assets/apps/css/*.css', '!./assets/apps/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/apps/css/'));
 
     gulp.src(['./assets/global/css/*.css','!./assets/global/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/global/css/'));
-    gulp.src(['./assets/pages/css/*.css','!./assets/pages/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/pages/css/'));    
-    
+    gulp.src(['./assets/pages/css/*.css','!./assets/pages/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/pages/css/'));
+
     gulp.src(['./assets/layouts/**/css/*.css','!./assets/layouts/**/css/*.min.css']).pipe(rename({suffix: '.min'})).pipe(minifyCss()).pipe(gulp.dest('./assets/layouts/'));
     gulp.src(['./assets/layouts/**/css/**/*.css','!./assets/layouts/**/css/**/*.min.css']).pipe(rename({suffix: '.min'})).pipe(minifyCss()).pipe(gulp.dest('./assets/layouts/'));
 
     gulp.src(['./assets/global/plugins/bootstrap/css/*.css','!./assets/global/plugins/bootstrap/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./assets/global/plugins/bootstrap/css/'));
 
-   
+
 });
 
 //合并压缩css
@@ -38,7 +38,7 @@ gulp.task('minCss',function(){
         'assets/global/css/plugins.min.css',
         'assets/layouts/boiler/css/layout.min.css',
         'assets/layouts/boiler/css/themes/darkblue.min.css'
-        ])
+    ])
         .pipe(concat('base.min.css'))
         .pipe(minifyCss())
         .pipe(gulp.dest('assets'));
@@ -61,7 +61,7 @@ gulp.task('jsBase', function () {
         './assets/global/plugins/angular-ui-router.min.js',
         './assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js',
         'js/lib/angular-ui-bootstrap/ui-bootstrap-tpls-2.5.0.min.js'
-        ])
+    ])
         .pipe(concat('base.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('js'));

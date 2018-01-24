@@ -59,7 +59,7 @@
             <div class="portlet light profile-sidebar-portlet">
                 <!-- SIDEBAR USERPIC -->
                 <div class="profile-userpic">
-                    <img ng-src="{{profile.picture}}" class="img-responsive" alt=""> </div>
+                    <img ng-src="{{ profile.picture }}" class="img-responsive" alt=""> </div>
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
                 <div class="profile-usertitle">
@@ -86,11 +86,11 @@
                             <a ui-sref="profile.dashboard">
                                 <i class="icon-home"></i> 基本信息 </a>
                         </li>
-                        -->
-                        <li ng-class="{active: $state.includes('profile.account')}">
-                            <a ui-sref="profile.account">
-                                <i class="icon-settings"></i> 账户设置 </a>
-                        </li>
+                        <!--&ndash;&gt;-->
+                        <!--<li ng-class="{active: $state.includes('profile.account')}">-->
+                            <!--<a ui-sref="profile.account">-->
+                                <!--<i class="icon-settings"></i> 账户设置 </a>-->
+                        <!--</li>-->
                         <!--
                         <li>
                             <a href="#/todo">
@@ -107,52 +107,52 @@
             </div>
             <!-- END PORTLET MAIN -->
             <!-- PORTLET MAIN -->
-            <div class="portlet light">
-                <!-- STAT -->
-                <div class="row list-separated profile-stat">
-                    <div class="col-md-4 col-sm-4 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{ boilers.length }} </div>
-                        <div class="uppercase profile-stat-text"> 在用锅炉 </div>
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{ organizations.length }} </div>
-                        <div class="uppercase profile-stat-text"> 机构企业 </div>
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-6">
-                        <div class="uppercase profile-stat-title"> 61 </div>
-                        <div class="uppercase profile-stat-text"> 平台用户 </div>
-                    </div>
-                </div>
-                <!-- END STAT -->
-                <div>
-                    <!--
-                    <h4 class="profile-desc-title">About Marcus Doe</h4>
-                    <span class="profile-desc-text"> Lorem ipsum dolor sit amet diam nonummy nibh dolore. </span>
-                    -->
-                    <div class="row margin-top-20 profile-desc-link">
-                        <div class="col-md-4 col-sm-4 col-xs-6" style="text-align: right">
-                        <i ng-class="['fa', 'fa-weixin', {'font-green-jungle': profile.hasWeixin}]"></i>
-                        </div>
-                        <div class="col-md-8 col-sm-8 col-xs-6">
-                        <a ng-click="profile.weixinClick()" class="profile-desc-text" style="padding-left: 12px;"> {{ profile.weixinName }} </a>
-                        </div>
-                    </div>
-                    <!--
-                    <div class="margin-top-20 profile-desc-link">
-                        <i class="fa fa-globe"></i>
-                        <a href="http://www.keenthemes.com">www.keenthemes.com</a>
-                    </div>
-                    <div class="margin-top-20 profile-desc-link">
-                        <i class="fa fa-twitter"></i>
-                        <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
-                    </div>
-                    <div class="margin-top-20 profile-desc-link">
-                        <i class="fa fa-facebook"></i>
-                        <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
-                    </div>
-                    -->
-                </div>
-            </div>
+            <!--<div class="portlet light">-->
+                <!--&lt;!&ndash; STAT &ndash;&gt;-->
+                <!--<div class="row list-separated profile-stat">-->
+                    <!--<div class="col-md-4 col-sm-4 col-xs-6">-->
+                        <!--<div class="uppercase profile-stat-title"> {{ boilers.length }} </div>-->
+                        <!--<div class="uppercase profile-stat-text"> 在用锅炉 </div>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-4 col-sm-4 col-xs-6">-->
+                        <!--<div class="uppercase profile-stat-title"> {{ organizations.length }} </div>-->
+                        <!--<div class="uppercase profile-stat-text"> 机构企业 </div>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-4 col-sm-4 col-xs-6">-->
+                        <!--<div class="uppercase profile-stat-title"> 61 </div>-->
+                        <!--<div class="uppercase profile-stat-text"> 平台用户 </div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--&lt;!&ndash; END STAT &ndash;&gt;-->
+                <!--<div>-->
+                    <!--&lt;!&ndash;-->
+                    <!--<h4 class="profile-desc-title">About Marcus Doe</h4>-->
+                    <!--<span class="profile-desc-text"> Lorem ipsum dolor sit amet diam nonummy nibh dolore. </span>-->
+                    <!--&ndash;&gt;-->
+                    <!--<div class="row margin-top-20 profile-desc-link">-->
+                        <!--<div class="col-md-4 col-sm-4 col-xs-6" style="text-align: right">-->
+                        <!--<i ng-class="['fa', 'fa-weixin', {'font-green-jungle': profile.hasWeixin}]"></i>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-8 col-sm-8 col-xs-6">-->
+                        <!--<a ng-click="profile.weixinClick()" class="profile-desc-text" style="padding-left: 12px;"> {{ profile.weixinName }} </a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash;-->
+                    <!--<div class="margin-top-20 profile-desc-link">-->
+                        <!--<i class="fa fa-globe"></i>-->
+                        <!--<a href="http://www.keenthemes.com">www.keenthemes.com</a>-->
+                    <!--</div>-->
+                    <!--<div class="margin-top-20 profile-desc-link">-->
+                        <!--<i class="fa fa-twitter"></i>-->
+                        <!--<a href="http://www.twitter.com/keenthemes/">@keenthemes</a>-->
+                    <!--</div>-->
+                    <!--<div class="margin-top-20 profile-desc-link">-->
+                        <!--<i class="fa fa-facebook"></i>-->
+                        <!--<a href="http://www.facebook.com/keenthemes/">keenthemes</a>-->
+                    <!--</div>-->
+                    <!--&ndash;&gt;-->
+                <!--</div>-->
+            <!--</div>-->
             <!-- END PORTLET MAIN -->
         </div>
         <!-- END BEGIN PROFILE SIDEBAR -->

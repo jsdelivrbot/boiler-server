@@ -8,6 +8,7 @@ import (
 	"errors"
 	"strings"
 	"sync"
+	"time"
 )
 
 type MainController struct {
@@ -22,14 +23,13 @@ var MainCtrl *MainController = &MainController{}
 
 func init() {
 	//now := time.Now();
-	//time.LoadLocation("PRC")
+	time.LoadLocation("PRC")
 
 	initApplications()
 }
 
 func initApplications() {
 	/*======================== HOLDER ==========================*/
-
 	wechatWebHolder := models.Application{}
 	wechatWebHolder.Name = "微信网站 厚德能源2025"
 	wechatWebHolder.NameEn = "Weixin Web HolderBoiler"

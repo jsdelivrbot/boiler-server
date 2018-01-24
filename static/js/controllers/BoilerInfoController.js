@@ -55,8 +55,29 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
             RegisterOrg: bInfo.currentData.RegisterOrg,
             Enterprise: bInfo.currentData.Enterprise,
             Factory: bInfo.currentData.Factory,
-            Installed: bInfo.currentData.Installed
+            Maintainer: bInfo.currentData.Maintainer,
+            Supervisor: bInfo.currentData.Supervisor,
+
+            Links: []
         };
+
+        for (var i in bInfo.currentData.OrganizationsLinked) {
+            var uid = bInfo.currentData.OrganizationsLinked[i].Uid;
+            var link = {};
+            link.num = ++i;
+            link.uid = uid;
+
+            link.name = "";
+            link.type = 0;
+            link.typeName = "";
+
+            bInfo.basic.Links.push(link);
+        }
+
+        bInfo.currentData.Links = bInfo.basic.Links;
+
+        bInfo.updateCurrentLinks();
+        bInfo.updateCurrentLinksType();
 
         bInfo.initBap();
 
@@ -73,7 +94,8 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
         DTColumnDefBuilder.newColumnDef(2),
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4),
-        DTColumnDefBuilder.newColumnDef(5).notSortable()
+        DTColumnDefBuilder.newColumnDef(5),
+        DTColumnDefBuilder.newColumnDef(6).notSortable()
     ];
 
     var someClickHandler = function(info) {
@@ -168,9 +190,60 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
         }, 800);
     };
 
+    bInfo.updateCurrentLinks = function () {
+        for (var i in bInfo.currentData.Links) {
+            var link = bInfo.currentData.Links[i];
+            for (var j in $rootScope.organizations) {
+                var og = $rootScope.organizations[j];
+                if (og.Uid === link.uid) {
+                    link.name = og.name;
+                    link.type = og.typeId;
+                    break;
+                }
+            }
+        }
+    };
+
+    bInfo.updateCurrentLinksType = function () {
+        for (var i in bInfo.currentData.Links) {
+            var link = bInfo.currentData.Links[i];
+            if (!link.type || link.type <= 0) {
+                continue;
+            }
+            for (var j in $rootScope.organizationTypes) {
+                var tp = $rootScope.organizationTypes[j];
+                // console.warn("Linke:", tp, link.type);
+                if (tp.id === link.type) {
+                    // console.error("Get Linked:", link.uid, tp.name);
+                    link.typeName = tp.name;
+                    break;
+                }
+            }
+
+            bInfo.currentData.Links[i] = link;
+        }
+    };
+
     $rootScope.$watch('boilers', function () {
-        // console.error("$rootScope.$watch('boilers')");
+        console.error("$rootScope.$watch('boilers'");
         bInfo.refreshDataTables();
+    });
+
+    $rootScope.$watch('organizations', function () {
+        if (!$rootScope.organizations) {
+            return;
+        }
+
+        bInfo.updateCurrentLinks();
+        bInfo.updateCurrentLinksType();
+    });
+
+    $rootScope.$watch('organizationTypes', function () {
+        if (!$rootScope.organizationTypes) {
+            return;
+        }
+
+        bInfo.updateCurrentLinksType();
     });
 
     bInfo.initBap = function () {
@@ -389,7 +462,7 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
         $log.info('Ready to bInfo.back', $location.search()['from']);
         switch ($location.search()['from']) {
             case 'runtime':
-                $state.go('runtime.stats', {boiler: runtime.boiler.Uid});
+                $state.go('runtime.stats', {boiler: bRuntime.boiler.Uid});
                 break;
             case 'boiler-list':
                 $state.go('boiler.dashboard');
@@ -482,6 +555,8 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
     $modal.currentData = currentData;
     $modal.editingCode = true;
 
+    $modal.links = [];
+
     $modal.initData = function (currentData) {
         if (currentData) {
             $modal.editingCode = false;
@@ -505,8 +580,39 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 RegisterOrg: currentData.RegisterOrg ? currentData.RegisterOrg : null,
                 enterpriseId: currentData.Enterprise ? currentData.Enterprise.Uid : "",
                 factoryId: currentData.Factory ? currentData.Factory.Uid : "",
-                installedId: currentData.Installed ? currentData.Installed.Uid : ""
+                maintainerId: currentData.Maintainer ? currentData.Maintainer.Uid : "",
+                supervisorId: currentData.Supervisor ? currentData.Supervisor.Uid : ""
+            };
+
+            for (var i in currentData.OrganizationsLinked) {
+                var uid = currentData.OrganizationsLinked[i].Uid;
+                var link = {};
+                link.num = ++i;
+                link.uid = uid;
+
+                for (var j in $rootScope.organizations) {
+                    var og = $rootScope.organizations[j];
+                    if (og.Uid === uid) {
+                        console.error("Get Linked:", uid, og.name);
+                        link.name = og.name;
+                        link.type = og.typeId;
+                        break;
+                    }
+                }
+
+                var orgs = [];
+                for (var k in $rootScope.organizations) {
+                    var og = $rootScope.organizations[k];
+                    if (og.typeId === link.type) {
+                        orgs.push(og);
+                    }
+                }
+
+                link.orgs = orgs;
+
+                $modal.links.push(link);
             }
+
         } else {
             $modal.data = {
                 uid: "",
@@ -527,28 +633,26 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 RegisterOrg: null,
                 enterpriseId: "",
                 factoryId: "",
-                installedId: ""
+                installedId: "",
+
+                links: []
             }
         }
     };
 
     $modal.init = function () {
-        // $modal.enterprises = [{Uid: '', Name: '用能企业（请选择）'}];
-        // $modal.factories = [{Uid: '', Name: '锅炉制造厂（请选择）'}];
-        // $modal.installs = [{Uid: '', Name: '安装单位（请选择）'}];
-        //
-        // $modal.mediums = [{Uid: '', Name: '锅炉介质（请选择）'}];
-        // $modal.forms = [{Uid: '', Name: '锅炉型态（请选择）'}];
-        // $modal.fuels = [{Uid: '', Name: '锅炉燃料（请选择）'}];
-        $modal.enterprises = [{ Uid: '', name: '请选择...' }];
-        $modal.factories = [{ Uid: '', name: '请选择...' }];
-        $modal.installs = [{ Uid: '', name: '请选择...' }];
-
         $modal.mediums = [{ Id: -1, Name: '请选择...' }];
         $modal.forms = [{ Id: -1, Name: '请选择...' }];
         $modal.fuels = [{ Uid: '', Name: '请选择...' }];
 
-        for (var i = 0; i < $rootScope.organizations.length; i++) {
+        $modal.enterprises = [{ Uid: '', name: '请选择...' }];
+        $modal.factories = [{ Uid: '', name: '请选择...' }];
+        $modal.maintainers = [{ Uid: '', name: '请选择...' }];
+        $modal.supervisors = [{ Uid: '', name: '请选择...' }];
+
+        $modal.orgTypes = [];
+
+        for (var i in $rootScope.organizations) {
             var org = $rootScope.organizations[i];
             switch (org.Type.TypeId) {
                 case 2:
@@ -561,23 +665,40 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                         $modal.factories.push(org);
                     }
                     break;
-                case 3:
-                    if ($modal.installs.indexOf(org) === -1) {
-                        $modal.installs.push(org);
+                case 5:
+                    if ($modal.maintainers.indexOf(org) === -1) {
+                        $modal.maintainers.push(org);
+                    }
+                    break;
+                case 7:
+                    if ($modal.supervisors.indexOf(org) === -1) {
+                        $modal.supervisors.push(org);
                     }
                     break;
             }
         }
 
-        for (var i = 0; i < $rootScope.boilerMediums.length; i++) {
+        for (var i in $rootScope.organizationTypes) {
+            var t = $rootScope.organizationTypes[i];
+            switch (t.id) {
+                case 3:
+                case 4:
+                case 6:
+                    $modal.orgTypes.push(t);
+                    break;
+            }
+        }
+
+        for (var i in $rootScope.boilerMediums) {
             var med = $rootScope.boilerMediums[i];
             if (med.Id === 0 || $modal.mediums.indexOf(med) > -1) {
                 continue;
             }
+
             $modal.mediums.push(med);
         }
 
-        for (var i = 0; i < $rootScope.boilerForms.length; i++) {
+        for (var i in $rootScope.boilerForms) {
             var form = $rootScope.boilerForms[i];
             if (form.Id === 0 || $modal.forms.indexOf(form) > -1) {
                 continue;
@@ -586,7 +707,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
             $modal.forms.push(form);
         }
 
-        for (var i = 0; i < $rootScope.fuels.length; i++) {
+        for (var i in $rootScope.fuels) {
             var fuel = $rootScope.fuels[i];
             if (fuel.Type.Id === 0 || fuel.Type.Id >= 5 || $modal.fuels.indexOf(fuel) > -1) {
                 continue;
@@ -599,9 +720,52 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
 
     $modal.init();
 
+    $modal.addNewLink = function () {
+        if ($modal.links.length >= 4) {
+            return;
+        }
+
+        $modal.links.push({
+            num: $modal.links.length,
+            // type: -1,
+            // uid: "",
+            // name: ""
+        });
+    };
+
+    $modal.removeLink = function (link) {
+        for (var i in $modal.links) {
+            if (link === $modal.links[i]) {
+                $modal.links.splice(i, 1);
+            }
+        }
+    };
+
+    $modal.linkTypeChanged = function (link) {
+        var orgs = [];
+        for (var i in $rootScope.organizations) {
+            var og = $rootScope.organizations[i];
+            if (og.typeId === link.type) {
+                orgs.push(og);
+            }
+        }
+
+        link.orgs = orgs;
+        link.uid = undefined;
+    };
+
     $modal.save = function () {
         console.info("ready to update bInfo!");
         Ladda.create(document.getElementById('boiler_basic_submit')).start();
+        $modal.data.links = [];
+        for (var i in $modal.links) {
+            var li = $modal.links[i];
+            $modal.data.links.push({
+                num: li.num,
+                type: li.type,
+                uid: li.uid
+            });
+        }
         $http.post("/boiler_update/?scope=basic", $modal.data)
             .then(function (res) {
                 console.error("Update bInfo Resp:", res);

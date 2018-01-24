@@ -28,6 +28,12 @@
                             计算量
                         </a>
                     </li>
+                    <li ng-class="{'active': $modal.category === 13}">
+                        <a ng-click="param.refreshDataTables(13);">
+                            <i class="fa fa-pie-chart"></i>
+                            状态量
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -84,8 +90,8 @@
         -->
         <th>参数代码</th>
         <th>参数名称</th>
-        <th>计量单位</th>
-        <th ng-show="param.category !== 11">长度</th>
+        <th ng-show="param.category !== 11 && param.category !== 13">计量单位</th>
+        <th ng-show="param.category !== 11 && param.category !== 13">长度</th>
         <th>使用锅炉</th>
         <th>备注</th>
         <th>操作</th>
@@ -104,8 +110,8 @@
         -->
         <td>{{ data.Id }}</td>
         <td>{{ data.Name }}</td>
-        <td>{{ data.Scale + data.Unit }}</td>
-        <td ng-show="param.category !== 11">{{ data.Length }}</td>
+        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Scale + data.Unit }}</td>
+        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Length }}</td>
         <td>
             <span ng-repeat="medium in data.BoilerMediums" ng-class="['label', {'label-default': medium.Id == 0}, {'label-success': medium.Id == 1}, {'label-primary': medium.Id == 2}, {'label-info': medium.Id == 4}, {'label-warning': medium.Id == 5}]" style="margin-right: 4px;">
                 {{ medium.Name }}

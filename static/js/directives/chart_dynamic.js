@@ -14,7 +14,7 @@ boilerAdmin.directive('chartDynamic', function () {
     bChart.keys = [];
 
     var domId = "chart_dynamic";
-    var dataField = "data";
+    var dataField = "dynamic_data";
 
     $rootScope.$watch('instants', function (newVal, oldVal) {
         // console.error("Dynamic Instants:", $rootScope.instants);
@@ -35,17 +35,19 @@ boilerAdmin.directive('chartDynamic', function () {
             bChart.keys = [bChart.instants[0].id];
         }
 
-        bChart.refreshChart(RUNTIME_RANGE_DEFAULT, bChart.keys);
+        if (bChart.range === RUNTIME_RANGE_DEFAULT) {
+            bChart.refreshChart(bChart.range, bChart.keys);
+        }
     });
 
     $rootScope.$watch('boilerRuntime', function () {
         if (bChart.range === RUNTIME_RANGE_DEFAULT) {
-            bChart.refreshChart(RUNTIME_RANGE_DEFAULT);
+            bChart.refreshChart(bChart.range);
         }
     });
 
     $scope.$watch(dataField, function () {
-        // console.error("components $scope.$watch(" + dataField + ")");
+        // console.error("components $scope.$watch(" + dataField + ")", $scope[dataField]);
         if (!$scope[dataField]) {
             console.warn("There is no $scope." + dataField +"!!");
             return;
@@ -224,7 +226,7 @@ boilerAdmin.directive('chartDynamic', function () {
     };
 
     bChart.refreshChart = function (range, keys) {
-        // console.error("Init bChart.refreshChart:", range, keys);
+        console.warn("Init bChart.refreshChart:", range, keys);
         var isInit = false;
         if (!keys || keys.length <= 0) {
             if (!bChart.instants || bChart.instants.length <= 0) {
@@ -284,12 +286,12 @@ boilerAdmin.directive('chartDynamic', function () {
         // console.warn("bChart.refreshChart Set Range");
 
         if (!range) {
-            bChart.range = 0;
+            bChart.range = RUNTIME_RANGE_DEFAULT;
         } else {
             bChart.range = range;
         }
 
-        switch (range) {
+        switch (bChart.range) {
             case RUNTIME_RANGE_TODAY:
             case RUNTIME_RANGE_THERE_DAY:
             case RUNTIME_RANGE_WEEK:
@@ -317,10 +319,11 @@ boilerAdmin.directive('chartDynamic', function () {
                     Ladda.create(document.getElementById('dChart' + range)).stop();
                 });
                 break;
+
             case RUNTIME_RANGE_DEFAULT:
             default:
+                // console.error("bChart.refreshChart on RUNTIME_RANGE_DEFAULT");
                 $scope[dataField] = $rootScope.boilerRuntime;
-                bChart.refreshChartData();
                 break;
         }
     };

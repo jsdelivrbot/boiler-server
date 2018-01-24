@@ -10,11 +10,9 @@
                     <li class="active">
                         <a href="#" data-target="#tab_1_1" data-toggle="tab">个人信息</a>
                     </li>
-                    <!--
                     <li>
                         <a href="#" data-target="#tab_1_2" data-toggle="tab">修改头像</a>
                     </li>
-                    -->
                     <li>
                         <a href="#" data-target="#tab_1_3" data-toggle="tab">修改密码</a>
                     </li>
@@ -31,11 +29,11 @@
                     <div class="tab-pane active" id="tab_1_1">
                         <form role="form" action="#">
                             <div class="form-group">
-                                <label class="control-label">登录名</label>
+                                <label class="control-label">登录账户</label>
                                 <input type="text" placeholder="Login Name" ng-model="profile.aUsername" class="form-control" disabled />
                             </div>
                             <div class="form-group">
-                                <label class="control-label">全名</label>
+                                <label class="control-label">用户名称</label>
                                 <input type="text" placeholder="Full Name" ng-model="profile.aName" class="form-control" />
                             </div>
                             <!--
@@ -79,37 +77,50 @@
                                 -->
                             <div class="margiv-top-10">
                                 <a href ng-click="profile.updateUser()" class="btn green-haze"> 保存更新 </a>
-                                <a href ng-click="profile.resetUser()" class="btn default"> 取消 </a>
+                                <!--<a href ng-click="profile.resetUser()" class="btn default"> 取消 </a>-->
                             </div>
                         </form>
                     </div>
                     <!-- END PERSONAL INFO TAB -->
                     <!-- CHANGE AVATAR TAB -->
                     <div class="tab-pane" id="tab_1_2">
-                        <p> Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. </p>
-                        <form action="#"
-                            role="form">
+                        <p> 请选择您要添加的头像文件，文件格式请用jpg、png或gif，文件大小不超过2M，最好选择正方形的图片作为头像。</p>
+                        <form action="#" role="form">
                             <div class="form-group">
                                 <div class="fileinput fileinput-new" data-provides="fileinput">
-                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" /> </div>
-                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+
+                                    <div class="thumbnail" style="width: 212px; height: 162px; padding: 5px;">
+                                        <img ngf-thumbnail="profile.avatar || 'images/no_image.png'" style="max-width: 200px; max-height: 150px;">
+                                    </div>
+
                                     <div>
-                                        <span class="btn default btn-file">
-                                            <span class="fileinput-new"> Select image </span>
-                                            <span class="fileinput-exists"> Change </span>
-                                            <input type="file" name="..."> </span>
-                                        <a href="#" class="btn default fileinput-exists" data-dismiss="fileinput"> Remove </a>
+                                        <button class="btn default btn-file"
+                                                ngf-select
+                                                ng-model="profile.avatar"
+                                                ng-change="profile.avatarChanged();"
+                                                name="file" ngf-pattern="'image/*'"
+                                                ngf-accept="'image/*'"
+                                                ngf-max-size="2MB" ngf-min-height="100"
+                                                ngf-resize="{width: 400, height: 400}">
+                                            选择头像图片...
+                                        </button>
+                                        <a href class="btn default"
+                                           ng-show="!!profile.avatar"
+                                           ng-click="profile.removeAvatar();"
+                                           data-dismiss="fileinput"> 移除 </a>
                                     </div>
                                 </div>
                                 <div class="clearfix margin-top-10">
-                                    <span class="label label-danger">NOTE! </span>
-                                    <span>Attached image thumbnail is supported in Latest Firefox, Chrome, Opera, Safari and Internet Explorer 10 only </span>
+                                    <span class="label label-danger"> 注意 </span>
+                                    <span>请用最新的 Firefox, Chrome, Opera, Safari 或者 Internet Explorer 10 来进行用户头像上传的操作。 </span>
                                 </div>
                             </div>
                             <div class="margin-top-10">
-                                <a href ng-click="profile.updateUser()" class="btn green-haze"> Submit </a>
-                                <a href="#" class="btn default"> Cancel </a>
+                                <a href
+                                   ng-disabled="!profile.avatar"
+                                   ng-click="profile.uploadAvatar();"
+                                   ng-class="['btn', {'green-haze': !!profile.avatar}, {'grey': !profile.avatar}]"> 上传头像 </a>
+                                <!--<a href class="btn default"> 取消 </a>-->
                             </div>
                         </form>
                     </div>
@@ -128,7 +139,7 @@
                                 <input type="password" class="form-control" ng-model="profile.password_new_confirm"/> </div>
                             <div class="margin-top-10">
                                 <a href ng-click="profile.updateUserPassword()" ng-disabled="profile.password.length <= 0 || profile.password_new.length < 0 || profile.password_new != profile.password_new_confirm" class="btn green-haze"> 修改密码 </a>
-                                <a href ng-click="profile.resetUserPassword()" class="btn default"> 取消 </a>
+                                <!--<a href ng-click="profile.resetUserPassword()" class="btn default"> 取消 </a>-->
                             </div>
                         </form>
                     </div>

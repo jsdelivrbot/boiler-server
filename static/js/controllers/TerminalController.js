@@ -139,8 +139,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     for (var ic = 0; ic < terminal.calcCols.length; ic++) {
                         var col = terminal.calcCols[ic];
                         if (d[col]) {
-                            // console.warn("d[col]", col, d[col]);
-                            d[col] = parseFloat(d[col]).toFixed(1);
+                            d[col] = parseInt(d[col]);
                         }
                     }
                 }
@@ -275,6 +274,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
 
             $modal.name = currentData.Name;
             $modal.code = currentData.code;
+            $modal.org = currentData.Organization;
+
             $modal.boilers = currentData.Boilers;
             $modal.simNum = currentData.SimNumber;
             $modal.ip = currentData.LocalIp;
@@ -398,6 +399,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
         var ter = {
             uid: "",
             code: "",
+            org_id: $modal.org ? $modal.org.Uid : "",
             name: $modal.name,
             sim_number: $modal.simNum,
             ip: $modal.ip,
@@ -501,6 +503,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
                         title: "终端删除成功",
                         type: "success"
                     }).then(function () {
+                        $uibModalInstance.close('success');
+                        currentData = null;
                         terminal.refreshDataTables();
                     });
                 }, function (err) {
@@ -574,7 +578,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $http.post('/channel_config_matrix/', {
         terminal_code: currentData.code
     }).then(function (res) {
-        // console.error("post /channel_config_matrix/ resp:", res);
+        console.error("post /channel_config_matrix/ resp:", res);
         $modal.chanMatrix = res.data;
         $modal.dataMatrix = clone($modal.chanMatrix);
 
@@ -588,6 +592,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                 if (!$modal.dataMatrix[i][j] || $modal.dataMatrix[i][j].IsDefault) {
                     $modal.dataMatrix[i][j] = null;
+                } else {
+                    $modal.dataMatrix[i][j].oParamId = $modal.dataMatrix[i][j].Parameter.Id;
                 }
             }
         }
@@ -601,45 +607,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     };
 
-    function clone(obj) {
-        var copy;
-
-        // Handle the 3 simple types, and null or undefined
-        if (null === obj || "object" !== typeof obj) return obj;
-
-        // Handle Date
-        if (obj instanceof Date) {
-            copy = new Date();
-            copy.setTime(obj.getTime());
-            return copy;
-        }
-
-        // Handle Array
-        if (obj instanceof Array) {
-            copy = [];
-            for (var i = 0, len = obj.length; i < len; i++) {
-                copy[i] = clone(obj[i]);
-            }
-            return copy;
-        }
-
-        // Handle Object
-        if (obj instanceof Object) {
-            copy = {};
-            for (var attr in obj) {
-                if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-            }
-            return copy;
-        }
-
-        throw new Error("Unable to copy obj! Its type isn't supported.");
-    }
-
     $modal.analogParameters = [{Id: 0, Name: '默认配置'}];
     $modal.switchParameters = [{Id: 0, Name: '默认配置'}];
     $modal.calculateParameters = [{Id: 0, Name: '默认配置'}];
+    $modal.rangeParameters = [{Id: 0, Name: '默认配置'}];
 
-    for (var i = 0; i < $rootScope.parameters.length; i++) {
+    for (var i in $rootScope.parameters) {
         var param = $rootScope.parameters[i];
         switch (param.Category.Id) {
             case 10:
@@ -651,6 +624,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             case 12:
                 $modal.calculateParameters.push(param);
                 break;
+            case 13:
+                $modal.rangeParameters.push(param);
+                break;
         }
     }
 
@@ -658,16 +634,31 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         $modal.analogParameters,
         $modal.analogParameters,
         $modal.switchParameters,
-        $modal.calculateParameters
+        $modal.calculateParameters,
+        $modal.rangeParameters
     ];
 
     $modal.matrixChanged = function (outerIndex, innerIndex) {
         console.info("Data Matrix:", $modal.dataMatrix, "\n", outerIndex, ":", innerIndex);
         if ($modal.dataMatrix[outerIndex][innerIndex].Parameter.Id === 0) {
             $modal.dataMatrix[outerIndex][innerIndex].Parameter = null;
+            $modal.dataMatrix[outerIndex][innerIndex].oParamId = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Status = -1;
-        } else if (!$modal.dataMatrix[outerIndex][innerIndex].Status || $modal.dataMatrix[outerIndex][innerIndex].Status === -1) {
-            $modal.dataMatrix[outerIndex][innerIndex].Status = 0;
+            $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
+            $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
+        } else {
+            if ($modal.dataMatrix[outerIndex][innerIndex].oParamId !== $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id) {
+                $modal.dataMatrix[outerIndex][innerIndex].Ranges = [];
+                $modal.dataMatrix[outerIndex][innerIndex].oParamId = $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id;
+            }
+
+            if (!$modal.dataMatrix[outerIndex][innerIndex].Status || $modal.dataMatrix[outerIndex][innerIndex].Status === -1) {
+                $modal.dataMatrix[outerIndex][innerIndex].Status = 0;
+            }
+
+            if ($modal.dataMatrix[outerIndex][innerIndex].Parameter.Category.Id === 11 && (!$modal.dataMatrix[outerIndex][innerIndex].SwitchStatus || $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 0)) {
+                $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 1;
+            }
         }
     };
 
@@ -696,7 +687,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.initCurrent();
 
     $scope.setStatus = function(outerIndex, innerIndex, status, sn) {
-        console.warn("$scope.setStatus", outerIndex, innerIndex, status, sn);
+        // console.warn("$scope.setStatus", outerIndex, innerIndex, status, sn);
         $modal.dataMatrix[outerIndex][innerIndex].Status = status;
         if (status === 1) {
             $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber = sn;
@@ -705,13 +696,49 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         }
     };
 
+    $scope.setSwitchStatus = function(outerIndex, innerIndex, status) {
+        console.warn("$scope.setSwitchStatus", outerIndex, innerIndex, status);
+        $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = status;
+    };
+
+    $modal.openRange = function (currentChannel, number, size, parentSelector) {
+        var parentElem = parentSelector ?
+            angular.element($document[0].querySelector('.modal-body ' + parentSelector)) : undefined;
+        var modalInstance = $uibModal.open({
+            animation: terminal.animationsEnabled,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: '/directives/modal/terminal_channel_config_range.html',
+            controller: 'ModalTerminalChannelConfigRangeCtrl',
+            controllerAs: '$modalRange',
+            size: size,
+            appendTo: parentElem,
+            windowClass: 'zindex_sub',
+            resolve: {
+                $modal: function () {
+                    return $modal;
+                },
+                currentChannel: function () {
+                    currentChannel.ChannelNumber = number;
+                    return currentChannel;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            terminal.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
     $modal.ok = function () {
         console.warn("$modal channel update!");
         if (!$modal.code.length || $modal.code.length !== 6) {
             console.error("$modal.code error:", $modal.code);
             return;
         }
-        Ladda.create(document.getElementById('boiler_ok')).start();
+        Ladda.create(document.getElementById('channel_ok')).start();
 
         var configUpload = [];
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
@@ -725,23 +752,70 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     var dataParamId = $modal.dataMatrix[i][j] && $modal.dataMatrix[i][j].Parameter ? $modal.dataMatrix[i][j].Parameter.Id : 0;
                     var chanStatus = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Status : 0 ;
                     var dataStatus = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Status : 0 ;
-                    var dataSeqNo = $modal.dataMatrix[i][j] && dataStatus === 1 ? $modal.dataMatrix[i][j].SequenceNumber : -1 ;
-                    if (dataParamId !== chanParamId || dataStatus !== chanStatus) {
+                    var dataSeqNo = $modal.dataMatrix[i][j] && dataStatus === 1 ? $modal.dataMatrix[i][j].SequenceNumber : -1;
+                    var chanSwitch = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].SwitchStatus : 0 ;
+                    var dataSwitch = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].SwitchStatus : 0 ;
+                    var chanRanges, dataRanges = [];
+                    if (j === 5) {
+                        chanRanges = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Ranges : [] ;
+                        dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
+                    }
+
+                    if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
                         var chan = j + 1;
                         var num = i + 1;
-                        if (j >= 2) {
+                        if (j >= 2 && j < 5) {
                             chan = 3;
                             num = i + (j - 2) * 16 + 1;
+                        } else if (j === 5) {
+                            chan = j;
                         }
-                        configUpload.push({
+
+                        var configData = {
                             terminal_code: $modal.code,
                             parameter_id: dataParamId,
                             channel_type: chan,
                             channel_number: num,
 
                             status: dataStatus,
-                            sequence_number: dataSeqNo
-                        });
+                            sequence_number: dataSeqNo,
+
+                            switch_status: dataSwitch
+                        };
+
+                        if (j === 5 && dataParamId > 0) {
+                            configData.ranges = [];
+                            if (dataRanges.length <= 0) {
+                                console.warn("data:", dataParamId, dataStatus, dataRanges);
+                                console.warn("chan:", chanParamId, chanStatus, chanRanges);
+                                swal({
+                                    title: "状态量通道配置错误",
+                                    text: "已配置的状态量通道，需要完成其状态值的配置才可提交",
+                                    type: "error"
+                                });
+                                Ladda.create(document.getElementById('channel_ok')).stop();
+                                return;
+                            }
+                            for (var n in dataRanges) {
+                                var r = dataRanges[n];
+                                var rg = {};
+                                rg.min = r.Min;
+                                rg.max = r.Max;
+                                rg.name = r.Name;
+                                switch (typeof n) {
+                                    case "number":
+                                        rg.value = n;
+                                        break;
+                                    case "string":
+                                        rg.value = parseInt(n, 10);
+                                        break;
+                                }
+
+                                configData.ranges.push(rg);
+                            }
+                        }
+
+                        configUpload.push(configData);
                     }
                 }
             }
@@ -765,7 +839,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     type: "error"
                 });
             });
-        Ladda.create(document.getElementById('boiler_ok')).stop();
+        Ladda.create(document.getElementById('channel_ok')).stop();
     };
 
     $modal.cancel = function () {
@@ -775,7 +849,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     };
 });
 
-// Please note that the close and dismiss bindings are from $uibModalInstance.
 angular.module('BoilerAdmin').controller('ModalTerminalBindCtrl', function ($uibModalInstance, $rootScope, $http, $filter, $modal, currentTerminal, setId) {
     var $modalBind = this;
     $modalBind.terminal = currentTerminal;
@@ -853,6 +926,105 @@ angular.module('BoilerAdmin').controller('ModalTerminalBindCtrl', function ($uib
     };
 });
 
+angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', function ($uibModalInstance, $rootScope, $http, $filter, $modal, currentChannel) {
+    var $modalRange = this;
+    $modalRange.editing = editing;
+
+    $modalRange.channel = currentChannel;
+    $modalRange.number = currentChannel.ChannelNumber;
+
+    $modalRange.ranges = clone(currentChannel.Ranges);
+    if (!$modalRange.ranges) {
+        $modalRange.ranges = [];
+    }
+
+    $modalRange.isValid = false;
+    $modalRange.comment = "请完善相关信息";
+
+    $modalRange.addNewRange = function () {
+        $modalRange.ranges.push({});
+    };
+
+    $modalRange.removeRange = function (rg) {
+        for (var i in $modalRange.ranges) {
+            if (rg === $modalRange.ranges[i]) {
+                $modalRange.ranges.splice(i, 1);
+            }
+        }
+    };
+
+    $modalRange.rangeChanged = function () {
+        for (var i in $modalRange.ranges) {
+            var rg = $modalRange.ranges[i];
+            if (!rg.Min && typeof rg.Min !== "number" || rg.Min < 0 || rg.Min > 65535) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的范围低值不可为空，范围是 0-65535。";
+                return;
+            }
+
+            if (!rg.Max && typeof rg.Max !== "number" || rg.Max < 0 || rg.Max > 65535) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的范围高值不可为空，范围是 0-65535。";
+                return;
+            }
+
+            if (rg.Min > rg.Max) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的范围高值需大于或等于范围低值。";
+                return;
+            }
+
+            if (i > 0 && rg.Min <= $modalRange.ranges[i - 1].Max) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态间不可有值的交叉，后一个状态的低值不可小于或等于前一个状态的高值。";
+                return;
+            }
+
+            if (!rg.Name || rg.Name.length <= 0) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的名称不可为空。";
+                return;
+            }
+
+            $modalRange.isValid = true;
+            $modalRange.comment = "配置正确";
+        }
+    };
+
+    if ($modalRange.ranges.length <= 0) {
+        $modalRange.addNewRange();
+    }
+
+    $modalRange.ok = function () {
+        // swal({
+        //     title: "修改状态量通道 #" + $modalRange.number + " 相关配置?",
+        //     text: "修改后，将会覆盖之前该通道的状态量配置信息。",
+        //     type: 'warning',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#d33',
+        //     cancelButtonColor: '#3085d6',
+        //     confirmButtonText: '修改',
+        //     cancelButtonText: '取消'
+        // }).then(function () {
+        //
+        // });
+        $modalRange.channel.Uid = "";
+        $modalRange.channel.Ranges = [];
+        for (var i in $modalRange.ranges) {
+            var rg = $modalRange.ranges[i];
+            $modalRange.channel.Ranges.push(rg);
+        }
+
+        $uibModalInstance.dismiss('success');
+    };
+
+    $modalRange.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $modalRange.rangeChanged();
+});
+
 angular.module('BoilerAdmin').component('modalComponent', {
     templateUrl: '/directives/modal/terminal_config.html',
     bindings: {
@@ -879,3 +1051,37 @@ angular.module('BoilerAdmin').component('modalComponent', {
         };
     }
 });
+
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null === obj || "object" !== typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}

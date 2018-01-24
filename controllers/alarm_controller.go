@@ -18,7 +18,7 @@ import (
 	"github.com/AzureRelease/boiler-server/conf"
 )
 
-var AlarmCtl *AlarmController
+var AlmCtl *AlarmController = &AlarmController{}
 
 type AlarmController struct {
 	MainController
@@ -35,7 +35,7 @@ func (ctl *AlarmController) InitAlarmSendService() {
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {
-			AlarmCtl.SendAlarmMessage(t)
+			AlmCtl.SendAlarmMessage(t)
 		}
 	}
 
@@ -82,7 +82,7 @@ func (ctl *AlarmController) BoilerAlarmList() {
 			usr.Status == models.USER_STATUS_NEW {
 			qs = qs.Filter("IsDemo", true)
 		} else if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond).Filter("IsDemo", false)
 		}
@@ -191,7 +191,7 @@ func (ctl *AlarmController) BoilerAlarmHistoryList() {
 			usr.Status == models.USER_STATUS_NEW {
 			qs = qs.Filter("IsDemo", true)
 		} else if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond).Filter("IsDemo", false)
 		}
@@ -297,7 +297,7 @@ func (ctl *AlarmController) BoilerAlarmCount() {
 			usr.Status == models.USER_STATUS_NEW {
 			qs = qs.Filter("IsDemo", true)
 		} else if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond).Filter("IsDemo", false)
 		}
@@ -613,7 +613,7 @@ func (ctl *AlarmController) BoilerAlarmUpdate() {
 		return
 	}
 
-	goazure.Info("Update AlarmFeedback:", alarm, fb)
+	//goazure.Info("Update AlarmFeedback:", alarm, fb)
 }
 
 func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
@@ -646,8 +646,8 @@ func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 					continue
 				}
 
-				tempMsg, _ := WXCtrl.TemplateMessageAlarm(al)
-				WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)
+				tempMsg, _ := WxCtl.TemplateMessageAlarm(al)
+				WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
 			}
 		}
 

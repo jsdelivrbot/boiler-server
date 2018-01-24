@@ -7,6 +7,7 @@ import (
 
 	"strconv"
 	"fmt"
+
 	"encoding/json"
 )
 
@@ -14,7 +15,7 @@ type TerminalController struct {
 	MainController
 }
 
-var TerminalCtrl *TerminalController
+var TermCtl *TerminalController = &TerminalController{}
 
 func (ctl *TerminalController) TerminalList() {
 	usr := ctl.GetCurrentUser()
@@ -35,21 +36,18 @@ func (ctl *TerminalController) TerminalList() {
 		goazure.Info("Returned Terminals RowNum:", num)
 	}
 
-	var uList 		[]string
-	var tBoilers 	[]*models.Boiler
-	for _, ter := range terminals {
-		uList = append(uList, ter.Uid)
-		//aTerminals = append(aTerminals, ter)
-	}
-
-	if num, err := dba.BoilerOrm.QueryTable("boiler").Filter("Terminal__Uid__in", uList).OrderBy("TerminalSetId").All(&tBoilers); err != nil || num == 0 {
-		goazure.Error("Read Terminal Boilers Error:", err, num)
+	var combines []*models.BoilerTerminalCombined
+	if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Boiler").
+		OrderBy("TerminalSetId").
+		All(&combines); err != nil {
+		goazure.Error("Get TerminalCombined Error:", err, num)
 	}
 
 	for _, ter := range terminals {
-		for _, b := range tBoilers {
-			if b.Terminal.Uid == ter.Uid {
-				ter.Boilers = append(ter.Boilers, b)
+		for _, cb := range combines {
+			if ter.Uid == cb.Terminal.Uid {
+				cb.Boiler.TerminalSetId = cb.TerminalSetId
+				ter.Boilers = append(ter.Boilers, cb.Boiler)
 			}
 		}
 	}
@@ -65,6 +63,8 @@ type aTerminal struct {
 	Uid				string		`json:"uid"`
 	TerminalCode 	string		`json:"code"`
 	Name			string		`json:"name"`
+	OrganizationId	string		`json:"org_id"`
+	
 	SimNumber		string		`json:"sim_number"`
 	LocalIp			string		`json:"ip"`
 	UploadFlag		bool		`json:"upload_flag"`
@@ -84,8 +84,8 @@ func (ctl *TerminalController) TerminalReset() {
 		return
 	}
 
-	var ter aTerminal
-	terminal := models.Terminal{}
+	var ter 		aTerminal
+	var terminal 	models.Terminal
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &ter); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -104,7 +104,17 @@ func (ctl *TerminalController) TerminalReset() {
 	}
 }
 
+//TODO: need Reset Operations
 func (ctl *TerminalController) TerminalConfig() {
+	/*
+	usr := ctl.GetCurrentUser()
+	if !usr.IsAdmin() {
+		fmt.Println("Only Admin Access")
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Update Comment Error!"))
+		return
+	}
+	*/
 
 	var ter aTerminal
 	terminal := models.Terminal{}
@@ -162,10 +172,29 @@ func (ctl *TerminalController) TerminalUpdate() {
 
 	if len(ter.Name) > 0 { terminal.Name = ter.Name }
 
-	goazure.Debug("TerminalCode:", ter.TerminalCode)
-	if code, err := strconv.ParseInt(ter.TerminalCode, 10, 32); err == nil && code > 0  {
-		terminal.TerminalCode = code
+	if len(ter.TerminalCode) > 0 {
+		goazure.Debug("TerminalCode:", ter.TerminalCode)
+		if code, err := strconv.ParseInt(ter.TerminalCode, 10, 64); err == nil && code > 0 {
+			if exist := dba.BoilerOrm.QueryTable("terminal").Filter("TerminalCode", ter.TerminalCode).Exist(); exist && terminal.TerminalCode != code {
+				e := fmt.Sprintln("终端编码不可重复！ErrorCode:", "Dup Code")
+				goazure.Error(e)
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte(e))
+				return
+			}
+
+			terminal.TerminalCode = code
+		} else {
+			e := fmt.Sprintln("终端编码错误！ErrorCode:", err)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+			return
+		}
 	}
+
+	org := OrgCtrl.organizationWithUid(ter.OrganizationId)
+	terminal.Organization = org
 
 	terminal.SimNumber = ter.SimNumber
 	terminal.LocalIp = ter.LocalIp
@@ -207,20 +236,78 @@ func (ctl *TerminalController) TerminalDelete() {
 
 	terminal.Uid = ter.Uid
 	if err := DataCtl.ReadData(&terminal); err != nil {
-		fmt.Println("Read Exist Comment Error:", err)
+		e := fmt.Sprintln("Read Exist Terminal For Delete Error!", err)
+		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte("Read Exist AlarmRule Parameter Error:"))
+		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
 
+	tCode := terminal.TerminalCode * 1000000
+	var tm models.Terminal
+	if  err := dba.BoilerOrm.QueryTable("terminal").Filter("TerminalCode__contains", terminal.TerminalCode).OrderBy("-TerminalCode").One(&tm); err != nil {
+		goazure.Info("Not Get Exist Dead Code!")
+	} else {
+		tCode = tm.TerminalCode + 1
+	}
+
+	terminal.TerminalCode = tCode
 	terminal.IsDeleted = true
-	terminal.TerminalCode = terminal.TerminalCode * 10000 + 99
 
 	if err := DataCtl.UpdateData(&terminal); err != nil {
+		e := fmt.Sprintln("Delete Terminal Error!", err)
+		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte("Delete Terminal Error!"))
+		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
 
-	fmt.Println("\nDeleted Terminal:", terminal, ter)
+	goazure.Info("Deleted Terminal:", terminal, ter)
+}
+
+func (ctl *TerminalController) TerminalBindReload() {
+	for _, b := range MainCtrl.Boilers {
+		if b.Terminal != nil {
+			var combined models.BoilerTerminalCombined
+			combined.Boiler = b
+			combined.Terminal = b.Terminal
+
+			code, _ := strconv.ParseInt(b.TerminalCode, 10, 64)
+			combined.TerminalCode = code
+			combined.TerminalSetId = b.TerminalSetId
+
+			if num, err := dba.BoilerOrm.InsertOrUpdate(&combined); err != nil {
+				goazure.Error("M2M Terminals Combined Add Error:", err, num)
+			}
+		}
+	}
+}
+
+func (ctl *TerminalController) TerminalTrim() {
+	var boilers []*models.Boiler
+	qs := dba.BoilerOrm.QueryTable("boiler")
+	if num, err := qs.All(&boilers); err != nil || num == 0 {
+		goazure.Error("Read Boilers For Terminal Update Error.", err)
+	}
+
+	for _, b := range boilers {
+		qt := dba.BoilerOrm.QueryTable("terminal")
+		var tid int64
+		var err error
+		if tid, err = strconv.ParseInt(b.TerminalCode, 10, 32); err != nil {
+			goazure.Error("Parse TerminalCode Error.", err, b.TerminalCode, tid)
+		}
+
+		var ter models.Terminal
+		if err := qt.Filter("TerminalCode", tid).One(&ter); err != nil {
+			goazure.Error("Read Terminal Error.", err, tid)
+			break
+		}
+
+		b.Terminal = &ter
+
+		if err := DataCtl.UpdateData(b); err != nil {
+			goazure.Error("Update Boiler's Terminal Error.", err)
+		}
+	}
 }

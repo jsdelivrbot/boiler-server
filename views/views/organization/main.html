@@ -49,24 +49,14 @@
                     </div>
                     <div ng-show="currentUser.Role.RoleId < 10" class="actions">
                         <div class="btn-group btn-group-devided" data-toggle="buttons">
-                            <a ui-sref="organization.overview({tid: 0})" class="btn green btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 0}">
-                                所有企业
-                            </a>
-                            <a ui-sref="organization.overview({tid: 2})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 2}">
-                                用能企业
-                            </a>
-                            <a ui-sref="organization.overview({tid: 1})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 1}">
-                                锅炉制造厂
-                            </a>
-                            <a ui-sref="organization.overview({tid: 3})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 3}">
-                                安装企业
-                            </a>
-                            <a ui-sref="organization.overview({tid: 4})" class="btn red btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 4}">
-                                政府机关
-                            </a>
-                            <a ui-sref="organization.overview({tid: 5})" class="btn red btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 5}">
-                                监管部门
-                            </a>
+                            <a ui-sref="organization.overview({tid: 0})" class="btn green btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 0}"> 所有企业 </a>
+                            <a ui-sref="organization.overview({tid: 2})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 2}"> 锅炉使用企业 </a>
+                            <a ui-sref="organization.overview({tid: 1})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 1}"> 锅炉制造企业 </a>
+                            <a ui-sref="organization.overview({tid: 3})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 3}"> 锅炉安装企业 </a>
+                            <a ui-sref="organization.overview({tid: 4})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 4}"> 控制柜供应商 </a>
+                            <a ui-sref="organization.overview({tid: 5})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 5}"> 锅炉维保企业 </a>
+                            <a ui-sref="organization.overview({tid: 6})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 6}"> 能源管理企业 </a>
+                            <a ui-sref="organization.overview({tid: 7})" class="btn red btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 7}"> 政府监管部门 </a>
                         </div>
                     </div>
                 </div>
@@ -82,14 +72,5 @@
     </div>
 </div>
 <!-- END MAIN CONTENT -->
-<!-- BEGIN MAIN JS & CSS -->
-
-<!-- END MAIN JS & CSS -->
-
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL PLUGINS -->
 
 

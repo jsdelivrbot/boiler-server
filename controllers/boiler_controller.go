@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"encoding/json"
 	"time"
-	"strings"
 	"reflect"
 	"errors"
 	"io/ioutil"
@@ -22,14 +21,14 @@ type BoilerController struct {
 	MainController
 }
 
-var BoilerCtrl *BoilerController = &BoilerController{}
+var BlrCtl *BoilerController = &BoilerController{}
 
 const boilerDefautlPath string = "models/properties/boiler_defaults/"
 
 func init() {
-	BoilerCtrl.MainController = *MainCtrl
+	BlrCtl.MainController = *MainCtrl
 
-	go BoilerCtrl.RefreshGlobalBoilerList()
+	go BlrCtl.RefreshGlobalBoilerList()
 
 	initConfig()
 	initCalculateParameter()
@@ -80,7 +79,7 @@ func (ctl *BoilerController) BoilerCount() {
 	} else {
 		qs = qs.Filter("IsDemo", false)
 		if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid).Or("Supervisor__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond)
 		}
@@ -97,14 +96,14 @@ func (ctl *BoilerController) BoilerCount() {
 }
 
 func (ctl *BoilerController) RefreshGlobalBoilerList() {
-	BoilerCtrl.bWaitGroup.Add(1)
+	BlrCtl.bWaitGroup.Add(1)
 	//goazure.Error("")
 	var boilers []*models.Boiler
 	//var bMap []orm.Params
 	qs := dba.BoilerOrm.QueryTable("boiler")
 	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 		RelatedSel("Fuel__Type").RelatedSel("Template").
-		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Installed").
+		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").RelatedSel("Supervisor").
 		RelatedSel("RegisterOrg").
 		RelatedSel("Terminal").
 		RelatedSel("Contact").
@@ -128,19 +127,25 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 		goazure.Info("Returned Boilers RowNum:", num)
 	}
 
+	var combines []*models.BoilerTerminalCombined
+	if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Terminal").OrderBy("TerminalSetId").
+		All(&combines); err != nil {
+		goazure.Error("Get TerminalCombined Error:", err, num)
+	}
+
+	var links []*models.BoilerOrganizationLinked
+	if  num, err := dba.BoilerOrm.QueryTable("boiler_organization_linked").
+		RelatedSel("Organization").
+		OrderBy("Id").
+		All(&links); err != nil {
+		goazure.Error("Get OrganizationLinked Error:", err, num)
+	}
+
 	var bList []string
 	for _, b := range boilers {
 		bList = append(bList, b.Uid)
-		//calc, _ := BoilerCtrl.GetBoilerCalculateParameter(b)
+		//calc, _ := BlrCtl.GetBoilerCalculateParameter(b)
 		//b.Calculate = append(b.Calculate, calc)
-
-		//b.Status = make(map[string]int32)
-		//isBurning := BoilerCtrl.IsBurning(b.Uid)
-		//if isBurning {
-		//	b.Status["IsBurning"] = 1
-		//} else {
-		//	b.Status["IsBurning"] = 0
-		//}
 	}
 
 	//var bCalc []*models.BoilerCalculateParameter
@@ -152,9 +157,12 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 	//}
 
 	var bStatus []orm.Params
-	if num, err := dba.BoilerOrm.QueryTable("boiler_runtime_cache_instant").
-		Filter("Boiler__Uid__in", bList).Filter("Parameter__Id", 1107).Filter("UpdatedDate__gt", time.Now().Add(time.Minute * -15)).
-		Values(&bStatus, "Boiler__Uid", "Value"); err != nil || num == 0 {
+	qi := dba.BoilerOrm.QueryTable("boiler_runtime_cache_instant")
+	if len(bList) > 0 {
+		qi = qi.Filter("Boiler__Uid__in", bList)
+	}
+	if 	num, err := qi.Filter("Parameter__Id", 1107).Filter("IsDeleted", false).
+		Values(&bStatus, "Boiler__Uid", "Value"); err != nil {
 		goazure.Warning("Read Boiler Burning Status Error!", err, num)
 	}
 
@@ -176,6 +184,22 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 			}
 		}
 
+		for _, cb := range combines {
+			if 	cb.Boiler.Uid == b.Uid {
+				cb.Terminal.Remark = strconv.FormatInt(int64(cb.TerminalSetId), 10)
+				cb.Terminal.TerminalSetId = cb.TerminalSetId
+				b.TerminalsCombined = append(b.TerminalsCombined, cb.Terminal)
+			}
+		}
+
+		for _, li := range links {
+			if 	li.Boiler.Uid == b.Uid {
+				b.OrganizationsLinked = append(b.OrganizationsLinked, li.Organization)
+				//goazure.Warn("Boiler Linked", b, "\n", li.Organization)
+				//panic(0)
+			}
+		}
+
 		if b.InspectInnerDateNext.IsZero() { b.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
 		if b.InspectOuterDateNext.IsZero() { b.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
 		if b.InspectValveDateNext.IsZero() { b.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
@@ -187,14 +211,16 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 
 	MainCtrl.Boilers = boilers
 
-	BoilerCtrl.bWaitGroup.Done()
+	BlrCtl.bWaitGroup.Done()
 
-	go RtmCtrl.RefreshStatusRunningDuration(time.Now())
-	go RtmCtrl.RefreshBoilerRank(time.Now())
+	go RtmCtl.RefreshStatusRunningDuration(time.Now())
+	go RtmCtl.RefreshBoilerRank(time.Now())
+
+	go TermCtl.TerminalBindReload()
 }
 
 func (ctl *BoilerController) CurrentBoilerList(usr *models.User) ([]*models.Boiler, error) {
-	BoilerCtrl.bWaitGroup.Wait()
+	BlrCtl.bWaitGroup.Wait()
 
 	var boilers []*models.Boiler
 	var err error
@@ -233,7 +259,7 @@ func (ctl *BoilerController) BoilerCalculateParameter() {
 		return
 	}
 
-	calc, _ := BoilerCtrl.GetBoilerCalculateParameter(&boiler)
+	calc, _ := BlrCtl.GetBoilerCalculateParameter(&boiler)
 
 	ctl.Data["json"] = calc
 	ctl.ServeJSON()
@@ -254,7 +280,7 @@ func (ctl *BoilerController) GetBoilerCalculateParameter(boiler *models.Boiler) 
 //TODO: Failed
 func (ctl *BoilerController) GetBoilerStatus(boiler *models.Boiler) (*caches.BoilerRuntimeCacheInstant, error) {
 	var status caches.BoilerRuntimeCacheInstant
-	if err := dba.BoilerOrm.QueryTable("boiler_runtime_cache_instant").Filter("Boiler__Uid", boiler.Uid).Filter("Parameter__Id", 1107).Filter("UpdatedDate__gt", time.Now().Add(time.Minute * -15)).One(&status); err != nil {
+	if err := dba.BoilerOrm.QueryTable("boiler_runtime_cache_instant").Filter("Boiler__Uid", boiler.Uid).Filter("Parameter__Id", 1107).Filter("IsDeleted", false).One(&status); err != nil {
 		e := fmt.Sprintln("Read Boiler Runtime Status Error:", boiler, err)
 		goazure.Error(e)
 
@@ -270,19 +296,7 @@ func (ctl *BoilerController) IsBoilerBelongToUser(boiler *models.Boiler, usr *mo
 	}
 
 	if usr.IsOrganizationUser() {
-		//goazure.Info("usr.IsOrganizationUser():", usr, usr.Organization.Name)
-		if  (boiler.Enterprise != nil && (boiler.Enterprise.Uid == usr.Organization.Uid ||
-			(boiler.Enterprise.SuperOrganization != nil && boiler.Enterprise.SuperOrganization.Uid == usr.Organization.Uid))) ||
-			(boiler.Factory != nil && (boiler.Factory.Uid == usr.Organization.Uid ||
-			(boiler.Factory.SuperOrganization != nil && boiler.Factory.SuperOrganization.Uid == usr.Organization.Uid))) ||
-			(boiler.Installed != nil && (boiler.Installed.Uid == usr.Organization.Uid ||
-			(boiler.Installed.SuperOrganization != nil && boiler.Installed.SuperOrganization.Uid == usr.Organization.Uid))) {
-			//goazure.Warning("User Organization Found!", usr.Organization.Name)
-			return true
-		} else {
-			//goazure.Error("User Organization Not Found!", usr.Organization.Name)
-			return false
-		}
+		return boiler.IsBelongToOrganization(usr.Organization)
 	}
 
 	if usr.IsCommonUser() {
@@ -389,7 +403,7 @@ func (ctl *BoilerController) BoilerListWeixin() {
 	qs := dba.BoilerOrm.QueryTable("boiler")
 	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 		RelatedSel("Fuel__Type").RelatedSel("Template").
-		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Installed").
+		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").RelatedSel("Supervisor").
 		RelatedSel("Address__Location")
 	if usr.IsCommonUser() ||
 		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
@@ -397,7 +411,7 @@ func (ctl *BoilerController) BoilerListWeixin() {
 	} else {
 		qs = qs.Filter("IsDemo", false)
 		if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond)
 		}
@@ -405,7 +419,7 @@ func (ctl *BoilerController) BoilerListWeixin() {
 	num, err := qs.Filter("IsDeleted", false).OrderBy("IsDemo", "Name").
 		Values(&boilers,
 		"Uid", "Name",
-		"Enterprise__Name", "Factory__Name", "Installed__Name",
+		"Enterprise__Name", "Factory__Name", "Maintainer__Name", "Supervisor__Name",
 		"CertificateNumber", "DeviceCode", "ModelCode", "RegisterCode",
 		"Form__Name", "Form__Id",
 		"Fuel__Name", "Fuel__Type__Name", "Fuel__Type__Id",
@@ -439,7 +453,7 @@ func (ctl *BoilerController) BoilerMaintainList() {
 		qs := dba.BoilerOrm.QueryTable("boiler")
 		qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 			RelatedSel("Fuel__Type").RelatedSel("Template").
-			RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Installed").
+			RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").
 			RelatedSel("RegisterOrg").
 			RelatedSel("Terminal").
 			RelatedSel("Contact").
@@ -449,7 +463,7 @@ func (ctl *BoilerController) BoilerMaintainList() {
 			usr.Status == models.USER_STATUS_NEW {
 			qs = qs.Filter("IsDemo", true)
 		} else if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Installed__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond)
 		}
@@ -606,7 +620,7 @@ func (ctl *BoilerController) BoilerMaintainDelete() {
 	}
 }
 
-//***************************************** CONFIG START
+//*** CONFIG START
 
 type bConfig struct {
 	Uid			string		`json:"uid"`
@@ -728,7 +742,7 @@ func (ctl *BoilerController) BoilerConfig(boilerUid string, config string) (inte
 	}
 
 	value := reflect.ValueOf(&conf).Elem().FieldByName(config).Interface()
-	goazure.Info("BoilerConfig[", config,"]:", value)
+	//goazure.Info("BoilerConfig[", config,"]:", value)
 
 	return value, nil
 }
@@ -753,6 +767,9 @@ func (ctl *BoilerController) BoilerIsBurning() {
 	cnf.Config = "IsBurning"
 	cnf.Value = strconv.FormatBool(isBurning)
 
+	goazure.Warn("BoilerIsBurning:", cnf)
+	// panic(0)
+
 	ctl.Data["json"] = cnf
 	ctl.ServeJSON()
 }
@@ -760,12 +777,12 @@ func (ctl *BoilerController) BoilerIsBurning() {
 func (ctl *BoilerController) IsBurning(boilerUid string) bool {
 	var status []orm.Params
 	q := dba.BoilerOrm.QueryTable("boiler_runtime_cache_instant")
-	q = q.Filter("Boiler__Uid", boilerUid).Filter("Parameter__Id", 1107).Filter("UpdatedDate__gt", time.Now().Add(time.Minute * -15))
-	if num, err := q.Values(&status, "Value"); err != nil || num == 0 {
-		//goazure.Warning("Read Boiler Burning Status Error!", err, num)
+	q = q.Filter("Boiler__Uid", boilerUid).Filter("Parameter__Id", 1107)//.Filter("UpdatedDate__gt", time.Now().Add(time.Minute * -30))
+	if num, err := q.Filter("IsDeleted", false).Values(&status, "Value"); err != nil || num == 0 {
+		goazure.Warning("Read Boiler Burning Status Error!", err, num)
 		return false
 	}
-	//goazure.Info("Boiler[",i, "|", status, "]", boi);
+	goazure.Info("Boiler[", "|", status, "]", boilerUid)
 	if status[0]["Value"].(float64) <= 0 {
 		return false
 	}
@@ -864,7 +881,7 @@ func (ctl *BoilerController) BoilerMessageSend() {
 	qs := dba.BoilerOrm.QueryTable("boiler")
 	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 		RelatedSel("Fuel__Type").RelatedSel("Template").
-		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Installed").
+		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").
 		RelatedSel("RegisterOrg").
 		RelatedSel("Terminal").
 		RelatedSel("Contact").
@@ -873,12 +890,6 @@ func (ctl *BoilerController) BoilerMessageSend() {
 	if err := qs.Filter("IsDeleted", false).One(boiler); err != nil {
 		goazure.Warn("Get Boiler Info For Test Message: ", err, "\n", boiler, "\n", cnf)
 	} else {
-		//TODO: Not Work Due to Beego Issue
-		//if num, err := dba.BoilerOrm.LoadRelated(&boiler, "Subscribers");
-		//	err != nil || num == 0 {
-		//	e := fmt.Sprintln("Read Subcribers Error:", err)
-		//	goazure.Error(e)
-		//}
 		var users []*models.User
 		raw := "SELECT 	`user`.* "
 		raw += "FROM	`user`, `boiler_message_subscriber` AS `sub` "
@@ -911,16 +922,15 @@ func (ctl *BoilerController) BoilerMessageSend() {
 					goazure.Error("Get Sample Alarm Error:", err)
 				}
 
-				tempMsg, _ := WXCtrl.TemplateMessageAlarm(&alarm)
+				tempMsg, _ := WxCtl.TemplateMessageAlarm(&alarm)
 				goazure.Info("WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)", su.OpenId, tempMsg)
-				WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)
+				WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
 			}
 		}
 	}
 }
 
-//***************************************** INFO UPDATE START
-
+//*** INFO UPDATE START
 type BoilerInfo struct {
 	Uid					string		`json:"uid"`
 	Name				string		`json:"name"`
@@ -938,7 +948,8 @@ type BoilerInfo struct {
 
 	EnterpriseId		string		`json:"enterpriseId"`
 	FactoryId			string		`json:"factoryId"`
-	InstalledId			string		`json:"installedId"`
+	MaintainerId		string		`json:"maintainerId"`
+	SupervisorId		string		`json:"supervisorId"`
 	
 	Address				string		`json:"address"`
 	LocationId			int64		`json:"location_id"`
@@ -950,6 +961,8 @@ type BoilerInfo struct {
 	MobileNumber		string		`json:"mobileNumber"`
 	Email				string		`json:"email"`
 
+	Links				[]bLink		`json:"links"`
+	
 	InspectDate			struct
 	{
 		Inner			time.Time	`json:"inner"`
@@ -957,6 +970,12 @@ type BoilerInfo struct {
 		Valve			time.Time	`json:"valve"`
 		Gauge			time.Time	`json:"gauge"`
 	}								`json:"inspectDate"`
+}
+
+type bLink struct {
+	Num		int64		`json:num`
+	Type 	int32		`json:"type"`
+	Uid		string		`json:"uid"`
 }
 
 func (ctl *BoilerController) BoilerUpdate() {
@@ -996,7 +1015,7 @@ func (ctl *BoilerController) BoilerUpdate() {
 		}
 	}
 
-	go BoilerCtrl.RefreshGlobalBoilerList()
+	go BlrCtl.RefreshGlobalBoilerList()
 
 	ctl.Data["json"] = boiler
 	ctl.ServeJSON()
@@ -1011,8 +1030,8 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 		return nil, errors.New(e)
 	}
 
-	var info BoilerInfo
-	boiler := models.Boiler{}
+	var info 	BoilerInfo
+	var boiler 	models.Boiler
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &info); err != nil {
 		e := fmt.Sprintln("Unmarshal BoilerInfo JSON Error", err)
@@ -1024,7 +1043,10 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 		if err := DataCtl.ReadData(&boiler); err != nil {
 			goazure.Warn("Read BoilerInfo Failed!", err)
 		}
+	} else {
+		boiler.CreatedBy = usr
 	}
+
 	if len(info.Name) > 0 { boiler.Name = info.Name }
 	if len(info.RegisterCode) > 0 { boiler.RegisterCode = info.RegisterCode }
 	if len(info.DeviceCode) > 0 { boiler.DeviceCode = info.DeviceCode }
@@ -1047,25 +1069,62 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if err := DataCtl.ReadData(&fuel); err == nil { boiler.Fuel = &fuel }
 	if err := DataCtl.ReadData(&form); err == nil { boiler.Form = &form }
 
-	var enterprise, factory, installed models.Organization
+	var enterprise, factory, maintainer, supervisor models.Organization
 	enterprise.Uid = info.EnterpriseId
 	factory.Uid = info.FactoryId
-	installed.Uid = info.InstalledId
+	maintainer.Uid = info.MaintainerId
+	supervisor.Uid = info.SupervisorId
 	if err := DataCtl.ReadData(&enterprise); err == nil { boiler.Enterprise = &enterprise }
 	if err := DataCtl.ReadData(&factory); err == nil { boiler.Factory = &factory }
-	if err := DataCtl.ReadData(&installed); err == nil { boiler.Installed = &installed }
+	if err := DataCtl.ReadData(&maintainer); err == nil { boiler.Maintainer = &maintainer }
+	if err := DataCtl.ReadData(&supervisor); err == nil { boiler.Supervisor = &supervisor }
+
+	if	num, err := dba.BoilerOrm.QueryTable("boiler_organization_linked").
+		Filter("Boiler__Uid", boiler.Uid).Delete(); err != nil {
+		goazure.Warn("Deleted Old Links Error:", err, num)
+	}
+
+	for _, li := range info.Links {
+		var linked 	models.BoilerOrganizationLinked
+		var og 		models.Organization
+		var ogType	models.OrganizationType
+
+		og.Uid = li.Uid
+		ogType.TypeId = li.Type
+
+		linked.Boiler = &boiler
+		if 	err := DataCtl.ReadData(&og, "Uid"); err == nil {
+			linked.Organization = &og
+		} else {
+			goazure.Error("Org Uid Is Not Valid!", err)
+			continue
+		}
+
+		if 	err := DataCtl.ReadData(&ogType, "TypeId"); err == nil {
+			linked.OrganizationType = &ogType
+		} else {
+			goazure.Error("OrgType Is Not Valid!", err)
+			continue
+		}
+
+		if num, err := dba.BoilerOrm.InsertOrUpdate(&linked); err != nil {
+			goazure.Error("M2M OrganizationLinked Add Error:", err, num)
+		}
+	}
 
 	if boiler.InspectInnerDateNext.IsZero() { boiler.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
 	if boiler.InspectOuterDateNext.IsZero() { boiler.InspectOuterDateNext = time.Now().Add(time.Hour * 24 * 30) }
 	if boiler.InspectValveDateNext.IsZero() { boiler.InspectValveDateNext = time.Now().Add(time.Hour * 24 * 30) }
 	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
 
+	boiler.UpdatedBy = usr
+
 	if err := DataCtl.AddData(&boiler, true); err != nil {
 		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
 		return nil, errors.New(e)
 	}
 
-	go CalcCtrl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
+	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
 
 	goazure.Info("Updated Boiler:", boiler, info)
 
@@ -1110,6 +1169,8 @@ func (ctl *BoilerController) BoilerUpdateLocation() (*models.Boiler, error) {
 	address.Latitude = info.Latitude
 
 	boiler.Address = address
+
+	boiler.UpdatedBy = usr
 
 	if err := DataCtl.AddData(address, true); err != nil {
 		e := fmt.Sprintln("Insert/Update Address Error!", err)
@@ -1167,6 +1228,8 @@ func (ctl *BoilerController) BoilerUpdateMaintain() (*models.Boiler, error) {
 	boiler.InspectValveDateNext = info.InspectDate.Valve
 	boiler.InspectGaugeDateNext = info.InspectDate.Gauge
 
+	boiler.UpdatedBy = usr
+
 	if err := DataCtl.AddData(contact, true); err != nil {
 		e := fmt.Sprintln("Insert/Update Contact Error!", err)
 		return nil, errors.New(e)
@@ -1207,7 +1270,9 @@ func (ctl *BoilerController) BoilerDelete()  {
 
 	if len(info.Uid) > 0 {
 		boiler.Uid = info.Uid
-		if err := DataCtl.DeleteData(&boiler); err != nil {
+		boiler.UpdatedBy = usr
+
+		if  err := DataCtl.DeleteData(&boiler); err != nil {
 			e := fmt.Sprintln("Delete BoilerInfo Failed!", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
@@ -1228,16 +1293,16 @@ func (ctl *BoilerController) BoilerDelete()  {
 		}
 	}
 
-	go BoilerCtrl.RefreshGlobalBoilerList()
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 type BoilerBind struct {
 	BoilerId		string		`json:"boiler_id"`
 	TerminalId		string		`json:"terminal_id"`
+	TerminalSetId	int32		`json:"terminal_set_id"`
 }
 
 func (ctl *BoilerController) BoilerBind() {
-	goazure.Info("Ready to Bind Boiler!")
 	usr := ctl.GetCurrentUser()
 
 	if !usr.IsAdmin() {
@@ -1260,6 +1325,8 @@ func (ctl *BoilerController) BoilerBind() {
 		return
 	}
 
+	goazure.Info("Ready to Bind Boiler!", bind)
+
 	boiler.Uid = bind.BoilerId
 	terminal.Uid = bind.TerminalId
 
@@ -1267,38 +1334,81 @@ func (ctl *BoilerController) BoilerBind() {
 	errT := DataCtl.ReadData(&terminal)
 
 	if errB != nil || errT != nil {
-		e := fmt.Sprintln("Read Bind Error:", errB, errT, boiler, terminal)
+		e := fmt.Sprintln("Read Bind Error:", errB, errT, "\nBoiler:", boiler, "\nTerminal", terminal)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
 
-	qt := dba.BoilerOrm.QueryTable("boiler").Filter("Terminal__Uid", bind.TerminalId)
-	count, errC := qt.Count()
-	if errC != nil {
-		goazure.Warn("Read Terminal Boiler Count Error", errC)
-	}
-	goazure.Info("TerminalBoilerCount:", count)
+	//qt := dba.BoilerOrm.QueryTable("boiler").Filter("Terminal__Uid", bind.TerminalId)
+	//count, errC := qt.Count()
+	//if errC != nil {
+	//	goazure.Warn("Read Terminal Boiler Count Error", errC)
+	//}
+	//goazure.Info("TerminalBoilerCount:", count)
 
-	boiler.Terminal = &terminal
-	code := strconv.FormatInt(terminal.TerminalCode, 10)
-	if len(code) < 6 {
-		for l := len(code); l < 6; l++ {
-			code = "0" + code
+	setId := bind.TerminalSetId
+	if setId <= 0 {
+		var combines []*models.BoilerTerminalCombined
+		if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
+			Filter("Terminal__Uid", bind.TerminalId).Filter("Boiler__Uid", bind.BoilerId).OrderBy("TerminalSetId").All(&combines); err != nil {
+				goazure.Warn("Get Exist Combined Error:", err, num)
+		}
+
+		for i := int32(1); i <= 8; i++ {
+			isMatched := false
+			for _, cb := range combines {
+				if cb.TerminalSetId == i {
+					isMatched = true
+					break
+				}
+			}
+
+			if !isMatched {
+				setId = i
+				break
+			}
+		}
+
+	}
+
+	if boiler.Terminal == nil {
+		boiler.Terminal = &terminal
+
+		code := strconv.FormatInt(terminal.TerminalCode, 10)
+		if len(code) < 6 {
+			for l := len(code); l < 6; l++ {
+				code = "0" + code
+			}
+		}
+		boiler.TerminalCode = code
+		boiler.TerminalSetId = setId
+
+		if err := DataCtl.UpdateData(&boiler); err != nil {
+			e := fmt.Sprintln("Boiler Bind Error:", err, boiler, terminal)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
 		}
 	}
-	boiler.TerminalCode = code
-	boiler.TerminalSetId = int32(count + 1)
 
-	if err := DataCtl.UpdateData(&boiler); err != nil {
-		e := fmt.Sprintln("Boiler Bind Error:", err, boiler, terminal)
-		goazure.Error(e)
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte(e))
+	var combined models.BoilerTerminalCombined
+	combined.Boiler = &boiler
+	combined.Terminal = &terminal
+	combined.TerminalCode = terminal.TerminalCode
+	combined.TerminalSetId = setId
+
+	if num, err := dba.BoilerOrm.InsertOrUpdate(&combined); err != nil {
+		goazure.Error("M2M TerminalCombined Add Error:", err, num)
 	}
 
-	go BoilerCtrl.RefreshGlobalBoilerList()
+	//m2m := dba.BoilerOrm.QueryM2M(&boiler, "TerminalsCombined")
+	//if num, err := m2m.Add(&terminal); err != nil {
+	//	goazure.Error("M2M Terminals Combined Add Error:", err, num)
+	//}
+
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 func (ctl *BoilerController) BoilerUnbind() {
@@ -1339,22 +1449,26 @@ func (ctl *BoilerController) BoilerUnbind() {
 		return
 	}
 
-	if boiler.Terminal.Uid != bind.TerminalId {
-		goazure.Warn("Already Unbind!")
+	if boiler.Terminal.Uid == bind.TerminalId {
+		boiler.Terminal = nil
+		boiler.TerminalCode = ""
+		boiler.TerminalSetId = 0
+
+		if err := DataCtl.UpdateData(&boiler); err != nil {
+			e := fmt.Sprintln("Boiler Unbind Error:", err, boiler, terminal)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+		}
 	}
 
-	boiler.Terminal = nil
-	boiler.TerminalCode = ""
-	boiler.TerminalSetId = 0
-
-	if err := DataCtl.UpdateData(&boiler); err != nil {
-		e := fmt.Sprintln("Boiler Unbind Error:", err, boiler, terminal)
-		goazure.Error(e)
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte(e))
+	if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
+		Filter("Boiler__Uid", bind.BoilerId).Filter("Terminal__Uid", bind.TerminalId).
+		Delete(); err != nil {
+			goazure.Error("Unbind Boiler/Terminal Error:", err, num)
 	}
 
-	go BoilerCtrl.RefreshGlobalBoilerList()
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 //***************************************** INFO UPDATE END
@@ -1379,7 +1493,7 @@ func (ctl *BoilerController) GetBoilerRuntime() {
 	qs := dba.BoilerOrm.QueryTable("boiler")
 	if err := qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 		RelatedSel("Fuel__Type").RelatedSel("Template").
-		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Installed").
+		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").
 		RelatedSel("RegisterOrg").
 		RelatedSel("Terminal").RelatedSel("Contact").RelatedSel("Address__Location").
 		Filter("Uid", b.Uid).OrderBy("Name").One(&boiler);
@@ -1532,28 +1646,6 @@ func (ctl *BoilerController) InitBoilerDefaults() {
 	DataCtl.GenerateDefaultData(reflect.TypeOf(bf), boilerDefautlPath, "fuel", reflect.TypeOf(bft))
 }
 
-func (ctl *BoilerController) UpdatedBoilerModel() {
-	var boilers []models.Boiler
-	qs := dba.BoilerOrm.QueryTable("boiler")
-	if num, err := qs.OrderBy("Name").All(&boilers); err != nil {
-		fmt.Println("Read Boilers Error:", err, num)
-	}
-
-	for i, b := range boilers {
-		model := b.ModelCode
-		if strings.ContainsAny(model, "（）－") {
-			model = strings.Replace(model, "（", "(", -1)
-			model = strings.Replace(model, "）", ")", -1)
-			model = strings.Replace(model, "－", "-", -1)
-
-			b.ModelCode = model
-			if err := DataCtl.AddData(&b, true); err != nil {
-				fmt.Println("Updated Boiler Model Error: ", i, err)
-			}
-		}
-	}
-}
-
 func boilerWithUid(uid string) *models.Boiler {
 	if len(uid) <= 0 {
 		return nil
@@ -1597,3 +1689,4 @@ func boilerFuelType(fuelTypeId int) *models.FuelType {
 	}
 	return &fuelType
 }
+

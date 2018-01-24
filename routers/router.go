@@ -26,9 +26,16 @@ func init() {
 	goazure.Router("/user_delete/", &controllers.UserController{}, "post:UserDelete")
 
 	goazure.Router("/user_profile_update/", &controllers.UserController{}, "post:UserProfileUpdate")
+	goazure.Router("/user_image_upload/", &controllers.UserController{}, "post:UserImageUpload")
 	goazure.Router("/user_password_update/", &controllers.UserController{}, "post:UserPasswordUpdate")
 
-	goazure.Router("/runtime_parameter_list/", &controllers.RuntimeController{}, "get:RuntimeParameterList")
+	goazure.Router("/runtime_parameter_list/", &controllers.ParameterController{}, "get:RuntimeParameterList")
+	goazure.Router("/runtime_parameter_update/", &controllers.ParameterController{}, "post:RuntimeParameterUpdate")
+	goazure.Router("/runtime_parameter_delete/", &controllers.ParameterController{}, "post:RuntimeParameterDelete")
+
+	goazure.Router("/channel_config_list/", &controllers.ParameterController{}, "post:ChannelConfigList")
+	goazure.Router("/channel_config_matrix/", &controllers.ParameterController{}, "post:ChannelConfigMatrix")
+	goazure.Router("/channel_config_update/", &controllers.ParameterController{}, "post:ChannelConfigUpdate")
 
 	goazure.Router("/organization_list/", &controllers.OrganizationController{}, "get:OrganizationList")
 	goazure.Router("/organization_type_list/", &controllers.OrganizationController{}, "get:OrganizationTypeList")
@@ -52,6 +59,7 @@ func init() {
 	goazure.Router("/boiler/state/is_burning/", &controllers.BoilerController{}, "get:BoilerIsBurning")
 	goazure.Router("/boiler/state/has_subscribed/", &controllers.BoilerController{}, "get:BoilerHasSubscribed")
 	goazure.Router("/boiler/state/set_subscribe/", &controllers.BoilerController{}, "post:BoilerSetSubscribe")
+	goazure.Router("/boiler/state/has_channel_custom/", &controllers.ParameterController{}, "get:BoilerHasChannelCustom")
 
 	goazure.Router("/boiler_message_send/", &controllers.BoilerController{}, "post:BoilerMessageSend")
 
@@ -115,6 +123,8 @@ func init() {
 	goazure.SetStaticPath("/tpl", "views/tpl/")
 	goazure.SetStaticPath("/directives", "views/directives/")
 
+	goazure.SetStaticPath("/upload", "static/images/upload/")
+
 	initWeixinRoutes()
 }
 
@@ -140,6 +150,7 @@ func initWeixinRoutes() {
 	goazure.Router("/fuel_record_list/", &controllers.FuelController{}, "get:FuelRecordList")
 	goazure.Router("/fuel_record_update/", &controllers.FuelController{}, "post:FuelRecordUpdate")
 	goazure.Router("/fuel_record_delete/", &controllers.FuelController{}, "post:FuelRecordDelete")
+
 
 	//goazure.Router("/wechat-server", &controllers.WechatController{})
 	goazure.Router("/wechat-server", &controllers.WechatController{}, "*:WXCallbackHandler")

@@ -15,7 +15,7 @@ type CalculateController struct {
 	MainController
 }
 
-var CalcCtrl *CalculateController = &CalculateController{}
+var CalcCtl *CalculateController = &CalculateController{}
 
 type CalculateParameter struct {
 	models.BoilerCalculateResult
@@ -31,7 +31,7 @@ type CalculateParameter struct {
 
 
 func init() {
-	go CalcCtrl.InitBoilerCalculateParameter([]*models.Boiler{})
+	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{})
 }
 
 func (ctl *CalculateController) InitBoilerCalculateParameter(boilers []*models.Boiler) {

@@ -60,13 +60,14 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
         $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
             .then(function (res) {
-                console.log("Fetch BurningStatus Resp:", res.data);
+                console.info("Fetch BurningStatus Resp:", res.data);
                 boiler.isBurning = (res.data.value === "true");
             }, function (err) {
                 console.error('Fetch Status Err!', err);
                 boiler.isBurning = false;
             })
             .then(function () {
+                $rootScope.isBoilerBurning = boiler.isBurning;
                 bRuntime.fetchRuntime(bRuntime.boiler);
             });
 
@@ -115,12 +116,6 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 case 680064:
                     $rootScope.statusMode = 3;
                     break;
-                case 680500:
-                case 680053:
-                case 680501:
-                case 680502:
-                    $rootScope.statusMode = 5;
-                    break;
             }
         }
 
@@ -137,6 +132,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
             boiler.alarmLevel = boiler.isBurning ? 0 : -1;
             boiler.hasSwitchValue = false;
+            boiler.hasRangeValue = false;
 
             var instants = [];
             for (var i = 0; i < res.data.length; i++) {
@@ -154,6 +150,11 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 }
                 */
                 value = d.Value;
+                if (d.ParameterCategory === 11) {
+                    d.SwitchFlag = d.AlarmLevel;
+                    d.AlarmLevel = 0;
+                }
+
                 alarmLevel = d.AlarmLevel;
 
                 if (alarmLevel > boiler.alarmLevel) {
@@ -192,11 +193,16 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     boiler.hasSwitchValue = true;
                 }
 
+                if (d.ParameterCategory === 13) {
+                    boiler.hasRangeValue = true;
+                }
+
                 instants.push({
                     id: d.Parameter,
                     name: name,
                     category: d.ParameterCategory,
-                    value: value,
+                    value: d.ParameterCategory !== 13 ? value : d.Remark,
+                    switchFlag: d.SwitchFlag,
                     unit: d.Unit,
                     alarmLevel: alarmLevel,
                     alarmDesc: label,
@@ -354,6 +360,8 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         // initChartHeat(boiler);
         initChartHeatMonth(boiler);
     };
+
+
 });
 
 var bRuntime;
@@ -396,64 +404,91 @@ function boiler_module_height() {
 //    boiler_module_height();
 //};
 
-angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootScope) {
 
-    if (!$rootScope.boiler ||
-        !$rootScope.instants || $rootScope.instants.length <= 0 ||
-        $scope.boiler === $rootScope.boiler || $scope.instants === $rootScope.instants) {
-        return;
-    }
-    $scope.boiler = $rootScope.boiler;
-    $scope.instants = $rootScope.instants;
+angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootScope) {
+    $scope.boiler = [];
+    $rootScope.$watch('boiler', function () {
+        // console.error("$rootScope.$watch('boiler')", $rootScope.boiler, bModule.boiler);
+        if (!$rootScope.boiler || ($scope.boiler === $rootScope.boiler)){
+            return;
+        };
+        $scope.boiler = $rootScope.boiler;
+        $scope.initStatus();
+    });
+
+    // $rootScope.$watch('instants', function () {
+    //     // console.error("$rootScope.$watch('instants')", bModule.instants);
+    //     if (!$rootScope.instants) {
+    //         return;
+    //     }
+    //     $scope.instants = $rootScope.instants;
+    //
+    //     $scope.updateStatusLabels();
+    //     $scope.updateLabels();
+    // });
+    //
+    // $rootScope.$watch('isBoilerBurning', function () {
+    //     // console.error("$rootScope.$watch('isBoilerBurning')", $rootScope.isBoilerBurning);
+    //     $scope.isBoilerBurning = $rootScope.isBoilerBurning;
+    //
+    //     $scope.updateStatusLabels();
+    // });
 
     var moduleStatus = d3.select("#status_1");
     var svgContainer = moduleStatus.append("svg");
+    $scope.initStatus = function () {
+        // if (!$scope.boiler ||
+        //     !$rootScope.instants ||
+        //     $rootScope.instants.length <= 0 ||
+        //     $scope.instants === $rootScope.instants) {
+        //     return;
+        // }
+        $scope.instants = $rootScope.instants;
 
+        // var moduleOptionsDef = {
+        //     align: "left", //"left", "justify"
+        //     baseWidth: 82,
+        //     height: 40,
+        //     gap: 10,
+        //     baseX: 0,
+        //     baseY: 0
+        // };
+        // var copy = function(obj) {
+        //     var aObj = {};
+        //
+        //     for(var i = 0; i < Object.keys(obj).length; i++) {
+        //         var key = Object.keys(obj)[i];
+        //         var value = obj[key];
+        //         aObj[key] = ((typeof value) === 'object' ? copy(value) : value);
+        //     }
+        //
+        //     return aObj;
+        // };
 
-    var moduleOptionsDef = {
-        align: "left", //"left", "justify"
-        baseWidth: 82,
-        height: 40,
-        gap: 10,
-        baseX: 0,
-        baseY: 0
-    };
-    var copy = function(obj) {
-        var aObj = {};
-
-        for(var i = 0; i < Object.keys(obj).length; i++) {
-            var key = Object.keys(obj)[i];
-            var value = obj[key];
-            aObj[key] = ((typeof value) === 'object' ? copy(value) : value);
-        }
-
-        return aObj;
-    };
-
-    var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.boiler.isBurning;
-    var statData = [
-        [{
-            id: 0,
-            name: "终端状态",
-            text: isTerminalConnected ? "已连接" : "未连接",
-            type: "status",
-            value: !!isTerminalConnected
-        },
-            {
+        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.boiler.isBurning;
+        var statData = [
+            [{
                 id: 0,
-                name: "燃烧状态",
-                text: $scope.boiler.isBurning ? "已点燃" : "未点燃",
+                name: "终端状态",
+                text: isTerminalConnected ? "已连接" : "未连接",
                 type: "status",
-                value: $scope.boiler.isBurning
+                value: !!isTerminalConnected
             },
-            {
-                id: 0,
-                name: "告警状态",
-                text: "",
-                type: "status",
-                value: $scope.boiler.alarmLevel
-            }
-        ],
+                {
+                    id: 0,
+                    name: "燃烧状态",
+                    text: $scope.boiler.isBurning ? "已点燃" : "未点燃",
+                    type: "status",
+                    value: $scope.boiler.isBurning
+                },
+                {
+                    id: 0,
+                    name: "告警状态",
+                    text: "",
+                    type: "status",
+                    value: $scope.boiler.alarmLevel
+                }
+            ],
 //		[{
 //				id: 0,
 //				name: "热效率(正平衡)"
@@ -464,10 +499,21 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 //			}
 //		]
 
-    ];
+        ];
 
-    var statOptions = copy(moduleOptionsDef);
-    statOptions.align = "justify";
+        var statOptions = {
+            align: "left", //"left", "justify"
+            baseWidth: 82,
+            height: 40,
+            gap: 10,
+            baseX: 0,
+            baseY: 0
+        };;
+        statOptions.align = "justify";
+        renderStatusModule(statData, statOptions);
+    }
+
+
 
     var renderStatusModule = function(data, options) {
 
@@ -523,9 +569,11 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
                 var d = rowData[col];
 
-                var barColor = d.type === "status" ? "#4c87b9" : "#bfcad1";
-                var text = d.type === "status" ? d.text : "未测定";
+
+                var barColor = "#4c87b9";
+                var text = (d.type === "switch" ? "" : (d.type === "status" ? d.text : "未测定"));
                 var textColor = d.type === "status" ? "#fff" : "#aaa";
+
 
                 if ($scope.boiler.isBurning && d.type !== "status" && d.id > 0) {
                     for (var i = 0; i < $scope.instants.length; i++) {
@@ -612,15 +660,294 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         }
     };
 
-    renderStatusModule(statData, statOptions);
+    // var renderStatusModule = function (data, options) {
+    //
+    //
+    //     var align = options.align;
+    //
+    //     var baseWidth = options.baseWidth;
+    //     var height = options.height;
+    //     var gap = options.gap;
+    //     var fontSize = Math.round(baseWidth / 7.5);
+    //
+    //     var baseX = options.baseX;
+    //     var baseY = options.baseY;
+    //
+    //     var statusModule = svgContainer;
+    //
+    //     if (!statusModule) {
+    //         $log.warn("There IS NO " + id + "!");
+    //         return;
+    //     }
+    //
+    //     var maxRowLength = 0;
+    //     for (var row = 0; row < data.length; row++) {
+    //         if (data[row].length > maxRowLength) {
+    //             maxRowLength = data[row].length;
+    //         }
+    //     }
+    //
+    //     for (var row = 0; row < data.length; row++) {
+    //         var rowData = data[row];
+    //         for (var col = 0; col < rowData.length; col++) {
+    //             var width, cx, cy;
+    //             cy = baseY + (height + gap) * row;
+    //
+    //             switch (align) {
+    //                 case "left":
+    //                     width = baseWidth;
+    //                     cx = baseX + (width + gap) * col;
+    //                     break;
+    //                 case "right":
+    //                     width = baseWidth;
+    //                     cx = baseX + (width + gap) * (maxRowLength - rowData.length) + (width + gap) * col;
+    //                     break;
+    //                 case "justify":
+    //                     width = (baseWidth * maxRowLength + gap * (maxRowLength - rowData.length)) / rowData.length;
+    //                     cx = baseX + (width + gap) * col;
+    //                     break;
+    //                 default:
+    //                     width = baseWidth;
+    //                     cx = baseX + (width + gap) * col;
+    //                     break;
+    //             }
+    //
+    //             var d = rowData[col];
+    //
+    //             var barColor = "#4c87b9";
+    //             var text = (d.type === "switch" ? "" : (d.type === "status" ? d.text : "未测定"));
+    //             var textColor = d.type === "status" ? "#fff" : "#aaa";
+    //             if ($scope.boiler.isBurning &&
+    //                 d.type !== "status" && d.type !== "switch" &&
+    //                 d.id > 0) {
+    //                 for (var i = 0; i < $scope.instants.length; i++) {
+    //                     var ins = $scope.instants[i];
+    //                     if (d.id === ins.id && ins.value !== "-") {
+    //                         barColor = "#4c87b9";
+    //                         text = ins.value + ins.unit;
+    //                         textColor = "#80898e";
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //
+    //             //Bar Drawing
+    //             statusModule.append("rect")
+    //                 .attr("x", cx)
+    //                 .attr("y", cy)
+    //                 .attr("width", width)
+    //                 .attr("height", height)
+    //                 //.attr("rx", 6)
+    //                 .style("fill", "none")
+    //                 .style("stroke", barColor)
+    //                 .style("stroke-width", "1");
+    //             statusModule.append("rect")
+    //                 .attr("x", cx)
+    //                 .attr("y", cy)
+    //                 .attr("width", width)
+    //                 .attr("height", height / 2)
+    //                 .style("fill", barColor);
+    //
+    //             if (d.type === "status") {
+    //                 //StatusColor Drawing
+    //                 var bgColor = "#32c5d2";
+    //                 if (typeof d.value === "boolean") {
+    //                     bgColor = d.value ? "#32c5d2" : "#e7505a";
+    //                 } else if (typeof d.value === "number") {
+    //                     switch (d.value) {
+    //                         case -1:
+    //                             bgColor = "#cfdae1";
+    //                             break;
+    //                         case 0:
+    //                             bgColor = "#32c5d2";
+    //                             break;
+    //                         case 1:
+    //                             bgColor = "#f3c200";
+    //                             break;
+    //                         case 2:
+    //                             bgColor = "#e7505a";
+    //                             break;
+    //                     }
+    //                 }
+    //
+    //                 var statusLabel = statusModule.append("rect")
+    //                     .attr("x", cx + 4)
+    //                     .attr("y", cy + height / 2 + 4)
+    //                     .attr("width", width - 8)
+    //                     .attr("height", height / 2 - 8)
+    //                     .attr("rx", 6)
+    //                     .attr("ry", 6)
+    //                     .style("fill", bgColor);
+    //
+    //                 $scope.statusLabels[d.id] = {};
+    //                 $scope.statusLabels[d.id].label = statusLabel;
+    //             }
+    //
+    //             if (d.type === "switch") {
+    //                 //StatusColor Drawing
+    //                 var ins;
+    //                 for (var i = 0; i < $scope.instants.length; i++) {
+    //                     if (d.id === $scope.instants[i].id) {
+    //                         ins = $scope.instants[i];
+    //                     }
+    //                 }
+    //
+    //                 var bgColor = "#cfdae1";
+    //                 // console.error("SwitchValue:", ins);
+    //                 if (typeof ins.value === "boolean") {
+    //                     bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+    //                 } else if (typeof ins.value === "number") {
+    //                     bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+    //                 }
+    //
+    //                 var switchLabel = statusModule.append("rect")
+    //                     .attr("x", cx + 4)
+    //                     .attr("y", cy + height / 2 + 4)
+    //                     .attr("width", width - 8)
+    //                     .attr("height", height / 2 - 8)
+    //                     .attr("rx", 6)
+    //                     .attr("ry", 6)
+    //                     .style("fill", bgColor);
+    //
+    //                 $scope.switchLabels[d.id] = switchLabel;
+    //             }
+    //
+    //             if (d.type === "range") {
+    //                 //StatusColor Drawing
+    //                 var ins;
+    //                 for (var i = 0; i < $scope.instants.length; i++) {
+    //                     if (d.id === $scope.instants[i].id) {
+    //                         ins = $scope.instants[i];
+    //                     }
+    //                 }
+    //
+    //                 var bgColor = "#32c5d2";
+    //                 textColor = "#fff";
+    //
+    //                 statusModule.append("rect")
+    //                     .attr("x", cx + 4)
+    //                     .attr("y", cy + height / 2 + 4)
+    //                     .attr("width", width - 8)
+    //                     .attr("height", height / 2 - 8)
+    //                     .attr("rx", 6)
+    //                     .attr("ry", 6)
+    //                     .style("fill", bgColor);
+    //             }
+    //
+    //             //Bar Drawing
+    //             var barSize = fontSize;
+    //             if (d.name.length > 7) {
+    //                 barSize -= 2 * (d.name.length - 7);
+    //             }
+    //             statusModule.append("text")
+    //                 .attr("x", cx + width / 2)
+    //                 .attr("y", cy + fontSize / 2 + 3)
+    //                 .attr("dy", fontSize / 2)
+    //                 .attr("text-anchor", "middle")
+    //                 .text(d.name)
+    //                 .style("font-size", barSize + "px")
+    //                 //.style("font-weight", "bold")
+    //                 .style("fill", "#fff")
+    //                 .style("stroke-width", "0px");
+    //
+    //             //Text Drawing
+    //             var textSize = fontSize - 2;
+    //             if (text.length > 7) {
+    //                 textSize -= 2 * (text.length - 7);
+    //             }
+    //             var valueLabel = statusModule.append("text")
+    //                 .attr("x", cx + width / 2)
+    //                 .attr("y", cy + height / 2 + fontSize / 2 + 2)
+    //                 .attr("dy", fontSize / 2)
+    //                 .attr("text-anchor", "middle")
+    //                 .style("font-size", textSize + "px")
+    //                 //.style("font-weight", "bold")
+    //                 .style("fill", textColor)
+    //                 .style("stroke-width", "0px");
+    //
+    //             if (d.type !== "switch" && d.type !== "status") {
+    //                 $scope.valueLabels[d.id] = valueLabel;
+    //             } else if (d.type === "status") {
+    //                 $scope.statusLabels[d.id].value = valueLabel;
+    //             }
+    //             valueLabel.text(text);
+    //         }
+    //     }
+    // };
 
-    console.log(moduleStatus);
+
+
+    $scope.updateStatusLabels = function () {
+        if (!$scope.boiler) {
+            if (!$rootScope.boiler) {
+                return
+            }
+
+            $scope.boiler = $rootScope.boiler;
+        }
+
+        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.isBoilerBurning;
+
+        for (var i in $scope.statusLabels) {
+            var statusLabel = $scope.statusLabels[i];
+            var text = "";
+            var bgColor = "#32c5d2";
+
+            switch (parseInt(i, 10)) {
+                case 1:
+                    text = isTerminalConnected ? "已连接" : "未连接";
+                    bgColor = isTerminalConnected ? "#32c5d2" : "#bfcad1";
+                    break;
+                case 2:
+                    text = $scope.isBoilerBurning ? "已点燃" : "未点燃";
+                    bgColor = $scope.isBoilerBurning ? "#32c5d2" : "#e7505a";
+                    break;
+                case 3:
+                    switch ($scope.boiler.alarmLevel) {
+                        case -1:
+                            bgColor = "#cfdae1";
+                            break;
+                        case 0:
+                            bgColor = "#32c5d2";
+                            break;
+                        case 1:
+                            bgColor = "#f3c200";
+                            break;
+                        case 2:
+                            bgColor = "#e7505a";
+                            break;
+                    }
+                    break;
+            }
+
+            // console.error("updateStatusLabels", i, text, bgColor, statusLabel);
+
+            statusLabel.value.text(text);
+            statusLabel.label.style("fill", bgColor);
+        }
+    };
+
+    $scope.updateLabels = function () {
+        // $log.error("updateWaterText()", bModule.valueLabels, new Date());
+        for (var i in $scope.instants) {
+            var ins = $scope.instants[i];
+            if ($scope.valueLabels[ins.id] &&
+                ins.category !== 11) {
+                $scope.valueLabels[ins.id].text(ins.value + ins.unit);
+            }
+
+            if ($scope.switchLabels[ins.id]) {
+                var bgColor = "#cfdae1";
+                // console.error("SwitchValue:", ins);
+                if (typeof ins.value === "boolean") {
+                    bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+                } else if (typeof ins.value === "number") {
+                    bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+                }
+
+                $scope.switchLabels[ins.id].style("fill", bgColor);
+            }
+        }
+    };
 
 })
-
-
-
-
-
-
-

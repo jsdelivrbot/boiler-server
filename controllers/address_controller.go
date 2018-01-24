@@ -40,3 +40,4 @@ func (addrCtl *AddressController) GetAddress(local *models.Location, address str
 
 	return &addr, err
 }
+

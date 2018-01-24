@@ -1,15 +1,13 @@
 package controllers
 
 import (
-	"github.com/AzureTech/goazure/orm"
-	"github.com/AzureTech/goazure"
-
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/dba"
 	"reflect"
 	"fmt"
 	"strconv"
-
+	"github.com/AzureTech/goazure/orm"
+	"github.com/AzureTech/goazure"
 	"encoding/json"
 	"time"
 	"errors"
@@ -44,8 +42,8 @@ func (ctl *OrganizationController) OrganizationList() {
 
 	qs := dba.BoilerOrm.QueryTable("organization")
 	qs = qs.RelatedSel("Address__Location").RelatedSel("Type")
-	if method != "register" && usr.IsOrganizationUser() {
-		orCond := orm.NewCondition().Or("Uid", usr.Organization.Uid).Or("SuperOrganization__Uid", usr.Organization.Uid)
+	if 	method != "register" && usr.IsOrganizationUser() {
+		orCond := orm.NewCondition().Or("Uid", usr.Organization.Uid).Or("SuperOrganization__Uid", usr.Organization.Uid).Or("CreatedBy__Uid", usr.Uid)
 		cond := orm.NewCondition().AndCond(orCond)
 		qs = qs.SetCond(cond)
 	}
@@ -64,7 +62,7 @@ func (ctl *OrganizationController) OrganizationTypeList() {
 	var types []orm.Params
 	qs := dba.BoilerOrm.QueryTable("organization_type")
 	qs = qs.Filter("TypeId__gte", 1)
-	if num, err := qs.OrderBy("TypeId").Values(&types); err != nil {
+	if num, err := qs.OrderBy("TypeId").Values(&types, "TypeId", "Name"); err != nil {
 		goazure.Error("Read Orgs Error:", err, num)
 	}
 
@@ -99,13 +97,6 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 
 	var isCreated bool = false
 
-	if !usr.IsAdmin() {
-		ctl.Ctx.Output.SetStatus(403)
-		ctl.Ctx.Output.Body([]byte("Permission Denied!"))
-		goazure.Error("Permission Denied!")
-		return
-	}
-
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &o); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
@@ -135,6 +126,17 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
+	}
+
+	if 	!usr.IsAdmin() {
+		if 	usr.Organization.Uid != organization.Uid &&
+			(organization.CreatedBy == nil || usr.Uid != organization.CreatedBy.Uid) &&
+			(usr.Organization == nil || organization.SuperOrganization == nil || usr.Organization.Uid != organization.SuperOrganization.Uid) {
+			ctl.Ctx.Output.SetStatus(403)
+			ctl.Ctx.Output.Body([]byte("Permission Denied!"))
+			goazure.Error("Permission Denied!")
+			return
+		}
 	}
 
 	if err := dba.BoilerOrm.QueryTable("address").RelatedSel("Location").Filter("Address", o.Address).Filter("Location__LocationId", o.LocationId).One(&addr); err != nil {
@@ -167,6 +169,14 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 	organization.Name = o.Name
 	organization.Type = &oType
 	organization.Address = &addr
+	
+	organization.UpdatedBy = usr
+
+	if isCreated {
+		organization.CreatedBy = usr
+		organization.SuperOrganization = usr.Organization
+	}
+
 	if usr.IsAdmin() {
 		organization.ShowBrand = o.ShowBrand
 		organization.BrandName = o.BrandName
@@ -204,7 +214,7 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 			}
 		}
 
-		BoilerCtrl.RefreshGlobalBoilerList()
+		BlrCtl.RefreshGlobalBoilerList()
 	}
 
 	goazure.Info("Updated Organization:", organization)
@@ -296,7 +306,7 @@ func (ctl *OrganizationController) GenerateSampleBoilers(org *models.Organizatio
 		}
 	}
 
-	go CalcCtrl.InitBoilerCalculateParameter(boilers)
+	go CalcCtl.InitBoilerCalculateParameter(boilers)
 
 	return boilers, nil
 }
