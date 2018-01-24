@@ -35,7 +35,7 @@
 .page-sidebar .page-sidebar-menu>li.active>a:hover{
     background: #19bc9c;
 }
-.logo_lu{
+.page-sidebar .page-sidebar-menu>li.logo_lu{
     display: none;
 }
 
@@ -125,6 +125,14 @@
 .icon-settings:not(.runtime_icon):before {
     content: "\f00a";
 }
+
+.pop_green .tooltip-inner {
+    background-color: #19bc9b;
+}
+.pop_green.tooltip.top .tooltip-arrow {
+    border-top-color: #19bc9b;
+}
+
 
 
 /*搜索框*/
@@ -410,6 +418,9 @@ div.detail-btn label.active.btn-red {
     border-color: #1abc9c;
 }
 
+.profile-content .form-group .margin-top-10{
+    text-align: left;
+}
 .profile-content .margiv-top-10{
     text-align: right;
 }
