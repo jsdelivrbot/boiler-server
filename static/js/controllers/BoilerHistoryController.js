@@ -211,13 +211,17 @@ angular.module('BoilerAdmin')
         var reverse = false;
 
         var groupedItems = [];
-        var itemsPerPage = 50;
-        var pageRange = 100;
+        var itemsPerPage = 50;//每页数量
+        var pageRange = 5;//显示页数
 
-        $scope.pagedItems = [];
-        $scope.currentPage = 0;
+        $scope.pagedItems = [];//所有页码对应数据，每页一组数组
+        $scope.currentPage = 1;
         $scope.filterLen = 0;
         //bMonitor.rangedPages = [];
+
+        $scope.maxSize = pageRange;//最大显示页数
+        $scope.pageSize = itemsPerPage;//每页数量
+        $scope.totalItems = bHistory.datasource.length;//数据总数
 
         $scope.matchNum = 0;
 
@@ -226,9 +230,9 @@ angular.module('BoilerAdmin')
             $scope.pagedItems = [];
             for (var i = 0; i < bHistory.datasource.length; i++) {
                 if (i % itemsPerPage === 0) {
-                    $scope.pagedItems[Math.floor(i / itemsPerPage)] = [bHistory.datasource[i]];
+                    $scope.pagedItems[Math.floor(i / itemsPerPage)] = [bHistory.datasource[i]];//每一页的数据及第一个数据
                 } else {
-                    $scope.pagedItems[Math.floor(i / itemsPerPage)].push(bHistory.datasource[i]);
+                    $scope.pagedItems[Math.floor(i / itemsPerPage)].push(bHistory.datasource[i]);//添加每一页的数据
                 }
             }
 
@@ -237,15 +241,15 @@ angular.module('BoilerAdmin')
 
         $scope.range = function () {
             var ret = [];
-            var length = $scope.pagedItems.length;
-            var startPage = Math.floor($scope.currentPage / pageRange) * pageRange;
+            var length = $scope.pagedItems.length;//总页数
+            var startPage = Math.floor($scope.currentPage / pageRange) * pageRange;//第一页为0
             //alert('Paging: ' + runtime.currentPage + "|" + startPage);
             if (startPage > 0) {
                 ret.push('···');
             }
             for (var i = startPage; i < startPage + pageRange && i < length; i++) {
                 var n = i + 1;
-                ret.push(n);
+                ret.push(n);//添加页码
             }
             // if (startPage < Math.floor(runtime.pagedItems.length / runtime.pageRange) * runtime.pageRange) {
             //     ret.push('···');
@@ -272,8 +276,8 @@ angular.module('BoilerAdmin')
                 return;
             }
             //alert('page:' + page + '|' + this.n);
-            $scope.currentPage = page - 1;
-            $scope.range();
+            $scope.currentPage = page;
+            // $scope.range();
         };
 
         // functions have been describe process the data for display
@@ -425,6 +429,50 @@ angular.module('BoilerAdmin')
 
             return '';
         }
+
+        //表格横向滚动事件
+        var scLeft = angular.element(document.getElementsByClassName("cd-table-container")),
+            cdTable = angular.element(document.querySelector('#cd-table')),
+            cdTableWrapper = angular.element(document.querySelector('.cd-table-wrapper'));//表格
+        var scLeftArrow = angular.element(document.getElementsByClassName("cd-scroll-right"));//向右箭头
+        var scLeftArrow2 = angular.element(document.getElementsByClassName("cd-scroll-left"));//向左箭头
+        scLeft.on("scroll", function() {
+            //remove color gradient when table has scrolled to the end
+            var total_table_width = parseInt(cdTableWrapper.css('width').replace('px', '')),
+                table_viewport = parseInt(cdTable.css('width').replace('px', ''));
+
+            if(scLeft.scrollLeft() >= total_table_width - table_viewport) {
+                cdTable.addClass('table-end');
+                scLeftArrow.css("display", "none");
+            } else {
+                cdTable.removeClass('table-end');
+                scLeftArrow.css("display", "block");
+            };
+            if(scLeft.scrollLeft()>0){
+                scLeftArrow2.css("display", "block");
+            }else{
+                scLeftArrow2.css("display", "none");
+            }
+        });
+
+        //scroll the table (scroll value equal to column width) when clicking on the .cd-scroll-right arrow
+        $scope.scRight = function() {
+            var column_width = scLeft.find('td').eq(2).css('width').replace('px', '')*3,
+                new_left_scroll = parseInt(scLeft.scrollLeft()) + parseInt(column_width);
+            scLeft.animate({
+                scrollLeft: new_left_scroll
+            }, 200);
+        };
+        $scope.scLeft = function() {
+            var column_width = scLeft.find('td').eq(2).css('width').replace('px', '')*3,
+                new_left_scroll = parseInt(scLeft.scrollLeft()) - parseInt(column_width);
+            console.log(column_width);
+            scLeft.animate({
+                scrollLeft: new_left_scroll
+            }, 200);
+        };
+
+
     });
 
 var bHistory;
