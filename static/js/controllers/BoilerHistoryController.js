@@ -212,12 +212,16 @@ angular.module('BoilerAdmin')
 
         var groupedItems = [];
         var itemsPerPage = 50;//每页数量
-        var pageRange = 10;//显示页数
+        var pageRange = 5;//显示页数
 
         $scope.pagedItems = [];//所有页码对应数据，每页一组数组
-        $scope.currentPage = 0;
+        $scope.currentPage = 1;
         $scope.filterLen = 0;
         //bMonitor.rangedPages = [];
+
+        $scope.maxSize = pageRange;//最大显示页数
+        $scope.pageSize = itemsPerPage;//每页数量
+        $scope.totalItems = bHistory.datasource.length;//数据总数
 
         $scope.matchNum = 0;
 
@@ -272,8 +276,8 @@ angular.module('BoilerAdmin')
                 return;
             }
             //alert('page:' + page + '|' + this.n);
-            $scope.currentPage = page - 1;
-            $scope.range();
+            $scope.currentPage = page;
+            // $scope.range();
         };
 
         // functions have been describe process the data for display

@@ -144,13 +144,12 @@
 
     <div class="row" style="font-size: 14px;">
         <div class="col-md-3 col-sm-3">
-            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage +
-                1}} 页 共 {{pagedItems.length}} 页
+            <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage }} 页 共 {{pagedItems.length}} 页
             </div>
         </div>
         <div class="col-md-9 col-sm-9">
             <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                <ul class="pagination" style="visibility: visible;">
+                <!--<ul class="pagination" style="visibility: visible;">
                     <li ng-class="['prev', {'disabled': currentPage == 0}]">
                         <a href ng-click="setPage(1)" title="首页"><i class="fa fa-angle-double-left"></i></a>
                     </li>
@@ -169,6 +168,11 @@
                         <a href ng-click="setPage(pagedItems.length)" title="末页"><i
                                 class="fa fa-angle-double-right"></i></a>
                     </li>
+                </ul>-->
+                <ul uib-pagination boundary-links="true" total-items="totalItems" boundary-link-numbers="true"
+                    ng-model="currentPage" items-per-page="pageSize"
+                    max-size="maxSize" num-pages="totalPage"
+                    previous-text="&lt;" next-text="&gt;" first-text="&laquo;" last-text="&raquo;">
                 </ul>
             </div>
         </div>
@@ -198,7 +202,7 @@
         </tr>
         </tbody>
         <tbody ng-show="!history.isEmpty" style="text-align: center">
-        <tr ng-repeat="d in pagedItems[currentPage] track by $index">
+        <tr ng-repeat="d in pagedItems[currentPage-1] track by $index">
             <td> {{ d.num }}</td>
             <td> {{ d.date | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
 
