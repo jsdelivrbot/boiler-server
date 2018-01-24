@@ -21,11 +21,12 @@ before_deploy:
   - chmod o+x build.sh
 
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
-    #on:
-    #  all_branch: true
+  provider: script
+  skip_cleanup: true
+  script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+  on:
+    tags: true
+    all_branches: true
 
 after_deploy:
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
