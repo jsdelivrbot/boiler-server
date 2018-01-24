@@ -5,7 +5,7 @@ go:
 
 before_install:
   - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
-  - if [[ $TRAVIS_BRANCH == "master" ]]
+  - if [[ $TRAVIS_BRANCH == "master" ]];
     then
       export DHOST="47.100.0.27"
     else
