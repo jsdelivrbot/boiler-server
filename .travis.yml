@@ -5,8 +5,7 @@ go:
 
 before_install:
   - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
-  - export DHOST="101.132.143.0"
-  - export RHOST="47.100.0.27"
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then export DHOST="47.100.0.27" else export DHOST="101.132.143.0"; fi
   - export DPORT="2022"
 
 addons:
@@ -22,12 +21,11 @@ before_deploy:
   - chmod o+x build.sh
 
 deploy:
-  provider: script
-  skip_cleanup: true
-  script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc"
-    --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
-  on:
-    branch: preview
+  - provider: script
+    skip_cleanup: true
+    script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+    on:
+      all_branch: true
 
 after_deploy:
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
