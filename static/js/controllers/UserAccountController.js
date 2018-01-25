@@ -511,7 +511,7 @@ angular.module('BoilerAdmin').controller('userCtrl', function($scope,$rootScope,
                     // if (idx > -1) {
                     //     bAccount.datasource.splice(idx, 1);
                     // }
-
+                    bAccount.refreshDataTables();
                 });
             }, function (err) {
                 swal({
@@ -520,11 +520,12 @@ angular.module('BoilerAdmin').controller('userCtrl', function($scope,$rootScope,
                     type: "error"
                 });
             });
+            $uibModalInstance.close();
         });
-        $uibModalInstance.close();
+
     }
     $scope.close = function(){
-        $uibModalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss();
     }
     $scope.resetPassword=function(){
         if ($scope.currentData) {
