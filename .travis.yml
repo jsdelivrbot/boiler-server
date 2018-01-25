@@ -11,6 +11,7 @@ before_install:
 #      export DPORT="4022"
 #      ;
 #    fi
+  - export DHOST="47.100.0.27"
   - export DPORT="2022"
 
 #matrix:
@@ -18,7 +19,7 @@ before_install:
 #    - env: DHOST='47.100.0.27'
 #      on:
 #        branch: master
-#    - env: DHOST='kl
+#    - env: DHOST='101.132.143.0'
 #      on:
 #        branch: preview
 
@@ -33,32 +34,26 @@ before_deploy:
   - chmod 600 /tmp/deploy_boiler_rsa
   - ssh-add /tmp/deploy_boiler_rsa
   - chmod o+x build.sh
-  - chmod a+x ci_profile.sh
-  - ./ci_profile.sh
-  - echo $TRAVIS_BRANCH
-  - echo $DPORT
-  - echo $DHOST
+#  - chmod a+x ci_profile.sh
+#  - ./ci_profile.sh
 
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: export DHOST="47.100.0.27"
-    on:
-    # tags: true
-    # all_branches: true
-      branch: master
+  provider: script
+  skip_cleanup: true
+  script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+  on:
+  # tags: true
+    all_branches: true
 
-  - provider: script
-    skip_cleanup: true
-    script: export DHOST="101.132.143.0"
-    on:
-    # tags: true
-    # all_branches: true
-      branch: preview
+#  - provider: script
+#    skip_cleanup: true
+#    script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+#    on:
+#      branch: preview
 
 after_deploy:
   - echo $DHOST
-  - rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+  rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
 
 after_script:
