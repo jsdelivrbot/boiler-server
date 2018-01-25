@@ -718,10 +718,10 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
         bMonitor.filteredItems = items;
 
-        bMonitor.currentPage = 1;
-        bMonitor.pageSize = itemsPerPage;
-        bMonitor.maxSize = pageRange;
-        bMonitor.totalItems = bMonitor.filteredItems.length;
+        // bMonitor.currentPage = 1;
+        // bMonitor.pageSize = itemsPerPage;
+        // bMonitor.maxSize = pageRange;
+        // bMonitor.totalItems = bMonitor.filteredItems.length;
 
         // now group by pages
         bMonitor.groupToPages();
@@ -737,7 +737,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     var pageRange = 10;
 
     bMonitor.pagedItems = [];
-    bMonitor.currentPage = 1;
+    bMonitor.currentPage = 0;
     bMonitor.filterLen = 0;
     //bMonitor.rangedPages = [];
 
@@ -1025,8 +1025,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             return;
         }
         //alert('page:' + page + '|' + this.n);
-        bMonitor.currentPage = page;
-        // bMonitor.range();
+        bMonitor.currentPage = page - 1;
+        bMonitor.range();
     };
 
     // functions have been describe process the data for display

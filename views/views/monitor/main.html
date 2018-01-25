@@ -5,11 +5,16 @@
 <div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
-            <a ui-sref="monitor.dashboard">主页</a>
+            <a>主页</a>
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <a ui-sref="monitor.dashboard">主监控台</a>
+            <a>主监控台</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ng-show="$state.current.name === 'monitor.dashboard'">能效统计</a>
+            <a ng-show="$state.current.name != 'monitor.dashboard'">设备概览</a>
         </li>
     </ul>
     <div class="page-toolbar">
