@@ -156,6 +156,7 @@ angular.module('BoilerAdmin')
 
                 bHistory.isDone = true;
                 bHistory.isEmpty = false;
+
                 $log.warn("History Data1:", bHistory);
             });
         };
@@ -221,12 +222,13 @@ angular.module('BoilerAdmin')
 
         $scope.maxSize = pageRange;//最大显示页数
         $scope.pageSize = itemsPerPage;//每页数量
-        $scope.totalItems = bHistory.datasource.length;//数据总数
+
 
         $scope.matchNum = 0;
 
         // calculate page in place
         $scope.groupToPages = function () {
+            $scope.totalItems = bHistory.datasource.length;//数据总数
             $scope.pagedItems = [];
             for (var i = 0; i < bHistory.datasource.length; i++) {
                 if (i % itemsPerPage === 0) {
