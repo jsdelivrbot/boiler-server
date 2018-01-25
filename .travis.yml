@@ -5,14 +5,23 @@ go:
 
 before_install:
   - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
-  - if [[ $TRAVIS_BRANCH == "master" ]];
-    then
-      export DHOST="47.100.0.27"
-    else
-      export DHOST="101.132.143.0"
-    ; fi
+#  - if [[ $TRAVIS_BRANCH = 'master' ]]; then
+#      export DPORT="2022"
+#    else
+#      export DPORT="4022"
+#      ;
+#    fi
+  - export DHOST="47.100.0.27"
   - export DPORT="2022"
-  - echo $DHOST
+
+#matrix:
+#  include:
+#    - env: DHOST='47.100.0.27'
+#      on:
+#        branch: master
+#    - env: DHOST='101.132.143.0'
+#      on:
+#        branch: preview
 
 addons:
   ssh_known_hosts:
@@ -25,6 +34,8 @@ before_deploy:
   - chmod 600 /tmp/deploy_boiler_rsa
   - ssh-add /tmp/deploy_boiler_rsa
   - chmod o+x build.sh
+#  - chmod a+x ci_profile.sh
+#  - ./ci_profile.sh
 
 deploy:
   provider: script
@@ -33,6 +44,12 @@ deploy:
   on:
   # tags: true
     all_branches: true
+
+#  - provider: script
+#    skip_cleanup: true
+#    script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+#    on:
+#      branch: preview
 
 after_deploy:
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"

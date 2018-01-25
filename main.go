@@ -24,13 +24,13 @@ func main() {
 
 	//go generateRandomData(true)
 
-	initWechatServer()
+	go initWechatServer()
 
 	//屏蔽错误页详细信息
 	goazure.ErrorController(&controllers.ErrorController{})
 
 	//controllers.OrgCtrl.InitOrganizationDefaults()
-	go initDefaultData()
+	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
 
 	//go controllers.ParamCtrl.InitParameterChannelConfig(600)
