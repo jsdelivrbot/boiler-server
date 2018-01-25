@@ -24,7 +24,7 @@ func main() {
 
 	//go generateRandomData(true)
 
-	initWechatServer()
+	go initWechatServer()
 
 	//屏蔽错误页详细信息
 	goazure.ErrorController(&controllers.ErrorController{})
