@@ -6,11 +6,11 @@ go:
 before_install:
   - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
   - if [[ $TRAVIS_BRANCH = 'master' ]]; then
-      export DHOST=47.100.0.27
+      export DPORT="2022"
     else
-      export DHOST=101.132.143.0
+      export DPORT="4022"
     fi
-  - export DPORT=2022
+  - export DHOST="47.100.0.27"
 
 #matrix:
 #  include:
