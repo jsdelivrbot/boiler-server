@@ -6,7 +6,6 @@ logs
 *.log
 *.out
 
-
 node_modules
 #bower_components
 
