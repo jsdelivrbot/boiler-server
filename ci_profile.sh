@@ -5,3 +5,7 @@ else
 fi
 
 export DPORT='2022'
+
+echo $TRAVIS_BRANCH
+echo $DPORT
+echo $DHOST
