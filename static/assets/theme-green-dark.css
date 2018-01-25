@@ -401,7 +401,12 @@ div.detail-btn label.active.btn-red {
     background-color: #32c5d2;
 }
 
-
+/*终端列表*/
+.terminal_con .btn.btn-outline.blue.active,.terminal_con .btn.btn-outline.blue:active,.terminal_con .btn.btn-outline.blue:active:focus,.terminal_con .btn.btn-outline.blue:active:hover,.terminal_con .btn.btn-outline.blue:focus,.terminal_con .btn.btn-outline.blue:hover {
+    border-color: #19bc9c;
+    color: #fff;
+    background-color: #19bc9c;
+}
 
 /*账号管理*/
 #accounts_table .label-success {
