@@ -10,13 +10,16 @@ before_install:
 #    else
 #      export DHOST='101.132.143.0'
 #    fi
-#  - export DPORT='2022'
+  - export DPORT='2022'
 
 matrix:
   include:
-    - env: DHOST='47.100.0.27' TRAVIS_BRANCH='master'
-    - env: DHOST='101.132.143.0' TRAVIS_BRANCH='preview'
-    - env: DPORT='2022' TRAVIS_BRANCH='preview'
+    - env: DHOST='47.100.0.27'
+      on:
+        branch: master
+    - env: DHOST='101.132.143.0'
+      on:
+        branch: preview
 
 addons:
   ssh_known_hosts:
