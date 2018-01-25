@@ -30,7 +30,7 @@ func main() {
 	goazure.ErrorController(&controllers.ErrorController{})
 
 	//controllers.OrgCtrl.InitOrganizationDefaults()
-	go initDefaultData()
+	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
 
 	//go controllers.ParamCtrl.InitParameterChannelConfig(600)
