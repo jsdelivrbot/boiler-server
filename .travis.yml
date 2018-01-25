@@ -9,6 +9,7 @@ before_install:
       export DPORT="2022"
     else
       export DPORT="4022"
+      ;
     fi
   - export DHOST="47.100.0.27"
 
