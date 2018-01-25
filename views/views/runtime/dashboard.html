@@ -6,6 +6,9 @@
         white-space: nowrap;
         font-size: 13px;
     }
+    .label-warning{
+        background-color: #f0ad4e;
+    }
 </style>
 
 <div class="row">
@@ -59,7 +62,7 @@
         <boiler-module></boiler-module>
         <div class="" >
             <div ng-show="runtime.boiler.hasSwitchValue"
-                 style="margin-top: 12px;margin-left: 10px;margin-right: 10px;">
+                 style="margin-left: 10px;margin-right: 10px;">
                         <span ng-repeat="d in runtime.instants"
                               ng-show="d.category === 11"
                               class="label label-sm ng-binding ng-scope"

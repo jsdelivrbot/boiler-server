@@ -42,14 +42,14 @@
                         <span class="caption-subject bold uppercase">锅炉信息</span>
                         <span class="caption-helper hide"></span>
                     </div>
-                    <div class="actions" ng-show="currentUser.Role.RoleId < 10">
+                    <div class="actions" >
                         <!--<a class="btn btn-circle btn-sm btn-icon-only btn-default" href="#">-->
                             <!--<i class="icon-cloud-upload"></i>-->
                         <!--</a>-->
                         <!--<a class="btn btn-circle btn-sm btn-icon-only btn-default" href="#">-->
                             <!--<i class="icon-wrench"></i>-->
                         <!--</a>-->
-                        <div class="col-md-6">
+                        <div class="col-md-6" ng-show="currentUser.Role.RoleId < 10">
                             <div class="btn-group">
                                 <button ng-click="info.new()" class="btn sbold green">
                                     <i class="fa fa-plus"></i> 添加

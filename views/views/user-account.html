@@ -44,49 +44,49 @@
                         <span class="caption-helper hide"></span>
                     </div>
                     <div class="actions">
-                        <div class="btn-group">
+                        <div class="btn-group" ng-show="currentUser.Role.RoleId <= 10">
                             <button ng-click="account.new()" class="btn sbold green">
                                 <i class="fa fa-plus"></i> 添加
                             </button>
                         </div>
-                        <a class="btn btn-circle btn-icon-only btn-default tooltips" data-original-title="帮助" ui-sref="wiki" style="margin-left: 10px;">
-                            <i class="fa fa-info"></i>
-                        </a>
+                        <!--<a class="btn btn-circle btn-icon-only btn-default tooltips" data-original-title="帮助" ui-sref="wiki" style="margin-left: 10px;">-->
+                            <!--<i class="fa fa-info"></i>-->
+                        <!--</a>-->
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div ng-show="currentUser.Role.RoleId <= 10" class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!--<div class="btn-group">-->
-                                    <!--<button ng-click="account.new()" class="btn sbold green">-->
-                                        <!--<i class="fa fa-plus"></i> 添加-->
-                                    <!--</button>-->
-                                <!--</div>-->
-                            </div>
+                    <!--<div ng-show="currentUser.Role.RoleId <= 10" class="table-toolbar">-->
+                        <!--<div class="row">-->
                             <!--<div class="col-md-6">-->
-                                <!--<div class="btn-group pull-right">-->
-                                    <!--<button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">操作-->
-                                        <!--<i class="fa fa-angle-down"></i>-->
-                                    <!--</button>-->
-                                    <!--<ul class="dropdown-menu pull-right">-->
-                                        <!--<li>-->
-                                            <!--<a href="javascript:;">-->
-                                                <!--<i class="fa fa-print"></i> 打印 </a>-->
-                                        <!--</li>-->
-                                        <!--<li>-->
-                                            <!--<a href="javascript:;">-->
-                                                <!--<i class="fa fa-file-pdf-o"></i> 另存为PDF </a>-->
-                                        <!--</li>-->
-                                        <!--<li>-->
-                                            <!--<a href="javascript:;">-->
-                                                <!--<i class="fa fa-file-excel-o"></i> 导出为Excel </a>-->
-                                        <!--</li>-->
-                                    <!--</ul>-->
-                                <!--</div>-->
+                                <!--&lt;!&ndash;<div class="btn-group">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button ng-click="account.new()" class="btn sbold green">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<i class="fa fa-plus"></i> 添加&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
                             <!--</div>-->
-                        </div>
-                    </div>
+                            <!--&lt;!&ndash;<div class="col-md-6">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<div class="btn-group pull-right">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">操作&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<i class="fa fa-angle-down"></i>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<ul class="dropdown-menu pull-right">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<a href="javascript:;">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<i class="fa fa-print"></i> 打印 </a>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<a href="javascript:;">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<i class="fa fa-file-pdf-o"></i> 另存为PDF </a>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<a href="javascript:;">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<i class="fa fa-file-excel-o"></i> 导出为Excel </a>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--</div>-->
+                    <!--</div>-->
 
                     <div class="row">
                         <div class="col-md-12">
