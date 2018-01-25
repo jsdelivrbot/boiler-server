@@ -32,7 +32,7 @@ before_deploy:
   - chmod 600 /tmp/deploy_boiler_rsa
   - ssh-add /tmp/deploy_boiler_rsa
   - chmod o+x build.sh
-  - chmod o+x ci_profile.sh
+  - chmod a+x ci_profile.sh
   - ./ci_profile.sh
   - echo $TRAVIS_BRANCH
   - echo $DPORT
