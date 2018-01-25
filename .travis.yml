@@ -12,7 +12,6 @@ before_install:
       export DHOST="101.132.143.0"
     fi
   - export DPORT="2022"
-  - echo "111"
   - echo $DHOST
 
 addons:
