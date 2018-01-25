@@ -44,7 +44,12 @@
                         <span class="caption-helper hide"></span>
                     </div>
                     <div class="actions">
-                        <a class="btn btn-circle btn-icon-only btn-default tooltips" data-original-title="帮助" ui-sref="wiki">
+                        <div class="btn-group">
+                            <button ng-click="account.new()" class="btn sbold green">
+                                <i class="fa fa-plus"></i> 添加
+                            </button>
+                        </div>
+                        <a class="btn btn-circle btn-icon-only btn-default tooltips" data-original-title="帮助" ui-sref="wiki" style="margin-left: 10px;">
                             <i class="fa fa-info"></i>
                         </a>
                     </div>
@@ -53,11 +58,11 @@
                     <div ng-show="currentUser.Role.RoleId <= 10" class="table-toolbar">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="btn-group">
-                                    <button ng-click="account.new()" class="btn sbold green">
-                                        <i class="fa fa-plus"></i> 添加
-                                    </button>
-                                </div>
+                                <!--<div class="btn-group">-->
+                                    <!--<button ng-click="account.new()" class="btn sbold green">-->
+                                        <!--<i class="fa fa-plus"></i> 添加-->
+                                    <!--</button>-->
+                                <!--</div>-->
                             </div>
                             <!--<div class="col-md-6">-->
                                 <!--<div class="btn-group pull-right">-->
@@ -220,7 +225,7 @@
                                 <a ng-show="!editing && currentData && currentUser.Role.RoleId < currentData.Role.RoleId" href ng-click="editRow()" class="btn blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
                                 </a>
-                                <a href ng-show="currentData && currentUser.Role.RoleId < currentData.Role.RoleId" class="btn delete red delete_btn">
+                                <a href ng-show="currentData && currentUser.Role.RoleId < currentData.Role.RoleId" ng-click="deleteRow()" class="btn delete red delete_btn">
                                     <i class="fa fa-trash-o"></i> 删除
                                 </a>
                                 <a href ng-click="close()" class="btn grey-cascade">
