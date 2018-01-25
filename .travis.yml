@@ -5,21 +5,21 @@ go:
 
 before_install:
   - echo -e "machine github.com\n  login jeremiahyan\n  password $CI_USER_PASSWORD" >> ~/.netrc
+  - export DPORT='2022'
 #  - if [[ $TRAVIS_BRANCH = 'master' ]]; then
 #      export DHOST='47.100.0.27'
 #    else
 #      export DHOST='101.132.143.0'
 #    fi
-  - export DPORT='2022'
 
-matrix:
-  include:
-    - env: DHOST='47.100.0.27'
-      on:
-        branch: master
-    - env: DHOST='101.132.143.0'
-      on:
-        branch: preview
+#matrix:
+#  include:
+#    - env: DHOST='47.100.0.27'
+#      on:
+#        branch: master
+#    - env: DHOST='101.132.143.0'
+#      on:
+#        branch: preview
 
 addons:
   ssh_known_hosts:
@@ -36,14 +36,28 @@ before_deploy:
   - echo $DHOST
 
 deploy:
-  provider: script
-  skip_cleanup: true
-  script: rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
-  on:
-  # tags: true
-    all_branches: true
+  - provider: script
+    skip_cleanup: true
+    script:
+      - export DHOST='47.100.0.27'
+      - rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+    on:
+    # tags: true
+    # all_branches: true
+      branch: master
+
+  - provider: script
+    skip_cleanup: true
+    script:
+      - export DHOST='101.132.143.0'
+      - rsync -azr -e "ssh -p $DPORT" --exclude=".git" --exclude=".gitignore" --exclude="*.enc" --exclude="*.yml" --exclude="tests" $TRAVIS_BUILD_DIR root@$DHOST:$AZUREPATH
+    on:
+    # tags: true
+    # all_branches: true
+      branch: preview
 
 after_deploy:
+  - echo $DHOST
   - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
 
 after_script:
