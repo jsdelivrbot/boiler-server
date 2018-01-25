@@ -43,27 +43,37 @@
                         <span class="caption-helper hide"></span>
                     </div>
                     <div class="actions">
-                        <div ng-show="currentUser.Role.RoleId < 10"
-                             class="btn-group btn-group-devided" data-toggle="buttons"
-                             style="margin-right: 20px;">
-                            <a ui-sref="terminal.dashboard"
-                               class="btn blue btn-outline btn-circle btn-sm"
-                               ng-class="{'active': $state.current.name == 'terminal.dashboard'}">
-                                终端列表
-                            </a>
-                            <a ui-sref="terminal.message"
-                               class="btn blue btn-outline btn-circle btn-sm"
-                               ng-class="{'active': $state.current.name == 'terminal.message'}">
-                                消息调试
-                            </a>
+                        <div class="btn-group" ng-show="currentUser.Role.RoleId < 10 && $state.current.name!='terminal.message'">
+                            <button id="editable_1_new" ng-click="terminal.new()" class="btn sbold green">
+                                <i class="fa fa-plus"></i> 添加
+                            </button>
                         </div>
+                        <div class="btn-group" ng-show="$state.current.name ==='terminal.message'">
+                            <button class="btn sbold green" ui-sref="terminal.dashboard">
+                                返回
+                            </button>
+                        </div>
+                        <!--<div ng-show="currentUser.Role.RoleId < 10"-->
+                             <!--class="btn-group btn-group-devided" data-toggle="buttons"-->
+                             <!--style="margin-right: 20px;">-->
+                            <!--<a ui-sref="terminal.dashboard"-->
+                               <!--class="btn blue btn-outline btn-circle btn-sm"-->
+                               <!--ng-class="{'active': $state.current.name == 'terminal.dashboard'}">-->
+                                <!--终端列表-->
+                            <!--</a>-->
+                            <!--<a ui-sref="terminal.message"-->
+                               <!--class="btn blue btn-outline btn-circle btn-sm"-->
+                               <!--ng-class="{'active': $state.current.name == 'terminal.message'}">-->
+                                <!--消息调试-->
+                            <!--</a>-->
+                        <!--</div>-->
                         <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
                         <!--<i class="icon-cloud-upload"></i>-->
                         <!--</a>-->
                         <!--<a class="btn btn-circle btn-icon-only btn-default" href="#">-->
                         <!--<i class="icon-wrench"></i>-->
                         <!--</a>-->
-                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href> </a>
+                        <!--<a class="btn btn-circle btn-icon-only btn-default fullscreen" href> </a>-->
                     </div>
                 </div>
                 <div class="portlet-body">

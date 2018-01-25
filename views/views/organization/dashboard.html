@@ -1,4 +1,4 @@
-<div ng-show="currentUser.Role.RoleId < 10" class="table-toolbar">
+<div ng-show="currentUser.Role.RoleId < 10" class="table-toolbar" style="display: none;">
     <div class="row">
         <div class="col-md-6">
             <div class="btn-group">
@@ -30,7 +30,18 @@
         <!--</div>-->
     </div>
 </div>
-
+<div ng-show="currentUser.Role.RoleId < 10" class="pull-right" style="margin-bottom: 20px;">
+    <div class="btn-group btn-group-devided" data-toggle="buttons">
+        <a ui-sref="organization.overview({tid: 0})" class="btn green btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 0}"> 所有企业 </a>
+        <a ui-sref="organization.overview({tid: 2})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 2}"> 锅炉使用企业 </a>
+        <a ui-sref="organization.overview({tid: 1})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 1}"> 锅炉制造企业 </a>
+        <a ui-sref="organization.overview({tid: 3})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 3}"> 锅炉安装企业 </a>
+        <a ui-sref="organization.overview({tid: 4})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 4}"> 控制柜供应商 </a>
+        <a ui-sref="organization.overview({tid: 5})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 5}"> 锅炉维保企业 </a>
+        <a ui-sref="organization.overview({tid: 6})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 6}"> 能源管理企业 </a>
+        <a ui-sref="organization.overview({tid: 7})" class="btn red btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 7}"> 政府监管部门 </a>
+    </div>
+</div>
 
 <style type="text/css">
     table.table-boiler th,

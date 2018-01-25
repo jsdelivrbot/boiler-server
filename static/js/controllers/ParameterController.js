@@ -15,10 +15,10 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
             Id: PARAMETER_CATEGORY_SWITCH,
             Name: '开关量'
         },
-        {
-            Id: PARAMETER_CATEGORY_CALCULATE,
-            Name: '计算量'
-        },
+        // {
+        //     Id: PARAMETER_CATEGORY_CALCULATE,
+        //     Name: '计算量'
+        // },
         {
             Id: PARAMETER_CATEGORY_STATUS,
             Name: '状态量'

@@ -1,4 +1,4 @@
-angular.module('BoilerAdmin').controller('TerminalController', function($rootScope, $scope, $http, $timeout, $uibModal, $log, $document, settings, DTOptionsBuilder, DTColumnDefBuilder, DTDefaultOptions) {
+angular.module('BoilerAdmin').controller('TerminalController', function($rootScope, $scope, $http, $timeout, $uibModal, $log, $document,$state,$stateParams, settings, DTOptionsBuilder, DTColumnDefBuilder, DTDefaultOptions) {
     terminal = this;
     terminal.isDone = false;
     terminal.msgData = {};
@@ -115,14 +115,23 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
      * Origin Messages
      */
 
-    terminal.initMsgData = function () {
-        terminal.msgData = {};
-        terminal.msgData.isEmpty = true;
-        terminal.msgData.lastUpload = null;
-    };
+    // terminal.initMsgData = function () {
+    //     terminal.msgData = {};
+    //     terminal.msgData.isEmpty = true;
+    //     terminal.msgData.lastUpload = null;
+    // };
+
+    terminal.viewMesData = function (data) {
+        $state.go("terminal.message");
+        terminal.msgData.code = data;
+    }
 
     terminal.getOriginMessages = function () {
-        Ladda.create(document.getElementById('terminal_origin_messages')).start();
+
+        // terminal.msgData = {};
+        // terminal.msgData.isEmpty = true;
+        // terminal.msgData.lastUpload = null;
+        // Ladda.create(document.getElementById('terminal_origin_messages')).start();
 
         $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
             .then(function (res) {

@@ -43,25 +43,30 @@
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject bold uppercase"> {{ org.titles[org.tid] }} </span>
                     </div>
+                    <div class="btn-group pull-right" ng-show="currentUser.Role.RoleId < 10">
+                        <button ng-click="org.new()" class="btn sbold green">
+                            <i class="fa fa-plus"></i> 添加
+                        </button>
+                    </div>
                     <div class="tools" style="margin-left: 10px;">
                         <!--a href="" class="collapse"> </a-->
                         <!--a href="#portlet-config" data-toggle="modal" class="config"> </a>
                         <!--a href="" class="reload"> </a-->
-                        <a href="" class="fullscreen" data-original-title="全屏查看"> </a>
+                        <!--<a href="" class="fullscreen" data-original-title="全屏查看"> </a>-->
                         <!--a href="" class="remove"> </a-->
                     </div>
-                    <div ng-show="currentUser.Role.RoleId < 10" class="actions">
-                        <div class="btn-group btn-group-devided" data-toggle="buttons">
-                            <a ui-sref="organization.overview({tid: 0})" class="btn green btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 0}"> 所有企业 </a>
-                            <a ui-sref="organization.overview({tid: 2})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 2}"> 锅炉使用企业 </a>
-                            <a ui-sref="organization.overview({tid: 1})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 1}"> 锅炉制造企业 </a>
-                            <a ui-sref="organization.overview({tid: 3})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 3}"> 锅炉安装企业 </a>
-                            <a ui-sref="organization.overview({tid: 4})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 4}"> 控制柜供应商 </a>
-                            <a ui-sref="organization.overview({tid: 5})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 5}"> 锅炉维保企业 </a>
-                            <a ui-sref="organization.overview({tid: 6})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 6}"> 能源管理企业 </a>
-                            <a ui-sref="organization.overview({tid: 7})" class="btn red btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 7}"> 政府监管部门 </a>
-                        </div>
-                    </div>
+                    <!--<div ng-show="currentUser.Role.RoleId < 10" class="actions">-->
+                        <!--<div class="btn-group btn-group-devided" data-toggle="buttons">-->
+                            <!--<a ui-sref="organization.overview({tid: 0})" class="btn green btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 0}"> 所有企业 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 2})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 2}"> 锅炉使用企业 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 1})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 1}"> 锅炉制造企业 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 3})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 3}"> 锅炉安装企业 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 4})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 4}"> 控制柜供应商 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 5})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 5}"> 锅炉维保企业 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 6})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 6}"> 能源管理企业 </a>-->
+                            <!--<a ui-sref="organization.overview({tid: 7})" class="btn red btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 7}"> 政府监管部门 </a>-->
+                        <!--</div>-->
+                    <!--</div>-->
                 </div>
 
                 <div class="portlet-body">
