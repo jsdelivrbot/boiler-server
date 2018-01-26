@@ -58,76 +58,82 @@
     table#terminal_origin_messages_table td.num{
         font-size: 12px;
     }
+
+
 </style>
 
 <hr style="margin-top: 6px;">
 
-<div class="row" style="overflow-x: scroll;">
-    <table ng-init="terminal.getOriginMessages();" class="table table-striped table-bordered table-hover table-checkable order-column table-boiler" id="terminal_origin_messages_table">
-        <thead>
-        <tr>
-            <th rowspan="2" width="2%">  </th>
-            <th rowspan="2" width="8%"> 采样时间 </th>
-            <th width="3%">版本</th>
-            <th width="26%" colspan="{{ terminal.temperCols.length }}">模拟量通道A</th>
-            <th width="26%" colspan="{{ terminal.analogCols.length }}">模拟量通道B</th>
-            <th width="9%" colspan="{{ terminal.switchCols.length }}">开关量通道</th>
-            <th width="26%" colspan="{{ terminal.calcCols.length }}">计算/状态量通道</th>
-        </tr>
-        </thead>
+<div class="row" ng-init="tableScroll()">
+    <div class="ter-table-container table_responsive" id="cd-table">
+        <table ng-init="terminal.getOriginMessages();" class="table table-striped table-bordered table-hover table-checkable order-column table-boiler cd-table-wrapper" id="terminal_origin_messages_table">
+            <thead>
+            <tr>
+                <th rowspan="2" width="2%">  </th>
+                <th rowspan="2" width="8%"> 采样时间 </th>
+                <th width="3%">版本</th>
+                <th width="26%" colspan="{{ terminal.temperCols.length }}">模拟量通道A</th>
+                <th width="26%" colspan="{{ terminal.analogCols.length }}">模拟量通道B</th>
+                <th width="9%" colspan="{{ terminal.switchCols.length }}">开关量通道</th>
+                <th width="26%" colspan="{{ terminal.calcCols.length }}">计算/状态量通道</th>
+            </tr>
+            </thead>
 
-        <tbody ng-show="terminal.msgData.isEmpty" style="text-align: center">
-        <tr>
-            <td class="empty"
-                colspan="{{ terminal.temperCols.length + terminal.analogCols.length + terminal.switchCols.length + terminal.calcCols.length + 2 }}">
-                没有有效的原始消息数据
-            </td>
-        </tr>
-        </tbody>
-        <tbody ng-show="!terminal.msgData.isEmpty" style="text-align: center">
-        <tr>
-            <td></td>
-            <td> - </td>
-            <td> - </td>
-            <td width="3%" class="num"
-                ng-repeat="col in terminal.temperCols">
-                {{ $index + 1 }}
-            </td>
-            <td width="3%" class="num"
-                ng-repeat="col in terminal.analogCols">
-                {{ $index + 1 }}
-            </td>
-            <td width="3%" class="num"
-                ng-repeat="col in terminal.switchCols">
-                {{ $index + 1 }}
-            </td>
-            <td width="3%" class="num"
-                ng-repeat="col in terminal.calcCols">
-                {{ $index + 1 }}
-            </td>
-        </tr>
-        <tr ng-repeat="d in terminal.msgData.datasource">
-            <td class="num"> {{ d.num }} </td>
-            <td> {{ d.TS | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
-            <td> {{ d['Boiler_data_fmt_ver'] }} </td>
+            <tbody ng-show="terminal.msgData.isEmpty" style="text-align: center">
+            <tr>
+                <td class="empty"
+                    colspan="{{ terminal.temperCols.length + terminal.analogCols.length + terminal.switchCols.length + terminal.calcCols.length + 2 }}">
+                    没有有效的原始消息数据
+                </td>
+            </tr>
+            </tbody>
+            <tbody ng-show="!terminal.msgData.isEmpty" style="text-align: center">
+            <tr>
+                <td></td>
+                <td> - </td>
+                <td> - </td>
+                <td width="3%" class="num"
+                    ng-repeat="col in terminal.temperCols">
+                    {{ $index + 1 }}
+                </td>
+                <td width="3%" class="num"
+                    ng-repeat="col in terminal.analogCols">
+                    {{ $index + 1 }}
+                </td>
+                <td width="3%" class="num"
+                    ng-repeat="col in terminal.switchCols">
+                    {{ $index + 1 }}
+                </td>
+                <td width="3%" class="num"
+                    ng-repeat="col in terminal.calcCols">
+                    {{ $index + 1 }}
+                </td>
+            </tr>
+            <tr ng-repeat="d in terminal.msgData.datasource">
+                <td class="num"> {{ d.num }} </td>
+                <td> {{ d.TS | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
+                <td> {{ d['Boiler_data_fmt_ver'] }} </td>
 
-            <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
-                ng-repeat="col in terminal.temperCols">
-                {{ d[col] }}
-            </td>
-            <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
-                ng-repeat="col in terminal.analogCols">
-                {{ d[col] }}
-            </td>
-            <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
-                ng-repeat="col in terminal.switchCols">
-                {{ d[col] }}
-            </td>
-            <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
-                ng-repeat="col in terminal.calcCols">
-                {{ d[col] }}
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
+                    ng-repeat="col in terminal.temperCols">
+                    {{ d[col] }}
+                </td>
+                <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
+                    ng-repeat="col in terminal.analogCols">
+                    {{ d[col] }}
+                </td>
+                <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
+                    ng-repeat="col in terminal.switchCols">
+                    {{ d[col] }}
+                </td>
+                <td width="3%" ng-class="[{'font-grey': d[col] <= 0}]"
+                    ng-repeat="col in terminal.calcCols">
+                    {{ d[col] }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <em class="cd-scroll-left" ng-click="scLeft()" style="position: fixed;left:270px; top: auto; bottom: 40%;"></em>
+    <em class="cd-scroll-right"  ng-click="scRight()" style="position: fixed;right: 30px; top: auto; bottom: 40%;"></em>
 </div>

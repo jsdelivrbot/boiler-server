@@ -9,9 +9,10 @@
     .label-warning{
         background-color: #f0ad4e;
     }
+
 </style>
 
-<div class="row">
+<div class="row runtime_dash">
     <div class="col-md-3" style="padding: 0; padding-left: 10px; ">
         <div ng-controller="statusModule" id="status_1" style="height: 60px;">
 
@@ -30,7 +31,7 @@
                         </tr>
                         </thead>
                     </table>
-                    <div class="" style="height: 300px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">
+                    <div class="" style="height: 420px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">
                         <table class="table table-hover table-light">
                             <!--<thead>
                             <tr>
@@ -63,8 +64,8 @@
         <div class="" >
             <div ng-show="runtime.boiler.hasSwitchValue"
                  style="margin-left: 10px;margin-right: 10px;">
-                        <span ng-repeat="d in runtime.instants"
-                              ng-show="d.category === 11"
+                        <span ng-repeat="d in runtime.instants| orderBy:'-value'"
+                              ng-show="d.category === 11 "
                               class="label label-sm ng-binding ng-scope"
                               ng-class="{'label-warning': d.value, 'label-default': !d.value}"
                               style="margin: 4px 4px; display: inline-block;">
@@ -89,7 +90,7 @@
                     </tr>
                     </thead>
                 </table>
-                <div class="" style="height: 360px; overflow: auto; margin-top: 0;">
+                <div class="" style="height: 480px; overflow: auto; margin-top: 0;">
                     <table class="table table-hover table-light" >
                         <!--<thead>
                             <tr>

@@ -263,6 +263,56 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     terminal.toggleAnimation = function () {
         terminal.animationsEnabled = !terminal.animationsEnabled;
     };
+
+    //表格横向滚动事件
+    $scope.tableScroll = function(){
+        var cdTableWrapper = angular.element(".cd-table-wrapper");//表格
+        var scLeft = angular.element(".ter-table-container");
+        var scLeftArrow = angular.element(document.getElementsByClassName("cd-scroll-right"));//向右箭头
+        var scLeftArrow2 = angular.element(document.getElementsByClassName("cd-scroll-left"));//向左箭头
+        scLeft.on("scroll", function() {
+            //remove color gradient when table has scrolled to the end
+            var total_table_width = parseInt(cdTableWrapper.css('width').replace('px', '')),
+                table_viewport = parseInt(scLeft.css('width').replace('px', ''));
+
+            if(scLeft.scrollLeft() >= total_table_width - table_viewport) {
+                scLeft.addClass('table-end');
+                scLeftArrow.css("display", "none");
+            } else {
+                scLeft.removeClass('table-end');
+                scLeftArrow.css("display", "block");
+                // $scope.scrollLeftEnd = true;
+            };
+            if(scLeft.scrollLeft()>0){
+                scLeftArrow2.css("display", "block");
+            }else{
+                scLeftArrow2.css("display", "none");
+            }
+        });
+
+        $scope.scRight = function() {
+            // var scLeft = angular.element(".ter-table-container");
+            var column_width = 200,
+                new_left_scroll = parseInt(scLeft.scrollLeft()) + column_width;
+            scLeft.animate({
+                scrollLeft: new_left_scroll
+            }, 200);
+            // console.log(scLeft);
+        };
+        $scope.scLeft = function() {
+            // var scLeft = angular.element(".ter-table-container");
+            var column_width = 200,
+                new_left_scroll = parseInt(scLeft.scrollLeft()) - column_width;
+            scLeft.animate({
+                scrollLeft: new_left_scroll
+            }, 200);
+        };
+
+    };
+
+
+
+
 });
 
 var terminal;

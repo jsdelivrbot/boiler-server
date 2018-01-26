@@ -463,4 +463,6 @@ div.detail-btn label.active.btn-red {
     border-top: 4px solid #1abc9c;
 }
 
-
+.runtime_dash .label-success {
+    background-color: #19bc9b;
+}
