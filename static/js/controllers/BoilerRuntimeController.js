@@ -407,6 +407,9 @@ function boiler_module_height() {
 
 angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootScope) {
     $scope.boiler = [];
+    $scope.valueLabels = {};
+    $scope.statusLabels = {};
+    $scope.switchLabels = {};
     $rootScope.$watch('boiler', function () {
         // console.error("$rootScope.$watch('boiler')", $rootScope.boiler, bModule.boiler);
         if (!$rootScope.boiler || ($scope.boiler === $rootScope.boiler)){
@@ -416,23 +419,23 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         $scope.initStatus();
     });
 
-    // $rootScope.$watch('instants', function () {
-    //     // console.error("$rootScope.$watch('instants')", bModule.instants);
-    //     if (!$rootScope.instants) {
-    //         return;
-    //     }
-    //     $scope.instants = $rootScope.instants;
-    //
-    //     $scope.updateStatusLabels();
-    //     $scope.updateLabels();
-    // });
-    //
-    // $rootScope.$watch('isBoilerBurning', function () {
-    //     // console.error("$rootScope.$watch('isBoilerBurning')", $rootScope.isBoilerBurning);
-    //     $scope.isBoilerBurning = $rootScope.isBoilerBurning;
-    //
-    //     $scope.updateStatusLabels();
-    // });
+    $rootScope.$watch('instants', function () {
+        // console.error("$rootScope.$watch('instants')", bModule.instants);
+        if (!$rootScope.instants) {
+            return;
+        }
+        $scope.instants = $rootScope.instants;
+
+        $scope.updateStatusLabels();
+        $scope.updateLabels();
+    });
+
+    $rootScope.$watch('isBoilerBurning', function () {
+        // console.error("$rootScope.$watch('isBoilerBurning')", $rootScope.isBoilerBurning);
+        $scope.isBoilerBurning = $rootScope.isBoilerBurning;
+
+        $scope.updateStatusLabels();
+    });
 
     var moduleStatus = d3.select("#status_1");
     var svgContainer = moduleStatus.append("svg");
@@ -931,6 +934,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         // $log.error("updateWaterText()", bModule.valueLabels, new Date());
         for (var i in $scope.instants) {
             var ins = $scope.instants[i];
+            console.log(ins);
             if ($scope.valueLabels[ins.id] &&
                 ins.category !== 11) {
                 $scope.valueLabels[ins.id].text(ins.value + ins.unit);

@@ -207,6 +207,10 @@
                     <rect stroke="#4E5058" stroke-width="1.07824479" x="260.327415" y="535.993972" width="142.328313" height="9.70420315"></rect>
                 </g>
 
+                <!--流动动画-->
+                <g id="dash_container">
+                </g>
+
                 <g id="Group-4" transform="translate(26.887417, 171.008109)">
                     <g id="Rectangle-1">
                         <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
@@ -604,11 +608,8 @@
         </g>
     </g>
 
-    <!--流动动画-->
-    <!--
-    <g id="dash_container">
-    </g>
-    -->
+
+
 
     <g id="status_container">
     </g>
