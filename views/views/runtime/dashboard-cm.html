@@ -1,0 +1,351 @@
+<style>
+    .portlet{
+        margin-bottom: 0px;
+    }
+    .table td{
+        white-space: nowrap;
+        font-size: 13px;
+    }
+    .label-warning{
+        background-color: #f0ad4e;
+    }
+    .page-content {
+        background: #eef1f5;
+    }
+</style>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a>主页</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a>主监控台</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a>实时监控</a>
+
+        </li>
+    </ul>
+
+</div>
+
+<div ng-controller="CmRuntimeController" style="margin-top: 15px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light">
+                <div class="row runtime_dash">
+                    <div><h2 style="margin-left:20px">崇明镇西手帕厂锅炉</h2>
+                    </div>
+                    <!--<div class="col-md-3" style="padding: 0; padding-left: 10px; ">-->
+                        <!--<div ng-controller="statusModule" id="status_1" style="height: 60px;">-->
+
+                        <!--</div>-->
+                        <!--<div class="">-->
+                            <!--&lt;!&ndash; BEGIN SAMPLE TABLE PORTLET&ndash;&gt;-->
+                            <!--<div class="portlet light bordered" style="padding: 5px;padding-top: 0; border-color: #DDDDDD;">-->
+
+                                <!--<div class="portlet-body">-->
+                                    <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
+                                        <!--<thead>-->
+                                        <!--<tr>-->
+                                            <!--<th >测量项目</th>-->
+                                            <!--<th>状态值</th>-->
+
+                                        <!--</tr>-->
+                                        <!--</thead>-->
+                                    <!--</table>-->
+                                    <!--<div class="" style="height: 420px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">-->
+                                        <!--<table class="table table-hover table-light">-->
+
+                                            <!--<tbody>-->
+                                            <!--<tr>-->
+                                                <!--<td> 状态量1 </td>-->
+                                                <!--<td>-->
+                                                    <!--<span class="label label-sm label-success">-->
+                                                    <!--111-->
+                                                    <!--</span>-->
+                                                <!--</td>-->
+                                            <!--</tr>-->
+
+                                            <!--</tbody>-->
+                                        <!--</table>-->
+
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--&lt;!&ndash; END SAMPLE TABLE PORTLET&ndash;&gt;-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="col-md-8" style="padding: 0; ">
+                        <div id="boiler_water">
+
+                        </div>
+                        <div class="" >
+                            <div style="margin-left: 10px;margin-right: 10px;">
+                        <span style="margin: 4px 4px; display: inline-block;">
+
+                        </span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding: 0; padding-right: 10px;">
+                        <!-- BEGIN SAMPLE TABLE PORTLET-->
+                        <div class="portlet light bordered" style="padding: 5px;padding-top: 0; ">
+
+                            <div class="portlet-body">
+                                <table class="table table-hover table-light" style="margin-bottom: 0;">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 30%;">测量项目</th>
+                                        <th>测量值</th>
+                                        <th style="width: 18%;">单位</th>
+                                        <th>状态</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="" style="height: 480px; overflow: auto; margin-top: 0;">
+                                    <table class="table table-hover table-light" >
+
+                                        <tbody>
+                                        <tr>
+                                            <td> 测点排气温度</td>
+                                            <td> 90 </td>
+                                            <td> ℃ </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 测点烟道含氧量</td>
+                                            <td> 8.39 </td>
+                                            <td> % </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 测点过剩空气系数倍数</td>
+                                            <td> 0.9516 </td>
+                                            <td> / </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 实测二氧化硫浓度</td>
+                                            <td> 150 </td>
+                                            <td> mg/g3 </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 实测氮氧化物浓度</td>
+                                            <td> 22 </td>
+                                            <td> mg/g3 </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 实测一氧化碳浓度</td>
+                                            <td> 150 </td>
+                                            <td> mg/g3 </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 实测烟尘浓度</td>
+                                            <td> 6.0 </td>
+                                            <td> mg/g3 </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> 林格曼黑度</td>
+                                            <td> 1 </td>
+                                            <td> 级 </td>
+                                            <td>
+                                                <span class="label label-sm label-success" >
+                                                    正常
+                                                </span>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END SAMPLE TABLE PORTLET-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script type="text/javascript" src="/js/lib/d3/d3.v4.js"></script>
+<script>
+    boilerAdmin.controller("CmRuntimeController",function ($scope,$rootScope) {
+        $scope.$on('$viewContentLoaded', function() {
+            // initialize core components
+
+            App.initAjax();
+
+            // set sidebar closed and body solid layout mode
+            $rootScope.settings.layout.pageContentWhite = true;
+            $rootScope.settings.layout.pageBodySolid = true;
+            $rootScope.settings.layout.pageSidebarClosed = false;
+        });
+
+
+    });
+
+    d3.xml("/img/boiler_coal_double.svg").mimeType("image/svg+xml").get(function(error, xml) {
+        if(error) {
+            console.log('加载SVG文件出错！', error);
+        } else {
+            //      document.body.appendChild(xml.documentElement);//添加DOM节点
+            var svgNode = xml.getElementsByTagName("svg")[0];
+            var module = d3.select("#boiler_water");
+            module.node().appendChild(svgNode);
+            var svg = module.select("svg");
+            var gauge = svg.select("#gauge_container");
+            var dash = svg.select("#dash_container");
+
+            var renderWaterDashes = function(id) {
+                var waterSize = 6;
+                var size = 8;
+                var sec = 4096;
+
+                var color = "#fff";
+
+                var dashModule = svg.select(id);
+                if(!dashModule) {
+                    console.warn("There IS NO " + id + "!");
+                    return;
+                }
+
+//                var dashWaterIn = function() {
+//
+//                dashModule
+//                    .append("circle").attr("cx", 400).attr("cy", 220).attr("r", waterSize / 2).style("fill", color)
+//                    .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 635)
+//                    .transition().duration(sec / 1.8).ease(d3.easeLinear).attr("cy", 330)
+//                    .remove();
+//
+//                dashModule
+//                    .append("circle").attr("cx", 400).attr("cy", 262).attr("r", waterSize / 2).style("fill", color)
+//                    .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 615)
+//                    .transition().duration(sec / 2.6).ease(d3.easeLinear).attr("cy", 330)
+//                    .remove();
+//            };
+
+//                var dashWaterOut = function() {
+//                    dashModule.append("circle").attr("cx", 898).attr("cy", 330).attr("r", waterSize / 2).style("fill", color)
+//                        .transition().duration(sec / 1.8).ease(d3.easeLinear).attr("cy", 222)
+//                        .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 1135)
+//                        .remove();
+//
+//                    dashModule.append("circle").attr("cx", 918).attr("cy", 330).attr("r", waterSize / 2).style("fill", color)
+//                        .transition().duration(sec / 2.6).ease(d3.easeLinear).attr("cy", 260)
+//                        .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 1135)
+//                        .remove();
+//                };
+
+                var dashSmoke = function() {
+
+                    dashModule
+                        .append("circle").attr("cx", 955).attr("cy", 540).attr("r", size / 2).style("fill", "#999")
+                        .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 1100)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 350)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 1240)
+                        .remove();
+                };
+
+                var dashFuel = function() {
+                    dashModule
+                        .append("circle").attr("cx", 195).attr("cy", 548).attr("r", size / 2).style("fill", "#eee")
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 420)
+                        .remove();
+                };
+
+                dashModule
+                    .transition().on("start", function repeat() {
+                    dashModule
+                        .transition().delay(360).on("start", function() {
+                        dashWaterIn();
+                        dashWaterOut();
+                        dashSmoke();
+                        dashFuel();
+                        repeat();
+                    });
+                });
+            };
+
+            var renderWaterFire = function(id) {
+
+                var fireG = svg.select(id);
+                if(!fireG) {
+                    console.warn("There IS NO " + id + "!");
+                    return;
+                }
+
+                var svgName = "static/img/module/boiler_water_fire.svg";
+
+                var baseX = 660;
+                var baseY = 519;
+
+                var fire = fireG.append("svg:image")
+                    .attr("xlink:href", svgName)
+                    .attr("width", 100)
+                    .attr("height", 50)
+                    .attr("x", baseX)
+                    .attr("y", baseY);
+
+                var sec = 600;
+
+                var burn = function() {
+                    fire.transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 160).attr("height", 80).attr("y", baseY - 15)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 100).attr("height", 50).attr("y", baseY);
+                };
+
+                d3.interval(function() {
+                    burn();
+                }, sec);
+            };
+
+
+
+            renderWaterFire("#fire_container");
+            renderWaterDashes("#dash_container");
+            renderWaterValues();
+            // 处理SVG文件
+        }
+    });
+</script>
+
