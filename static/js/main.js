@@ -336,6 +336,12 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/map",
             templateUrl: "views/monitor/map.html" + clientkey,
             data: {pageTitle: '设备地图'}
+        })
+        .state("dashboard-cm", {
+            url: "/dashboard",
+            templateUrl: "views/runtime/dashboard-cm.html" + clientkey
+
+
         });
     /*============= MONITOR END     =============*/
 
