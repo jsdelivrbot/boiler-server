@@ -52,8 +52,8 @@ deploy:
 #    on:
 #      branch: preview
 
-after_deploy:
-  - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
-
-after_script:
-  - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && nohup ./boiler-server &"
+#after_deploy:
+#  - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && ./build.sh"
+#
+#after_script:
+#  - ssh -p $DPORT root@$DHOST "cd $AZUREPATH/boiler-server/ && nohup ./boiler-server &"
