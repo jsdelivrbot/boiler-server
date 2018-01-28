@@ -871,8 +871,8 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                         name: 'BoilerAdmin',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            '../assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            '../assets/pages/css/profile.css',
+                            // '../assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            // '../assets/pages/css/profile.css',
 
                             '../assets/global/plugins/jquery.sparkline.min.js' + clientkey,
                             '../assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js' + clientkey,
