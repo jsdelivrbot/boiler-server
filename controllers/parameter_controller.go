@@ -819,6 +819,7 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 	go ParamCtrl.RefreshParameters()
 }
 
+
 func runtimeParameter(pid int) *models.RuntimeParameter {
 	param := models.RuntimeParameter{}
 
