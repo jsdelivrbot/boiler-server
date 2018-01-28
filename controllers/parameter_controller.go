@@ -967,7 +967,7 @@ func generateDefaultChannelConfig() error {
 }
 
 func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
-	generateDefaultChannelConfig()
+	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
 	interval := time.Second * 15

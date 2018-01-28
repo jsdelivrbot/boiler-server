@@ -33,8 +33,8 @@ var UsrCtl *UserController
 //var CurrentUser *models.User
 
 func init()  {
-	var role models.UserRole
-	DataCtl.GenerateDefaultData(reflect.TypeOf(role), userDefautlsPath, "role", nil)
+	// var role models.UserRole
+	// DataCtl.GenerateDefaultData(reflect.TypeOf(role), userDefautlsPath, "role", nil)
 }
 
 func (ctl *UserController) Get() {
