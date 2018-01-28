@@ -248,6 +248,7 @@ func (ctl *TerminalController) TerminalDelete() {
 	if  err := dba.BoilerOrm.QueryTable("terminal").Filter("TerminalCode__contains", terminal.TerminalCode).OrderBy("-TerminalCode").One(&tm); err != nil {
 		goazure.Info("Not Get Exist Dead Code!")
 	} else {
+		goazure.Info("Get Exist Dead Code:", tm)
 		tCode = tm.TerminalCode + 1
 	}
 
