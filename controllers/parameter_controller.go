@@ -819,6 +819,7 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 	go ParamCtrl.RefreshParameters()
 }
 
+
 func runtimeParameter(pid int) *models.RuntimeParameter {
 	param := models.RuntimeParameter{}
 
@@ -966,7 +967,7 @@ func generateDefaultChannelConfig() error {
 }
 
 func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
-	// generateDefaultChannelConfig()
+	generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
 	interval := time.Second * 15
