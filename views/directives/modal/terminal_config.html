@@ -107,19 +107,19 @@
                 </div>
             </div>
 
-            <div class="form-group form-selector col-md-6">
-                <div class="input-group">
-                    <span style="margin-right: 12px;">终端启闭</span>
-                    <input bs-switch
-                           ng-model="$modal.upload"
-                           ng-change="$modal.sendConfMessage();"
-                           type="checkbox"
-                           switch-on-text="开启"
-                           switch-off-text="关闭"
-                           switch-on-color="success"
-                           switch-off-color="{{ off }}">
-                </div>
-            </div>
+            <!--<div class="form-group form-selector col-md-6">-->
+                <!--<div class="input-group">-->
+                    <!--<span style="margin-right: 12px;">终端启闭</span>-->
+                    <!--<input bs-switch-->
+                           <!--ng-model="$modal.upload"-->
+                           <!--ng-change="$modal.sendConfMessage();"-->
+                           <!--type="checkbox"-->
+                           <!--switch-on-text="开启"-->
+                           <!--switch-off-text="关闭"-->
+                           <!--switch-on-color="success"-->
+                           <!--switch-off-color="{{ off }}">-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
         <hr>
         <div class="row">
@@ -142,7 +142,7 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.reboot()" style="float: left">重新启动</button>
+    <!--<button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.reboot()" style="float: left">重新启动</button>-->
     <button class="btn red" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.delete()">删除</button>
     <button type="button" class="btn ladda-button"
             ng-show="$modal.editing"

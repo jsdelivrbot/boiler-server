@@ -67,7 +67,7 @@
                         <span ng-repeat="d in runtime.instants| orderBy:'-value'"
                               ng-show="d.category === 11 && d.value"
                               class="label label-sm ng-binding ng-scope"
-                              ng-class="{'label-warning': d.value, 'label-default': !d.value}"
+                              ng-class="{'label-info': d.value && (d.switchFlag <= 1 || !d.switchFlag), 'label-warning': d.value && d.switchFlag >= 2, 'label-default': !d.value}"
                               style="margin: 4px 4px; display: inline-block;">
                         {{ d.name }}
                         </span>
