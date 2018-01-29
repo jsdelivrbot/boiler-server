@@ -508,7 +508,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
             align: "left", //"left", "justify"
             baseWidth: 82,
             height: 40,
-            gap: 10,
+            gap: 6,
             baseX: 0,
             baseY: 0
         };;
@@ -573,7 +573,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                 var d = rowData[col];
 
 
-                var barColor = "#4c87b9";
+                var barColor = "#2a352e";
                 var text = (d.type === "switch" ? "" : (d.type === "status" ? d.text : "未测定"));
                 var textColor = d.type === "status" ? "#fff" : "#aaa";
 
@@ -609,16 +609,16 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
                 if(d.type === "status") {
                     //StatusColor Drawing
-                    var bgColor = "#32c5d2";
+                    var bgColor = "#19bc9b";
                     if(typeof d.value === "boolean") {
-                        bgColor = d.value ? "#32c5d2" : "#e7505a";
+                        bgColor = d.value ? "#19bc9b" : "#e7505a";
                     } else if(typeof d.value === "number") {
                         switch(d.value) {
                             case 0:
-                                bgColor = "#32c5d2";
+                                bgColor = "#19bc9b";
                                 break;
                             case 1:
-                                bgColor = "#f3c200";
+                                bgColor = "#f39200";
                                 break;
                             case 2:
                                 bgColor = "#e7505a";
