@@ -36,52 +36,52 @@
         </div>
 
         <!-- BEGIN: Comments -->
-        <div class="row">
-            <div class="mt-comments col-md-12">
-                <div class="mt-comment" ng-repeat="feedback in $modal.feedbacks">
-                    <div class="mt-comment-img">
-                        <img width="40px;" height="40px;" ng-src="{{ settings.layoutPath }}/img/{{ feedback.CreatedBy.Picture }}" /> </div>
-                    <div class="mt-comment-body">
-                        <div class="mt-comment-info">
-                            <span class="mt-comment-author">{{ feedback.CreatedBy.Name }}</span>
-                            <span class="mt-comment-date">{{ feedback.CreatedDate | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</span>
-                        </div>
-                        <div class="mt-comment-text"> {{ feedback.Content }} </div>
-                        <!--
-                        <div class="mt-comment-details">
-                            <span class="mt-comment-status mt-comment-status-pending">Pending</span>
-                            <ul class="mt-comment-actions">
-                                <li>
-                                    <a href="#">Quick Edit</a>
-                                </li>
-                                <li>
-                                    <a href="#">View</a>
-                                </li>
-                                <li>
-                                    <a href="#">Delete</a>
-                                </li>
-                            </ul>
-                        </div>
-                        -->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!--<div class="row">-->
+            <!--<div class="mt-comments col-md-12">-->
+                <!--<div class="mt-comment" ng-repeat="feedback in $modal.feedbacks">-->
+                    <!--<div class="mt-comment-img">-->
+                        <!--<img width="40px;" height="40px;" ng-src="{{ settings.layoutPath }}/img/{{ feedback.CreatedBy.Picture }}" /> </div>-->
+                    <!--<div class="mt-comment-body">-->
+                        <!--<div class="mt-comment-info">-->
+                            <!--<span class="mt-comment-author">{{ feedback.CreatedBy.Name }}</span>-->
+                            <!--<span class="mt-comment-date">{{ feedback.CreatedDate | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</span>-->
+                        <!--</div>-->
+                        <!--<div class="mt-comment-text"> {{ feedback.Content }} </div>-->
+                        <!--&lt;!&ndash;-->
+                        <!--<div class="mt-comment-details">-->
+                            <!--<span class="mt-comment-status mt-comment-status-pending">Pending</span>-->
+                            <!--<ul class="mt-comment-actions">-->
+                                <!--<li>-->
+                                    <!--<a href="#">Quick Edit</a>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<a href="#">View</a>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<a href="#">Delete</a>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                        <!--&ndash;&gt;-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
         <!-- END: Comments -->
-        <div class="row">
-            <div class="form-group col-md-12">
-                <label class="control-label" style="font-size: 14px;"><i ng-class="[{ 'icon-note' : !$modal.dialogue }, { 'icon-action-redo' : $modal.dialogue }]"></i> {{ $modal.feedbackTitle }}：</label>
-                <textarea ng-model="$modal.content"
-                          class="form-control ng-pristine ng-valid ng-touched has-success"
-                          style="min-height: 120px;" placeholder="在这里输入内容">
-        </textarea>
-            </div>
-        </div>
+        <!--<div class="row">-->
+            <!--<div class="form-group col-md-12">-->
+                <!--<label class="control-label" style="font-size: 14px;"><i ng-class="[{ 'icon-note' : !$modal.dialogue }, { 'icon-action-redo' : $modal.dialogue }]"></i> {{ $modal.feedbackTitle }}：</label>-->
+                <!--<textarea ng-model="$modal.content"-->
+                          <!--class="form-control ng-pristine ng-valid ng-touched has-success"-->
+                          <!--style="min-height: 120px;" placeholder="在这里输入内容">-->
+        <!--</textarea>-->
+            <!--</div>-->
+        <!--</div>-->
         <!-- END: Comments -->
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary ladda-button" data-style="zoom-out" type="button" id="boiler_ok"
-            ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
+    <!--<button class="btn btn-primary ladda-button" data-style="zoom-out" type="button" id="boiler_ok"-->
+            <!--ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>-->
     <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
 </div>

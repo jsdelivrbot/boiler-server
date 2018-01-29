@@ -117,7 +117,7 @@
                             <th>告警阀值</th>
                             <th>告警延迟(分)</th>
                             <th>优先级</th>
-                            <th>描述</th>
+                            <th>操作</th>
                         </tr>
                         </thead>
 
@@ -155,8 +155,13 @@
                                     {{ data.priortyText }}
                                 </span>
                             </td>
+                            <!--<td>-->
+                                <!--{{ data.Description}}-->
+                            <!--</td>-->
                             <td>
-                                {{ data.Description}}
+                                <a ng-click="" class="btn view btn-outline btn-circle blue view_btn">
+                                    <i class="fa fa-eye"> 查看 </i>
+                                </a>
                             </td>
                         </tr>
 

@@ -58,8 +58,8 @@
                 <th>监测参数</th>
                 <th>优先级</th>
                 <th>告警时间</th>
-                <!--<th>告警信息</th>-->
-                <th>状态</th>
+                <th>告警信息</th>
+                <!--<th>状态</th>-->
                 <th>操作</th>
             </tr>
             </thead>
@@ -90,10 +90,10 @@
                     <!--<span>Scheduled {{data.start | amDifference : data.end : 'hours minutes' }} days from now</span>-->
                     <!--<span>{{d.Duration | amDurationFormat : 'minutes' }}</span>-->
                 </td>
-                <!--<td> {{ data.Description }} </td>-->
-                <td>
-                    <span ng-class="['label', 'label-lg', {'label-default': data.State == 0 || data.State == 10}, {'label-warning': data.State == 1}, {'label-info': data.State == 2}, { 'label-success': data.State == 3}, {'label-danger': data.State == 4}, {'label-primary': data.State == 5} ]" >{{ alarm.statusTexts[data.State] }}</span>
-                </td>
+                <td> {{ data.Description }} </td>
+                <!--<td>-->
+                    <!--<span ng-class="['label', 'label-lg', {'label-default': data.State == 0 || data.State == 10}, {'label-warning': data.State == 1}, {'label-info': data.State == 2}, { 'label-success': data.State == 3}, {'label-danger': data.State == 4}, {'label-primary': data.State == 5} ]" >{{ alarm.statusTexts[data.State] }}</span>-->
+                <!--</td>-->
                 <td>
                     <a ng-click="alarm.confirm(data.Uid)" class="btn view btn-outline btn-circle blue view_btn">
                         <i class="fa fa-eye"> 查看 </i>
