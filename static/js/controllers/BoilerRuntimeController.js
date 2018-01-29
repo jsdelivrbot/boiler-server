@@ -508,7 +508,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
             align: "left", //"left", "justify"
             baseWidth: 82,
             height: 40,
-            gap: 10,
+            gap: 8,
             baseX: 0,
             baseY: 0
         };;
