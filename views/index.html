@@ -47,6 +47,7 @@
 
         <link rel="stylesheet" href="/js/scripts/ladda/ladda-themeless.min.css">
         <script src="/js/scripts/ladda/core.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="assets/base/css/home2.css"/>
 
         <!-- END THEME STYLES -->
         <link rel="shortcut icon" href="favicon.ico" />
@@ -79,9 +80,9 @@
                     <div class="c-navbar-wrapper clearfix">
                         <div class="c-brand c-pull-left">
                             <a href="index.html" class="c-logo">
-                                <img src="images/logo/normal-lu.png" alt="厚德能源" class="c-desktop-logo" style="height: 60px; margin-top: -16px;">
-                                <img src="images/logo/normal-lu.png" alt="厚德能源" class="c-desktop-logo-inverse" style="height: 60px; margin-top: -16px;">
-                                <img src="images/logo/normal-lu.png" alt="厚德能源" class="c-mobile-logo" style="height: 60px; margin-top: -16px;"> </a>
+                                <img src="images/logo/normal-lu.png" alt="延华智能" class="c-desktop-logo" style="height: 38px; margin-top: -14px;">
+                                <img src="images/logo/normal-lu.png" alt="延华智能" class="c-desktop-logo-inverse" style="height: 38px; margin-top: -14px;">
+                                <img src="images/logo/normal-lu.png" alt="延华智能" class="c-mobile-logo" style="height: 38px; margin-top: -14px;"> </a>
                             <button class="c-hor-nav-toggler" type="button" data-target=".c-mega-menu">
                                 <span class="c-line"></span>
                                 <span class="c-line"></span>
@@ -111,20 +112,28 @@
                         <!-- Dropdown menu toggle on mobile: c-toggler class can be applied to the link arrow or link itself depending on toggle mode -->
                         <nav class="c-mega-menu c-pull-right c-mega-menu-dark c-mega-menu-dark-mobile c-fonts-uppercase c-fonts-bold ng-cloak" ng-cloak>
                             <ul class="nav navbar-nav c-theme-nav">
-                                <li>
-                                    <a href="javascript:;" class="c-link dropdown-toggle">主页
-                                        <span class="c-arrow c-toggler"></span>
-                                    </a>
-                                </li>
+                                <!--<li>-->
+                                    <!--<a href="javascript:;" class="c-link dropdown-toggle">主页-->
+                                        <!--<span class="c-arrow c-toggler"></span>-->
+                                    <!--</a>-->
+                                <!--</li>-->
                                 <li ng-show="home.currentUser">
                                     <a href="/admin" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
                                         <i class="fa fa-desktop"></i> 进入管理平台 </a>
                                 </li>
                                 <li ng-show="!home.currentUser">
                                     <a href data-toggle="modal" data-target="#login-form"
-                                       class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold ng-cloak"
+                                       class="c-btn login_btn"
                                        ng-cloak>
-                                        <i class="icon-user"></i> 登录</a>
+                                        登录</a>
+                                    <div class="divider_line"></div>
+                                </li>
+
+                                <li ng-show="!home.currentUser">
+                                    <a href data-toggle="modal" data-target="#signup-form" data-dismiss="modal"
+                                       class="c-btn login_btn"
+                                       ng-cloak>
+                                        注册</a>
                                 </li>
                                 <li ng-show="home.currentUser">
                                     <a href data-toggle="modal" data-target="#user-form"
@@ -440,7 +449,7 @@
         <div class="c-layout-page">
             <!-- BEGIN: PAGE CONTENT -->
             <!-- BEGIN: LAYOUT/SLIDERS/REVO-SLIDER-4 -->
-            <section class="c-layout-revo-slider c-layout-revo-slider-4">
+            <section class="c-layout-revo-slider c-layout-revo-slider-4" style="height: 480px;overflow: hidden;">
                 <div class="tp-banner-container c-theme">
                     <div class="tp-banner rev_slider" data-version="5.0">
                         <ul>
@@ -523,47 +532,47 @@
             </div>
             <!-- END: CONTENT/FEATURES/FEATURES-1 -->
             <!-- BEGIN: CONTENT/TESTIMONIALS/TESTIMONIALS-3 -->
-            <div class="c-content-box c-size-lg c-bg-parallax" style="background-image: url(assets/base/img/content/backgrounds/bg-3.jpg)">
-                <div class="container">
-                    <!-- Begin: testimonials 1 component -->
-                    <div class="c-content-testimonials-1" data-slider="owl" data-single-item="true" data-auto-play="5000">
-                        <!-- Begin: Title 1 component -->
-                        <div class="c-content-title-1">
-                            <h3 class="c-center c-font-white c-font-uppercase c-font-bold">我们的客户</h3>
-                            <div class="c-line-center c-theme-bg"></div>
-                        </div>
-                        <!-- End-->
-                        <!-- Begin: Owlcarousel -->
-                        <div class="owl-carousel owl-theme c-theme">
-                            <div class="item">
-                                <div class="c-testimonial">
-                                    <p> “通过平台和设备，软硬件同步的改造升级，我们可以为杭州地区的锅炉制造企业和用能企业提供更加完善和精准的监测服务。” </p>
-                                    <h3>
-                                        <span class="c-name c-theme"></span>杭州特种设备检测研究院</h3>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="c-testimonial">
-                                    <p> “周到持续的管理，帮助我们节省大量燃料开销，也规避了纯手工操作的风险。” </p>
-                                    <h3>
-                                        <span class="c-name c-theme"></span>知味观 </h3>
-                                </div>
-                            </div>
-                            <!--
-                            <div class="item">
-                                <div class="c-testimonial">
-                                    <p> “After co-founding the company in 2006 the group launched JANGO, the first digital marketplace which focused on rich multimedia web content” </p>
-                                    <h3>
-                                        <span class="c-name c-theme">Arya Stark</span>, CFO, Valar Dohaeris </h3>
-                                </div>
-                            </div>
-                            -->
-                        </div>
-                        <!-- End-->
-                    </div>
-                    <!-- End-->
-                </div>
-            </div>
+            <!--<div class="c-content-box c-size-lg c-bg-parallax" style="background-image: url(assets/base/img/content/backgrounds/bg-3.jpg)">-->
+                <!--<div class="container">-->
+                    <!--&lt;!&ndash; Begin: testimonials 1 component &ndash;&gt;-->
+                    <!--<div class="c-content-testimonials-1" data-slider="owl" data-single-item="true" data-auto-play="5000">-->
+                        <!--&lt;!&ndash; Begin: Title 1 component &ndash;&gt;-->
+                        <!--<div class="c-content-title-1">-->
+                            <!--<h3 class="c-center c-font-white c-font-uppercase c-font-bold">我们的客户</h3>-->
+                            <!--<div class="c-line-center c-theme-bg"></div>-->
+                        <!--</div>-->
+                        <!--&lt;!&ndash; End&ndash;&gt;-->
+                        <!--&lt;!&ndash; Begin: Owlcarousel &ndash;&gt;-->
+                        <!--<div class="owl-carousel owl-theme c-theme">-->
+                            <!--<div class="item">-->
+                                <!--<div class="c-testimonial">-->
+                                    <!--<p> “通过平台和设备，软硬件同步的改造升级，我们可以为杭州地区的锅炉制造企业和用能企业提供更加完善和精准的监测服务。” </p>-->
+                                    <!--<h3>-->
+                                        <!--<span class="c-name c-theme"></span>杭州特种设备检测研究院</h3>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="item">-->
+                                <!--<div class="c-testimonial">-->
+                                    <!--<p> “周到持续的管理，帮助我们节省大量燃料开销，也规避了纯手工操作的风险。” </p>-->
+                                    <!--<h3>-->
+                                        <!--<span class="c-name c-theme"></span>知味观 </h3>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--&lt;!&ndash;-->
+                            <!--<div class="item">-->
+                                <!--<div class="c-testimonial">-->
+                                    <!--<p> “After co-founding the company in 2006 the group launched JANGO, the first digital marketplace which focused on rich multimedia web content” </p>-->
+                                    <!--<h3>-->
+                                        <!--<span class="c-name c-theme">Arya Stark</span>, CFO, Valar Dohaeris </h3>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--&ndash;&gt;-->
+                        <!--</div>-->
+                        <!--&lt;!&ndash; End&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; End&ndash;&gt;-->
+                <!--</div>-->
+            <!--</div>-->
             <!-- END: CONTENT/TESTIMONIALS/TESTIMONIALS-3 -->
 
             <!-- END: PAGE CONTENT -->
@@ -572,87 +581,110 @@
         <!-- BEGIN: LAYOUT/FOOTERS/FOOTER-5 -->
         <a name="footer"></a>
         <footer class="c-layout-footer c-layout-footer-3 c-bg-dark">
-            <div class="c-prefooter">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="c-container c-first">
-                                <div class="c-content-title-1">
-                                    <h3 class="c-font-uppercase c-font-bold c-font-white">厚德
-                                        <span class="c-theme-font">能源</span>
-                                    </h3>
-                                    <div class="c-line-left hide"></div>
-                                    <p class="c-text"> 厚德能源是一家致力于智能能源管控和节能服务的新型能源公司，采用IoT和云技术，针对目前环境下的工业和用能情况，不断探究更加便捷有效的能源方案。</p>
-                                </div>
-                                <ul class="c-links">
-                                    <li>
-                                        <a href="#">主页</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">关于我们</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">节能平台</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">联系方式</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="c-container c-last">
-                                <div class="c-content-title-1">
-                                    <h3 class="c-font-uppercase c-font-bold c-font-white">联系我们</h3>
-                                    <div class="c-line-left hide"></div>
-                                </div>
-                                <ul class="c-socials">
-                                    <li>
-                                        <a href="#">
-                                            <i class="icon-social-facebook"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="icon-social-twitter"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="icon-social-youtube"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="icon-social-tumblr"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <ul class="c-address">
-                                    <li>
-                                        <i class="icon-pointer c-theme-font"></i> 浙江省 宁波市 </li>
-                                    <li>
-                                        <i class="icon-call-end c-theme-font"></i> +86-152 5829 1275</li>
-                                    <li>
-                                        <i class="icon-envelope c-theme-font"></i> contact@holderboiler.com</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div class="c-postfooter">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-6 col-sm-12 c-col">
-                            <p class="c-copyright c-font-grey">2017 &copy; 厚德能源（Holder Boiler）
-                                <span class="c-font-grey-3">All Rights Reserved.</span>
+                        <div class="col-sm-12 c-col">
+                            <p class="c-copyright c-font-grey">
+                                <span class="c-font-grey-3">延华智能-工业锅炉能效在线监测与分析平台Copyright  &copy; 2018 FindER. All Rights Reserved.建议分辨率：1920*1080 支持浏览器：Chrome</span>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="weixin_ri">
+                <i class="fa fa-weixin"></i>
+                <div class="weixin_QR">
+                    <p>扫一扫，享受微信端服务</p>
+                    <img src="images/weixin.jpeg"/>
+                </div>
+            </div>
+
         </footer>
+        <!--<footer class="c-layout-footer c-layout-footer-3 c-bg-dark">-->
+            <!--<div class="c-prefooter">-->
+                <!--<div class="container">-->
+                    <!--<div class="row">-->
+                        <!--<div class="col-md-6">-->
+                            <!--<div class="c-container c-first">-->
+                                <!--<div class="c-content-title-1">-->
+                                    <!--<h3 class="c-font-uppercase c-font-bold c-font-white">厚德-->
+                                        <!--<span class="c-theme-font">能源</span>-->
+                                    <!--</h3>-->
+                                    <!--<div class="c-line-left hide"></div>-->
+                                    <!--<p class="c-text"> 厚德能源是一家致力于智能能源管控和节能服务的新型能源公司，采用IoT和云技术，针对目前环境下的工业和用能情况，不断探究更加便捷有效的能源方案。</p>-->
+                                <!--</div>-->
+                                <!--<ul class="c-links">-->
+                                    <!--<li>-->
+                                        <!--<a href="#">主页</a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a href="#">关于我们</a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a href="#">节能平台</a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a href="#">联系方式</a>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-6">-->
+                            <!--<div class="c-container c-last">-->
+                                <!--<div class="c-content-title-1">-->
+                                    <!--<h3 class="c-font-uppercase c-font-bold c-font-white">联系我们</h3>-->
+                                    <!--<div class="c-line-left hide"></div>-->
+                                <!--</div>-->
+                                <!--<ul class="c-socials">-->
+                                    <!--<li>-->
+                                        <!--<a href="#">-->
+                                            <!--<i class="icon-social-facebook"></i>-->
+                                        <!--</a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a href="#">-->
+                                            <!--<i class="icon-social-twitter"></i>-->
+                                        <!--</a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a href="#">-->
+                                            <!--<i class="icon-social-youtube"></i>-->
+                                        <!--</a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a href="#">-->
+                                            <!--<i class="icon-social-tumblr"></i>-->
+                                        <!--</a>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                                <!--<ul class="c-address">-->
+                                    <!--<li>-->
+                                        <!--<i class="icon-pointer c-theme-font"></i> 浙江省 宁波市 </li>-->
+                                    <!--<li>-->
+                                        <!--<i class="icon-call-end c-theme-font"></i> +86-152 5829 1275</li>-->
+                                    <!--<li>-->
+                                        <!--<i class="icon-envelope c-theme-font"></i> contact@holderboiler.com</li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="c-postfooter">-->
+                <!--<div class="container">-->
+                    <!--<div class="row">-->
+                        <!--<div class="col-md-6 col-sm-12 c-col">-->
+                            <!--<p class="c-copyright c-font-grey">2017 &copy; 厚德能源（Holder Boiler）-->
+                                <!--<span class="c-font-grey-3">All Rights Reserved.</span>-->
+                            <!--</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</footer>-->
         <!-- END: LAYOUT/FOOTERS/FOOTER-5 -->
         <!-- BEGIN: LAYOUT/FOOTERS/GO2TOP -->
         <div class="c-layout-go2top">

@@ -32,55 +32,55 @@
 
 </div>
 
-<div ng-controller="CmRuntimeController" style="margin-top: 15px">
+<div style="margin-top: 15px">
     <div class="row">
         <div class="col-md-12">
             <div class="portlet light">
                 <div class="row runtime_dash">
-                    <div><h2 style="margin-left:20px">崇明镇西手帕厂锅炉</h2>
+                    <div><h2 style="margin-left:20px;margin-top: 10px; margin-bottom: 10px;">崇明镇西手帕厂锅炉</h2>
                     </div>
                     <!--<div class="col-md-3" style="padding: 0; padding-left: 10px; ">-->
-                        <!--<div ng-controller="statusModule" id="status_1" style="height: 60px;">-->
+                    <!--<div ng-controller="statusModule" id="status_1" style="height: 60px;">-->
 
-                        <!--</div>-->
-                        <!--<div class="">-->
-                            <!--&lt;!&ndash; BEGIN SAMPLE TABLE PORTLET&ndash;&gt;-->
-                            <!--<div class="portlet light bordered" style="padding: 5px;padding-top: 0; border-color: #DDDDDD;">-->
+                    <!--</div>-->
+                    <!--<div class="">-->
+                    <!--&lt;!&ndash; BEGIN SAMPLE TABLE PORTLET&ndash;&gt;-->
+                    <!--<div class="portlet light bordered" style="padding: 5px;padding-top: 0; border-color: #DDDDDD;">-->
 
-                                <!--<div class="portlet-body">-->
-                                    <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
-                                        <!--<thead>-->
-                                        <!--<tr>-->
-                                            <!--<th >测量项目</th>-->
-                                            <!--<th>状态值</th>-->
+                    <!--<div class="portlet-body">-->
+                    <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                    <!--<th >测量项目</th>-->
+                    <!--<th>状态值</th>-->
 
-                                        <!--</tr>-->
-                                        <!--</thead>-->
-                                    <!--</table>-->
-                                    <!--<div class="" style="height: 420px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">-->
-                                        <!--<table class="table table-hover table-light">-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--</table>-->
+                    <!--<div class="" style="height: 420px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">-->
+                    <!--<table class="table table-hover table-light">-->
 
-                                            <!--<tbody>-->
-                                            <!--<tr>-->
-                                                <!--<td> 状态量1 </td>-->
-                                                <!--<td>-->
-                                                    <!--<span class="label label-sm label-success">-->
-                                                    <!--111-->
-                                                    <!--</span>-->
-                                                <!--</td>-->
-                                            <!--</tr>-->
+                    <!--<tbody>-->
+                    <!--<tr>-->
+                    <!--<td> 状态量1 </td>-->
+                    <!--<td>-->
+                    <!--<span class="label label-sm label-success">-->
+                    <!--111-->
+                    <!--</span>-->
+                    <!--</td>-->
+                    <!--</tr>-->
 
-                                            <!--</tbody>-->
-                                        <!--</table>-->
+                    <!--</tbody>-->
+                    <!--</table>-->
 
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                            <!--&lt;!&ndash; END SAMPLE TABLE PORTLET&ndash;&gt;-->
-                        <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; END SAMPLE TABLE PORTLET&ndash;&gt;-->
+                    <!--</div>-->
                     <!--</div>-->
                     <div class="col-md-8" style="padding: 0; ">
-                        <div id="boiler_water">
+                        <div id="boiler_coal_double">
 
                         </div>
                         <div class="" >
@@ -100,7 +100,7 @@
                                 <table class="table table-hover table-light" style="margin-bottom: 0;">
                                     <thead>
                                     <tr>
-                                        <th style="width: 30%;">测量项目</th>
+                                        <th style="width: 40%;">测量项目</th>
                                         <th>测量值</th>
                                         <th style="width: 18%;">单位</th>
                                         <th>状态</th>
@@ -210,20 +210,20 @@
 
 <script type="text/javascript" src="/js/lib/d3/d3.v4.js"></script>
 <script>
-    boilerAdmin.controller("CmRuntimeController",function ($scope,$rootScope) {
-        $scope.$on('$viewContentLoaded', function() {
-            // initialize core components
-
-            App.initAjax();
-
-            // set sidebar closed and body solid layout mode
-            $rootScope.settings.layout.pageContentWhite = true;
-            $rootScope.settings.layout.pageBodySolid = true;
-            $rootScope.settings.layout.pageSidebarClosed = false;
-        });
-
-
-    });
+    //    boilerAdmin.controller("CmRuntimeController",function ($scope,$rootScope) {
+    //        $scope.$on('$viewContentLoaded', function() {
+    //            // initialize core components
+    //
+    //            App.initAjax();
+    //
+    //            // set sidebar closed and body solid layout mode
+    //            $rootScope.settings.layout.pageContentWhite = true;
+    //            $rootScope.settings.layout.pageBodySolid = true;
+    //            $rootScope.settings.layout.pageSidebarClosed = false;
+    //        });
+    //
+    //
+    //    });
 
     d3.xml("/img/boiler_coal_double.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if(error) {
@@ -231,119 +231,82 @@
         } else {
             //      document.body.appendChild(xml.documentElement);//添加DOM节点
             var svgNode = xml.getElementsByTagName("svg")[0];
-            var module = d3.select("#boiler_water");
+            var module = d3.select("#boiler_coal_double");
             module.node().appendChild(svgNode);
             var svg = module.select("svg");
             var gauge = svg.select("#gauge_container");
             var dash = svg.select("#dash_container");
 
-            var renderWaterDashes = function(id) {
-                var waterSize = 6;
+
+            var renderCoalDashes = function(id) {
                 var size = 8;
                 var sec = 4096;
-
                 var color = "#fff";
-
                 var dashModule = svg.select(id);
-                if(!dashModule) {
-                    console.warn("There IS NO " + id + "!");
-                    return;
-                }
 
-//                var dashWaterIn = function() {
-//
-//                dashModule
-//                    .append("circle").attr("cx", 400).attr("cy", 220).attr("r", waterSize / 2).style("fill", color)
-//                    .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 635)
-//                    .transition().duration(sec / 1.8).ease(d3.easeLinear).attr("cy", 330)
-//                    .remove();
-//
-//                dashModule
-//                    .append("circle").attr("cx", 400).attr("cy", 262).attr("r", waterSize / 2).style("fill", color)
-//                    .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 615)
-//                    .transition().duration(sec / 2.6).ease(d3.easeLinear).attr("cy", 330)
-//                    .remove();
-//            };
 
-//                var dashWaterOut = function() {
-//                    dashModule.append("circle").attr("cx", 898).attr("cy", 330).attr("r", waterSize / 2).style("fill", color)
-//                        .transition().duration(sec / 1.8).ease(d3.easeLinear).attr("cy", 222)
-//                        .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 1135)
-//                        .remove();
-//
-//                    dashModule.append("circle").attr("cx", 918).attr("cy", 330).attr("r", waterSize / 2).style("fill", color)
-//                        .transition().duration(sec / 2.6).ease(d3.easeLinear).attr("cy", 260)
-//                        .transition().duration(sec / 1.2).ease(d3.easeLinear).attr("cx", 1135)
-//                        .remove();
-//                };
-
-                var dashSmoke = function() {
-
+                var dashSteam = function() {
                     dashModule
-                        .append("circle").attr("cx", 955).attr("cy", 540).attr("r", size / 2).style("fill", "#999")
-                        .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 1100)
-                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 350)
-                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 1240)
+                        .append("circle").attr("cx", 443).attr("cy", 320).attr("r", size / 2).style("fill", color)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 58)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 690)
                         .remove();
                 };
 
-                var dashFuel = function() {
+                var dashWater = function() {
+                    dashModule.append("circle").attr("cx", 1200).attr("cy", 135).attr("r", size / 2).style("fill", color)
+                        .transition().duration(sec / 6).ease(d3.easeLinear).attr("cx", 1108)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 440)
+                        .transition().duration(sec / 16).ease(d3.easeLinear).attr("cx", 1090)
+                        .remove();
+
+                    dashModule.append("circle").attr("cx", 1010).attr("cy", 462).attr("r", size / 2).style("fill", color)
+                        .transition().duration(sec / 5).ease(d3.easeLinear).attr("cx", 924)
+                        .transition().duration(sec / 5).ease(d3.easeLinear).attr("cy", 570)
+                        .remove();
+
                     dashModule
-                        .append("circle").attr("cx", 195).attr("cy", 548).attr("r", size / 2).style("fill", "#eee")
-                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 420)
+                        .append("circle").attr("cx", 804).attr("cy", 570).attr("r", size / 2).style("fill", color)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 238)
+                        .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 606)
+                        .transition().duration(sec / 6).ease(d3.easeLinear).attr("cy", 320)
+                        .remove();
+                };
+
+                var dashSmoke = function() {
+                    dashModule
+                        .append("circle").attr("cx", 630).attr("cy", 402).attr("r", size / 2).style("fill", color)
+                        .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 758)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 620)
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 1000)
+                        .remove();
+                };
+
+                var dashAir = function() {
+                    dashModule
+                        .append("circle").attr("cx", 270).attr("cy", 716).attr("r", size / 2).style("fill", "#666")
+                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 436)
+                        .transition().duration(sec / 4).ease(d3.easeLinear).attr("cy", 650)
                         .remove();
                 };
 
                 dashModule
                     .transition().on("start", function repeat() {
                     dashModule
-                        .transition().delay(360).on("start", function() {
-                        dashWaterIn();
-                        dashWaterOut();
+                        .transition().delay(260).on("start", function() {
+                        dashSteam();
+                        dashWater();
                         dashSmoke();
-                        dashFuel();
+                        dashAir();
                         repeat();
                     });
                 });
+
+
             };
 
-            var renderWaterFire = function(id) {
+            renderCoalDashes("#dash_container");
 
-                var fireG = svg.select(id);
-                if(!fireG) {
-                    console.warn("There IS NO " + id + "!");
-                    return;
-                }
-
-                var svgName = "static/img/module/boiler_water_fire.svg";
-
-                var baseX = 660;
-                var baseY = 519;
-
-                var fire = fireG.append("svg:image")
-                    .attr("xlink:href", svgName)
-                    .attr("width", 100)
-                    .attr("height", 50)
-                    .attr("x", baseX)
-                    .attr("y", baseY);
-
-                var sec = 600;
-
-                var burn = function() {
-                    fire.transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 160).attr("height", 80).attr("y", baseY - 15)
-                        .transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 100).attr("height", 50).attr("y", baseY);
-                };
-
-                d3.interval(function() {
-                    burn();
-                }, sec);
-            };
-
-
-
-            renderWaterFire("#fire_container");
-            renderWaterDashes("#dash_container");
-            renderWaterValues();
             // 处理SVG文件
         }
     });
