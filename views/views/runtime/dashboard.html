@@ -14,10 +14,13 @@
 
 <div class="row runtime_dash">
     <div class="col-md-3" style="padding: 0; padding-left: 10px; ">
-        <div ng-controller="statusModule" id="status_1" style="height: 60px;">
+        <div ng-controller="statusModule" id="status_1" style="height: 50px;">
 
         </div>
         <div class="">
+            <h6 class="font-grey-salsa" style="padding-bottom: 6px;">
+                采样时间: {{ runtime.instants[0].date | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
+            </h6>
             <!-- BEGIN SAMPLE TABLE PORTLET-->
             <div class="portlet light bordered" style="padding: 5px;padding-top: 0; border-color: #DDDDDD;">
 
@@ -31,7 +34,8 @@
                         <!--</tr>-->
                         <!--</thead>-->
                     <!--</table>-->
-                    <div class="" style="height: 420px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">
+
+                    <div class="" style="height: 390px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">
                         <table class="table table-hover table-light">
                             <!--<thead>
                             <tr>

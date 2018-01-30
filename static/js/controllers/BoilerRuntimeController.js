@@ -71,6 +71,16 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 bRuntime.fetchRuntime(bRuntime.boiler);
             });
 
+        $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
+            .then(function (res) {
+                console.info("Fetch OnlineStatus Resp:", res.data);
+                boiler.isOnline = (res.data.value === "true");
+            }, function (err) {
+                console.error('Fetch Status Err!', err);
+                boiler.isOnline = false;
+            });
+
+
         $http.get('/boiler/state/has_subscribed/?boiler=' + boiler.Uid + "&uid=" + $rootScope.currentUser.Uid)
             .then(function (res) {
                 console.log("Fetch SubscribeStatus Resp:", res.data);

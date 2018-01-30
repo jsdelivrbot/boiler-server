@@ -15,28 +15,29 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="boiler in dashboard.filteredItems">
-        <td>{{ boiler.num }}</td>
-        <td>
-            <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
-                <i ng-show="boiler.Fuel.Type.Id == 1" class="fa fa-cubes font-grey-cascade"></i>
-                <i ng-show="boiler.Fuel.Type.Id == 2" class="fa fa-tint font-grey-gallery"></i>
-                <i ng-show="boiler.Fuel.Type.Id == 3" class="fa fa-database font-blue-soft"></i>
-                <i ng-show="boiler.Fuel.Type.Id == 4" class="fa fa-leaf font-green-jungle"></i>
-                <i ng-show="boiler.Fuel.Type.Id > 4" class="fa fa-sun-o font-grey"></i>
-                <span class="caption-subject font-grey-mint bold uppercase">{{ boiler.name }}</span>
-            </a>
-            <br>
-            <span class="label label-ent label-sm label-default">{{ boiler.Enterprise.Name }}</span>
-        </td>
-        <td>{{ boiler.Factory.Name }}</td>
-        <td>{{ boiler.RegisterCode }}</td>
-        <td>{{ boiler.ModelCode }}</td>
-        <td>
-            <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" ng-class="[{'success': boiler.Terminal.IsOnline || boiler.isBurning}, { 'danger': (!boiler.Terminal || !boiler.Terminal.IsOnline) && !boiler.isBurning}]"></div>
-            <div class="status-icon" uib-tooltip="燃烧状态" tooltip-class="pop_green" ng-class="{'success': boiler.isBurning, 'danger': !boiler.isBurning}"></div>
-            <div class="status-icon" uib-tooltip="告警状态" tooltip-class="pop_green" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
-        </td>
+    <tr ng-repeat="boiler in dashboard.filteredItems" ng-init="dashboard.fetchStatus(boiler); dashboard.fetchThumbParam(boiler);">
+            <td>{{ boiler.num }}</td>
+            <td>
+                <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                    <i ng-show="boiler.Fuel.Type.Id == 1" class="fa fa-cubes font-grey-cascade"></i>
+                    <i ng-show="boiler.Fuel.Type.Id == 2" class="fa fa-tint font-grey-gallery"></i>
+                    <i ng-show="boiler.Fuel.Type.Id == 3" class="fa fa-database font-blue-soft"></i>
+                    <i ng-show="boiler.Fuel.Type.Id == 4" class="fa fa-leaf font-green-jungle"></i>
+                    <i ng-show="boiler.Fuel.Type.Id > 4" class="fa fa-sun-o font-grey"></i>
+                    <span class="caption-subject font-grey-mint bold uppercase">{{ boiler.name }}</span>
+                </a>
+                <br>
+                <span class="label label-ent label-sm label-default">{{ boiler.Enterprise.Name }}</span>
+            </td>
+            <td>{{ boiler.Factory.Name }}</td>
+            <td>{{ boiler.RegisterCode }}</td>
+            <td>{{ boiler.ModelCode }}</td>
+            <td>
+                <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" ng-class="[{'success': boiler.Terminal.IsOnline || boiler.isBurning}, { 'danger': (!boiler.Terminal || !boiler.Terminal.IsOnline) && !boiler.isBurning}]"></div>
+                <div class="status-icon" uib-tooltip="燃烧状态" tooltip-class="pop_green" ng-class="{'success': boiler.isBurning, 'danger': !boiler.isBurning}"></div>
+                <div class="status-icon" uib-tooltip="告警状态" tooltip-class="pop_green" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
+            </td>
+
     </tr>
     </tbody>
 </table>
