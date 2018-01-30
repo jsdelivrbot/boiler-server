@@ -363,6 +363,9 @@ func (ctl *UserController) Login(u *Usr) (*models.User, error) {
 	case orm.ErrMissPK:
 		resBody = "未知错误"
 	default:
+		if usr.Status == 2 {
+			return nil,errors.New("该用户已经被管理员禁用")
+		}
 		err = bcrypt.CompareHashAndPassword([]byte(usr.Password), []byte(u.Password))
 		if err != nil {
 			fmt.Println("Hashed Pwd Error:", err)
