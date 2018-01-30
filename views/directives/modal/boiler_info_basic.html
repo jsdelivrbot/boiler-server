@@ -265,7 +265,7 @@
                         </ui-select>
                         <ui-select ng-model="link.uid"
                                    theme="bootstrap"
-                                   style="display: table-cell; width: 50%;">
+                                   style="display: table-cell; width: 50%;max-width: 190px;overflow: hidden;">
                             <ui-select-match placeholder="企业名称...">{{$select.selected.name}}</ui-select-match>
                             <ui-select-choices group-by="'type'"
                                                repeat="og.Uid as og in link.orgs | filter: $select.search">
