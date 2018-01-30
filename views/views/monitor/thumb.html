@@ -48,11 +48,11 @@
                     <div class="btn-group btn-group-devided" data-toggle="buttons">
                         <a ui-sref="runtime.dashboard({boiler: boiler.Uid})"
                            class="btn btn-outline btn-circle btn-sm active"
-                           ng-class="[{'green': boiler.Terminal.isOnline || boiler.isBurning}, { 'red': !boiler.Terminal || !boiler.Terminal.isOnline}]">终端状态</a>
+                           ng-class="[{'green': (boiler.isOnline || boiler.isBurning)}, {'grey': (!boiler.IsOnline && !boiler.isBurning)}]">终端状态</a>
                            <!--ng-class="[{'green': boiler.Terminal.IsOnline || boiler.isBurning}, { 'red': (!boiler.Terminal || !boiler.Terminal.IsOnline) && !boiler.isBurning}]">终端状态</a>-->
                         <a ui-sref="runtime.dashboard({boiler: boiler.Uid})"
                            class="btn btn-outline btn-sm btn-circle active"
-                           ng-class="[{'green': boiler.isBurning}, { 'red': !boiler.isBurning}]">燃烧状态</a>
+                           ng-class="[{'green': boiler.isBurning}, {'red': !boiler.isBurning}]">燃烧状态</a>
                         <a ui-sref="runtime.alarm({boiler: boiler.Uid})" ng-class="['btn', 'btn-outline', 'btn-sm', 'btn-circle', 'active', {'green': boiler.alarmLevel == 0}, { 'yellow-lemon': boiler.alarmLevel == 1}, { 'red': boiler.alarmLevel == 2}, { 'grey': boiler.alarmLevel == -1}]" >告警</a>
                     </div>
                 </div>
