@@ -165,11 +165,15 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     d.AlarmLevel = 0;
                 }
 
-                alarmLevel = d.AlarmLevel;
+                if (boiler.isBurning || boiler.isOnline) {
+                    alarmLevel = d.AlarmLevel;
+                }
+
 
                 if (alarmLevel > boiler.alarmLevel) {
                     boiler.alarmLevel = alarmLevel;
                 }
+                console.log(d.AlarmLevel);
 
                 var label = "";
                 switch (alarmLevel) {
@@ -187,7 +191,6 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                         label = "告警";
                         break;
                 }
-
                 if (bRuntime.boiler.Form.Id === 205) {
                     switch (d.Parameter) {
                         case 1005:
@@ -478,7 +481,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         //     return aObj;
         // };
 
-        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.boiler.isBurning;
+        var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.boiler.isBurning;
         var statData = [
             [{
                 id: 0,
@@ -489,8 +492,8 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
             },
                 {
                     id: 0,
-                    name: "燃烧状态",
-                    text: $scope.boiler.isBurning ? "已点燃" : "未点燃",
+                    name: "运行状态",
+                    text: $scope.boiler.isBurning ? "正在运行" : "未运行",
                     type: "status",
                     value: $scope.boiler.isBurning
                 },
@@ -513,7 +516,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 //		]
 
         ];
-
+        // console.log($scope.boiler.alarmLevel);
         var statOptions = {
             align: "left", //"left", "justify"
             baseWidth: 82,
@@ -530,7 +533,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
     var renderStatusModule = function(data, options) {
 
-        console.log("ready to renderStatusModule", data, options);
+        // console.log("ready to renderStatusModule", data, options);
         var align = options.align;
 
         var baseWidth = options.baseWidth;
@@ -624,6 +627,9 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                         bgColor = d.value ? "#32c5d2" : "#e7505a";
                     } else if(typeof d.value === "number") {
                         switch(d.value) {
+                            case -1:
+                                bgColor = "#cfdae1";
+                                break;
                             case 0:
                                 bgColor = "#32c5d2";
                                 break;
@@ -669,6 +675,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     //.style("font-weight", "bold")
                     .style("fill", textColor)
                     .style("stroke-width", "0px");
+
             }
         }
     };
