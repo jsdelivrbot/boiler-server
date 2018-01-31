@@ -515,7 +515,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
-                boiler.isOnline = (res.data.value === "true");
+                boiler.isOnline = res.data.IsOnline;
+
             }, function (err) {
                 console.error('Fetch Status Err!', err);
             });
