@@ -74,7 +74,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 console.info("Fetch OnlineStatus Resp:", res.data);
-                boiler.isOnline = (res.data.value === "true");
+                boiler.isOnline = res.data.IsOnline;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
                 boiler.isOnline = false;
@@ -899,7 +899,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
             $scope.boiler = $rootScope.boiler;
         }
 
-        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.isBoilerBurning;
+        var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.isBoilerBurning;
 
         for (var i in $scope.statusLabels) {
             var statusLabel = $scope.statusLabels[i];
@@ -944,7 +944,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         // $log.error("updateWaterText()", bModule.valueLabels, new Date());
         for (var i in $scope.instants) {
             var ins = $scope.instants[i];
-            console.log(ins);
+            // console.log(ins);
             if ($scope.valueLabels[ins.id] &&
                 ins.category !== 11) {
                 $scope.valueLabels[ins.id].text(ins.value + ins.unit);
