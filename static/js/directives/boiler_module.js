@@ -385,7 +385,7 @@ boilerAdmin.directive('boilerModule', function () {
                             iData.type = "range";
                             break;
                     }
-                    console.warn("insG2:", ins, i, j, idx);
+                    // console.warn("insG2:", ins, i, j, idx);
                     switch (ins.id) {
                         case 1021:
                             iData.name = "环境温度";
