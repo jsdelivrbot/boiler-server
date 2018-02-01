@@ -374,6 +374,19 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         initChartHeatMonth(boiler);
     };
 
+    $scope.kai=true;
+    $scope.valueData ="正常";
+    $scope.kaiguan=function () {
+        $scope.kai = !$scope.kai;
+        if($scope.kai){
+            $scope.valueData ="正常";
+        }else{
+            $scope.valueData ="调试"
+        }
+    }
+
+
+
 
 });
 
@@ -460,26 +473,6 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         //     return;
         // }
         $scope.instants = $rootScope.instants;
-
-        // var moduleOptionsDef = {
-        //     align: "left", //"left", "justify"
-        //     baseWidth: 82,
-        //     height: 40,
-        //     gap: 10,
-        //     baseX: 0,
-        //     baseY: 0
-        // };
-        // var copy = function(obj) {
-        //     var aObj = {};
-        //
-        //     for(var i = 0; i < Object.keys(obj).length; i++) {
-        //         var key = Object.keys(obj)[i];
-        //         var value = obj[key];
-        //         aObj[key] = ((typeof value) === 'object' ? copy(value) : value);
-        //     }
-        //
-        //     return aObj;
-        // };
 
         var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.boiler.isBurning;
         var statData = [
@@ -603,6 +596,8 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     }
                 }
 
+
+
                 //Bar Drawing
                 statusModule.append("rect")
                     .attr("x", cx)
@@ -619,6 +614,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     .attr("width", width)
                     .attr("height", height / 2)
                     .style("fill", barColor);
+
 
                 if(d.type === "status") {
                     //StatusColor Drawing
@@ -641,6 +637,18 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                                 break;
                         }
                     }
+
+                    // var statusLabel = statusModule.append("rect")
+                    //     .attr("x", cx + 4)
+                    //     .attr("y", cy + height / 2 + 4)
+                    //     .attr("width", width - 8)
+                    //     .attr("height", height / 2 - 8)
+                    //     .attr("rx", 6)
+                    //     .attr("ry", 6)
+                    //     .style("fill", bgColor);
+                    //
+                    // $scope.statusLabels[d.id] = {};
+                    // $scope.statusLabels[d.id].label = statusLabel;
 
                     statusModule.append("rect")
                         .attr("x", cx + 4)
@@ -675,6 +683,23 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     //.style("font-weight", "bold")
                     .style("fill", textColor)
                     .style("stroke-width", "0px");
+
+                //Text Drawing
+
+                // var valueLabel = statusModule.append("text")
+                //     .attr("x", cx + width / 2)
+                //     .attr("x", cx + width / 2)
+                //     .attr("y", cy + height / 2 + fontSize / 2 + 2)
+                //     .attr("dy", fontSize / 2)
+                //     .attr("text-anchor", "middle")
+                //     .text(text)
+                //     .style("font-size", fontSize - 2 + "px")
+                //     .style("fill", textColor)
+                //     .style("stroke-width", "0px");
+                //
+                // $scope.statusLabels[d.id].value = valueLabel;
+
+
 
             }
         }
@@ -905,7 +930,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
             $scope.boiler = $rootScope.boiler;
         }
-
+        console.log($scope.statusLabels);
         var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.isBoilerBurning;
 
         for (var i in $scope.statusLabels) {
@@ -919,7 +944,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     bgColor = isTerminalConnected ? "#32c5d2" : "#bfcad1";
                     break;
                 case 2:
-                    text = $scope.isBoilerBurning ? "已点燃" : "未点燃";
+                    text = $scope.isBoilerBurning ? "正在运行" : "未运行";
                     bgColor = $scope.isBoilerBurning ? "#32c5d2" : "#e7505a";
                     break;
                 case 3:

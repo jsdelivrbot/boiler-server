@@ -126,12 +126,10 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     }
 
     terminal.getOriginMessages = function () {
-
         // terminal.msgData = {};
         // terminal.msgData.isEmpty = true;
         // terminal.msgData.lastUpload = null;
         // Ladda.create(document.getElementById('terminal_origin_messages')).start();
-
         $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
             .then(function (res) {
                 console.info("Get Terminal List Resp:", res);
