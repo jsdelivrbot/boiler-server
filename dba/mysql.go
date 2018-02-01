@@ -9,7 +9,6 @@ import (
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
-	"github.com/AzureRelease/boiler-server/conf"
 )
 
 var MyORM 		orm.Ormer
