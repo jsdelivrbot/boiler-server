@@ -173,7 +173,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 if (alarmLevel > boiler.alarmLevel) {
                     boiler.alarmLevel = alarmLevel;
                 }
-                console.log(d.AlarmLevel);
+                // console.log(d.AlarmLevel);
 
                 var label = "";
                 switch (alarmLevel) {
@@ -453,7 +453,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         $scope.instants = $rootScope.instants;
 
         $scope.updateStatusLabels();
-        $scope.updateLabels();
+        // $scope.updateLabels();
     });
 
     $rootScope.$watch('isBoilerBurning', function () {
@@ -972,28 +972,28 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         }
     };
 
-    $scope.updateLabels = function () {
-        // $log.error("updateWaterText()", bModule.valueLabels, new Date());
-        for (var i in $scope.instants) {
-            var ins = $scope.instants[i];
-            // console.log(ins);
-            if ($scope.valueLabels[ins.id] &&
-                ins.category !== 11) {
-                $scope.valueLabels[ins.id].text(ins.value + ins.unit);
-            }
-
-            if ($scope.switchLabels[ins.id]) {
-                var bgColor = "#cfdae1";
-                // console.error("SwitchValue:", ins);
-                if (typeof ins.value === "boolean") {
-                    bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
-                } else if (typeof ins.value === "number") {
-                    bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
-                }
-
-                $scope.switchLabels[ins.id].style("fill", bgColor);
-            }
-        }
-    };
+    // $scope.updateLabels = function () {
+    //     // $log.error("updateWaterText()", bModule.valueLabels, new Date());
+    //     for (var i in $scope.instants) {
+    //         var ins = $scope.instants[i];
+    //         // console.log(ins);
+    //         if ($scope.valueLabels[ins.id] &&
+    //             ins.category !== 11) {
+    //             $scope.valueLabels[ins.id].text(ins.value + ins.unit);
+    //         }
+    //
+    //         if ($scope.switchLabels[ins.id]) {
+    //             var bgColor = "#cfdae1";
+    //             // console.error("SwitchValue:", ins);
+    //             if (typeof ins.value === "boolean") {
+    //                 bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+    //             } else if (typeof ins.value === "number") {
+    //                 bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+    //             }
+    //
+    //             $scope.switchLabels[ins.id].style("fill", bgColor);
+    //         }
+    //     }
+    // };
 
 })
