@@ -74,7 +74,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 console.info("Fetch OnlineStatus Resp:", res.data);
-                boiler.isOnline = (res.data.value === "true");
+                boiler.isOnline = res.data.IsOnline;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
                 boiler.isOnline = false;
@@ -165,11 +165,15 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     d.AlarmLevel = 0;
                 }
 
-                alarmLevel = d.AlarmLevel;
+                if (boiler.isBurning || boiler.isOnline) {
+                    alarmLevel = d.AlarmLevel;
+                }
+
 
                 if (alarmLevel > boiler.alarmLevel) {
                     boiler.alarmLevel = alarmLevel;
                 }
+                // console.log(d.AlarmLevel);
 
                 var label = "";
                 switch (alarmLevel) {
@@ -187,7 +191,6 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                         label = "告警";
                         break;
                 }
-
                 if (bRuntime.boiler.Form.Id === 205) {
                     switch (d.Parameter) {
                         case 1005:
@@ -371,6 +374,19 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         initChartHeatMonth(boiler);
     };
 
+    $scope.kai=true;
+    $scope.valueData ="正常";
+    $scope.kaiguan=function () {
+        $scope.kai = !$scope.kai;
+        if($scope.kai){
+            $scope.valueData ="正常";
+        }else{
+            $scope.valueData ="调试"
+        }
+    }
+
+
+
 
 });
 
@@ -437,7 +453,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         $scope.instants = $rootScope.instants;
 
         $scope.updateStatusLabels();
-        $scope.updateLabels();
+        // $scope.updateLabels();
     });
 
     $rootScope.$watch('isBoilerBurning', function () {
@@ -458,44 +474,24 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         // }
         $scope.instants = $rootScope.instants;
 
-        // var moduleOptionsDef = {
-        //     align: "left", //"left", "justify"
-        //     baseWidth: 82,
-        //     height: 40,
-        //     gap: 10,
-        //     baseX: 0,
-        //     baseY: 0
-        // };
-        // var copy = function(obj) {
-        //     var aObj = {};
-        //
-        //     for(var i = 0; i < Object.keys(obj).length; i++) {
-        //         var key = Object.keys(obj)[i];
-        //         var value = obj[key];
-        //         aObj[key] = ((typeof value) === 'object' ? copy(value) : value);
-        //     }
-        //
-        //     return aObj;
-        // };
-
-        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.boiler.isBurning;
+        var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.boiler.isBurning;
         var statData = [
             [{
-                id: 0,
+                id: 1,
                 name: "终端状态",
                 text: isTerminalConnected ? "已连接" : "未连接",
                 type: "status",
                 value: !!isTerminalConnected
             },
                 {
-                    id: 0,
-                    name: "燃烧状态",
-                    text: $scope.boiler.isBurning ? "已点燃" : "未点燃",
+                    id: 2,
+                    name: "运行状态",
+                    text: $scope.boiler.isBurning ? "正在运行" : "未运行",
                     type: "status",
                     value: $scope.boiler.isBurning
                 },
                 {
-                    id: 0,
+                    id: 3,
                     name: "告警状态",
                     text: "",
                     type: "status",
@@ -513,7 +509,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 //		]
 
         ];
-
+        // console.log($scope.boiler.alarmLevel);
         var statOptions = {
             align: "left", //"left", "justify"
             baseWidth: 82,
@@ -530,7 +526,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
     var renderStatusModule = function(data, options) {
 
-        console.log("ready to renderStatusModule", data, options);
+        // console.log("ready to renderStatusModule", data, options);
         var align = options.align;
 
         var baseWidth = options.baseWidth;
@@ -600,6 +596,8 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     }
                 }
 
+
+
                 //Bar Drawing
                 statusModule.append("rect")
                     .attr("x", cx)
@@ -617,6 +615,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     .attr("height", height / 2)
                     .style("fill", barColor);
 
+
                 if(d.type === "status") {
                     //StatusColor Drawing
                     var bgColor = "#32c5d2";
@@ -624,6 +623,9 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                         bgColor = d.value ? "#32c5d2" : "#e7505a";
                     } else if(typeof d.value === "number") {
                         switch(d.value) {
+                            case -1:
+                                bgColor = "#cfdae1";
+                                break;
                             case 0:
                                 bgColor = "#32c5d2";
                                 break;
@@ -636,7 +638,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                         }
                     }
 
-                    statusModule.append("rect")
+                    var statusLabel = statusModule.append("rect")
                         .attr("x", cx + 4)
                         .attr("y", cy + height / 2 + 4)
                         .attr("width", width - 8)
@@ -644,6 +646,18 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                         .attr("rx", 6)
                         .attr("ry", 6)
                         .style("fill", bgColor);
+
+                    $scope.statusLabels[d.id] = {};
+                    $scope.statusLabels[d.id].label = statusLabel;
+
+                    // statusModule.append("rect")
+                    //     .attr("x", cx + 4)
+                    //     .attr("y", cy + height / 2 + 4)
+                    //     .attr("width", width - 8)
+                    //     .attr("height", height / 2 - 8)
+                    //     .attr("rx", 6)
+                    //     .attr("ry", 6)
+                    //     .style("fill", bgColor);
                 }
 
                 //Label Drawing
@@ -659,16 +673,34 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     .style("stroke-width", "0px");
 
                 //Text Drawing
-                statusModule.append("text")
+                // statusModule.append("text")
+                //     .attr("x", cx + width / 2)
+                //     .attr("y", cy + height / 2 + fontSize / 2 + 2)
+                //     .attr("dy", fontSize / 2)
+                //     .attr("text-anchor", "middle")
+                //     .text(text)
+                //     .style("font-size", fontSize - 2 + "px")
+                //     //.style("font-weight", "bold")
+                //     .style("fill", textColor)
+                //     .style("stroke-width", "0px");
+
+                //Text Drawing
+
+                var valueLabel = statusModule.append("text")
+                    .attr("x", cx + width / 2)
                     .attr("x", cx + width / 2)
                     .attr("y", cy + height / 2 + fontSize / 2 + 2)
                     .attr("dy", fontSize / 2)
                     .attr("text-anchor", "middle")
                     .text(text)
                     .style("font-size", fontSize - 2 + "px")
-                    //.style("font-weight", "bold")
                     .style("fill", textColor)
                     .style("stroke-width", "0px");
+
+                $scope.statusLabels[d.id].value = valueLabel;
+
+
+
             }
         }
     };
@@ -899,7 +931,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
             $scope.boiler = $rootScope.boiler;
         }
 
-        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.isBoilerBurning;
+        var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.isBoilerBurning;
 
         for (var i in $scope.statusLabels) {
             var statusLabel = $scope.statusLabels[i];
@@ -912,7 +944,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     bgColor = isTerminalConnected ? "#32c5d2" : "#bfcad1";
                     break;
                 case 2:
-                    text = $scope.isBoilerBurning ? "已点燃" : "未点燃";
+                    text = $scope.isBoilerBurning ? "正在运行" : "未运行";
                     bgColor = $scope.isBoilerBurning ? "#32c5d2" : "#e7505a";
                     break;
                 case 3:
@@ -940,28 +972,28 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         }
     };
 
-    $scope.updateLabels = function () {
-        // $log.error("updateWaterText()", bModule.valueLabels, new Date());
-        for (var i in $scope.instants) {
-            var ins = $scope.instants[i];
-            console.log(ins);
-            if ($scope.valueLabels[ins.id] &&
-                ins.category !== 11) {
-                $scope.valueLabels[ins.id].text(ins.value + ins.unit);
-            }
-
-            if ($scope.switchLabels[ins.id]) {
-                var bgColor = "#cfdae1";
-                // console.error("SwitchValue:", ins);
-                if (typeof ins.value === "boolean") {
-                    bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
-                } else if (typeof ins.value === "number") {
-                    bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
-                }
-
-                $scope.switchLabels[ins.id].style("fill", bgColor);
-            }
-        }
-    };
+    // $scope.updateLabels = function () {
+    //     // $log.error("updateWaterText()", bModule.valueLabels, new Date());
+    //     for (var i in $scope.instants) {
+    //         var ins = $scope.instants[i];
+    //         // console.log(ins);
+    //         if ($scope.valueLabels[ins.id] &&
+    //             ins.category !== 11) {
+    //             $scope.valueLabels[ins.id].text(ins.value + ins.unit);
+    //         }
+    //
+    //         if ($scope.switchLabels[ins.id]) {
+    //             var bgColor = "#cfdae1";
+    //             // console.error("SwitchValue:", ins);
+    //             if (typeof ins.value === "boolean") {
+    //                 bgColor = ins.value ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+    //             } else if (typeof ins.value === "number") {
+    //                 bgColor = ins.value > 0 ? (ins.switchFlag <= 1 ? "#3598dc" : "#f7ca18") : "#cfdae1";
+    //             }
+    //
+    //             $scope.switchLabels[ins.id].style("fill", bgColor);
+    //         }
+    //     }
+    // };
 
 })

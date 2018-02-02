@@ -61,7 +61,7 @@
         <th>监测锅炉</th>
         <th>物联网卡号</th>
         <!--<th>消息调试</th>-->
-        <th colspan="2">操作</th>
+        <th>操作</th>
     </tr>
     </thead>
 
@@ -91,11 +91,12 @@
         <td>
             <span ng-class="[{'light-gray': data.SimNumber.length <= 0}]">{{ data.simNum }}</span>
         </td>
-        <td>
-            <!--<span ng-class="[{'light-gray': data.LocalIp.length <= 0}]">{{ data.ip }}</span>-->
+        <!--<td>-->
+            <!--&lt;!&ndash;<span ng-class="[{'light-gray': data.LocalIp.length <= 0}]">{{ data.ip }}</span>&ndash;&gt;-->
+            <!---->
+        <!--</td>-->
+        <td style="min-width: 238px;">
             <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.code);">消息调试</button>
-        </td>
-        <td style="min-width: 138px;">
             <div class="btn-group">
             <button ng-show="currentUser.Role.RoleId >= 10"
                     ng-click="terminal.view(data)"

@@ -2186,45 +2186,7 @@ L 1.75 -2.4 2.5 -1.7 2.8 -1.15 2.95 -0.65 3.05 -0.05 2.8 1.15 2.15 2.1 1.25 2.7 
         </g>
     </g>
 
-    <g transform="matrix( 1, 0, 0, 1, 298,399.05) ">
-        <g filter="url(#Filter_1)" transform="matrix( 1, 0, 0, 1, -298,-399.05) ">
-            <g transform="matrix( 1, 0, 0, 1, 298,399.05) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                        <use xlink:href="#Graphic_shape_352_0_Layer3_0_FILL"/>
-                    </g>
 
-                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                        <use xlink:href="#Graphic_shape_352_0_Layer2_0_FILL"/>
-                    </g>
-
-                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                        <use xlink:href="#Graphic_shape_352_0_Layer1_0_FILL"/>
-                    </g>
-
-                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                        <use xlink:href="#Graphic_shape_352_0_Layer0_0_FILL"/>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 309.55,394.55) ">
-        <g filter="url(#Filter_2)" transform="matrix( 1, 0, 0, 1, -309.55,-394.55) ">
-            <g transform="matrix( 1, 0, 0, 1, 309.55,394.55) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                        <use xlink:href="#Graphic_shape_355_0_Layer1_0_FILL"/>
-                    </g>
-
-                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                        <use xlink:href="#Graphic_shape_355_0_Layer0_0_FILL"/>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
 
     <g transform="matrix( 1, 0, 0, 1.0013885498046875, 266.8,541) ">
         <g transform="matrix( 1, 0, 0, 1, 75.5,17.95) ">

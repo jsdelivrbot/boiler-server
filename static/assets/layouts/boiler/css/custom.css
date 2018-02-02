@@ -1,5 +1,9 @@
 /* here you can put your own css to customize and override the theme */
 
+.page-breadcrumb a:hover,.page-breadcrumb a:focus{
+    text-decoration: none;
+    cursor: default;
+}
 
 /*sidebar*/
 .page-sidebar{
