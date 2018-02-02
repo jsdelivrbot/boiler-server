@@ -548,26 +548,26 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
         var rtmQ = [];
 
-        switch (boiler.TerminalCode) {
-            case '680055':
-                rtmQ = [1002, 1015];
-                break;
-            case '680082':
-            case '680085':
-            case '680096':
-            case '680120':
-                rtmQ = [1021, 1080];
-                break;
-            case '680064':
-                rtmQ = [1001, 1015];
-                break;
-            case '680500':
-            case '680053':
-            case '680501':
-            case '680502':
-                rtmQ = [1096, 1098, 1090, 1094];
-                break;
-        }
+        // switch (boiler.TerminalCode) {
+        //     case '680055':
+        //         rtmQ = [1002, 1015];
+        //         break;
+        //     case '680082':
+        //     case '680085':
+        //     case '680096':
+        //     case '680120':
+        //         rtmQ = [1021, 1080];
+        //         break;
+        //     case '680064':
+        //         rtmQ = [1001, 1015];
+        //         break;
+        //     case '680500':
+        //     case '680053':
+        //     case '680501':
+        //     case '680502':
+        //         rtmQ = [1096, 1098, 1090, 1094];
+        //         break;
+        // }
 
         $http.post('/boiler_runtime_instants/?scope=thumb', {
             uid: boiler.Uid,
