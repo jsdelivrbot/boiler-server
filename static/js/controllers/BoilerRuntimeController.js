@@ -477,21 +477,21 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.boiler.isBurning;
         var statData = [
             [{
-                id: 0,
+                id: 1,
                 name: "终端状态",
                 text: isTerminalConnected ? "已连接" : "未连接",
                 type: "status",
                 value: !!isTerminalConnected
             },
                 {
-                    id: 0,
+                    id: 2,
                     name: "运行状态",
                     text: $scope.boiler.isBurning ? "正在运行" : "未运行",
                     type: "status",
                     value: $scope.boiler.isBurning
                 },
                 {
-                    id: 0,
+                    id: 3,
                     name: "告警状态",
                     text: "",
                     type: "status",
@@ -638,19 +638,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                         }
                     }
 
-                    // var statusLabel = statusModule.append("rect")
-                    //     .attr("x", cx + 4)
-                    //     .attr("y", cy + height / 2 + 4)
-                    //     .attr("width", width - 8)
-                    //     .attr("height", height / 2 - 8)
-                    //     .attr("rx", 6)
-                    //     .attr("ry", 6)
-                    //     .style("fill", bgColor);
-                    //
-                    // $scope.statusLabels[d.id] = {};
-                    // $scope.statusLabels[d.id].label = statusLabel;
-
-                    statusModule.append("rect")
+                    var statusLabel = statusModule.append("rect")
                         .attr("x", cx + 4)
                         .attr("y", cy + height / 2 + 4)
                         .attr("width", width - 8)
@@ -658,6 +646,18 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                         .attr("rx", 6)
                         .attr("ry", 6)
                         .style("fill", bgColor);
+
+                    $scope.statusLabels[d.id] = {};
+                    $scope.statusLabels[d.id].label = statusLabel;
+
+                    // statusModule.append("rect")
+                    //     .attr("x", cx + 4)
+                    //     .attr("y", cy + height / 2 + 4)
+                    //     .attr("width", width - 8)
+                    //     .attr("height", height / 2 - 8)
+                    //     .attr("rx", 6)
+                    //     .attr("ry", 6)
+                    //     .style("fill", bgColor);
                 }
 
                 //Label Drawing
@@ -673,31 +673,31 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                     .style("stroke-width", "0px");
 
                 //Text Drawing
-                statusModule.append("text")
-                    .attr("x", cx + width / 2)
-                    .attr("y", cy + height / 2 + fontSize / 2 + 2)
-                    .attr("dy", fontSize / 2)
-                    .attr("text-anchor", "middle")
-                    .text(text)
-                    .style("font-size", fontSize - 2 + "px")
-                    //.style("font-weight", "bold")
-                    .style("fill", textColor)
-                    .style("stroke-width", "0px");
-
-                //Text Drawing
-
-                // var valueLabel = statusModule.append("text")
-                //     .attr("x", cx + width / 2)
+                // statusModule.append("text")
                 //     .attr("x", cx + width / 2)
                 //     .attr("y", cy + height / 2 + fontSize / 2 + 2)
                 //     .attr("dy", fontSize / 2)
                 //     .attr("text-anchor", "middle")
                 //     .text(text)
                 //     .style("font-size", fontSize - 2 + "px")
+                //     //.style("font-weight", "bold")
                 //     .style("fill", textColor)
                 //     .style("stroke-width", "0px");
-                //
-                // $scope.statusLabels[d.id].value = valueLabel;
+
+                //Text Drawing
+
+                var valueLabel = statusModule.append("text")
+                    .attr("x", cx + width / 2)
+                    .attr("x", cx + width / 2)
+                    .attr("y", cy + height / 2 + fontSize / 2 + 2)
+                    .attr("dy", fontSize / 2)
+                    .attr("text-anchor", "middle")
+                    .text(text)
+                    .style("font-size", fontSize - 2 + "px")
+                    .style("fill", textColor)
+                    .style("stroke-width", "0px");
+
+                $scope.statusLabels[d.id].value = valueLabel;
 
 
 
@@ -930,7 +930,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
             $scope.boiler = $rootScope.boiler;
         }
-        console.log($scope.statusLabels);
+
         var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.isBoilerBurning;
 
         for (var i in $scope.statusLabels) {
