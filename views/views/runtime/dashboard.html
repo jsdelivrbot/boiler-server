@@ -65,7 +65,7 @@
 
             <div class="portlet light bordered"
                  ng-show="(runtime.instants|filter:{category:'13'}).length==0"
-                style="padding: 0px 10px 0px 10px;">
+                style="padding: 0px 10px 0px 10px; overflow: hidden;">
 
                 <div class="portlet-body">
 
@@ -100,7 +100,8 @@
                             <tr>
                                 <td> 对应终端 </td>
                                 <td>
-                                    <span ng-repeat="terminal in runtime.boiler.TerminalsCombined" style="display: inline-block; clear: both;"> {{ terminal.Name }} [机组{{ terminal.TerminalSetId }}]</span>
+                                    <span ng-repeat="terminal in runtime.boiler.TerminalsCombined" style="display: block; clear: both; "> {{ terminal.Name }} [机组{{ terminal.TerminalSetId }}]</span>
+
                                 </td>
                             </tr>
                             <tr>
