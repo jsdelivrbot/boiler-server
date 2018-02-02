@@ -1721,6 +1721,12 @@ func generateBoilerStatus(boiler *models.Boiler, date time.Time, value int64, ru
 
 	param := runtimeParameter(int(run.Pid))
 
+	if param == nil {
+		goazure.Error("Get Param", run.Pid, "Error!")
+
+		return
+	}
+
 	rtm := models.BoilerRuntime {}
 
 	//rtm.Uid = uuid.New()
