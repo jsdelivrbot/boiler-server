@@ -879,8 +879,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         console.warn("$modal channel update!", configUpload);
 
+        App.startPageLoading({message: '正在加载数据...'});
         $http.post("/channel_config_update/", configUpload)
             .then(function (res) {
+                 App.stopPageLoading();
+
                 swal({
                     title: "通道配置更新成功",
                     type: "success"
