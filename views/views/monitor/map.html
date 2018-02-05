@@ -10,6 +10,18 @@
     }
 </style>
 <div class="row map">
+    <div class="col-md-9 col-sm-8 col-xs-6">
+        <!-- 地址输入框 -->
+        <!--
+        ({{ longitude }}, {{ latitude }})
+        <div class="form-group">
+            <label class="control-label">地址：</label>
+            <input class="form-control input-md" name="address" ng-model="address"/>
+        </div>
+        -->
+        <!-- 百度地图显示区域 -->
+        <div class="form-group" id="map-container" ng-init="dashboard.initBap()" style="width: 100%; height: 500px;"></div>
+    </div>
     <div class="col-md-3 col-sm-4 col-xs-6"
          style="height: 500px; overflow-y: scroll; overflow-x: auto;">
         <!--<table datatable="ng" dt-options="dashboard.mapOptions" dt-column-defs="dashboard.mapColumnDefs"-->
@@ -33,9 +45,9 @@
                             </a>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3" style="padding-left: 0; text-align: right;">
-                            <div class="status-icon" ng-class="[{'success': boiler.Terminal.IsOnline || boiler.isBurning}, { 'danger': (!boiler.Terminal || !boiler.Terminal.IsOnline) && !boiler.isBurning}]" style="margin: 0;"></div>
-                            <div class="status-icon" ng-class="[{'success': boiler.isBurning}, {'danger': !boiler.isBurning}]" style="margin: 0;"></div>
-                            <div class="status-icon" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
+                            <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" tooltip-placement="bottom" ng-class="[{'success': boiler.isOnline || boiler.isBurning}, { 'default':  !boiler.isOnline && !boiler.isBurning}]" style="margin: 0;"></div>
+                            <div class="status-icon" uib-tooltip="燃烧状态" tooltip-class="pop_green" tooltip-placement="bottom" ng-class="[{'success': boiler.isBurning}, {'default': !boiler.isBurning}]" style="margin: 0;"></div>
+                            <div class="status-icon" uib-tooltip="告警状态" tooltip-class="pop_green"  tooltip-placement="bottom" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
                         </div>
                     </div>
                     <span class="font-grey-gallery" style="font-size: 11px;">{{ boiler.Address ? boiler.Address.Location.LocationName + ' ' + boiler.Address.Address : '-' }}</span> <br>
@@ -45,17 +57,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <div class="col-md-9 col-sm-8 col-xs-6">
-        <!-- 地址输入框 -->
-        <!--
-        ({{ longitude }}, {{ latitude }})
-        <div class="form-group">
-            <label class="control-label">地址：</label>
-            <input class="form-control input-md" name="address" ng-model="address"/>
-        </div>
-        -->
-        <!-- 百度地图显示区域 -->
-        <div class="form-group" id="map-container" ng-init="dashboard.initBap()" style="width: 100%; height: 500px;"></div>
     </div>
 </div>

@@ -165,8 +165,18 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
                         }
                     }
 
+                    $http.get('/boiler/state/is_burning/?boiler=' + terminal.Uid)
+                        .then(function (res) {
+                            // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                            terminal.isBurning = (res.data.value === "true");
+                        }, function (err) {
+                            console.error('Fetch Status Err!', err);
+                        });
+
+
                     terminal.online = terminal.IsOnline ? "在线" : "离线";
                     terminal.setId = terminal.Remark;
+
                 }
 
             }
@@ -180,10 +190,10 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
 
                 bInfo.reset();
             }
+            // console.log(d);
         });
 
         bInfo.datasource = datasource;
-
         bInfo.isDone = true;
         setTimeout(function () {
             App.stopPageLoading();
@@ -225,7 +235,7 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
     };
 
     $rootScope.$watch('boilers', function () {
-        console.error("$rootScope.$watch('boilers'");
+        // console.error("$rootScope.$watch('boilers')");
         bInfo.refreshDataTables();
     });
 
