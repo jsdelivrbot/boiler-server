@@ -33,8 +33,10 @@
             <td>{{ boiler.RegisterCode }}</td>
             <td>{{ boiler.ModelCode }}</td>
             <td>
+
                 <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" ng-class="[{'success': boiler.isOnline || boiler.isBurning}, { 'default': !boiler.isOnline && !boiler.isBurning}]"></div>
                 <div class="status-icon" uib-tooltip="燃烧状态" tooltip-class="pop_green" ng-class="{'success': boiler.isBurning, 'default': !boiler.isBurning}"></div>
+
                 <div class="status-icon" uib-tooltip="告警状态" tooltip-class="pop_green" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
             </td>
 

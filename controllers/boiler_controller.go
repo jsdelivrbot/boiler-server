@@ -1305,6 +1305,15 @@ func (ctl *BoilerController) BoilerDelete()  {
 			ctl.Ctx.Output.Body([]byte(e))
 			return
 		}
+
+		if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
+			Filter("Boiler__Uid", info.Uid).Delete(); err != nil {
+			e := fmt.Sprintln("Delete Boiler Terminal Combined Error:", err, num)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+		}
+
 	} else {
 		e := fmt.Sprintln("Invalid Boiler Uid!")
 		goazure.Error(e)
