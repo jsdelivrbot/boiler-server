@@ -372,7 +372,9 @@
                         <tr ng-repeat="terminal in info.currentData.TerminalsCombined">
                             <td>{{ terminal.tid }}</td>
                             <td>
-                                <span ng-class="['label', {'label-success': terminal.IsOnline}, {'label-default': !terminal.IsOnline}]">{{ terminal.online }}</span>
+                                <span ng-class="['label', {'label-success': terminal.IsOnline || terminal.isBurning}, {'label-default': !terminal.IsOnline && !terminal.isBurning}]">
+                                    {{ terminal.online }}
+                                </span>
                             </td>
                             <td>{{ terminal.Name }}</td>
                             <td>{{ terminal.setId }}</td>

@@ -9,6 +9,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
+
 	"github.com/AzureRelease/boiler-server/conf"
 )
 
@@ -120,7 +121,7 @@ func init() {
 
 	MyORM = orm.NewOrm()
 	MyORM.Using("default")
-	orm.RunSyncdb("default", false, true)
+	// orm.RunSyncdb("default", false, true)
 
 	BoilerOrm = MyORM
 	common.BoilerOrm = BoilerOrm
