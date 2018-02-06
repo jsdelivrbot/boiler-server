@@ -26,9 +26,6 @@ func init() {
 		myConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 	}
 
-)
-
-
 	orm.RegisterDataBase("default", "mysql", myConnection)
 
 	orm.RegisterModel(
@@ -64,9 +61,14 @@ func init() {
 
 		new(models.BoilerConfig),
 		new(models.BoilerRuntime),
+		new(models.BoilerRuntimeArchived),
 
 		new(caches.BoilerRuntimeCacheInstant),
-		new(caches.BoilerRuntimeCacheHistory),
+		//new(caches.BoilerRuntimeCacheHistory),
+		new(caches.BoilerRuntimeCacheDay),
+		new(caches.BoilerRuntimeCacheWeek),
+		new(caches.BoilerRuntimeCacheMonth),
+
 		new(caches.BoilerRuntimeCacheFlow),
 		new(caches.BoilerRuntimeCacheFlowDaily),
 		new(caches.BoilerRuntimeCacheSteamTemperature),
@@ -118,7 +120,7 @@ func init() {
 
 	MyORM = orm.NewOrm()
 	MyORM.Using("default")
-	// orm.RunSyncdb("default", false, true)
+	orm.RunSyncdb("default", false, true)
 
 	BoilerOrm = MyORM
 	common.BoilerOrm = BoilerOrm
