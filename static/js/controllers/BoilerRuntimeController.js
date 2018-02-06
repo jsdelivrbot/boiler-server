@@ -58,6 +58,11 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             return;
         }
 
+        if ($location.search()['boiler'] !== boiler.Uid) {
+            $log.info("Boiler Uid Changed!");
+            return;
+        }
+
         $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
             .then(function (res) {
                 console.info("Fetch BurningStatus Resp:", res.data);
