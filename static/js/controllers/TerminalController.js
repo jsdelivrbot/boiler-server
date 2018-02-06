@@ -41,7 +41,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     $http.get('/boiler/state/is_burning/?boiler=' + d.Uid)
                         .then(function (res) {
                             // console.error("Fetch Status Resp:", res.data, d);
-                            d.isBurning = res.data.value;
+                            d.isBurning = (res.data.value === "true");
                         }, function (err) {
                             console.error('Fetch Status Err!', err);
                         });
@@ -54,7 +54,6 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     d.simNum = d.SimNumber.length > 0 ? d.SimNumber : " - ";
                     d.ip = d.LocalIp.length > 0 ? d.LocalIp : " - ";
                     d.online = d.IsOnline ? "在线" : "离线";
-
 
 
                     if (currentData && currentData.Uid === d.Uid) {
