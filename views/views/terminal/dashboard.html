@@ -76,7 +76,7 @@
         </td>
         <td> {{ data.code }} </td>
         <td>
-            <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.online }}</span>
+            <span ng-class="['label', {'label-success': data.IsOnline||data.isBurning}, {'label-default': !data.IsOnline && !data.isBurning}]">{{ data.online }}</span>
         </td>
         <td>
             <!--<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">-->

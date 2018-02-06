@@ -38,6 +38,14 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                 angular.forEach(datasource, function (d, key) {
                     d.num = ++num;
                     d.code = d.TerminalCode.toString();
+                    $http.get('/boiler/state/is_burning/?boiler=' + d.Uid)
+                        .then(function (res) {
+                            // console.error("Fetch Status Resp:", res.data, d);
+                            d.isBurning = res.data.value;
+                        }, function (err) {
+                            console.error('Fetch Status Err!', err);
+                        });
+
                     if (d.code.length < 6) {
                         for (var l = d.code.length; l < 6; l++) {
                             d.code = "0" + d.code;
@@ -47,12 +55,15 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     d.ip = d.LocalIp.length > 0 ? d.LocalIp : " - ";
                     d.online = d.IsOnline ? "在线" : "离线";
 
+
+
                     if (currentData && currentData.Uid === d.Uid) {
                         currentData = d;
                     }
                 });
 
                 terminal.datasource = datasource;
+                console.info("Get Terminal List Resp:", terminal.datasource);
 
                 if (callback) {
                     callback();
