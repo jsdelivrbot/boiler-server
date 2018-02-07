@@ -44,75 +44,80 @@
         margin-top: 6px;
     }
 </style>
-<div class="modal-body" id="modal-body">
-    <div class="row">
-        <div class="form-group col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">参数名称</span>
-                <input type="text" ng-model="$modal.data.Name"
-                       maxlength="16"
-                       ng-disabled="!$modal.editing || $modal.data.Category.Id === 0"
-                       class="form-control ng-pristine ng-valid ng-touched has-success"
-                       placeholder="请输入参数名称" required>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">参数分类</span>
-                <select ng-model="$modal.data.Category.Id"
-                        ng-options="cate.Id as cate.Name for cate in $modal.categoryList"
-                        ng-change="$modal.categoryChanged();"
-                        ng-disabled="!$modal.editing || !$modal.isNew"
-                        class="form-control">
-                </select>
-            </div>
-        </div>
-    </div>
-    <hr ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
-    <div class="row"
-         ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
-        <div class="form-group col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">换算比例</span>
-                <input type="number"
-                       ng-model="$modal.data.Scale"
-                       ng-disabled="!$modal.editing"
-                       class="form-control ng-pristine ng-valid ng-touched has-success"
-                       placeholder="参数值 = 报文值 × 换算比例">
-            </div>
-        </div>
-        <div class="form-group form-selector col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">参数单位</span>
-                <input type="text"
-                       ng-model="$modal.data.Unit"
-                       ng-disabled="!$modal.editing"
-                       class="form-control ng-pristine ng-valid ng-touched has-success"
-                       placeholder="（可选）参数的计量单位">
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="form-group col-md-12">
-            <label><i class="icon-note"></i> 备注： </label>
-            <textarea ng-model="$modal.data.Remark"
-                      class="form-control ng-pristine ng-valid ng-touched has-success"
-                      placeholder="在这里输入备注内容">
-            </textarea>
-        </div>
-    </div>
-</div>
 
-<div class="modal-footer">
-    <button class="btn red" type="button"
-            ng-show="$modal.editing && !$modal.isNew"
-            ng-click="$modal.delete()">删除</button>
-    <button type="button" class="btn ladda-button"
-            ng-show="$modal.editing"
-            ng-disabled="$modal.data.Category.Id <= 0"
-            ng-class="[{'btn-primary': $modal.data.Category.Id > 0}, {'grey': $modal.data.Category.Id <= 0}]"
-            data-style="zoom-out"
-            id="boiler_ok" ng-click="$modal.commit()"><span class="ladda-label">提交</span></button>
-    <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
-</div>
+<form name="parameterForm">
+    <div class="modal-body" id="modal-body">
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">参数名称</span>
+                    <input type="text" ng-model="$modal.data.Name"
+                           maxlength="16" name="paramName"
+                           ng-disabled="!$modal.editing || $modal.data.Category.Id === 0"
+                           class="form-control ng-pristine ng-valid ng-touched has-success"
+                           placeholder="请输入参数名称" required>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">参数分类</span>
+                    <select ng-model="$modal.data.Category.Id"
+                            ng-options="cate.Id as cate.Name for cate in $modal.categoryList"
+                            ng-change="$modal.categoryChanged();"
+                            ng-disabled="!$modal.editing || !$modal.isNew"
+                            class="form-control">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <hr ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
+        <div class="row"
+             ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
+            <div class="form-group col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">换算比例</span>
+                    <input type="number"
+                           ng-model="$modal.data.Scale" name="paramScale"
+                           ng-disabled="!$modal.editing"
+                           class="form-control ng-pristine ng-valid ng-touched has-success"
+                           placeholder="参数值 = 报文值 × 换算比例" required>
+                </div>
+            </div>
+            <div class="form-group form-selector col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">参数单位</span>
+                    <input type="text"
+                           ng-model="$modal.data.Unit"
+                           ng-disabled="!$modal.editing"
+                           class="form-control ng-pristine ng-valid ng-touched has-success"
+                           placeholder="（可选）参数的计量单位">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label><i class="icon-note"></i> 备注： </label>
+                <textarea ng-model="$modal.data.Remark"
+                          class="form-control ng-pristine ng-valid ng-touched has-success"
+                          placeholder="在这里输入备注内容">
+            </textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn red" type="button"
+                ng-show="$modal.editing && !$modal.isNew"
+                ng-click="$modal.delete()">删除</button>
+        <button type="button" class="btn ladda-button"
+                ng-show="$modal.editing"
+                ng-disabled="$modal.data.Category.Id <= 0 || parameterForm.paramName.$error.required || parameterForm.paramScale.$error.required"
+                ng-class="[{'btn-primary': $modal.data.Category.Id > 0}, {'grey': $modal.data.Category.Id <= 0}]"
+                data-style="zoom-out"
+                id="boiler_ok" ng-click="$modal.commit()"><span class="ladda-label">提交</span></button>
+        <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
+    </div>
+</form>
+
