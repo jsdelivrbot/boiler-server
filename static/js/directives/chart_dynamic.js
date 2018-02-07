@@ -330,3 +330,9 @@ boilerAdmin.directive('chartDynamic', function () {
 
     bChart.initChart();
 });
+
+const RUNTIME_RANGE_DEFAULT = 0;
+const RUNTIME_RANGE_TODAY = 1;
+const RUNTIME_RANGE_THERE_DAY = 2;
+const RUNTIME_RANGE_WEEK = 3;
+const RUNTIME_RANGE_CUSTOM = 4;

@@ -9,7 +9,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
-	
+
 )
 
 var MyORM 		orm.Ormer
@@ -58,9 +58,14 @@ func init() {
 
 		new(models.BoilerConfig),
 		new(models.BoilerRuntime),
+		new(models.BoilerRuntimeArchived),
 
 		new(caches.BoilerRuntimeCacheInstant),
-		new(caches.BoilerRuntimeCacheHistory),
+		//new(caches.BoilerRuntimeCacheHistory),
+		new(caches.BoilerRuntimeCacheDay),
+		new(caches.BoilerRuntimeCacheWeek),
+		new(caches.BoilerRuntimeCacheMonth),
+
 		new(caches.BoilerRuntimeCacheFlow),
 		new(caches.BoilerRuntimeCacheFlowDaily),
 		new(caches.BoilerRuntimeCacheSteamTemperature),
