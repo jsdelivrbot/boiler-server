@@ -646,6 +646,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+    App.startPageLoading({message: '正在加载数据...'});
     $http.post('/channel_config_matrix/', {
         terminal_code: currentData.code
     }).then(function (res) {
@@ -668,6 +669,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 }
             }
         }
+
+        setTimeout(function () {
+            App.stopPageLoading();
+        }, 800);
     });
 
     $modal.categoryChanged = function (category) {
