@@ -772,9 +772,6 @@ func (ctl *BoilerController) BoilerIsOnline(){
 	ctl.ServeJSON()
 }
 
-
-
-
 func (ctl *BoilerController) BoilerIsBurning() {
 	//goazure.Info("Ready to BoilerIsBurning!")
 	//goazure.Info("Params:", ctl.Input())

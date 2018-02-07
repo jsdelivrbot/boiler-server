@@ -67,7 +67,7 @@ func (ctl *RuntimeController) GetBoilerRank() {
 	go RtmCtl.RefreshBoilerHeatRank(time.Now())
 }
 
-func (ctl *RuntimeController)GetRunningDuration() {
+func (ctl *RuntimeController) GetRunningDuration() {
 	ticker := time.NewTicker(time.Minute * 30)
 	tick := func() {
 		for t := range ticker.C {

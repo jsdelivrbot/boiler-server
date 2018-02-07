@@ -110,8 +110,6 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			goazure.Error("Get BoilerInfo Error:", err, co, st)
 		}
 
-		bConfs := ctl.ChannelConfigList(code)
-
 		rawReloadDisabled :=
 			"UPDATE	`boiler_m163` " +
 			"SET	`need_reload` = FALSE " +
@@ -215,7 +213,10 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			}
 		}
 
-		if len(combined.Boiler.Uid) > 0 {
+		if 	combined.Boiler != nil &&
+			len(combined.Boiler.Uid) > 0 {
+
+			bConfs := ctl.ChannelConfigList(code)
 			for _, cnf := range bConfs {
 				runtimeReload(cnf)
 			}
