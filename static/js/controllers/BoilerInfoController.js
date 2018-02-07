@@ -154,6 +154,15 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
         var num = 0;
         angular.forEach(datasource, function (d, key) {
             d.num = ++num;
+
+            $http.get('/boiler/state/is_burning/?boiler=' + d.Uid)
+                .then(function (res) {
+                    // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                    d.isBurning = (res.data.value === "true");
+                }, function (err) {
+                    console.error('Fetch Status Err!', err);
+                });
+
             if (d.TerminalsCombined) {
                 for (var i = 0; i < d.TerminalsCombined.length; i++) {
                     var terminal = d.TerminalsCombined[i];
@@ -164,15 +173,6 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
                             terminal.tid = "0" + terminal.tid;
                         }
                     }
-
-                    $http.get('/boiler/state/is_burning/?boiler=' + terminal.Uid)
-                        .then(function (res) {
-                            // console.error("Fetch Status Resp:", res.data, boiler.Name);
-                            terminal.isBurning = (res.data.value === "true");
-                        }, function (err) {
-                            console.error('Fetch Status Err!', err);
-                        });
-
 
                     terminal.online = terminal.IsOnline ? "在线" : "离线";
                     terminal.setId = terminal.Remark;
