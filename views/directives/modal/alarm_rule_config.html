@@ -23,12 +23,23 @@
 <div class="modal-body" id="modal-body">
     <div class="form-group form-selector col-md-6">
         <label class="control-label">监测参数</label>
-        <select ng-model="$modal.paramId"
-                ng-options="param.Id as param.Name group by param.Category.Name for param in parameters"
-                ng-disabled="$modal.editing"
-                class="form-control ng-pristine ng-valid ng-not-empty ng-touched">
+        <!--<select ng-model="$modal.paramId"-->
+                <!--ng-options="param.Id as param.Name group by param.Category.Name for param in parameters"-->
+                <!--ng-disabled="$modal.editing"-->
+                <!--class="form-control ng-pristine ng-valid ng-not-empty ng-touched">-->
 
-        </select>
+        <!--</select>-->
+        <ui-select ng-model="$modal.paramId"
+                   theme="bootstrap" style="width: 74%;" class="pull-right"
+                   ng-disabled="$modal.editing">
+            <ui-select-match>{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
+            <ui-select-choices
+                    repeat="param.Id as param in parameters | filter: $select.search">
+                <span ng-bind-html="param.Name | highlight: $select.search"></span>
+                <small ng-bind-html="param.Id | highlight: $select.search"></small>
+            </ui-select-choices>
+        </ui-select>
+
     </div>
     <div class="form-group form-selector col-md-6">
         <label class="control-label">炉型</label>
