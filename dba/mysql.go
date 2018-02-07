@@ -26,7 +26,7 @@ func init() {
 		myConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 	}
 
-)
+
 
 
 	orm.RegisterDataBase("default", "mysql", myConnection)
