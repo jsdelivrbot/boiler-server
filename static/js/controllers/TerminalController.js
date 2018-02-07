@@ -38,14 +38,19 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                 angular.forEach(datasource, function (d, key) {
                     d.num = ++num;
                     d.code = d.TerminalCode.toString();
-                    $http.get('/boiler/state/is_burning/?boiler=' + d.Boilers[0].Uid)
-                        .then(function (res) {
-                            // console.error("Fetch Status Resp:", res.data, d);
-                            d.isBurning = (res.data.value === "true");
-                            d.online = (d.IsOnline||d.isBurning) ? "在线" : "离线";
-                        }, function (err) {
-                            console.error('Fetch Status Err!', err);
-                        });
+
+                    d.online = d.IsOnline? "在线" : "离线";
+                    if(d.Boilers){
+                        $http.get('/boiler/state/is_burning/?boiler=' + d.Boilers[0].Uid)
+                            .then(function (res) {
+                                // console.error("Fetch Status Resp:", res.data, d);
+                                d.isBurning = (res.data.value === "true");
+                                d.online = (d.IsOnline||d.isBurning) ? "在线" : "离线";
+                            }, function (err) {
+                                console.error('Fetch Status Err!', err);
+                            });
+                    }
+
 
                     if (d.code.length < 6) {
                         for (var l = d.code.length; l < 6; l++) {
