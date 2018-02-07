@@ -748,6 +748,29 @@ func (ctl *BoilerController) BoilerConfig(boilerUid string, config string) (inte
 }
 
 //***************************************** CONFIG END
+func (ctl *BoilerController) BoilerIsOnline(){
+	if ctl.Input()["boiler"] == nil || len(ctl.Input()["boiler"]) == 0 {
+		e := fmt.Sprintln("there is no boiler!")
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	uid := ctl.Input()["boiler"][0]
+	type IsOnline struct {
+		IsOnline bool `json:"IsOnline"`
+	}
+	var sql="select t.is_online from boiler_terminal_combined as bt,terminal as t"+
+		" where bt.terminal_code=t.terminal_code and bt.boiler_id=?"
+	var status IsOnline
+	err:=dba.BoilerOrm.Raw(sql,uid).QueryRow(&status)
+	if err!=nil {
+		goazure.Warning("Read Boiler online Status Error!",err)
+	}
+	fmt.Println(status)
+	ctl.Data["json"]=status
+	ctl.ServeJSON()
+}
 
 func (ctl *BoilerController) BoilerIsBurning() {
 	//goazure.Info("Ready to BoilerIsBurning!")

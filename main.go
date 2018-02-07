@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var wechatServerEnabled = true
+var wechatServerEnabled = false
 
 func main() {
 	//go controllers.BlrCtl.InitBoilerDefaults()

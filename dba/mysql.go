@@ -9,6 +9,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 var MyORM 		orm.Ormer
@@ -17,7 +18,12 @@ var BoilerOrm 	orm.Ormer
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
-	var myConnection string = "root:hold2017@tcp(47.100.0.27:3306)/boiler?charset=utf8&loc=" + url.QueryEscape("PRC")
+	var myConnection string
+	if conf.IsRelease {
+		myConnection = "root:hold2017@tcp(127.0.0.1:3306)/boiler_db?charset=utf8&loc=" + url.QueryEscape("PRC")
+	} else {
+		myConnection = "root:hold2017@tcp(183.195.133.16:12005)/boiler_db?charset=utf8&loc=" + url.QueryEscape("PRC")
+	}
 
 	orm.RegisterDataBase("default", "mysql", myConnection)
 
@@ -113,4 +119,5 @@ func init() {
 	BoilerOrm = MyORM
 	common.BoilerOrm = BoilerOrm
 	// orm.DefaultTimeLoc = time.UTC
+
 }

@@ -110,15 +110,22 @@ func (ctl *WechatController) InitWechatService() {
 
 	msgHandler = mux
 
-	if err := dba.BoilerOrm.QueryTable("application").Filter("Identity", identity).
-		Filter("App", "service").One(app); err != nil {
+	if 	err := dba.BoilerOrm.QueryTable("application").
+		Filter("Identity", identity).Filter("App", "service").
+		One(app); err != nil {
 		goazure.Error("Read App Error:", err)
+		return
 	}
 
 	if err := dba.BoilerOrm.QueryTable("application").Filter("Identity", identity).
 		Filter("App", "mini").One(mini); err != nil {
 		goazure.Error("Read Mini Error:", err)
 	}
+
+	goazure.Warn("OriginId", app.OriginId)
+	goazure.Error("AppId", app.AppId)
+	goazure.Warn("ApiToken", app.ApiToken)
+	goazure.Error("AesKey", app.AesKey)
 
 	msgServer = core.NewServer(app.OriginId, app.AppId, app.ApiToken, app.AesKey, msgHandler, nil)
 
