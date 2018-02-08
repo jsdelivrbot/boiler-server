@@ -132,15 +132,15 @@
                                        class="c-btn login_btn"
                                        ng-cloak>
                                         登录</a>
-                                    <div class="divider_line"></div>
+                                    <!--<div class="divider_line"></div>-->
                                 </li>
 
-                                <li ng-show="!home.currentUser">
-                                    <a href data-toggle="modal" data-target="#signup-form" data-dismiss="modal"
-                                       class="c-btn login_btn"
-                                       ng-cloak>
-                                        注册</a>
-                                </li>
+                                <!--<li ng-show="!home.currentUser">-->
+                                    <!--<a href data-toggle="modal" data-target="#signup-form" data-dismiss="modal"-->
+                                       <!--class="c-btn login_btn"-->
+                                       <!--ng-cloak>-->
+                                        <!--注册</a>-->
+                                <!--</li>-->
                                 <li ng-show="home.currentUser">
                                     <a href data-toggle="modal" data-target="#user-form"
                                        class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold ng-cloak"
@@ -188,10 +188,10 @@
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer c-no-border">
-                        <span class="c-text-account">还没有账户？</span>
-                        <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">注册</a>
-                    </div>
+                    <!--<div class="modal-footer c-no-border">-->
+                        <!--<span class="c-text-account">还没有账户？</span>-->
+                        <!--<a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">注册</a>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -377,7 +377,7 @@
                             -->
                             <div class="form-group">
                                 <button id="login-submit" type="submit" data-style="zoom-out"
-                                        class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login btn-primary ladda-button">
+                                        class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login btn-primary ladda-button" style="width: 100%">
                                     <span class="ladda-label">登录</span>
                                 </button>
                                 <!--<a href="javascript:;" data-toggle="modal" -->
@@ -385,34 +385,34 @@
                                    <!--data-dismiss="modal" class="c-btn-forgot">忘记密码？</a>-->
                             </div>
                             <div class="clearfix">
-                                <div class="c-content-divider c-divider-sm c-icon-bg c-bg-grey c-margin-b-20">
-                                    <span>第三方平台登录</span>
-                                </div>
-                                <ul class="c-content-list-adjusted">
-                                    <li>
-                                        <!--<a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx9bf9041710b5e5b6&redirect_uri=http%3A%2F%2Fwww.lucidcube.info%2Fuser_login_weixin%2F&response_type=code&scope=snsapi_login&state=boiler_login#wechat_redirect" class="btn btn-block c-btn-square btn-social btn-weixin">-->
-                                        <a href="user_login_weixin/" class="btn btn-block c-btn-square btn-social btn-weixin">
-                                            <i class="fa fa-weixin"></i> 微信 </a>
-                                    </li>
-                                    <!--
-                                    <li>
-                                        <a class="btn btn-block c-btn-square btn-social btn-facebook">
-                                            <i class="fa fa-facebook"></i> Facebook </a>
-                                    </li>
-                                    <li>
-                                        <a class="btn btn-block c-btn-square btn-social btn-google">
-                                            <i class="fa fa-google"></i> Google </a>
-                                    </li>
-                                    -->
-                                </ul>
+                                <!--<div class="c-content-divider c-divider-sm c-icon-bg c-bg-grey c-margin-b-20">-->
+                                    <!--<span>第三方平台登录</span>-->
+                                <!--</div>-->
+                                <!--<ul class="c-content-list-adjusted">-->
+                                    <!--<li>-->
+                                        <!--&lt;!&ndash;<a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx9bf9041710b5e5b6&redirect_uri=http%3A%2F%2Fwww.lucidcube.info%2Fuser_login_weixin%2F&response_type=code&scope=snsapi_login&state=boiler_login#wechat_redirect" class="btn btn-block c-btn-square btn-social btn-weixin">&ndash;&gt;-->
+                                        <!--<a href="user_login_weixin/" class="btn btn-block c-btn-square btn-social btn-weixin">-->
+                                            <!--<i class="fa fa-weixin"></i> 微信 </a>-->
+                                    <!--</li>-->
+                                    <!--&lt;!&ndash;-->
+                                    <!--<li>-->
+                                        <!--<a class="btn btn-block c-btn-square btn-social btn-facebook">-->
+                                            <!--<i class="fa fa-facebook"></i> Facebook </a>-->
+                                    <!--</li>-->
+                                    <!--<li>-->
+                                        <!--<a class="btn btn-block c-btn-square btn-social btn-google">-->
+                                            <!--<i class="fa fa-google"></i> Google </a>-->
+                                    <!--</li>-->
+                                    <!--&ndash;&gt;-->
+                                <!--</ul>-->
                                 <!--<div id="weixin_login_container"></div>-->
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer c-no-border">
-                        <span class="c-text-account">还没有账户？</span>
-                        <a href data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">立即注册</a>
-                    </div>
+                    <!--<div class="modal-footer c-no-border">-->
+                        <!--<span class="c-text-account">还没有账户？</span>-->
+                        <!--<a href data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">立即注册</a>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>
