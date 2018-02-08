@@ -17,14 +17,14 @@ type DeveloperController struct {
 var DevCtrl *DeveloperController = &DeveloperController{}
 
 func (ctl *DeveloperController) TerminalOriginMessageList() {
-	usr := ctl.GetCurrentUser()
+	/*usr := ctl.GetCurrentUser()
 	if !usr.IsAdmin() {
 		e := fmt.Sprintln("没有权限查看此信息！")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
-	}
+	}*/
 
 	if ctl.Input()["dev"] == nil || len(ctl.Input()["dev"]) == 0 || ctl.Input()["dev"][0] != "origin" {
 		e := fmt.Sprintln("调试参数不正确！")

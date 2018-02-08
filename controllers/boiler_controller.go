@@ -1048,10 +1048,10 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	goazure.Info("Ready to Updated Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	/*if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		return nil, errors.New(e)
-	}
+	}*/
 
 	var info 	BoilerInfo
 	var boiler 	models.Boiler
@@ -1158,10 +1158,10 @@ func (ctl *BoilerController) BoilerUpdateLocation() (*models.Boiler, error) {
 	goazure.Info("Ready to Updated Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	/*if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		return nil, errors.New(e)
-	}
+	}*/
 
 	var info BoilerInfo
 	var boiler models.Boiler
@@ -1214,10 +1214,10 @@ func (ctl *BoilerController) BoilerUpdateMaintain() (*models.Boiler, error) {
 	goazure.Info("Ready to Updated Boiler Maintain!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	/*if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		return nil, errors.New(e)
-	}
+	}*/
 
 	var info BoilerInfo
 	var boiler models.Boiler

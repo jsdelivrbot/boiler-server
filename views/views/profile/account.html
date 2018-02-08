@@ -16,11 +16,7 @@
                     <li>
                         <a href="#" data-target="#tab_1_3" data-toggle="tab">修改密码</a>
                     </li>
-                    <!--
-                    <li>
-                        <a href="#" data-target="#tab_1_4" data-toggle="tab">权限设置</a>
-                    </li>
-                    -->
+
                 </ul>
             </div>
             <div class="portlet-body">
@@ -36,25 +32,7 @@
                                 <label class="control-label">用户名称</label>
                                 <input type="text" placeholder="Full Name" ng-model="profile.aName" class="form-control" />
                             </div>
-                            <!--
-                            <div class="form-group">
-                                <label class="control-label">用户角色： </label>
-                                <span ng-class="['label', 'label-lg', {'label-danger': currentUser.Role.RoleId == 0}, {'label-warning': currentUser.Role.RoleId == 1}, {'label-success': currentUser.Role.RoleId == 2 || currentUser.Role.RoleId == 10}, {'label-primary': currentUser.Role.RoleId == 3 || currentUser.Role.RoleId == 4}, {'label-info': currentUser.Role.RoleId == 11}, {'label-default': currentUser.Role.RoleId == 20}]">{{ currentUser.Role.Name }}</span>
 
-                                <select ng-model="profile.aRole"
-                                        ng-options="role.id as role.name for role in profile.roles" class="form-control"></select>
-                            </div>
-                             -->
-                            <!--
-                            <div class="form-group">
-                                <label class="control-label">所属企业： </label>
-                                {{ currentUser.Organization.Name}}
-                                <select ng-model="profile.aOrg"
-                                        ng-options="org.Uid as org.Name group by org.Type.Name for org in organizations"
-                                        ng-disabled="!profile.isOrgs()" class="form-control"></select>
-
-                            </div>
-                            -->
                             <div class="form-group">
                                 <label class="control-label">手机号</label>
                                 <input type="text" placeholder="+86 130 0000 0000" ng-model="profile.aMobile" class="form-control" />
@@ -63,66 +41,63 @@
                                 <label class="control-label">邮箱地址</label>
                                 <input type="email" placeholder="act@temp.com" ng-model="profile.aEmail" class="form-control" />
                             </div>
-                            <!--
-                            <div class="form-group">
-                                <label class="control-label">Occupation</label>
-                                <input type="text" placeholder="Web Developer" class="form-control" /> </div>
-                            <div class="form-group">
-                                <label class="control-label">About</label>
-                                <textarea class="form-control" rows="3" placeholder="We are KeenThemes!!!"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Website Url</label>
-                                <input type="text" placeholder="http://www.mywebsite.com" class="form-control" /> </div>
-                                -->
-                            <div class="margiv-top-10">
-                                <a href ng-click="profile.updateUser()" class="btn green-haze"> 保存更新 </a>
-                                <!--<a href ng-click="profile.resetUser()" class="btn default"> 取消 </a>-->
+                            <div class="margiv-top-10 " style="overflow: hidden">
+                                <a href ng-click="profile.updateUser()" class="btn green-haze pull-right"> 保存更新 </a>
                             </div>
                         </form>
                     </div>
                     <!-- END PERSONAL INFO TAB -->
                     <!-- CHANGE AVATAR TAB -->
-                    <div class="tab-pane" id="tab_1_2">
-                        <p> 请选择您要添加的头像文件，文件格式请用jpg、png或gif，文件大小不超过2M，最好选择正方形的图片作为头像。</p>
-                        <form action="#" role="form">
-                            <div class="form-group">
-                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <div class="tab-pane row" id="tab_1_2">
+                        <div class="col-md-6">
 
-                                    <div class="thumbnail" style="width: 212px; height: 162px; padding: 5px;">
-                                        <img ngf-thumbnail="profile.avatar || 'images/no_image.png'" style="max-width: 200px; max-height: 150px;">
+                            <p> 说明：
+                                <br/>请选择您要添加的头像文件，文件格式请用jpg、png或gif，文件大小不超过2M。
+                                <br/>最佳适配 128*128到256*256 方形图片作为头像。</p>
+                            <div class="clearfix margin-top-10">
+                                <span class="" style="color: red"> 注意  </span><br/>
+                                <span class="" style="color: red">请用最新的 Firefox, Chrome, Opera, Safari 或者 Internet Explorer 10+ 来进行用户头像上传的操作。 </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="padding-left: 80px">
+                            <form action="#" role="form">
+                                <div class="form-group">
+                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+
+                                        <div class="thumbnail" style="width: 212px; height: 162px; padding: 5px;">
+                                            <img ngf-thumbnail="profile.avatar || 'images/no_image.png'" style="max-width: 200px; max-height: 150px;">
+                                        </div>
+
+                                        <div>
+                                            <button class="btn default btn-file"
+                                                    ngf-select
+                                                    ng-model="profile.avatar"
+                                                    ng-change="profile.avatarChanged();"
+                                                    name="file" ngf-pattern="'image/*'"
+                                                    ngf-accept="'image/*'"
+                                                    ngf-max-size="2MB" ngf-min-height="100"
+                                                    ngf-resize="{width: 400, height: 400}">
+                                                选择头像图片...
+                                            </button>
+                                            <a href
+                                               ng-disabled="!profile.avatar"
+                                               ng-click="profile.uploadAvatar();"
+                                               ng-class="['btn', {'green-haze': !!profile.avatar}, {'grey': !profile.avatar}]"> 上传头像 </a>
+                                            <!--<a href class="btn default"> 取消 </a>-->
+                                           <!-- <a href class="btn default"
+                                               ng-show="!!profile.avatar"
+                                               ng-click="profile.removeAvatar();"
+                                               data-dismiss="fileinput"> 移除 </a>-->
+                                        </div>
                                     </div>
 
-                                    <div>
-                                        <button class="btn default btn-file"
-                                                ngf-select
-                                                ng-model="profile.avatar"
-                                                ng-change="profile.avatarChanged();"
-                                                name="file" ngf-pattern="'image/*'"
-                                                ngf-accept="'image/*'"
-                                                ngf-max-size="2MB" ngf-min-height="100"
-                                                ngf-resize="{width: 400, height: 400}">
-                                            选择头像图片...
-                                        </button>
-                                        <a href class="btn default"
-                                           ng-show="!!profile.avatar"
-                                           ng-click="profile.removeAvatar();"
-                                           data-dismiss="fileinput"> 移除 </a>
-                                    </div>
                                 </div>
-                                <div class="clearfix margin-top-10">
-                                    <span class="" style="color: red"> 注意  </span>
-                                    <span>请用最新的 Firefox, Chrome, Opera, Safari 或者 Internet Explorer 10 来进行用户头像上传的操作。 </span>
-                                </div>
-                            </div>
-                            <div class="margin-top-10">
-                                <a href
-                                   ng-disabled="!profile.avatar"
-                                   ng-click="profile.uploadAvatar();"
-                                   ng-class="['btn', {'green-haze': !!profile.avatar}, {'grey': !profile.avatar}]"> 上传头像 </a>
-                                <!--<a href class="btn default"> 取消 </a>-->
-                            </div>
-                        </form>
+                                <!--<div class="margin-top-10">
+
+                                </div>-->
+                            </form>
+                        </div>
+
                     </div>
                     <!-- END CHANGE AVATAR TAB -->
                     <!-- CHANGE PASSWORD TAB -->
@@ -137,8 +112,8 @@
                             <div class="form-group">
                                 <label class="control-label">重新输入新密码</label>
                                 <input type="password" class="form-control" ng-model="profile.password_new_confirm"/> </div>
-                            <div class="margin-top-10">
-                                <a href ng-click="profile.updateUserPassword()" ng-disabled="profile.password.length <= 0 || profile.password_new.length < 0 || profile.password_new != profile.password_new_confirm" class="btn green-haze"> 修改密码 </a>
+                            <div class="margin-top-10 clearfix">
+                                <a href ng-click="profile.updateUserPassword()" ng-disabled="profile.password.length <= 0 || profile.password_new.length < 0 || profile.password_new != profile.password_new_confirm" class="btn green-haze pull-right"> 修改密码 </a>
                                 <!--<a href ng-click="profile.resetUserPassword()" class="btn default"> 取消 </a>-->
                             </div>
                         </form>
