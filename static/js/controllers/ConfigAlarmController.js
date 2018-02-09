@@ -189,6 +189,43 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
      Scope			int32
      */
 
+    $modal.delete = function () {
+        var uid = null;
+        if (currentData) {
+            uid = currentData.Uid;
+        }
+        swal({
+            title: "确认删除该参数？\n" + currentData.Name,
+            text: "注意：删除后将无法恢复。",
+            type: "warning",
+            showCancelButton: true,
+            //confirmButtonClass: "btn-danger",
+            confirmButtonColor: "#d33",
+            cancelButtonText: "取消",
+            confirmButtonText: "删除",
+            closeOnConfirm: false
+        }).then(function () {
+            $http.post("/alarm_rule_delete/", {
+                uid: uid
+            }).then(function (res) {
+                swal({
+                    title: "参数删除成功",
+                    type: "success"
+                }).then(function () {
+                    $uibModalInstance.close();
+                    currentData = null;
+                    confAlarm.refreshDataTables();
+                });
+            }, function (err) {
+                swal({
+                    title: "参数删除失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+        });
+    };
+
     $modal.ok = function () {
         // Ladda.create(document.getElementById('boiler_ok')).start();
         var uid = null;

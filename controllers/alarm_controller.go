@@ -521,8 +521,41 @@ func (ctl *AlarmController) AlarmRuleUpdate() {
 	goazure.Info("\nUpdate AlarmRule:", rule, al)
 }
 
+type Alarm struct {
+	Uid     string    `json:"uid"`
+}
 func (ctl *AlarmController) AlarmRuleDelete() {
+	usr := ctl.GetCurrentUser()
+	var a Alarm
+	var alarmRule models.RuntimeAlarmRule
 
+	if !usr.IsAdmin() {
+		ctl.Ctx.Output.SetStatus(403)
+		ctl.Ctx.Output.Body([]byte("Permission Denied!"))
+		goazure.Error("Permission Denied!")
+		return
+	}
+
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &a); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		fmt.Println("Unmarshal Error", err)
+		return
+	}
+	if err := dba.BoilerOrm.QueryTable("runtime_alarm_rule").Filter("Uid", a.Uid).One(&alarmRule); err != nil {
+		e := fmt.Sprintf("Read runtime_alarm_rule for Delete Error: %v", err)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	if err := DataCtl.DeleteData(&alarmRule); err != nil {
+		e := fmt.Sprintln("Delete runtime_alarm_rule Error!", alarmRule, err)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
 }
 
 type bAlarmFeedback struct {
