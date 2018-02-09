@@ -110,6 +110,9 @@
     -->
 </div>
 <div class="modal-footer">
+    <button ng-show="$modal.editing" class="btn btn-danger" type="button" ng-click="$modal.delete()">
+        删除
+    </button>
     <button class="btn btn-primary btn-info ladda-button" data-style="zoom-out" type="button" id="boiler_ok"
             ng-click="$modal.ok()">
         <span class="ladda-label">保存</span></button>
