@@ -15,7 +15,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="boiler in dashboard.filteredItems">
+    <tr ng-repeat="boiler in dashboard.filteredItems" ng-init="dashboard.fetchStatus(boiler); dashboard.fetchThumbParam(boiler);">
         <td>{{ boiler.num }}</td>
         <td>
             <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
@@ -33,7 +33,7 @@
         <td>{{ boiler.RegisterCode }}</td>
         <td>{{ boiler.ModelCode }}</td>
         <td>
-            <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" ng-class="{'success': true}"></div>
+            <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" ng-class="[{'success': boiler.isOnline || boiler.isBurning}, { 'danger': !boiler.isOnline && !boiler.isBurning}]"></div>
             <div class="status-icon" uib-tooltip="燃烧状态" tooltip-class="pop_green" ng-class="{'success': boiler.isBurning, 'danger': !boiler.isBurning}"></div>
             <div class="status-icon" uib-tooltip="告警状态" tooltip-class="pop_green" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
         </td>
