@@ -214,17 +214,17 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
 
     $modal.changeProvince = function () {
         $modal.location = $modal.aProvince;
-        dashboard.filterBoilers();
+        // dashboard.filterBoilers();
     };
 
     $modal.changeCity = function () {
         $modal.location = $modal.aCity;
-        dashboard.filterBoilers();
+        // dashboard.filterBoilers();
     };
 
     $modal.changeRegion = function () {
         $modal.location = $modal.aRegion;
-        dashboard.filterBoilers();
+        // dashboard.filterBoilers();
     };
 
     var getLocation = function (locationId, locationList, locationScope) {
@@ -292,9 +292,14 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
      Boilers			[]*Boiler		`orm:"reverse(many);null"`
      */
 
+
+
     $modal.ok = function () {
         Ladda.create(document.getElementById('boiler_ok')).start();
         var uid = currentData ? currentData.Uid : "";
+        if($modal.location==null){
+            $modal.location = $rootScope.locations[0];
+        }
         //alert("Ready to post to dialogue_comment_update");
         var postData = {
             uid: uid,
