@@ -292,9 +292,14 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
      Boilers			[]*Boiler		`orm:"reverse(many);null"`
      */
 
+
+
     $modal.ok = function () {
         Ladda.create(document.getElementById('boiler_ok')).start();
         var uid = currentData ? currentData.Uid : "";
+        if($modal.location==null){
+            $modal.location = $rootScope.locations[0];
+        }
         //alert("Ready to post to dialogue_comment_update");
         var postData = {
             uid: uid,
