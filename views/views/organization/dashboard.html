@@ -77,7 +77,9 @@
         <td>{{ data.Address.Location.LocationName }}</td>
         <td>{{ data.Address.Address }}</td>
         <td>
-            <span ng-class="['label', {'label-default': data.Type.TypeId == 0}, {'label-primary': data.Type.TypeId == 1}, {'label-success': data.Type.TypeId == 2}, {'label-warning': data.Type.TypeId == 3}, {'label-danger': data.Type.TypeId == 4}, {'label-info': data.Type.TypeId == 5}]" >{{ data.Type.Name }}</span>
+            <span ng-class="['label', {'label-default': data.Type.TypeId == 0}, {'label-primary': data.Type.TypeId == 1}, {'label-success': data.Type.TypeId == 2}, {'label-warning': data.Type.TypeId == 3}, {'label-danger': data.Type.TypeId == 4}, {'label-info': data.Type.TypeId == 5},{'label-primary': data.Type.TypeId == 6},{'label-danger': data.Type.TypeId == 7},]" >
+                {{ data.Type.Name }}
+            </span>
         </td>
         <td>
             <a ng-show="currentUser.Role.RoleId >= 10"

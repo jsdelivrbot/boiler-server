@@ -214,17 +214,17 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
 
     $modal.changeProvince = function () {
         $modal.location = $modal.aProvince;
-        dashboard.filterBoilers();
+        // dashboard.filterBoilers();
     };
 
     $modal.changeCity = function () {
         $modal.location = $modal.aCity;
-        dashboard.filterBoilers();
+        // dashboard.filterBoilers();
     };
 
     $modal.changeRegion = function () {
         $modal.location = $modal.aRegion;
-        dashboard.filterBoilers();
+        // dashboard.filterBoilers();
     };
 
     var getLocation = function (locationId, locationList, locationScope) {

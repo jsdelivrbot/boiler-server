@@ -526,10 +526,10 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     bMonitor.fetchThumbParam = function (boiler) {
         // console.error("boiler:", boiler, boiler.TerminalCode);
         // var rtmQ = [1201, 1015, 1002, 1202];
-        if ($state.current.name !== 'monitor.thumb') {
-            // $log.error("$state.current.name !== 'monitor.thumb'");
-            return;
-        }
+        // if ($state.current.name !== 'monitor.thumb') {
+        //     // $log.error("$state.current.name !== 'monitor.thumb'");
+        //     return;
+        // }
 
         if (!bMonitor.pagedItems[bMonitor.currentPage]) {
             return;
@@ -628,7 +628,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
             var runtime = [[], []];
 
-            for (var i = 0; i < Math.min(res.data.length, 4); i++) {
+            for (var i = 0; i < Math.min(res.data.length, 10); i++) {
                 var d = res.data[i];
                 var value;
                 var name = d.ParameterName;
