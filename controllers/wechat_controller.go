@@ -374,7 +374,9 @@ func (ctl *WechatController) SyncUserList() {
 			//ctl.LoginWeixinWebDone(&third)
 		}
 
-		goazure.Error(info, "|UnionId:", info.UnionId, "|Errors:", err)
+		if 	err != nil {
+			goazure.Error(info, "|UnionId:", info.UnionId, "|Errors:", err)
+		}
 	}
 }
 
