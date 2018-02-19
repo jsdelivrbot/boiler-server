@@ -361,19 +361,23 @@ func (ctl *UserThirdController) UserLoginWeixinMini() {
 	//third.IsDeleted = false
 	//goazure.Info("Third: ", third.User)
 	DataCtl.AddData(&third, true, "OpenId")
-	//goazure.Info("Third Updated: ", third.User)
+	goazure.Error("Third Updated: ", third.User)
 
 	if  err := ctl.LoginWeixinMini(&third); err != nil {
 		goazure.Error(err)
 		ctl.Ctx.Output.SetStatus(302)
 		ctl.Data["json"] = third
-	} else {
-		u := ctl.GetCurrentUser()
-		u.Thirds = []*models.UserThird{&third}
+		ctl.ServeJSON()
 
-		ctl.Data["json"] = u
+		return
 	}
 
+	u := ctl.GetCurrentUser()
+	th := &third
+	th.User = nil
+	u.Thirds = []*models.UserThird{th}
+
+	ctl.Data["json"] = u
 	ctl.ServeJSON()
 }
 
