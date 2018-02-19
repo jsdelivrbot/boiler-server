@@ -368,7 +368,10 @@ func (ctl *UserThirdController) UserLoginWeixinMini() {
 		ctl.Ctx.Output.SetStatus(302)
 		ctl.Data["json"] = third
 	} else {
-		ctl.Data["json"] = ctl.GetCurrentUser()
+		u := ctl.GetCurrentUser()
+		u.Thirds = []*models.UserThird{&third}
+
+		ctl.Data["json"] = u
 	}
 
 	ctl.ServeJSON()
@@ -712,7 +715,7 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 	var token string
 	var openid string
 	usr := ctl.GetCurrentUser()
-	if usr == nil {
+	if  usr == nil {
 		goazure.Info("Params:", ctl.Input())
 		if ctl.Input()["token"] == nil || len(ctl.Input()["token"]) == 0 {
 			return
