@@ -1102,6 +1102,18 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if err := DataCtl.ReadData(&maintainer); err == nil { boiler.Maintainer = &maintainer }
 	if err := DataCtl.ReadData(&supervisor); err == nil { boiler.Supervisor = &supervisor }
 
+	if boiler.InspectInnerDateNext.IsZero() { boiler.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
+	if boiler.InspectOuterDateNext.IsZero() { boiler.InspectOuterDateNext = time.Now().Add(time.Hour * 24 * 30) }
+	if boiler.InspectValveDateNext.IsZero() { boiler.InspectValveDateNext = time.Now().Add(time.Hour * 24 * 30) }
+	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
+
+	boiler.UpdatedBy = usr
+
+	if err := DataCtl.AddData(&boiler, true); err != nil {
+		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
+		return nil, errors.New(e)
+	}
+
 	if	num, err := dba.BoilerOrm.QueryTable("boiler_organization_linked").
 		Filter("Boiler__Uid", boiler.Uid).Delete(); err != nil {
 		goazure.Warn("Deleted Old Links Error:", err, num)
@@ -1133,18 +1145,6 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 		if num, err := dba.BoilerOrm.InsertOrUpdate(&linked); err != nil {
 			goazure.Error("M2M OrganizationLinked Add Error:", err, num)
 		}
-	}
-
-	if boiler.InspectInnerDateNext.IsZero() { boiler.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
-	if boiler.InspectOuterDateNext.IsZero() { boiler.InspectOuterDateNext = time.Now().Add(time.Hour * 24 * 30) }
-	if boiler.InspectValveDateNext.IsZero() { boiler.InspectValveDateNext = time.Now().Add(time.Hour * 24 * 30) }
-	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
-
-	boiler.UpdatedBy = usr
-
-	if err := DataCtl.AddData(&boiler, true); err != nil {
-		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
-		return nil, errors.New(e)
 	}
 
 	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
