@@ -30,6 +30,7 @@ angular.module('BoilerAdmin').controller('ConfigAlarmController', function($root
     ];
 
     confAlarm.refreshDataTables = function () {
+        App.startPageLoading({message: '正在加载数据...'});
         $http.get('/alarm_rule_list/')
             .then(function (res) {
                 // $scope.parameters = data;
@@ -54,6 +55,9 @@ angular.module('BoilerAdmin').controller('ConfigAlarmController', function($root
                 });
 
                 confAlarm.datasource = datasource;
+                setTimeout(function () {
+                    App.stopPageLoading();
+                }, 500);
             });
     };
 

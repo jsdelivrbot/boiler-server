@@ -128,6 +128,7 @@ angular.module('BoilerAdmin').controller('OrganizationController', function($roo
                     text: "如需移除该企业相关锅炉，请在锅炉列表中进行删除，或联系管理员进行操作。",
                     type: "success"
                 }).then(function () {
+                    $rootScope.getOrganizationList();
                     organization.refreshDataTables();
                 });
             }, function (err) {
@@ -350,6 +351,7 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
     var post = function (data) {
         $http.post("/organization_update/", data)
             .then(function (res) {
+                $rootScope.getOrganizationList();
                 organization.refreshDataTables();
                 if (data.generate_sample_boilers) {
                     $rootScope.getBoilerList();
