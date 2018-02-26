@@ -117,7 +117,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				goazure.Error("Update m163 after reload Error:", err, res)
 			}
 
-			return
+			continue
 		}
 
 		disIds = append(disIds, d["uid"].(string))
