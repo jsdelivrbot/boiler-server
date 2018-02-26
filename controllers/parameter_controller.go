@@ -96,7 +96,11 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 		//ver := d["Boiler_data_fmt_ver"].(string)
 		//sn := d["Boiler_sn"].(string)
 
-		//TODO: Temporary
+		rawReloadDisabled :=
+			"UPDATE	`boiler_m163` " +
+			"SET	`need_reload` = FALSE " +
+			"WHERE	`uid` = " + "'" + d["uid"].(string) + "';"
+
 		//var boiler	models.Boiler
 		var combined	models.BoilerTerminalCombined
 
@@ -108,12 +112,13 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			Filter("TerminalCode", co).Filter("TerminalSetId", st).OrderBy("TerminalSetId").
 			One(&combined); err != nil {
 			goazure.Error("Get BoilerInfo Error:", err, co, st)
-		}
 
-		rawReloadDisabled :=
-			"UPDATE	`boiler_m163` " +
-			"SET	`need_reload` = FALSE " +
-			"WHERE	`uid` = " + "'" + d["uid"].(string) + "';"
+			if res, err := dba.BoilerOrm.Raw(rawReloadDisabled).Exec(); err != nil {
+				goazure.Error("Update m163 after reload Error:", err, res)
+			}
+
+			return
+		}
 
 		disIds = append(disIds, d["uid"].(string))
 
