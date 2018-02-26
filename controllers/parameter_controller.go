@@ -247,14 +247,19 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 	//raw := "SELECT * FROM `boiler_m163` WHERE `TS` > '2017-11-10 00:00:00' ORDER BY `TS` DESC LIMIT 1000;"
 
 	raw :=
+		/*
 		"SELECT	`rtm`.* " +
 		"FROM	`boiler_m163` AS `rtm`, `boiler_terminal_combined` AS `boiler` "  +
 		//"WHERE	`boiler`.`terminal_code` = CAST(`rtm`.`Boiler_term_id` AS SIGNED) " +
 		//"AND 	`boiler`.`terminal_set_id` = CAST(`rtm`.`Boiler_boiler_id` AS SIGNED) " +
-
 		"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
 		"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
 		"  AND	`rtm`.`need_reload` = TRUE "
+		*/
+
+		"SELECT	* " +
+		"FROM	`boiler_m163` "  +
+		"WHERE	`need_reload` = TRUE "
 
 	if limit <= 600 {
 		raw = raw + "ORDER BY `rtm`.`TS` DESC "
@@ -972,7 +977,7 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 15
+	interval := time.Second * 5
 	if !conf.IsRelease {
 		interval = time.Minute * 2
 	}
