@@ -925,11 +925,11 @@ func (ctl *BoilerController) BoilerMessageSend() {
 		} else {
 			u = users[0]
 
-			var su models.UserThird
-			qu := dba.BoilerOrm.QueryTable("user_third")
-			qu = qu.Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false)
-			if err := qu.One(&su); err != nil {
-				goazure.Error("User", u.Name, "Is NOT Subscribed.")
+			var tds []*models.UserThird
+			if  num, err := dba.BoilerOrm.QueryTable("user_third").
+				Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false).
+				All(&tds); err != nil {
+				goazure.Error("User", u.Name, "Is NOT Subscribed.", err, num)
 			} else {
 				//content := "锅炉测试消息：\n"
 				//content += "送达" + u.Name + "OpenId:" + su.OpenId + "\n"
@@ -946,8 +946,10 @@ func (ctl *BoilerController) BoilerMessageSend() {
 				}
 
 				tempMsg, _ := WxCtl.TemplateMessageAlarm(&alarm)
-				goazure.Info("WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)", su.OpenId, tempMsg)
-				WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				for _, su := range tds {
+					goazure.Info("WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)", su.OpenId, "|", tempMsg)
+					WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				}
 			}
 		}
 	}

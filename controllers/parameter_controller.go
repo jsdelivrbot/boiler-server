@@ -273,7 +273,7 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 }
 
 func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.RuntimeParameterChannelConfig {
-	goazure.Warning("ChannelConfigList:", code)
+	//goazure.Warning("ChannelConfigList:", code)
 	var dfConfs 	[]*models.RuntimeParameterChannelConfig
 	var bConfs 		[]*models.RuntimeParameterChannelConfig
 	var co			int64
@@ -305,9 +305,10 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 		RelatedSel("Terminal").
 		Filter("Terminal__TerminalCode", co).Filter("IsDeleted", false).All(&bConfs); err != nil || num == 0 {
 		goazure.Error("Get Boiler Channel Config Error:", err, num)
-	} else {
-		goazure.Info("Get Boiler Channel Config:", num, "\n", bConfs)
 	}
+	/*else {
+		goazure.Info("Get Boiler Channel Config:", num, "\n", bConfs)
+	}*/
 
 	for _, c := range bConfs {
 		if c.ChannelType == models.CHANNEL_TYPE_RANGE {
