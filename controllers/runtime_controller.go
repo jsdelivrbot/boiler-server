@@ -1912,6 +1912,7 @@ func (ctl *RuntimeController)ImportExistCache() {
 
 	if	num, err := dba.BoilerOrm.QueryTable("boiler_runtime").
 		RelatedSel("Boiler").RelatedSel("Parameter").RelatedSel("Alarm").
+		Limit(-1).
 		All(&rtms); err != nil {
 		goazure.Error("Read Boiler Runtime Error:", err, num)
 	}
