@@ -241,77 +241,102 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	*/
 
 	/* CACHES */
-	/*
-	var cache caches.BoilerRuntimeCacheInterface
-	var isDefault bool = false
+	tableNamePrefix := "boiler_runtime_cache_"
+	tableNameInst	:= "instant"
+	tableNameList 	:= []string{"day", "week", "month"}
 
-	switch rtm.Parameter.Id {
-	case 1001:
-		cache = &caches.BoilerRuntimeCacheSteamTemperature{}
+	rawInst :=
+		"INSERT IGNORE `" + tableNamePrefix + tableNameInst + "` " +
+		"( " +
+			"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
+			"`created_date` , `updated_date` , `name` , `value` , " +
+			"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
+		") " +
+		"VALUES " +
+		"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+		"ON DUPLICATE KEY UPDATE " +
+		"`runtime_id` = ? , " +
+		"`alarm_id` = ? , " +
+		"`updated_date` = IF(`updated_date` > ?, `updated_date`, ?) , " +
+		"`value` = ? , " +
+		"`name` = ? , " +
+		"`parameter_name` = ? , " +
+		"`unit` = ? , " +
+		"`alarm_level` = ? , " +
+		"`alarm_description` = ? , " +
+		"`remark` = ?, " +
+		"`is_deleted` = FALSE;"
 
-	case 1002:
-		cache = &caches.BoilerRuntimeCacheSteamPressure{}
-
-	case 1003:
-		cache = &caches.BoilerRuntimeCacheFlow{}
-
-	case 1005:
-		fallthrough
-	case 1006:
-		cache = &caches.BoilerRuntimeCacheWaterTemperature{}
-
-	case 1014:
-		fallthrough
-	case 1015:
-		cache = &caches.BoilerRuntimeCacheSmokeTemperature{}
-
-	case 1016:
-		fallthrough
-	case 1017:
-		fallthrough
-	case 1018:
-		fallthrough
-	case 1019:
-		cache = &caches.BoilerRuntimeCacheSmokeComponent{}
-
-	case 1201:
-		cache = &caches.BoilerRuntimeCacheHeat{}
-
-	case 1202:
-		cache = &caches.BoilerRuntimeCacheExcessAir{}
-
-	default:
-		cache = &caches.BoilerRuntimeCache{}
-		isDefault = true
+	alarmId := ""
+	alarmLv := int32(0)
+	alarmDesc := ""
+	if rtm.Alarm != nil {
+		alarmId = rtm.Alarm.Uid
+		alarmLv = rtm.Alarm.AlarmLevel
+		alarmDesc = rtm.Alarm.Description
 	}
 
-	aCache := cache.GetCache().(*caches.BoilerRuntimeCache)
+	if 	res, err := dba.BoilerOrm.Raw(rawInst,
+		rtm.Id, rtm.Boiler.Uid, rtm.Parameter.Id, alarmId,
+		rtm.CreatedDate, rtm.CreatedDate, rtm.Boiler.Name, val,
+		rtm.Parameter.Name, rtm.Parameter.Unit, alarmLv, alarmDesc, rtm.Remark,
 
-	aCache.Runtime = rtm
+		rtm.Id,
+		alarmId,
+		rtm.CreatedDate, rtm.CreatedDate,
+		val,
+		rtm.Boiler.Name,
+		rtm.Parameter.Name,
+		rtm.Parameter.Unit,
+		alarmLv,
+		alarmDesc,
+		rtm.Remark).
+		Exec(); err != nil {
+		goazure.Error("Insert Instant Error:", err, res)
+	} /*else {
+		row, _ := res.RowsAffected()
+		id, _ := res.LastInsertId()
+		goazure.Info("Insert Instant Done!", rtm)
+		goazure.Info("RowsAffected", row)
+		goazure.Info("LastInsertId", id)
+		//panic(0)
+	}*/
 
-	aCache.Boiler = rtm.Boiler
-	aCache.Name = rtm.Boiler.Name
-	aCache.NameEn = rtm.Boiler.NameEn
-	aCache.CreatedDate = rtm.CreatedDate
-	aCache.Remark = rtm.Remark
+	for _, name := range tableNameList {
+		raw :=
+			"INSERT IGNORE `" + tableNamePrefix + name + "` " +
+			"( " +
+			"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
+			"`created_date` , `name` , `value` , " +
+			"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
+			") " +
+			"VALUES " +
+			"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
 
-	aCache.IsDeleted = rtm.IsDeleted
-	aCache.IsDemo = rtm.IsDemo
+		if	res, err := dba.BoilerOrm.
+			Raw(raw,
+			rtm.Id, rtm.Boiler.Uid, rtm.Parameter.Id, alarmId,
+			rtm.CreatedDate, rtm.Boiler.Name, val,
+			rtm.Parameter.Name, rtm.Parameter.Unit, alarmLv, alarmDesc, rtm.Remark).
+			Exec(); err != nil {
+			goazure.Error("Insert Runtime Cache Error:", err, res)
+		} /*else {
+			row, _ := res.RowsAffected()
+			id, _ := res.LastInsertId()
+			goazure.Info("Insert Runtime Cache Done!", rtm)
+			goazure.Info("RowsAffected", row)
+			goazure.Info("LastInsertId", id)
+			//panic(0)
+		} */
 
-	aCache.Parameter = rtm.Parameter
-	aCache.ParameterName = rtm.Parameter.Name
-	aCache.Unit = rtm.Parameter.Unit
-
-	aCache.Value = v
-
-	goazure.Error("============ bCache:", cache, "\n", reflect.TypeOf(cache), "||", rtm.Parameter.Id, "||", isDefault)
-
-	if !isDefault {
-		if err := DataCtl.AddData(cache.(models.DataInterface), true); err != nil {
-			goazure.Error("Added/Updated Cache Failed:", err)
-		}
 	}
-	*/
+
+	//if !isDefault {
+	//	if err := DataCtl.AddData(cache.(models.DataInterface), true); err != nil {
+	//		goazure.Error("Added/Updated Cache Failed:", err)
+	//	}
+	//}
+
 
 	/* HISTORY */
 	var history caches.BoilerRuntimeHistory
