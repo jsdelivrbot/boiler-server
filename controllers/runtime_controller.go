@@ -956,11 +956,11 @@ func (ctl *RuntimeController) BoilerRuntimeDailyTotal() {
 	//var aFlows [][]orm.Params
 	//var aHeats [][]orm.Params
 
-	raw := "SELECT 	`flows`.`date`, AVG(`flows`.`value`) AS `flow`, AVG(`heats`.`value`) AS `heat` "
-	raw += "FROM	`boiler_runtime_cache_flow_daily` AS `flows`, `boiler_runtime_cache_heat_daily` AS `heats` "
-	raw += "WHERE	`flows`.`date` = `heats`.`date` AND `flows`.`boiler_id` = `heats`.`boiler_id` "
-	raw += "GROUP BY `heats`.`date`, `heats`.`boiler_id` "
-	raw += "ORDER BY `heats`.`date`;"
+	raw := 	"SELECT 	`flows`.`date`, AVG(`flows`.`value`) AS `flow`, AVG(`heats`.`value`) AS `heat` " +
+			"FROM		`boiler_runtime_cache_flow_daily` AS `flows`, `boiler_runtime_cache_heat_daily` AS `heats` " +
+			"WHERE		`flows`.`date` = `heats`.`date` AND `flows`.`boiler_id` = `heats`.`boiler_id` " +
+			"GROUP BY 	`heats`.`date`, `heats`.`boiler_id` " +
+			"ORDER BY 	`heats`.`date`;"
 
 	type total struct {
 		Date		time.Time
@@ -1905,4 +1905,63 @@ func importHistoryDataFromOldTable(tableName string, t time.Time) {
 		}
 	}
 	*/
+}
+
+func (ctl *RuntimeController)ImportExistCache() {
+	var rtms []*models.BoilerRuntime
+
+	if	num, err := dba.BoilerOrm.QueryTable("boiler_runtime").
+		RelatedSel("Boiler").RelatedSel("Parameter").RelatedSel("Alarm").
+		All(&rtms); err != nil {
+		goazure.Error("Read Boiler Runtime Error:", err, num)
+	}
+
+	/* CACHES */
+	tableNamePrefix := "boiler_runtime_cache_"
+	tableNameList 	:= []string{"day", "week", "month"}
+
+	for _, rtm := range rtms {
+		v := float64(rtm.Value) * float64(rtm.Parameter.Scale)
+		var val interface{}
+		pow10_n := math.Pow10(int(rtm.Parameter.Fix))
+		val = math.Trunc(v * pow10_n + 0.5) / pow10_n
+
+		alarmId := ""
+		alarmLv := int32(0)
+		alarmDesc := ""
+		if 	rtm.Alarm != nil {
+			alarmId = rtm.Alarm.Uid
+			alarmLv = rtm.Alarm.AlarmLevel
+			alarmDesc = rtm.Alarm.Description
+		}
+
+		for _, name := range tableNameList {
+			raw :=
+				"INSERT IGNORE `" + tableNamePrefix + name + "` " +
+					"( " +
+					"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
+					"`created_date` , `name` , `value` , " +
+					"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
+					") " +
+					"VALUES " +
+					"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
+
+			if	res, err := dba.BoilerOrm.
+				Raw(raw,
+				rtm.Id, rtm.Boiler.Uid, rtm.Parameter.Id, alarmId,
+				rtm.CreatedDate, rtm.Boiler.Name, val,
+				rtm.Parameter.Name, rtm.Parameter.Unit, alarmLv, alarmDesc, rtm.Remark).
+				Exec(); err != nil {
+				goazure.Error("Insert Runtime Cache Error:", err, res)
+			} /*else {
+			row, _ := res.RowsAffected()
+			id, _ := res.LastInsertId()
+			goazure.Info("Insert Runtime Cache Done!", rtm)
+			goazure.Info("RowsAffected", row)
+			goazure.Info("LastInsertId", id)
+			//panic(0)
+		} */
+
+		}
+	}
 }
