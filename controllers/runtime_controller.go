@@ -161,12 +161,19 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	}
 	*/
 
-	//rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
-	//
-	//if err := DataCtl.UpdateData(rtm); err != nil {
-	//	goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
-	//}
+	/* CACHE */
+	ctl.ReloadCacheWithRuntime(rtm, val)
+	/* HISTORY */
+	ctl.ReloadHistoryWithRuntime(rtm, val)
 
+	rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
+
+	if err := DataCtl.UpdateData(rtm); err != nil {
+		goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
+	}
+}
+
+func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, val interface{}) {
 	/*
 	IF NEW.`parameter_id` = 1001 THEN
 	SELECT 'boiler_runtime_cache_steam_temperature' INTO @tableName;
@@ -247,25 +254,25 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 
 	rawInst :=
 		"INSERT IGNORE `" + tableNamePrefix + tableNameInst + "` " +
-		"( " +
+			"( " +
 			"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
 			"`created_date` , `updated_date` , `name` , `value` , " +
 			"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
-		") " +
-		"VALUES " +
-		"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-		"ON DUPLICATE KEY UPDATE " +
-		"`runtime_id` = ? , " +
-		"`alarm_id` = ? , " +
-		"`updated_date` = IF(`updated_date` > ?, `updated_date`, ?) , " +
-		"`value` = ? , " +
-		"`name` = ? , " +
-		"`parameter_name` = ? , " +
-		"`unit` = ? , " +
-		"`alarm_level` = ? , " +
-		"`alarm_description` = ? , " +
-		"`remark` = ?, " +
-		"`is_deleted` = FALSE;"
+			") " +
+			"VALUES " +
+			"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+			"ON DUPLICATE KEY UPDATE " +
+			"`runtime_id` = ? , " +
+			"`alarm_id` = ? , " +
+			"`updated_date` = IF(`updated_date` > ?, `updated_date`, ?) , " +
+			"`value` = ? , " +
+			"`name` = ? , " +
+			"`parameter_name` = ? , " +
+			"`unit` = ? , " +
+			"`alarm_level` = ? , " +
+			"`alarm_description` = ? , " +
+			"`remark` = ?, " +
+			"`is_deleted` = FALSE;"
 
 	alarmId := ""
 	alarmLv := int32(0)
@@ -305,13 +312,13 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	for _, name := range tableNameList {
 		raw :=
 			"INSERT IGNORE `" + tableNamePrefix + name + "` " +
-			"( " +
-			"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
-			"`created_date` , `name` , `value` , " +
-			"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
-			") " +
-			"VALUES " +
-			"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
+				"( " +
+				"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
+				"`created_date` , `name` , `value` , " +
+				"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
+				") " +
+				"VALUES " +
+				"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
 
 		if	res, err := dba.BoilerOrm.
 			Raw(raw,
@@ -336,9 +343,9 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	//		goazure.Error("Added/Updated Cache Failed:", err)
 	//	}
 	//}
+}
 
-
-	/* HISTORY */
+func (ctl *RuntimeController) ReloadHistoryWithRuntime(rtm *models.BoilerRuntime, val interface{}) {
 	var history caches.BoilerRuntimeHistory
 	history.Boiler = rtm.Boiler
 	history.Name = rtm.Boiler.Name
@@ -378,12 +385,6 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	if err := DataCtl.AddData(&history, true); err != nil {
 		goazure.Error("Added/Updated History Failed:", err)
 	}
-
-	rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
-
-	if err := DataCtl.UpdateData(rtm); err != nil {
-		goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
-	}
 }
 
 func runtimeReload(t time.Time) {
@@ -398,7 +399,6 @@ func runtimeReload(t time.Time) {
 	for _, rtm := range runtime {
 		RtmCtl.RuntimeDataReload(rtm)
 	}
-
 
 }
 
