@@ -901,8 +901,8 @@ func (ctl *BoilerController) BoilerMessageSend() {
 		return
 	}
 
-	qs := dba.BoilerOrm.QueryTable("boiler")
-	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
+	qs := dba.BoilerOrm.QueryTable("boiler").
+		RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 		RelatedSel("Fuel__Type").RelatedSel("Template").
 		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").
 		RelatedSel("RegisterOrg").
@@ -914,9 +914,9 @@ func (ctl *BoilerController) BoilerMessageSend() {
 		goazure.Warn("Get Boiler Info For Test Message: ", err, "\n", boiler, "\n", cnf)
 	} else {
 		var users []*models.User
-		raw := "SELECT 	`user`.* "
-		raw += "FROM	`user`, `boiler_message_subscriber` AS `sub` "
-		raw += "WHERE	`user`.`uid` = `sub`.`user_id` "
+		raw := 	"SELECT `user`.* " +
+				"FROM	`user`, `boiler_message_subscriber` AS `sub` " +
+				"WHERE	`user`.`uid` = `sub`.`user_id` "
 		raw += fmt.Sprintf("AND	`sub`.`boiler_id` = '%s' ", boiler.Uid)
 		raw += fmt.Sprintf("AND	`user`.`uid` = '%s';", usr.Uid)
 

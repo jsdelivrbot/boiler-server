@@ -110,7 +110,9 @@ func (ctl *AlarmController) BoilerAlarmList() {
 	if !usr.IsAdmin() || len(boilers) > 0 {
 		qa = qa.Filter("Boiler__in", boilers)
 	}
-	if num, err := qa.Filter("IsDeleted", false).OrderBy("-EndDate").Values(&objs, "Uid", "StartDate", "EndDate", "Priority", "State", "Description",
+	if num, err := qa.Filter("IsDeleted", false).
+		OrderBy("-EndDate").
+		Values(&objs, "Uid", "StartDate", "EndDate", "Priority", "State", "Description",
 		"Boiler__Uid", "Boiler__Name", "Boiler__Enterprise__Name",
 		"Parameter__Name"); num == 0 || err != nil {
 		goazure.Error("Read AlarmList Error:", num, err)
@@ -395,19 +397,19 @@ func (ctl *AlarmController) BoilerAlarmFeedbackList() {
 }
 
 type bAlarmRule struct {
-	Uid			string		`json:"uid"`
-	ParamId 		int64		`json:"paramId"`
+	Uid					string		`json:"uid"`
+	ParamId 			int64		`json:"paramId"`
 	BoilerFormId 		int64		`json:"boilerFormId"`
 	BoilerMediumId		int64		`json:"boilerMediumId"`
 	BoilerFuelTypeId 	int64 		`json:"boilerFuelTypeId"`
 	BoilerCapacityMin 	int 		`json:"boilerCapacityMin"`
 	BoilerCapacityMax 	int 		`json:"boilerCapacityMax"`
 
-	NormalValue		float32		`json:"normalValue"`
+	NormalValue			float32		`json:"normalValue"`
 	WarningValue		float32		`json:"warningValue"`
-	Delay			int64		`json:"delay"`
-	Priority		int		`json:"priority"`
-	Description		string		`json:"description"`
+	Delay				int64		`json:"delay"`
+	Priority			int			`json:"priority"`
+	Description			string		`json:"description"`
 }
 
 func (ctl *AlarmController) AlarmRuleUpdate() {
@@ -649,10 +651,10 @@ func (ctl *AlarmController) BoilerAlarmUpdate() {
 
 func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	var alarms []*models.BoilerAlarm
-	qa := dba.BoilerOrm.QueryTable("boiler_alarm").RelatedSel("Boiler__Address")
-	qa = qa.Filter("State", models.BOILER_ALARM_STATE_NEW).
-		Filter("StartDate__lte", t.Add(time.Minute * -10))
-	if num, err := qa.Filter("IsDeleted", false).All(&alarms); err != nil {
+	if 	num, err := dba.BoilerOrm.QueryTable("boiler_alarm").
+		RelatedSel("Boiler__Address").
+		Filter("State", models.BOILER_ALARM_STATE_NEW).Filter("StartDate__lte", t.Add(time.Minute * -10)).Filter("IsDeleted", false).
+		All(&alarms); err != nil {
 		goazure.Error("Fetch New Alarm Error:", num, err)
 	}
 

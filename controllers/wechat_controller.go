@@ -44,14 +44,14 @@ type Request struct {
 
 type Response struct {
 	XMLName 		xml.Name 	`xml:"xml"`
-	ToUserName   		string		`xml:",cdata"`
-	FromUserName 		string		`xml:",cdata"`
-	CreateTime   		time.Duration	//`xml:"CreateTime"`
-	MsgType      		string		`xml:",cdata"`
-	Content      		string		`xml:",cdata"`
-	ArticleCount 		int     	`xml:",omitempty"`
-	Articles     		[]*item 	`xml:"Articles>item,omitempty"`
-	FuncFlag     		int
+	ToUserName   	string		`xml:",cdata"`
+	FromUserName 	string		`xml:",cdata"`
+	CreateTime   	time.Duration	//`xml:"CreateTime"`
+	MsgType      	string		`xml:",cdata"`
+	Content      	string		`xml:",cdata"`
+	ArticleCount 	int     	`xml:",omitempty"`
+	Articles     	[]*item 	`xml:"Articles>item,omitempty"`
+	FuncFlag     	int
 }
 
 type item struct {
@@ -238,7 +238,7 @@ func (ctl *WechatController) SendText(openId, content, customerService string) {
 func (ctl *WechatController) SendTemplateMessage(openId string, tempMsg *template.TemplateMessage2) {
 	tempMsg.ToUser = openId
 
-	if id, err := template.Send(wechatClient, tempMsg); err != nil {
+	if 	id, err := template.Send(wechatClient, tempMsg); err != nil {
 		goazure.Error("Wechat TemplateMsg Send Error:", err, id)
 	}
 	/*

@@ -92,7 +92,7 @@
                             </a>
                             <a ui-sref="runtime.developer({boiler: runtime.boiler.Uid})"
                                ui-sref-opts="{inherit: false}"
-                               ng-show="currentUser.Role.RoleId <= 2"
+                               {{/*ng-show="currentUser.Role.RoleId <= 2"*/}}
                                class="btn green btn-outline btn-circle btn-sm"
                                ng-class="{'active': $state.current.name == 'runtime.developer'}">
                                 <i class="fa fa-ellipsis-h"></i>
