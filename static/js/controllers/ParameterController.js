@@ -188,7 +188,6 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
 
     $modal.initCurrent();
     */
-
     $modal.categoryChanged = function () {
         var cateId = $modal.data.Category.Id;
         if (cateId <= 0) {
@@ -196,7 +195,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
             $modal.data.Id = 0;
         }
 
-        if (cateId === PARAMETER_CATEGORY_SWITCH) {
+        if (cateId === PARAMETER_CATEGORY_SWITCH || cateId === PARAMETER_CATEGORY_STATUS) {
             $modal.data.Scale = 1;
             $modal.data.Fix = 0;
             $modal.data.Unit = "";
