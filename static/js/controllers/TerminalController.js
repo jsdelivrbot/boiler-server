@@ -24,7 +24,9 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4),
         DTColumnDefBuilder.newColumnDef(5),
-        DTColumnDefBuilder.newColumnDef(6).notSortable()
+        DTColumnDefBuilder.newColumnDef(6),
+        DTColumnDefBuilder.newColumnDef(7),
+        DTColumnDefBuilder.newColumnDef(8).notSortable()
     ];
 
     terminal.refreshDataTables = function (callback) {
@@ -271,6 +273,37 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         });
     };
 
+    terminal.groupConfig = function (){
+        var items = [
+            {
+                start:680001,
+                end:680100,
+                template:"通用模板一"
+            },
+            {
+                start:680001,
+                end:680100,
+                template:"通用模板一"
+            }
+        ];
+        var modalInstance = $uibModal.open({
+            templateUrl: 'groupConfig.html',
+            controller: 'ModalGroupConfigCtrl',
+            size: "lg",
+            windowClass: 'zindex',
+            resolve: {
+                items1: function () {
+                    return items;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+
+        });
+    }
 
     terminal.toggleAnimation = function () {
         terminal.animationsEnabled = !terminal.animationsEnabled;
@@ -1103,6 +1136,44 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', 
 
     $modalRange.rangeChanged();
 });
+
+
+angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance, items1) {
+    $scope.items = items1;
+
+    $scope.template = [
+        {
+            id:1,
+            name:"通用模板一"
+        },
+        {
+            id:2,
+            name:"通用模板二"
+        },
+        {
+            id:3,
+            name:"通用模板三"
+        }
+    ];
+    $scope.selectedTemplate = $scope.template[0];
+    $scope.addGroupConfig = function (){
+        $scope.items.push({
+            start:680001,
+            end:680100,
+            template:"通用模板一"});
+    };
+
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
+
 
 angular.module('BoilerAdmin').component('modalComponent', {
     templateUrl: '/directives/modal/terminal_config.html',
