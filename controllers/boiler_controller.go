@@ -920,7 +920,7 @@ func (ctl *BoilerController) BoilerMessageSend() {
 		raw += fmt.Sprintf("AND	`sub`.`boiler_id` = '%s' ", boiler.Uid)
 		raw += fmt.Sprintf("AND	`user`.`uid` = '%s';", usr.Uid)
 
-		if num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil || num == 0 {
+		if 	num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil || num == 0 {
 			goazure.Error("Get Boiler Subscribers Error:", err, num)
 		} else {
 			u = users[0]

@@ -661,26 +661,28 @@ func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	for i, al := range alarms {
 		if al.Priority > 0 {
 			var users []*models.User
-			raw := "SELECT 	`user`.* "
-			raw += "FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` "
-			raw += "WHERE	`boiler`.`uid` = `sub`.`boiler_id` AND `user`.`uid` = `sub`.`user_id` "
-			raw += fmt.Sprintf("AND	`boiler`.`uid` = '%s';", al.Boiler.Uid)
-			if num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil {
+			raw := 	"SELECT `user`.* " +
+					"FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` " +
+					"WHERE	`boiler`.`uid` = `sub`.`boiler_id` AND `user`.`uid` = `sub`.`user_id` " +
+					fmt.Sprintf("AND	`boiler`.`uid` = '%s';", al.Boiler.Uid)
+			if 	num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil {
 				goazure.Error("Get Boiler Subscribers Error:", err, num)
 			}
 			al.Boiler.Subscribers = users
 
 			for _, u := range al.Boiler.Subscribers {
-				var su models.UserThird
-				qu := dba.BoilerOrm.QueryTable("user_third")
-				qu = qu.Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false)
-				if err := qu.One(&su); err != nil {
-					goazure.Error("User", u.Name, "Is NOT Subscribed.")
+				var tds []*models.UserThird
+				if 	num, err := dba.BoilerOrm.QueryTable("user_third").
+					Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false).
+					All(&tds); err != nil {
+					goazure.Error("User", u.Name, "Is NOT Subscribed.", num)
 					continue
 				}
 
 				tempMsg, _ := WxCtl.TemplateMessageAlarm(al)
-				WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				for _, su := range tds {
+					WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				}
 			}
 		}
 
