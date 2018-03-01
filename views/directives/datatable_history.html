@@ -206,7 +206,7 @@
             <td> {{ d.num }}</td>
             <td> {{ d.date | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
 
-            <td ng-repeat="id in history.pids">
+            <td ng-repeat="id in history.pids track by $index">
                 <div ng-class="[{'border-danger': d[id].alarm >= 2}, {'border-warning': d[id].alarm === 1}]">{{
                     d[id].value }}
                 </div>
