@@ -249,9 +249,19 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 
 	/* CACHES */
 	tableNamePrefix := "boiler_runtime_cache_"
-	tableNameInst	:= "instant"
+	//tableNameInst	:= "instant"
 	tableNameList 	:= []string{"day", "week", "month"}
 
+	alarmId := ""
+	alarmLv := int32(0)
+	alarmDesc := ""
+	if rtm.Alarm != nil {
+		alarmId = rtm.Alarm.Uid
+		alarmLv = rtm.Alarm.AlarmLevel
+		alarmDesc = rtm.Alarm.Description
+	}
+
+	/*
 	rawInst :=
 		"INSERT IGNORE `" + tableNamePrefix + tableNameInst + "` " +
 			"( " +
@@ -274,15 +284,6 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 			"`remark` = ?, " +
 			"`is_deleted` = FALSE;"
 
-	alarmId := ""
-	alarmLv := int32(0)
-	alarmDesc := ""
-	if rtm.Alarm != nil {
-		alarmId = rtm.Alarm.Uid
-		alarmLv = rtm.Alarm.AlarmLevel
-		alarmDesc = rtm.Alarm.Description
-	}
-
 	if 	res, err := dba.BoilerOrm.Raw(rawInst,
 		rtm.Id, rtm.Boiler.Uid, rtm.Parameter.Id, alarmId,
 		rtm.CreatedDate, rtm.CreatedDate, rtm.Boiler.Name, val,
@@ -300,7 +301,8 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 		rtm.Remark).
 		Exec(); err != nil {
 		goazure.Error("Insert Instant Error:", err, res)
-	} /*else {
+	} */
+	/*else {
 		row, _ := res.RowsAffected()
 		id, _ := res.LastInsertId()
 		goazure.Info("Insert Instant Done!", rtm)
