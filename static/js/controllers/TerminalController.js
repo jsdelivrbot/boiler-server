@@ -24,8 +24,8 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4),
         DTColumnDefBuilder.newColumnDef(5),
-        DTColumnDefBuilder.newColumnDef(6),
-        DTColumnDefBuilder.newColumnDef(7).notSortable()
+        // DTColumnDefBuilder.newColumnDef(6),
+        DTColumnDefBuilder.newColumnDef(6).notSortable()
     ];
 
     terminal.refreshDataTables = function (callback) {
@@ -634,6 +634,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+    App.startPageLoading({message: '正在加载数据...'});
     $http.post('/channel_config_matrix/', {
         terminal_code: currentData.code
     }).then(function (res) {
@@ -656,6 +657,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 }
             }
         }
+        setTimeout(function () {
+            App.stopPageLoading();
+        }, 800);
     });
 
     $modal.categoryChanged = function (category) {
@@ -882,8 +886,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         console.warn("$modal channel update!", configUpload);
 
+        App.startPageLoading({message: '正在加载数据...'});
         $http.post("/channel_config_update/", configUpload)
             .then(function (res) {
+                App.stopPageLoading();
                 swal({
                     title: "通道配置更新成功",
                     type: "success"

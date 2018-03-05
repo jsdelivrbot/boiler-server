@@ -512,15 +512,22 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             }, function (err) {
                 console.error('Fetch Status Err!', err);
             });
+        $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
+            .then(function (res) {
+                // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                boiler.isOnline = res.data.IsOnline;
+            }, function (err) {
+                console.error('Fetch Status Err!', err);
+            });
     };
 
     bMonitor.fetchThumbParam = function (boiler) {
         // console.error("boiler:", boiler, boiler.TerminalCode);
         // var rtmQ = [1201, 1015, 1002, 1202];
-        if ($state.current.name !== 'monitor.thumb') {
-            // $log.error("$state.current.name !== 'monitor.thumb'");
-            return;
-        }
+        // if ($state.current.name !== 'monitor.thumb') {
+        //     // $log.error("$state.current.name !== 'monitor.thumb'");
+        //     return;
+        // }
 
         if (!bMonitor.pagedItems[bMonitor.currentPage]) {
             return;
