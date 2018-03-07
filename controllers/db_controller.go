@@ -37,7 +37,7 @@ func init() {
 
 	defer db.Close()
 
-	DBCtl.ImportMSSQLData(db, 0, time.Time{})
+	go DBCtl.ImportMSSQLData(db, 0, time.Time{})
 
 	ticker := time.NewTicker(time.Minute * 5)
 	tick := func() {
