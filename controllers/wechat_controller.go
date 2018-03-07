@@ -5,6 +5,8 @@ import (
 	"github.com/AzureRelease/boiler-server/dba"
 	"github.com/AzureRelease/boiler-server/conf"
 
+	"github.com/AzureTech/goazure"
+
 	"io/ioutil"
 	"fmt"
 	"encoding/json"
@@ -13,7 +15,6 @@ import (
 	"encoding/xml"
 	"sort"
 	"crypto/sha1"
-	"github.com/AzureTech/goazure"
 	"time"
 	"strings"
 	"log"
@@ -21,7 +22,7 @@ import (
 	"github.com/AzureTech/wechat/mp/base"
 	"github.com/AzureTech/wechat/mp/core"
 	"github.com/AzureTech/wechat/mp/menu"
-	"github.com/AzureTech/wechat/mp/user"
+	wuser "github.com/AzureTech/wechat/mp/user"
 	"github.com/AzureTech/wechat/mp/message/callback/request"
 	"github.com/AzureTech/wechat/mp/message/callback/response"
 	"github.com/AzureTech/wechat/mp/message/custom"
@@ -174,7 +175,7 @@ func eventSubscribeHandler(ctx *core.Context) {
 	goazure.Warn(msg)
 	goazure.Info(openid)
 
-	info, err := user.Get(wechatClient, string(ctx.MixedMsg.FromUserName), user.LanguageZhCN)
+	info, err := wuser.Get(wechatClient, string(ctx.MixedMsg.FromUserName), wuser.LanguageZhCN)
 	var third models.UserThird
 	if err := dba.BoilerOrm.QueryTable("user_third").RelatedSel("User__Role").
 		Filter("OpenId", info.OpenId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&third); err != nil {
@@ -331,7 +332,7 @@ func (ctl *WechatController) TemplateMessageAlarm(alarm *models.BoilerAlarm) (*t
 }
 
 func (ctl *WechatController) SyncUserList() {
-	list, err := user.List(wechatClient, "")
+	list, err := wuser.List(wechatClient, "")
 	if err != nil {
 		goazure.Error("Get Wechat User List Error", err)
 		return
@@ -339,7 +340,7 @@ func (ctl *WechatController) SyncUserList() {
 
 	goazure.Warn("WechatUserList: ", list)
 	for _, openid := range list.Data.OpenIdList {
-		info, err := user.Get(wechatClient, openid, user.LanguageZhCN)
+		info, err := wuser.Get(wechatClient, openid, wuser.LanguageZhCN)
 		var third models.UserThird
 
 		if err := dba.BoilerOrm.QueryTable("user_third").Filter("OpenId", info.OpenId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&third); err != nil {
