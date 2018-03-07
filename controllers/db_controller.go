@@ -35,7 +35,7 @@ func init() {
 		return
 	}
 
-	defer db.Close()
+	//defer db.Close()
 
 	go DBCtl.ImportMSSQLData(db, 0, time.Time{})
 
