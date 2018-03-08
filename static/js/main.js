@@ -892,6 +892,10 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "views/wiki/dashboard.html" + clientkey,
             data: {pageTitle: '帮助总览'}
         })
+        .state("upload",{
+            url:"/upload",
+            templateUrl:"views/upload-file.html"
+        })
 
 }]);
 
