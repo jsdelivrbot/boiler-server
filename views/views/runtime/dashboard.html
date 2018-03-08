@@ -19,29 +19,15 @@
         </div>
         <div class="">
             <!-- BEGIN SAMPLE TABLE PORTLET-->
-            <div class="portlet light bordered" style="padding: 5px;padding-top: 0; border-color: #DDDDDD;">
+            <div class="portlet light bordered" style="padding:0px 5px; height: 405px;width: 100%; overflow: auto; overflow-x: hidden;"
+                 ng-show="(runtime.instants|filter:{category:'13'}).length>0 && (runtime.boiler.isBurning ||runtime.boiler.isOnline)">
 
                 <div class="portlet-body">
-                    <table class="table table-hover table-light" style="margin-bottom: 0;">
-                        <thead>
-                        <tr>
-                            <th >测量项目</th>
-                            <th>状态值</th>
-
-                        </tr>
-                        </thead>
-                    </table>
                     <div class="" style="height: 420px;width: 100%; overflow: auto; overflow-x: hidden;margin-top: 0;">
                         <table class="table table-hover table-light">
-                            <!--<thead>
-                            <tr>
-                                <th>测量项目</th>
-                                <th>状态值</th>
-                            </tr>
-                            </thead>-->
+
                             <tbody>
-                            <tr ng-repeat="d in runtime.instants"
-                                ng-show="d.category === 13">
+                            <tr ng-repeat="d in runtime.instants|filter:{category:'13'}">
                                 <td> {{d.name}} </td>
                                 <td>
                                     <span ng-class="['label', 'label-sm', {'label-success': d.alarmLevel == 0}, {'label-default': d.alarmLevel == -1}, {'label-warning': d.alarmLevel == 1}, {'label-danger': d.alarmLevel == 2} ]">
@@ -56,6 +42,63 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="portlet light bordered"
+                 ng-show="(runtime.instants|filter:{category:'13'}).length==0 "
+                 style="padding: 0px 10px 0px 10px; overflow: hidden;">
+
+                <div class="portlet-body">
+
+                    <div class="" style="margin-top: 0;">
+                        <table class="table table-hover table-light" style="margin-bottom: 10px;">
+
+                            <tbody>
+
+                            <tr>
+                                <td> 锅炉燃料 </td>
+                                <td>
+                                    <i ng-show="runtime.boiler.Fuel.Type.TypeId == 1" class="fa fa-cubes font-grey-cascade"></i>
+                                    <i ng-show="runtime.boiler.Fuel.Type.TypeId == 2" class="fa fa-tint font-grey-gallery"></i>
+                                    <i ng-show="runtime.boiler.Fuel.Type.TypeId == 3" class="fa fa-database font-blue-soft"></i>
+                                    <i ng-show="runtime.boiler.Fuel.Type.TypeId == 4" class="fa fa-leaf font-green-jungle"></i>
+                                    <i ng-show="runtime.boiler.Fuel.Type.TypeId > 4" class="fa fa-sun-o font-grey"></i>
+                                    {{ runtime.boiler.Fuel.Name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>锅炉介质</td>
+                                <td>{{ runtime.boiler.Medium.Name }}</td>
+                            </tr>
+                            <tr>
+                                <td> 使用企业 </td>
+                                <td> {{ runtime.boiler.Enterprise.Name }}</td>
+                            </tr>
+                            <tr>
+                                <td> 额定蒸发量 </td>
+                                <td> {{ runtime.boiler.EvaporatingCapacity }} t/h </td>
+                            </tr>
+                            <tr>
+                                <td> 对应终端 </td>
+                                <td>
+                                    <span ng-repeat="terminal in runtime.boiler.TerminalsCombined" style="display: block; clear: both; "> {{ terminal.Name }} [机组{{ terminal.TerminalSetId }}]</span>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>锅炉型态</td>
+                                <td>
+                                    <span>{{ runtime.boiler.Form.Name }}</span>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
             <!-- END SAMPLE TABLE PORTLET-->
         </div>
     </div>
@@ -77,29 +120,14 @@
     </div>
     <div class="col-md-3" style="padding: 0; padding-right: 10px;">
         <!-- BEGIN SAMPLE TABLE PORTLET-->
-        <div class="portlet light bordered" style="padding: 5px;padding-top: 0; ">
+        <div class="portlet light bordered" style="padding: 5px;padding-top: 0; "
+             ng-show="runtime.boiler.isBurning || runtime.boiler.isOnline">
 
             <div class="portlet-body">
-                <table class="table table-hover table-light" style="margin-bottom: 0;">
-                    <thead>
-                    <tr>
-                        <th style="width: 30%;">测量项目</th>
-                        <th>测量值</th>
-                        <th style="width: 18%;">单位</th>
-                        <th>状态</th>
-                    </tr>
-                    </thead>
-                </table>
+
                 <div class="" style="height: 480px; overflow: auto; margin-top: 0;">
                     <table class="table table-hover table-light" >
-                        <!--<thead>
-                            <tr>
-                                <th>测量项目</th>
-                                <th>测量值</th>
-                                <th>单位</th>
-                                <th>状态</th>
-                            </tr>
-                        </thead>-->
+
                         <tbody>
                         <tr ng-repeat="d in runtime.instants" ng-show="d.category !== 11 && d.category != 13">
                             <td> {{d.name}} </td>
