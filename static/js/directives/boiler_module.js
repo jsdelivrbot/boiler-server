@@ -1210,7 +1210,7 @@ boilerAdmin.directive('boilerModule', function () {
                 .append("circle").attr("cx", 955).attr("cy", 540).attr("r", size / 2).style("fill", "#999")
                 .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 1100)
                 .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 350)
-                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 1240)
+                .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 1200)
                 .remove();
         };
 
