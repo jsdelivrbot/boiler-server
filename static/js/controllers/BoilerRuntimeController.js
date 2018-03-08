@@ -58,6 +58,11 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             return;
         }
 
+        if ($location.search()['boiler'] !== boiler.Uid) {
+            $log.info("Boiler Uid Changed!");
+            return;
+        }
+
         $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
             .then(function (res) {
                 console.info("Fetch BurningStatus Resp:", res.data);
@@ -163,7 +168,9 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     d.AlarmLevel = 0;
                 }
 
-                alarmLevel = d.AlarmLevel;
+                if (boiler.isBurning || boiler.isOnline) {
+                    alarmLevel = d.AlarmLevel;
+                }
 
                 if (alarmLevel > boiler.alarmLevel) {
                     boiler.alarmLevel = alarmLevel;
@@ -455,7 +462,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
         // }
         $scope.instants = $rootScope.instants;
 
-        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.boiler.isBurning;
+        var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.boiler.isBurning;
         var statData = [
             [{
                 id: 1,
@@ -507,7 +514,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
     var renderStatusModule = function(data, options) {
 
-        console.log("ready to renderStatusModule", data, options);
+        // console.log("ready to renderStatusModule", data, options);
         var align = options.align;
 
         var baseWidth = options.baseWidth;
@@ -670,7 +677,7 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
             $scope.boiler = $rootScope.boiler;
         }
 
-        var isTerminalConnected = ($scope.boiler.Terminal && $scope.boiler.Terminal.IsOnline) || $scope.isBoilerBurning;
+        var isTerminalConnected = ($scope.boiler && $scope.boiler.isOnline) || $scope.isBoilerBurning;
 
         for (var i in $scope.statusLabels) {
             var statusLabel = $scope.statusLabels[i];
