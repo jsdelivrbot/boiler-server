@@ -88,6 +88,27 @@ func (ctl *DBController)ImportMSSQLData(db *sql.DB, offset int, tm time.Time) er
 	var timestamp		time.Time
 	var value			float64
 
+	BlrCtl.bWaitGroup.Wait()
+	var boiler *models.Boiler
+	for _, b := range MainCtrl.Boilers {
+		if b.Uid == "8a3e47d0-759f-474d-b2e2-a89692f7c496" {
+			boiler = b
+			break
+		}
+	}
+
+	var sRtm models.BoilerRuntime
+	sParam := runtimeParameter(1107)
+	sRtm.Boiler = boiler
+	sRtm.Parameter = sParam
+	sRtm.CreatedDate = time.Now()
+	sRtm.Value = 1
+	sRtm.Remark = "MSSQL Trigger"
+
+	if er := DataCtl.AddData(&sRtm, true); er != nil {
+		goazure.Error("Added MSSQL Runtime Error:", er)
+	}
+
 	for true {
 		if rows.Next() {
 			err = rows.Scan(&id, &parameterName, &timestamp, &value)
@@ -102,15 +123,9 @@ func (ctl *DBController)ImportMSSQLData(db *sql.DB, offset int, tm time.Time) er
 				goazure.Error("Read Parameter By Name Error:", er, parameterName)
 			}
 
-			for _, b := range MainCtrl.Boilers {
-				if b.Uid == "8a3e47d0-759f-474d-b2e2-a89692f7c496" {
-					rtm.Boiler = b
-					break
-				}
-			}
-
+			rtm.Boiler = boiler
 			rtm.Parameter = &param
-			rtm.CreatedDate = timestamp
+			rtm.CreatedDate = timestamp.Local()
 			rtm.Value = int64(value * 1000)
 			rtm.Remark = "MSSQL"
 			rtm.Name = strconv.FormatInt(id, 10)
@@ -118,6 +133,8 @@ func (ctl *DBController)ImportMSSQLData(db *sql.DB, offset int, tm time.Time) er
 			if er := DataCtl.AddData(&rtm, false); er != nil {
 				goazure.Error("Added MSSQL Runtime Error:", er)
 			}
+
+			ReloadRuntimeHistory(&rtm, value)
 
 			goazure.Info("obj:", id, parameterName, timestamp, value)
 		} else {

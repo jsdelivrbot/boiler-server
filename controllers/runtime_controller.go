@@ -313,25 +313,31 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	}
 	*/
 
+	ReloadRuntimeHistory(rtm, val)
+
+	rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
+
+	if err := DataCtl.UpdateData(rtm); err != nil {
+		goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
+	}
+}
+func ReloadRuntimeHistory(rtm *models.BoilerRuntime, val interface{}) {
 	/* HISTORY */
 	var history caches.BoilerRuntimeHistory
 	history.Boiler = rtm.Boiler
 	history.Name = rtm.Boiler.Name
 	history.Remark = rtm.Remark
 	history.CreatedDate = rtm.CreatedDate
-
 	if err := dba.BoilerOrm.QueryTable("boiler_runtime_history").
 		Filter("Boiler__Uid", rtm.Boiler.Uid).
-		Filter("CreatedDate__lte", rtm.CreatedDate.Add(time.Minute * 4)).Filter("CreatedDate__gte", rtm.CreatedDate.Add(time.Minute * -1)).
+		Filter("CreatedDate__lte", rtm.CreatedDate.Add(time.Minute*4)).Filter("CreatedDate__gte", rtm.CreatedDate.Add(time.Minute * -1)).
 		One(&history); err != nil {
 		goazure.Warning("History Data Read Error:", err)
 	} else {
 		history.Unmarshal()
 	}
-
 	his := &caches.History{}
 	var isMatched bool = false
-
 	for _, h := range history.Histories {
 		if h.ParameterId == rtm.Parameter.Id {
 			his = h
@@ -339,25 +345,15 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 			break
 		}
 	}
-
 	his.Value = val
 	//his.Alarm = int(alarm.Priority)
-
 	if !isMatched {
 		his.ParameterId = rtm.Parameter.Id
 		history.Histories = append(history.Histories, his)
 	}
-
 	history.Marshal()
-
 	if err := DataCtl.AddData(&history, true); err != nil {
 		goazure.Error("Added/Updated History Failed:", err)
-	}
-
-	rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
-
-	if err := DataCtl.UpdateData(rtm); err != nil {
-		goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
 	}
 }
 
