@@ -1386,8 +1386,10 @@ func (ctl *BoilerController) BoilerBind() {
 	if setId <= 0 {
 		var combines []*models.BoilerTerminalCombined
 		if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
-			Filter("Terminal__Uid", bind.TerminalId).Filter("Boiler__Uid", bind.BoilerId).OrderBy("TerminalSetId").All(&combines); err != nil {
-				goazure.Warn("Get Exist Combined Error:", err, num)
+			Filter("Boiler__Uid", bind.BoilerId).
+			OrderBy("TerminalSetId").
+			All(&combines); err != nil {
+			goazure.Warn("Get Exist Combined Error:", err, num)
 		}
 
 		for i := int32(1); i <= 8; i++ {
