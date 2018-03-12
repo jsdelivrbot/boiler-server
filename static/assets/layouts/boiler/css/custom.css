@@ -32,11 +32,11 @@
     background-color: #364150;
 }
 
-.page-sidebar .collapse{
-    padding-bottom: 50px;
-    color: #708096;
-    line-height: 35px;
-}
+/*.page-sidebar .collapse{*/
+    /*padding-bottom: 50px;*/
+    /*color: #708096;*/
+    /*line-height: 35px;*/
+/*}*/
 .page-sidebar ul{
     padding-top: 5px;
 }
@@ -83,10 +83,10 @@
 .page-sidebar li.active a i{
     color: #FFFFFF;
 }
-.page-sidebar .navbar-collapse{
-    padding-left: 0;
-    padding-right: 0;
-}
+/*.page-sidebar .navbar-collapse{*/
+    /*padding-left: 0;*/
+    /*padding-right: 0;*/
+/*}*/
 .badge{
     display: inline;
 }

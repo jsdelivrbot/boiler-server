@@ -512,19 +512,19 @@
                         <tspan x="0" y="355.92053">进水口</tspan>
                     </text>
                     <g transform="matrix(0.8, 0, 0, 0.8, 48,65)">
-                    <text id="风机盘管" font-family="PingFangSC-Medium, PingFang SC" font-size="22.2516556" font-weight="400">
+                    <text id="风机盘管" font-family="PingFangSC-Medium, PingFang SC" font-size="27.8" font-weight="400">
                         <tspan x="713.907285" y="24">风机盘管</tspan>
                     </text>
-                    <text id="地板采暖" font-family="PingFangSC-Medium, PingFang SC" font-size="22.2516556" font-weight="400">
+                    <text id="地板采暖" font-family="PingFangSC-Medium, PingFang SC" font-size="27.8" font-weight="400">
                         <tspan x="804.768212" y="166.781457">地板采暖</tspan>
                     </text>
-                    <text id="超导暖气片" font-family="PingFangSC-Medium, PingFang SC" font-size="22.2516556" font-weight="400">
+                    <text id="超导暖气片" font-family="PingFangSC-Medium, PingFang SC" font-size="27.8" font-weight="400">
                         <tspan x="524.768212" y="380.953642">超导暖气片</tspan>
                     </text>
-                    <text id="洗浴热水" font-family="PingFangSC-Medium, PingFang SC" font-size="22.2516556" font-weight="400">
+                    <text id="洗浴热水" font-family="PingFangSC-Medium, PingFang SC" font-size="27.8" font-weight="400">
                         <tspan x="406.092715" y="58.3046358">洗浴热水</tspan>
                     </text>
-                    <text id="生活热水" font-family="PingFangSC-Medium, PingFang SC" font-size="22.2516556" font-weight="400">
+                    <text id="生活热水" font-family="PingFangSC-Medium, PingFang SC" font-size="27.8" font-weight="400">
                         <tspan x="323.576159" y="186.251656">生活热水</tspan>
                     </text>
                     </g>
