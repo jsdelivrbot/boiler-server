@@ -1,6 +1,10 @@
 <div class="modal-header">
-    <h3 class="modal-title" id="modal-title" style="display: inline-block;">通道自定义配置</h3>
+    <h3 class="modal-title" ng-show="$modal.category !== 16" id="modal-title" style="display: inline-block;" >通道自定义配置</h3>
+    <h3 class="modal-title" ng-show="$modal.category === 16" id="modal-title" style="display: inline-block;" >配置详情确认</h3>
     <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">终端编码{{ $modal.code }}</span>
+    <button type="button" class="btn btn-default pull-right" ng-click="$modal.quickSet()">
+        快速设置
+    </button>
 </div>
 <style type="text/css">
     div.input-group.form-group,
@@ -109,54 +113,96 @@
         margin-top: -16px;
     }
 
+    #channel .table input{
+        border: none;
+    }
+    #channel .table select{
+        border: none;
+    }
+    #channel .chanel_label{
+        color: #555;
+        text-align: center;
+        background-color: #eee;
+        border: 1px solid #ccc;
+    }
+    #channel .conf_confirm tr{
+        height:37px;
+    }
+    #channel .conf_confirm tr th{
+        color: #0b94ea;
+    }
+
 </style>
 <div class="modal-body" id="modal-body">
     <div id="channel">
-        <div class="row tabbable-line">
+        <div class="row tabbable-line" ng-hide="$modal.category === 16">
             <ul class="nav nav-tabs">
+                <li ng-class="{'active': $modal.category === 9}">
+                    <a ng-click="$modal.categoryChanged(9);">
+                        <i class="icon-graph"></i>
+                        模拟通道A
+                    </a>
+                </li>
                 <li ng-class="{'active': $modal.category === 10}">
                     <a ng-click="$modal.categoryChanged(10);">
                         <i class="icon-graph"></i>
-                        模拟通道
+                        模拟通道B
                     </a>
                 </li>
                 <li ng-class="{'active': $modal.category === 11}">
                     <a ng-click="$modal.categoryChanged(11);">
                         <i class="fa fa-sliders"></i>
-                        开关通道
+                        开关通道1
+                    </a>
+                </li>
+                <li ng-class="{'active': $modal.category === 12}">
+                    <a ng-click="$modal.categoryChanged(12);">
+                        <i class="fa fa-sliders"></i>
+                        开关通道2
                     </a>
                 </li>
                 <li ng-class="{'active': $modal.category === 13}">
                     <a ng-click="$modal.categoryChanged(13);">
+                        <i class="fa fa-sliders"></i>
+                        开关通道3
+                    </a>
+                </li>
+                <li ng-class="{'active': $modal.category === 14}">
+                    <a ng-click="$modal.categoryChanged(14);">
                         <i class="fa fa-pie-chart"></i>
                         状态通道
+                    </a>
+                </li>
+                <li ng-class="{'active': $modal.category === 15}">
+                    <a ng-click="$modal.categoryChanged(15);">
+                        <i class="fa fa-wifi"></i>
+                        通信参数
                     </a>
                 </li>
             </ul>
         </div>
         <div class="row" style="padding: 0 15px;">
-            <!--ANALOG TABLE BEGIN-->
-            <table ng-show="$modal.category === 10"
+            <!--ANALOG A TABLE BEGIN-->
+            <table ng-if="$modal.category === 9"
                    class="table table-striped table-hover table-checkable order-column table-boiler">
                 <thead>
                 <tr>
                     <th></th>
                     <th>模拟通道A</th>
-                    <th>模拟通道B</th>
+                    <th>功能码</th>
+                    <th>高低字节</th>
+                    <th>MODBUS地址</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index"
-                    ng-show="$index < 12"
+                    ng-if="$index < 12"
                     ng-init="outerIndex = $index">
                     <td width="10%"
                         style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         通道{{ outerIndex +1 }}
                     </td>
-                    <td width="45%"
-                        ng-repeat="chan in chan_row track by $index"
-                        ng-show="$index < 2"
-                        ng-init="innerIndex = $index; data = $modal.dataMatrix[outerIndex][innerIndex]">
+                    <td ng-init="innerIndex = 0; data = $modal.dataMatrix[outerIndex][innerIndex]">
                         <div class="btn-group" uib-dropdown style="width: 100%;">
                             <button type="button" uib-dropdown-toggle
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
@@ -170,7 +216,7 @@
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
                                        style="width: 89%;">
-                            <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}][
+                            <ui-select-match placeholder="{{chan_row[0].Name}}">[{{$select.selected.Name}}][
                                 <small class="font-blue-oleo">{{ $select.selected.Id }}</small>](
                                 <small class="font-blue-oleo">{{ $select.selected.Scale }}</small>
                                 <small class="font-blue-oleo">{{ $select.selected.Unit }}</small>)
@@ -199,20 +245,159 @@
                             </ul>
                         </div>
                     </td>
+                    <td>
+                        <!--<select ng-init="fCodeName = $modal.fcodeName[outerIndex]" ng-model="fCodeName" ng-options="x for x in $modal.fcode"-->
+                                <!--class="form-control">-->
+                            <!--<option value="" selected>默认（未配置）</option>-->
+                        <!--</select>-->
+                        <ui-select ng-model="$modal.fcodeName[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.fcode | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <!--<select ng-init="hlCodeName = $modal.hlCodeNames[outerIndex]" ng-model="hlCodeName" ng-options="x for x in $modal.hlCodes" class="form-control">-->
+                        <!--</select>-->
+                        <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.mcode[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
                 </tr>
                 </tbody>
             </table>
-            <!--ANALOG TABLE END-->
+            <!--ANALOG A TABLE END-->
 
-            <!--SWITCH TABLE BEGIN-->
-            <table ng-show="$modal.category === 11"
+            <!--ANALOG B TABLE BEGIN-->
+            <table ng-if="$modal.category === 10"
+                   class="table table-striped table-hover table-checkable order-column table-boiler">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>模拟通道B</th>
+                    <th>功能码</th>
+                    <th>高低字节</th>
+                    <th>MODBUS地址</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index"
+                    ng-if="$index < 12"
+                    ng-init="outerIndex = $index">
+                    <td width="10%"
+                        style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        通道{{ outerIndex +1 }}
+                    </td>
+                    <td ng-init="innerIndex = 1; data = $modal.dataMatrix[outerIndex][innerIndex]">
+                        <div class="btn-group" uib-dropdown style="width: 100%;">
+                            <button type="button" uib-dropdown-toggle
+                                    ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
+                                    ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"
+                                    style="width: 11%;">
+                                <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
+                                <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
+                                <span class="sr-only">通道状态</span>
+                            </button>
+                            <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
+                                       ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
+                                       theme="bootstrap"
+                                       style="width: 89%;">
+                                <ui-select-match placeholder="{{chan_row[1].Name}}">[{{$select.selected.Name}}][
+                                    <small class="font-blue-oleo">{{ $select.selected.Id }}</small>](
+                                    <small class="font-blue-oleo">{{ $select.selected.Scale }}</small>
+                                    <small class="font-blue-oleo">{{ $select.selected.Unit }}</small>)
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="param in $modal.parameters[innerIndex] | filter: $select.search">
+                                    [<span ng-bind-html="param.Name | highlight: $select.search"></span>][
+                                    <small ng-bind-html="param.Id | highlight: $select.search"></small>](
+                                    <small ng-bind-html="param.Scale | highlight: $select.search"></small>
+                                    <small ng-bind-html="param.Unit | highlight: $select.search"></small>)
+                                </ui-select-choices>
+                            </ui-select>
+                            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                <li class="dropdown-submenu">
+                                    <a href><i class="fa fa-eye"></i> 位置</a>
+                                    <ul class="dropdown-menu" style="min-width: 44px;">
+                                        <li ng-repeat="priority in $modal.priorities">
+                                            <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
+                                <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
+                                <li class="divider"></li>
+                                <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>
+                        <!--<select ng-init="fCodeName = $modal.fcodeName[outerIndex]" ng-model="fCodeName" ng-options="x for x in $modal.fcode"-->
+                                <!--class="form-control">-->
+                            <!--<option value="" selected>默认（未配置）</option>-->
+                        <!--</select>-->
+                        <ui-select ng-model="$modal.fcodeName[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.fcode | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <!--<select ng-init="hlCodeName = $modal.hlCodeNames[outerIndex]" ng-model="hlCodeName" ng-options="x for x in $modal.hlCodes" class="form-control">-->
+                        <!--</select>-->
+                        <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.mcode[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--ANALOG B TABLE END-->
+
+            <!--SWITCH A TABLE BEGIN-->
+            <table ng-if="$modal.category === 11"
                    class="table table-striped table-hover table-checkable order-column table-boiler">
                 <thead>
                 <tr>
                     <th></th>
                     <th>开关通道A</th>
-                    <th>开关通道B</th>
-                    <th>开关通道C</th>
+                    <th>功能码</th>
+                    <th>MODBUS地址</th>
+                    <th>位地址</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -223,9 +408,7 @@
                         通道{{ outerIndex +1 }}
                     </td>
                     <td width="30%"
-                        ng-repeat="chan in chan_row track by $index"
-                        ng-show="$index >= 2 && $index < 5"
-                        ng-init="innerIndex = $index; data = $modal.dataMatrix[outerIndex][innerIndex]">
+                        ng-init="innerIndex = 2; data = $modal.dataMatrix[outerIndex][innerIndex]">
                         <div class="btn-group" style="width: 100%;">
                             <div uib-dropdown class="dropdown-group">
                                 <button type="button" uib-dropdown-toggle
@@ -253,7 +436,7 @@
                             <ui-select ng-show="innerIndex !== 2 || outerIndex !== 0" ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap">
-                                <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}]
+                                <ui-select-match placeholder="{{chan_row[2].Name}}">[{{$select.selected.Name}}]
                                     [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
                                 </ui-select-match>
                                 <ui-select-choices
@@ -267,7 +450,7 @@
                                    ng-model="chan.Name"
                                    ng-disabled="true"
                                    class="form-control ng-pristine ng-valid ng-touched has-success"
-                                   placeholder="{{ chan.Name }}" style="width: 86.4%; border: none;">
+                                   placeholder="{{ chan_row[2].Name }}" style="width: 86.4%; border: none;">
                             <div uib-dropdown ng-show="innerIndex !== 2 || outerIndex !== 0" class="dropdown-group">
                                 <button type="button" uib-dropdown-toggle
                                         ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0"
@@ -283,32 +466,258 @@
 
                         </div>
                     </td>
+                    <td>
+                        <ui-select ng-model="$modal.fcodeName[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.fcode | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.mcode[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.bitAddress[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
                 </tr>
                 </tbody>
             </table>
-            <!--SWITCH TABLE END-->
+            <!--SWITCH A TABLE END-->
+
+            <!--SWITCH B TABLE BEGIN-->
+            <table ng-if="$modal.category === 12"
+                   class="table table-striped table-hover table-checkable order-column table-boiler">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>开关通道B</th>
+                    <th>功能码</th>
+                    <th>MODBUS地址</th>
+                    <th>位地址</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index"
+                    ng-init="outerIndex = $index">
+                    <td width="10%"
+                        style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        通道{{ outerIndex +1 }}
+                    </td>
+                    <td width="30%"
+                        ng-init="innerIndex = 3; data = $modal.dataMatrix[outerIndex][innerIndex]">
+                        <div class="btn-group" style="width: 100%;">
+                            <div uib-dropdown class="dropdown-group">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
+                                        ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]">
+                                    <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
+                                    <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
+                                    <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li class="dropdown-submenu">
+                                        <a href><i class="fa fa-eye"></i> 关注</a>
+                                        <ul class="dropdown-menu" style="min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
+                                    <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
+                                    <li class="divider"></li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
+                                </ul>
+                            </div>
+                            <ui-select ng-show="innerIndex !== 2 || outerIndex !== 0" ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
+                                       ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
+                                       theme="bootstrap">
+                                <ui-select-match placeholder="{{chan_row[3].Name}}">[{{$select.selected.Name}}]
+                                    [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="param in $modal.parameters[2] | filter: $select.search">
+                                    [<span ng-bind-html="param.Name | highlight: $select.search"></span>]
+                                    [<small ng-bind-html="param.Id | highlight: $select.search"></small>]
+                                </ui-select-choices>
+                            </ui-select>
+                            <input type="text"
+                                   ng-show="innerIndex === 2 && outerIndex === 0"
+                                   ng-model="chan.Name"
+                                   ng-disabled="true"
+                                   class="form-control ng-pristine ng-valid ng-touched has-success"
+                                   placeholder="{{ chan_row[3].Name }}" style="width: 86.4%; border: none;">
+                            <div uib-dropdown ng-show="innerIndex !== 2 || outerIndex !== 0" class="dropdown-group">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0"
+                                        ng-class="['btn', 'btn-cell', {'blue': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'yellow-lemon': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]">
+                                    <i ng-class="['fa', {'fa-bolt': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'fa-warning': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]"></i>
+                                    <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 1);"><i class="fa fa-bolt"></i> 运行状态</a></li>
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 2);"><i class="fa fa-warning"></i> 故障状态</a></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </td>
+                    <td>
+                        <ui-select ng-model="$modal.fcodeName[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.fcode | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.mcode[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.bitAddress[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--SWITCH B TABLE END-->
+
+            <!--SWITCH B TABLE BEGIN-->
+            <table ng-if="$modal.category === 13"
+                   class="table table-striped table-hover table-checkable order-column table-boiler">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>开关通道C</th>
+                    <th>功能码</th>
+                    <th>MODBUS地址</th>
+                    <th>位地址</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index"
+                    ng-init="outerIndex = $index">
+                    <td width="10%"
+                        style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        通道{{ outerIndex +1 }}
+                    </td>
+                    <td width="30%"
+                        ng-init="innerIndex = 4; data = $modal.dataMatrix[outerIndex][innerIndex]">
+                        <div class="btn-group" style="width: 100%;">
+                            <div uib-dropdown class="dropdown-group">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
+                                        ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]">
+                                    <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
+                                    <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
+                                    <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li class="dropdown-submenu">
+                                        <a href><i class="fa fa-eye"></i> 关注</a>
+                                        <ul class="dropdown-menu" style="min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
+                                    <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
+                                    <li class="divider"></li>
+                                    <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
+                                </ul>
+                            </div>
+                            <ui-select ng-show="innerIndex !== 2 || outerIndex !== 0" ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
+                                       ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
+                                       theme="bootstrap">
+                                <ui-select-match placeholder="{{chan_row[4].Name}}">[{{$select.selected.Name}}]
+                                    [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="param in $modal.parameters[2] | filter: $select.search">
+                                    [<span ng-bind-html="param.Name | highlight: $select.search"></span>]
+                                    [<small ng-bind-html="param.Id | highlight: $select.search"></small>]
+                                </ui-select-choices>
+                            </ui-select>
+                            <input type="text"
+                                   ng-show="innerIndex === 2 && outerIndex === 0"
+                                   ng-model="chan.Name"
+                                   ng-disabled="true"
+                                   class="form-control ng-pristine ng-valid ng-touched has-success"
+                                   placeholder="{{ chan_row[4].Name }}" style="width: 86.4%; border: none;">
+                            <div uib-dropdown ng-show="innerIndex !== 2 || outerIndex !== 0" class="dropdown-group">
+                                <button type="button" uib-dropdown-toggle
+                                        ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0"
+                                        ng-class="['btn', 'btn-cell', {'blue': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'yellow-lemon': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]">
+                                    <i ng-class="['fa', {'fa-bolt': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'fa-warning': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]"></i>
+                                    <span class="sr-only">通道状态</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 1);"><i class="fa fa-bolt"></i> 运行状态</a></li>
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 2);"><i class="fa fa-warning"></i> 故障状态</a></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </td>
+                    <td>
+                        <ui-select ng-model="$modal.fcodeName[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.fcode | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.mcode[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.bitAddress[outerIndex]" placeholder="默认（未配置）"  class="form-control">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--SWITCH B TABLE END-->
 
             <!--RANGE TABLE BEGIN-->
-            <table ng-show="$modal.category === 13"
+            <table ng-if="$modal.category === 14"
                    class="table table-striped table-hover table-checkable order-column table-boiler">
                 <thead>
                 <tr>
                     <th></th>
                     <th>状态通道</th>
+                    <th>功能码</th>
+                    <th>高低字节</th>
+                    <th>MODBUS地址</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index"
-                    ng-show="$index < 12"
+                    ng-if="$index < 12"
                     ng-init="outerIndex = $index">
                     <td width="10%"
                         style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         通道{{ outerIndex + 1 }}
                     </td>
-                    <td width="90%"
+                    <td width="40%"
                         ng-init="innerIndex = 5; data = $modal.dataMatrix[outerIndex][innerIndex];">
                         <div class="btn-group" style="width: 100%;">
-                            <div class="dropdown-group" uib-dropdown style="width: 5%;">
+                            <div class="dropdown-group" uib-dropdown style="width: 10%;">
                                 <button type="button" uib-dropdown-toggle
                                         ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
                                         ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]">
@@ -335,7 +744,7 @@
                             <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
-                                       style="width: 90%;">
+                                       style="width: 80%;">
                                 <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}]
                                     [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
                                 </ui-select-match>
@@ -348,15 +757,402 @@
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
                                     ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'blue-sharp': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"
                                     ng-click="$modal.openRange($modal.dataMatrix[outerIndex][innerIndex], outerIndex)"
-                                    style="width: 5%;">
+                                    style="width: 10%;">
                                 <i ng-class="['fa', {'fa-calendar-plus-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'fa-calendar-check-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"></i>
                             </button>
                         </div>
+                    </td>
+                    <td>
+                        <!--<select ng-init="fCodeName = $modal.fcodeName[outerIndex]" ng-model="fCodeName" ng-options="x for x in $modal.fcode"-->
+                        <!--class="form-control">-->
+                        <!--<option value="" selected>默认（未配置）</option>-->
+                        <!--</select>-->
+                        <ui-select ng-model="$modal.fcodeName[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.fcode | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <!--<select ng-init="hlCodeName = $modal.hlCodeNames[outerIndex]" ng-model="hlCodeName" ng-options="x for x in $modal.hlCodes" class="form-control">-->
+                        <!--</select>-->
+                        <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
+                                {{$select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
+                                {{hlCode}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="$modal.mcode[outerIndex]" placeholder="默认（未配置）"  class="form-control">
                     </td>
                 </tr>
                 </tbody>
             </table>
             <!--RANGE TABLE END-->
+
+            <!--Communication TABLE BEGIN-->
+            <table ng-if="$modal.category === 15"
+                   class="table table-striped table-hover table-checkable order-column table-boiler">
+                <thead>
+                <tr>
+                    <th>参数类型</th>
+                    <th>参数配置</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            波特率
+                        </td>
+                        <td>
+                            <select ng-model="$modal.BaudRate" ng-options="x for x in $modal.BaudRates" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            数据位
+                        </td>
+                        <td>
+                            <select ng-model="$modal.dataBit" ng-options="x for x in $modal.dataBits" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            停止位
+                        </td>
+                        <td>
+                            <select ng-model="$modal.stopBit" ng-options="x for x in $modal.stopBits" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            校验位
+                        </td>
+                        <td>
+                            <select ng-model="$modal.checkDigit" ng-options="x for x in $modal.checkDigits" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            通信接口地址
+                        </td>
+                        <td>
+                            <select ng-model="$modal.communicationInterface" ng-options="x for x in $modal.communicationInterfaces" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            从机地址
+                        </td>
+                        <td>
+                            <select ng-model="$modal.subAdr" ng-options="x for x in $modal.subAdrs" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="height: 20px;"></tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            底层应用支持
+                        </td>
+                        <td>
+                            <select ng-model="$modal.BaudRate" ng-options="x for x in $modal.BaudRates" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            心跳包频率
+                        </td>
+                        <td>
+                            <select ng-model="$modal.dataBit" ng-options="x for x in $modal.dataBits" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="height: 20px;"></tr>
+                    <tr>
+                        <td width="30%" class="chanel_label">
+                            终端设置密码
+                        </td>
+                        <td>
+                            <input type="text" ng-model="$modal.terminalPass" class="form-control">
+                        </td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+            <!--Communication TABLE END-->
+
+            <!--confirm TABLE BEGIN-->
+            <table ng-if="$modal.category === 16"
+                   class="table table-striped table-hover table-boiler table-bordered conf_confirm">
+                <!--模拟通道-->
+                <thead>
+                <tr>
+                    <th colspan="3">模拟通道</th>
+                    <th>功能码</th>
+                    <th>高低字节</th>
+                    <th>MODBUS地址</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[0].Name!='默认(未配置)'">
+                    <td width="10%" class="chanel_label">
+                        模拟通道A
+                    </td>
+                    <td width="10%" class="chanel_label">
+                        通道{{outerIndex +1}}
+                    </td>
+                    <td>
+                        [{{$modal.dataMatrix[outerIndex][0].Parameter.Name}}]
+                        [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Id }}</small>]
+                        (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Scale }}</small>
+                        <small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Unit }}</small>)
+                    </td>
+                    <td>
+                        {{$modal.fcodeName[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.hlCodeNames[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.mcode[outerIndex]}}
+                    </td>
+                </tr>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[1].Name!='默认(未配置)'">
+                    <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        模拟通道B
+                    </td>
+                    <td class="chanel_label">
+                        通道{{outerIndex +1}}
+                    </td>
+                    <td>
+                        [{{$modal.dataMatrix[outerIndex][1].Parameter.Name}}]
+                        [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Id }}</small>]
+                        (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Scale }}</small>
+                        <small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Unit }}</small>)
+                    </td>
+                    <td>
+                        {{$modal.fcodeName[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.hlCodeNames[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.mcode[outerIndex]}}
+                    </td>
+                </tr>
+                </tbody>
+
+                <!--开关通道-->
+                <thead>
+                <tr>
+                    <th colspan="3">开关通道</th>
+                    <th>功能码</th>
+                    <th>MODBUS地址</th>
+                    <th>位地址</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[2].Name!='默认(未配置)'">
+                    <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        开关通道1
+                    </td>
+                    <td class="chanel_label">
+                        通道{{outerIndex +1}}
+                    </td>
+                    <td>
+                        [{{$modal.dataMatrix[outerIndex][2].Parameter.Name}}]
+                        [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][2].Parameter.Id }}</small>]
+                    </td>
+                    <td>
+                        {{$modal.fcodeName[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.mcode[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.bitAddress[outerIndex]}}
+                    </td>
+                </tr>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[3].Name!='默认(未配置)'">
+                    <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        开关通道2
+                    </td>
+                    <td class="chanel_label">
+                        通道{{outerIndex +1}}
+                    </td>
+                    <td>
+                        [{{$modal.dataMatrix[outerIndex][3].Parameter.Name}}]
+                        [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][3].Parameter.Id }}</small>]
+                    </td>
+                    <td>
+                        {{$modal.fcodeName[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.mcode[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.bitAddress[outerIndex]}}
+                    </td>
+                </tr>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[4].Name!='默认(未配置)'">
+                    <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        开关通道3
+                    </td>
+                    <td class="chanel_label">
+                        通道{{outerIndex +1}}
+                    </td>
+                    <td>
+                        [{{$modal.dataMatrix[outerIndex][4].Parameter.Name}}]
+                        [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][4].Parameter.Id }}</small>]
+                    </td>
+                    <td>
+                        {{$modal.fcodeName[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.mcode[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.bitAddress[outerIndex]}}
+                    </td>
+                </tr>
+                </tbody>
+
+
+                <!--状态通道-->
+                <thead>
+                <tr>
+                    <th colspan="3">状态通道</th>
+                    <th>功能码</th>
+                    <th>高低字节</th>
+                    <th>MODBUS地址</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[5].Name!='默认(未配置)'">
+                    <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                        状态通道
+                    </td>
+                    <td class="chanel_label">
+                        通道{{outerIndex +1}}
+                    </td>
+                    <td>
+                        [{{$modal.dataMatrix[outerIndex][5].Parameter.Name}}]
+                        [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][5].Parameter.Id }}</small>]
+                    </td>
+                    <td>
+                        {{$modal.fcodeName[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.hlCodeNames[outerIndex]}}
+                    </td>
+                    <td>
+                        {{$modal.mcode[outerIndex]}}
+                    </td>
+                </tr>
+                </tbody>
+
+
+                <!--通信参数-->
+                <thead>
+                <tr>
+                    <th colspan="2">参数类型</th>
+                    <th colspan="4">参数配置</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        波特率
+                    </td>
+                    <td colspan="4">
+                        {{$modal.BaudRate}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        数据位
+                    </td>
+                    <td colspan="4">
+                        {{$modal.dataBit}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        停止位
+                    </td>
+                    <td colspan="4">
+                        {{$modal.stopBit}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        校验位
+                    </td>
+                    <td colspan="4">
+                        {{$modal.checkDigit}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        通信接口地址
+                    </td>
+                    <td colspan="4">
+                        {{$modal.communicationInterface}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        从机地址
+                    </td>
+                    <td colspan="4">
+                        {{$modal.subAdr}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        底层应用支持
+                    </td>
+                    <td colspan="4">
+                        {{$modal.BaudRate}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="chanel_label">
+                        心跳包频率
+                    </td>
+                    <td colspan="4">
+                        {{$modal.dataBit}}
+                    </td>
+                </tr>
+
+
+
+                </tbody>
+
+
+            </table>
+            <!--confirm TABLE END-->
+
+
         </div>
     </div>
 </div>
@@ -365,9 +1161,23 @@
     <button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData"
             ng-click="matrixReset()" style="float: left">恢复默认
     </button>
+    <button type="button" class="btn btn-info"
+            ng-show="$modal.category === 16"
+            ng-click=""
+            style="float: left">
+        模板另存为
+    </button>
+
+    <button type="button" class="btn btn-primary"
+            ng-show="$modal.category !== 9"
+            ng-click="$modal.categoryChanged($modal.category-1)">上一步</button>
+    <button type="button" class="btn btn-primary"
+            ng-show="$modal.category !== 16"
+            ng-click="$modal.categoryChanged($modal.category+1)">下一步</button>
+
     <button type="button" id="channel_ok"
             class="btn ladda-button btn-primary"
-            ng-show="$modal.editing"
+            ng-show="$modal.editing && $modal.category === 16"
             data-style="expand-right"
             ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
     <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>

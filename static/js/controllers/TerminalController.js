@@ -273,6 +273,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         });
     };
 
+    //终端批量配置
     terminal.groupConfig = function (){
         var items = [
             {
@@ -675,7 +676,85 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.editing = editing;
     $modal.editingCode = true;
 
-    $modal.category = 10;
+    $modal.category = 9;
+
+    //下发test
+    $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
+    $modal.hlCodeNames = ["16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数","32位无符号数"];
+    $modal.hlCodes = ["默认配置","16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数"];
+    $modal.fcode = ["01", "02", "03", "04", "05"];
+    $modal.fcodeName = ["01", "02", "03", "04", "01"];
+    $modal.bitAddress = ["1", "2", "3", "4", "0"];
+    $modal.BaudRate  = "9600";
+    $modal.BaudRates = ["9600","1000"];
+    $modal.dataBit  = "7";
+    $modal.dataBits = ["4","5","6","7"];
+    $modal.stopBit  = "1";
+    $modal.stopBits = ["1","2","3"];
+    $modal.checkDigit  = "无校验";
+    $modal.checkDigits = ["无校验","1","2"];
+    $modal.communicationInterface  = "RS485";
+    $modal.communicationInterfaces = ["RS485","00","22"];
+    $modal.subAdr  = "1";
+    $modal.subAdrs = ["1","2","3"];
+    $modal.terminalPass = "123456";
+
+
+    $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
+    for(i=0;i<12;i++){
+        if (!$modal.hlCodeNamesCopy[i]) {
+            $modal.hlCodeNamesCopy[i] = "默认(未配置)";
+        };
+        if (!$modal.hlCodeNames[i]) {
+            $modal.hlCodeNames[i] = null;
+        }
+    };
+    $modal.fcodeNameCopy = angular.copy($modal.fcodeName);
+    for(i=0;i<16;i++){
+        if (!$modal.fcodeNameCopy[i]) {
+            $modal.fcodeNameCopy[i] = "默认(未配置)";
+        };
+        if (!$modal.fcodeName[i]) {
+            $modal.fcodeName[i] = null;
+        }
+    }
+
+    //终端快速设置
+    $modal.quickSet = function (){
+        var items = [
+            {
+                id:680001,
+                template:"通用模板一"
+            },
+            {
+                id:680001,
+                template:"通用模板一"
+            }
+        ];
+        var modalInstance = $uibModal.open({
+            templateUrl: '/directives/modal/terminal_channel_quick_set.html',
+            controller: 'ModalQuickSetCtrl',
+            size: "lg",
+            windowClass: 'zindex_sub',
+            resolve: {
+                items1: function () {
+                    return items;
+                }
+            }
+        });
+
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+
+        });
+    }
+
+
+
+
+
 
     $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -747,6 +826,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         $modal.rangeParameters
     ];
 
+
+
+
+
+
     $modal.matrixChanged = function (outerIndex, innerIndex) {
         console.info("Data Matrix:", $modal.dataMatrix, "\n", outerIndex, ":", innerIndex);
         if ($modal.dataMatrix[outerIndex][innerIndex].Parameter.Id === 0) {
@@ -768,7 +852,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             if ($modal.dataMatrix[outerIndex][innerIndex].Parameter.Category.Id === 11 && (!$modal.dataMatrix[outerIndex][innerIndex].SwitchStatus || $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 0)) {
                 $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 1;
             }
+
+            $modal.chanMatrix[outerIndex][innerIndex] = $modal.dataMatrix[outerIndex][innerIndex];
         }
+
     };
 
     $scope.matrixReset = function () {
@@ -1160,6 +1247,40 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
         $scope.items.push({
             start:680001,
             end:680100,
+            template:"通用模板一"});
+    };
+
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
+angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, $uibModalInstance, items1) {
+    $scope.items = items1;
+
+    $scope.template = [
+        {
+            id:1,
+            name:"通用模板一"
+        },
+        {
+            id:2,
+            name:"通用模板二"
+        },
+        {
+            id:3,
+            name:"通用模板三"
+        }
+    ];
+    $scope.selectedTemplate = $scope.template[0];
+    $scope.addQuickSet = function (){
+        $scope.items.push({
+            id:680001,
             template:"通用模板一"});
     };
 
