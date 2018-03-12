@@ -894,7 +894,18 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state("upload",{
             url:"/upload",
-            templateUrl:"views/upload-file.html"
+            templateUrl:"views/upload-file.html",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'BoilerAdmin',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'js/controllers/uploadFileController.js' + clientkey
+                        ]
+                    });
+                }]
+            }
         })
 
 }]);

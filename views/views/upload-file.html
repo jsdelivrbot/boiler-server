@@ -1,28 +1,93 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a>主页</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a>文件上传</a>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
 
-<div>
-    <form method="post" action="http://192.168.0.101:8080/fileupload" enctype="multipart/form-data">
-        <input type="file"  name="file" >
-        <input type="submit" value="提交">
-    </form>
-    <script>
-//        function filechange(){
-//            $.ajax({
-//                url:"fileupload",
-//                type: "POST",
-//                async: false,
-//                cache: false,
-//                processData: false,
-//                contentType: false,
-//                data: file,
-//                success: function(data){
-//                    console.log(data);
-//                },
-//                error: function(err) {
-//                    console.log(err);
-//                }
-//            });
-//        }
+<!-- BEGIN MAIN CONTENT -->
+<div ng-controller="uploadFileCtrl as upload" style="margin-top: 15px;">
+    <!-- BEGIN MAIN CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-dark">
+                        <i class="icon-settings font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase font-green-sharp"> 文件列表</span>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <button id="sample_editable_1_new" ng-click="upload.new()" class="btn sbold green">
+                            <i class="fa fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
 
+                <div class="portlet-body">
+                    <table datatable="ng" dt-options="upload.dtOptions" dt-column-defs="upload.dtColumnDefs"
+                           class="table table-striped table-bordered table-hover order-column table-boiler">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>文件名称</th>
+                            <th>文件路径</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+
+                        <tbody style="text-align: center">
+                        <tr ng-repeat='data in upload.datasource'>
+                            <td> {{data.num}} </td>
+
+                            <td> {{ data.name }} </td>
+                            <td>
+                                {{ data.filePath }} <br>
+                            </td>
+
+                            <td>
+                                <a ng-click="upload.delete(data.Uid)" class="btn view btn-outline btn-circle red delete_btn">
+                                    <i class="fa fa-trash"> 删除 </i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+
+
+
+
+
+
+    <script type="text/ng-template" id="addFile.html">
+        <div class="modal-header">
+            <h3 class="modal-title">文件上传</h3>
+        </div>
+        <form method="post" action="http://192.168.0.101:8080/fileupload" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="file"  name="file">
+
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="提交" class="btn btn-primary">
+                <!--<button class="btn btn-primary" type="button" ng-click="ok()">提交</button>-->
+                <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
+            </div>
+        </form>
     </script>
+
 
 </div>
