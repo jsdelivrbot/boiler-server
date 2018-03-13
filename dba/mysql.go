@@ -19,7 +19,7 @@ func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
 
-	var myConnection string = "root:hold2017@tcp(47.100.0.27:3306)/boiler?charset=utf8&loc=" + url.QueryEscape("PRC")
+	var myConnection string = "root:hold2017@tcp(47.100.0.27:3306)/boiler?charset=utf8" //&loc=" + url.QueryEscape("PRC")
 
 	orm.RegisterDataBase("default", "mysql", myConnection)
 
