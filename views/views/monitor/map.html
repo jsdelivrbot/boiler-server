@@ -35,7 +35,11 @@
                 <td ng-click="dashboard.mapRowClicked(boiler)">
                     <div class="row">
                         <div class="col-md-9 col-sm-9 col-xs-9" style="padding-right: 0;">
-                            <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                            <a ui-sref="dashboard-cm" ng-if="boiler.name == '崇明镇西手帕厂锅炉'">
+                                <i class="fa fa-leaf font-green-jungle"></i>
+                                <span class="caption-subject font-grey-mint">{{ boiler.name }}</span>
+                            </a>
+                            <a ui-sref="runtime.dashboard({boiler: boiler.Uid})" ng-if="boiler.name != '崇明镇西手帕厂锅炉'">
                                 <span class="caption-subject font-grey-mint">{{ boiler.num }}. </span>
                                 <i ng-show="boiler.Fuel.Type.Id == 1" class="fa fa-cubes font-grey-cascade"></i>
                                 <i ng-show="boiler.Fuel.Type.Id == 2" class="fa fa-tint font-grey-gallery"></i>
@@ -45,7 +49,12 @@
                                 <span class="caption-subject font-grey-mint">{{ boiler.name }}</span>
                             </a>
                         </div>
-                        <div class="col-md-3 col-sm-3 col-xs-3" style="padding-left: 0; text-align: right;">
+                        <div ng-if="boiler.name == '崇明镇西手帕厂锅炉'" class="col-md-3 col-sm-3 col-xs-3" style="padding-left: 0; text-align: right;">
+                            <div class="status-icon success" uib-tooltip="终端状态" tooltip-class="pop_green" style="margin: 0;"></div>
+                            <div class="status-icon success" uib-tooltip="燃烧状态" tooltip-class="pop_green" style="margin: 0;"></div>
+                            <div class="status-icon success" uib-tooltip="告警状态" tooltip-class="pop_green"></div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-3" style="padding-left: 0; text-align: right;"  ng-if="boiler.name != '崇明镇西手帕厂锅炉'">
                             <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" tooltip-placement="bottom" ng-class="[{'success': boiler.isOnline || boiler.isBurning}, { 'danger':  !boiler.isOnline && !boiler.isBurning}]" style="margin: 0;"></div>
                             <div class="status-icon" uib-tooltip="燃烧状态" tooltip-class="pop_green" tooltip-placement="bottom" ng-class="[{'success': boiler.isBurning}, {'danger': !boiler.isBurning}]" style="margin: 0;"></div>
                             <div class="status-icon" uib-tooltip="告警状态" tooltip-class="pop_green"  tooltip-placement="bottom" ng-class="[{'success': boiler.alarmLevel == 0}, {'warning': boiler.alarmLevel == 1}, {'danger': boiler.alarmLevel == 2}, {'default': boiler.alarmLevel == -1}]"></div>
