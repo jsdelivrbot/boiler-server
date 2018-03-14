@@ -356,7 +356,7 @@ func (ctl *RuntimeController) ReloadHistoryWithRuntime(rtm *models.BoilerRuntime
 
 	if err := dba.BoilerOrm.QueryTable("boiler_runtime_history").
 		Filter("Boiler__Uid", rtm.Boiler.Uid).
-		Filter("CreatedDate__lte", rtm.CreatedDate.Add(time.Minute * 4)).Filter("CreatedDate__gte", rtm.CreatedDate.Add(time.Minute * -1)).
+		Filter("CreatedDate__lte", rtm.CreatedDate.Add(time.Minute * 5)).Filter("CreatedDate__gte", rtm.CreatedDate.Add(time.Minute * -5)).
 		One(&history); err != nil {
 		goazure.Warning("History Data Read Error:", err)
 	} else {

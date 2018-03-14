@@ -267,7 +267,7 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 		"WHERE	`need_reload` = TRUE "
 
 	if limit <= 600 {
-		raw = raw + "ORDER BY `rtm`.`TS` DESC "
+		raw = raw + "ORDER BY `TS` DESC "
 	}
 	raw = raw +
 		"LIMIT	" + strconv.FormatInt(limit, 10) + ";"
@@ -982,7 +982,7 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 5
+	interval := time.Second * 2
 	if !conf.IsRelease {
 		interval = time.Minute * 2
 	}
