@@ -246,10 +246,6 @@
                         </div>
                     </td>
                     <td>
-                        <!--<select ng-init="fCodeName = $modal.fcodeName[outerIndex]" ng-model="fCodeName" ng-options="x for x in $modal.fcode"-->
-                                <!--class="form-control">-->
-                            <!--<option value="" selected>默认（未配置）</option>-->
-                        <!--</select>-->
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
@@ -257,14 +253,12 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.fcode | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
+                                {{fCode}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
                     <td>
-                        <!--<select ng-init="hlCodeName = $modal.hlCodeNames[outerIndex]" ng-model="hlCodeName" ng-options="x for x in $modal.hlCodes" class="form-control">-->
-                        <!--</select>-->
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
@@ -272,7 +266,7 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
+                                    repeat="hlCode.Name in $modal.hlCodes | filter: $select.search">
                                 {{hlCode}}
                             </ui-select-choices>
                         </ui-select>
@@ -349,10 +343,6 @@
                         </div>
                     </td>
                     <td>
-                        <!--<select ng-init="fCodeName = $modal.fcodeName[outerIndex]" ng-model="fCodeName" ng-options="x for x in $modal.fcode"-->
-                                <!--class="form-control">-->
-                            <!--<option value="" selected>默认（未配置）</option>-->
-                        <!--</select>-->
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
@@ -360,14 +350,12 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.fcode | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
+                                {{fCode}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
                     <td>
-                        <!--<select ng-init="hlCodeName = $modal.hlCodeNames[outerIndex]" ng-model="hlCodeName" ng-options="x for x in $modal.hlCodes" class="form-control">-->
-                        <!--</select>-->
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
@@ -375,7 +363,7 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
+                                    repeat="hlCode.Name in $modal.hlCodes | filter: $select.search">
                                 {{hlCode}}
                             </ui-select-choices>
                         </ui-select>
@@ -474,8 +462,8 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.fcode | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
+                                {{fCode}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -576,8 +564,8 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.fcode | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
+                                {{fCode}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -678,8 +666,8 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.fcode | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
+                                {{fCode}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -763,10 +751,6 @@
                         </div>
                     </td>
                     <td>
-                        <!--<select ng-init="fCodeName = $modal.fcodeName[outerIndex]" ng-model="fCodeName" ng-options="x for x in $modal.fcode"-->
-                        <!--class="form-control">-->
-                        <!--<option value="" selected>默认（未配置）</option>-->
-                        <!--</select>-->
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
@@ -774,14 +758,12 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.fcode | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
+                                {{fCode}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
                     <td>
-                        <!--<select ng-init="hlCodeName = $modal.hlCodeNames[outerIndex]" ng-model="hlCodeName" ng-options="x for x in $modal.hlCodes" class="form-control">-->
-                        <!--</select>-->
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
@@ -789,7 +771,7 @@
                                 {{$select.selected}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
+                                    repeat="hlCode.Name in $modal.hlCodes | filter: $select.search">
                                 {{hlCode}}
                             </ui-select-choices>
                         </ui-select>

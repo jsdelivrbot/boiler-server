@@ -680,13 +680,53 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     //下发test
     $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
+
+    //功能码
+    $http.get("/term_function_code_list").then(function (res) {
+        $modal.fcode = res.data;
+    });
+    $modal.fcodeName = ["01", "02", "03", "04"];
+
+    //高低字节
+    $http.get("/term_byte_list").then(function (res) {
+        $modal.hlCodes = res.data;
+    });
     $modal.hlCodeNames = ["16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数","32位无符号数"];
-    $modal.hlCodes = ["默认配置","16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数"];
-    $modal.fcode = ["01", "02", "03", "04", "05"];
-    $modal.fcodeName = ["01", "02", "03", "04", "01"];
+
+
     $modal.bitAddress = ["1", "2", "3", "4", "0"];
+
+    //波特率
+    $http.get("/baud_rate_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
     $modal.BaudRate  = "9600";
     $modal.BaudRates = ["9600","1000"];
+
+    $http.get("/correspond_type_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/date_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/parity_bit").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/slave_address_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/stop_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
     $modal.dataBit  = "7";
     $modal.dataBits = ["4","5","6","7"];
     $modal.stopBit  = "1";

@@ -111,6 +111,16 @@ func init() {
 
 		new(models.Dialogue),
 		new(models.DialogueComment),
+			//下发
+		new(models.TermFunctionCode),
+		new(models.TermByte),
+		new(models.BaudRate),
+		new(models.CorrespondType),
+		new(models.DateBit),
+		new(models.HeartbeatPacket),
+		new(models.ParityBit),
+		new(models.SlaveAddress),
+		new(models.StopBit),
 	)
 
 	orm.Debug = false//!conf.IsRelease

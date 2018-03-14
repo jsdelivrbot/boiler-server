@@ -138,10 +138,20 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
 
     //下发test
     $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
-    $modal.hlCodeNames = ["16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数","32位无符号数"];
-    $modal.hlCodes = ["默认配置","16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数"];
-    $modal.fcode = ["01", "02", "03", "04", "05"];
+
+
+    //功能码
+    $http.get("/term_function_code_list").then(function (res) {
+        $modal.fcode = res.data;
+    });
     $modal.fcodeName = ["01", "02", "03", "04", "01"];
+
+    //高低字节
+    $http.get("/term_byte_list").then(function (res) {
+        $modal.hlCodes = res.data;
+    });
+    $modal.hlCodeNames = ["16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数","32位无符号数"];
+
     $modal.bitAddress = ["1", "2", "3", "4", "0"];
     $modal.BaudRate  = "9600";
     $modal.BaudRates = ["9600","1000"];

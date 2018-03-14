@@ -114,6 +114,16 @@ func init() {
 	goazure.Router("/location_list/", &controllers.LocationController{}, "get:LocationList")
 
 	goazure.Router("/terminal_origin_message_list/", &controllers.DeveloperController{}, "get:TerminalOriginMessageList")
+	//下发
+	goazure.Router("/term_function_code_list",&controllers.IssuedController{},"get:FunctionCodeList")
+	goazure.Router("/term_byte_list",&controllers.IssuedController{},"get:ByteCodeList")
+	goazure.Router("/baud_rate_list",&controllers.IssuedController{},"get:BaudRateList")
+	goazure.Router("/correspond_type_list",&controllers.IssuedController{},"get:CorrespondTypeList")
+	goazure.Router("/date_bit_list",&controllers.IssuedController{},"get:DateBitList")
+	goazure.Router("/heartbeat_packet_list",&controllers.IssuedController{},"get:HeartbeatPacketList")
+	goazure.Router("/parity_bit",&controllers.IssuedController{},"get:ParityBitList")
+	goazure.Router("/slave_address_list",&controllers.IssuedController{},"get:SlaveAddressList")
+	goazure.Router("/stop_bit_list",&controllers.IssuedController{},"get:StopBitList")
 
 	goazure.SetStaticPath("/assets", "static/assets/")
 	goazure.SetStaticPath("/js", "static/js/")
