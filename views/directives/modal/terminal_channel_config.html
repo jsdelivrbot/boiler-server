@@ -264,11 +264,11 @@
                                 <button type="button" uib-dropdown-toggle
                                         ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0"
                                         ng-class="['btn', 'btn-cell', {'blue': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'yellow-lemon': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]">
-                                    <i ng-class="['fa', {'fa-bolt': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'fa-warning': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]"></i>
+                                    <i ng-class="['fa', {'fa-play': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 1}, {'fa-warning': $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 2}]"></i>
                                     <span class="sr-only">通道状态</span>
                                 </button>
                                 <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
-                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 1);"><i class="fa fa-bolt"></i> 运行状态</a></li>
+                                    <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 1);"><i class="fa fa-play"></i> 运行状态</a></li>
                                     <li role="menuitem"><a href ng-click="setSwitchStatus(outerIndex, innerIndex, 2);"><i class="fa fa-warning"></i> 故障状态</a></li>
                                 </ul>
                             </div>

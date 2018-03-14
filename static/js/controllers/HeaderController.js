@@ -151,14 +151,14 @@ app.controller('HeaderController', ['$rootScope', '$scope', '$http', '$cookies',
 
     this.logout = function () {
         swal({
-            title: "确认登出？",
+            title: "确认退出？",
             text: "",
             type: "question",
             showCancelButton: true,
             //confirmButtonClass: "btn-danger",
             confirmButtonColor: "#d33",
             cancelButtonText: "取消",
-            confirmButtonText: "登出",
+            confirmButtonText: "退出",
             //closeOnConfirm: false
         }).then(function () {
             $http.post('/user_logout/', {

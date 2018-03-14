@@ -12,6 +12,9 @@
     .page-content {
         background: #eef1f5;
     }
+    .table.table-light>thead>tr>th{
+        color:#333333;
+    }
 </style>
 
 <div class="page-bar">
@@ -94,22 +97,22 @@
                     </div>
                     <div class="col-md-4" style="padding: 0; padding-right: 10px;">
                         <!-- BEGIN SAMPLE TABLE PORTLET-->
-                        <div class="portlet light bordered" style="padding: 5px;padding-top: 0; ">
+                        <div class="portlet light bordered" style="padding: 0; ">
 
-                            <div class="portlet-body">
-                                <table class="table table-hover table-light" style="margin-bottom: 0;">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 40%;">测量项目</th>
-                                        <th>测量值</th>
-                                        <th style="width: 18%;">单位</th>
-                                        <th>状态</th>
-                                    </tr>
-                                    </thead>
-                                </table>
+                            <div class="portlet-body" style="padding: 0; ">
+                                <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
+                                    <!---->
+                                <!--</table>-->
                                 <div class="" style="height: 480px; overflow: auto; margin-top: 0;">
                                     <table class="table table-hover table-light" >
-
+                                        <thead style="background-color: #edfaf8;">
+                                        <tr>
+                                            <th style="width: 40%;">测量项目</th>
+                                            <th>测量值</th>
+                                            <th style="width: 18%;">单位</th>
+                                            <th>状态</th>
+                                        </tr>
+                                        </thead>
                                         <tbody>
                                         <tr>
                                             <td> 测点排气温度</td>

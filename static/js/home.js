@@ -211,14 +211,14 @@ boilerHome.controller('HomeController', ['$scope', '$http', '$cookies', '$window
 
     home.logout = function () {
         swal({
-            title: "确认登出？",
-            text: "登出后，需要刷新您已经登录的界面。",
+            title: "确认退出？",
+            text: "退出后，需要刷新您已经登录的界面。",
             type: "question",
             showCancelButton: true,
             //confirmButtonClass: "btn-danger",
             confirmButtonColor: "#d33",
             cancelButtonText: "取消",
-            confirmButtonText: "登出"
+            confirmButtonText: "退出"
             //closeOnConfirm: false
         }).then(function () {
             $http.post('/user_logout/', {
