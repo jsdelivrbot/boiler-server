@@ -519,6 +519,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             }, function (err) {
                 console.error('Fetch Status Err!', err);
             });
+
     };
 
     bMonitor.fetchThumbParam = function (boiler) {

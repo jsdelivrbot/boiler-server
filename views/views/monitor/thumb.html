@@ -27,13 +27,88 @@
 
 <div class="row thumb_con">
 
+    <!--<div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="portlet light bordered boiler-frame">
+            <div class="portlet-title">
+                <div class="caption">
+                    <a ui-sref="dashboard-cm">
+                        <i class="fa fa-leaf font-green-jungle"></i>
+                        <span class="caption-subject font-grey-mint bold uppercase">崇明镇西手帕厂锅炉</span>
+                    </a>
+                    <a class="caption-helper btn-outline btn-circle">
+                        <i class="fa fa-wrench"></i> 测算
+                    </a>
+                </div>
+                <div class="actions">
+                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                        <a class="btn btn-outline btn-circle btn-sm active green">终端状态</a>
+                        <a class="btn btn-outline btn-sm btn-circle active green">燃烧状态</a>
+                        <a class="btn btn-outline btn-sm btn-circle active green" >告警</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <table class="table table-scrollable-borderless table-hover table-light">
+                            <thead>
+                            <tr class="uppercase">
+                                <th>测点排气温度</th>
+                                <th>测点烟道含氧量</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <span class="label label-lg label-success">90 ℃</span>
+                                </td>
+                                <td>
+                                    <span class="label label-lg label-success">8.39	%</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <thead>
+                            <tr class="uppercase">
+                                <th>实测二氧化硫浓度</th>
+                                <th>实测氮氧化物浓度</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <span class="label label-lg label-success">150 mg/g3</span>
+                                </td>
+                                <td>
+                                    <span class="label label-lg label-success">22 mg/g3</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6" style="text-align: center; vertical-align: middle">
+                        <a ui-sref="dashboard-cm">
+                            <img class="boiler-thumb" ng-src="../img/coalsingle.gif" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>-->
+
     <div ng-repeat="boiler in dashboard.pagedItems[dashboard.currentPage] | orderBy:dashboard.sortingOrder:reverse"
          class="col-md-6 col-sm-12 col-xs-12">
+
         <!-- BEGIN PORTLET-->
         <div ng-init="dashboard.fetchStatus(boiler); dashboard.fetchThumbParam(boiler);" class="portlet light bordered boiler-frame">
             <div class="portlet-title">
                 <div class="caption">
-                    <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                    <a ui-sref="dashboard-cm" ng-if="boiler.name == '崇明镇西手帕厂锅炉'">
+                        <i class="fa fa-leaf font-green-jungle"></i>
+                        <span class="caption-subject font-grey-mint bold uppercase">{{ boiler.name }}</span>
+                    </a>
+                    <a ui-sref="runtime.dashboard({boiler: boiler.Uid})" ng-if="boiler.name != '崇明镇西手帕厂锅炉'">
                         <i ng-show="boiler.Fuel.Type.Id == 1" class="fa fa-cubes font-grey-cascade"></i>
                         <i ng-show="boiler.Fuel.Type.Id == 2" class="fa fa-tint font-grey-gallery"></i>
                         <i ng-show="boiler.Fuel.Type.Id == 3" class="fa fa-database font-blue-soft"></i>
@@ -46,13 +121,20 @@
                     </a>
                 </div>
                 <div class="actions">
-                    <div class="btn-group btn-group-devided" data-toggle="buttons">
-                        <a class="btn btn-outline btn-circle btn-sm active"
+                    <div class="btn-group btn-group-devided" data-toggle="buttons" ng-if="boiler.name == '崇明镇西手帕厂锅炉'">
+                        <a class="btn btn-outline btn-circle btn-sm active green">终端状态</a>
+                        <a class="btn btn-outline btn-sm btn-circle active green">燃烧状态</a>
+                        <a class="btn btn-outline btn-sm btn-circle active green" >告警</a>
+                    </div>
+                    <div class="btn-group btn-group-devided" data-toggle="buttons" ng-if="boiler.name != '崇明镇西手帕厂锅炉'">
+                        <a ui-sref="terminal.dashboard"
+                           class="btn btn-outline btn-circle btn-sm active"
                            ng-class="[{'green': boiler.isOnline || boiler.isBurning}, { 'red': !boiler.isOnline && !boiler.isBurning}]">终端状态</a>
                         <a ui-sref="runtime.dashboard({boiler: boiler.Uid})"
                            class="btn btn-outline btn-sm btn-circle active"
                            ng-class="[{'green': boiler.isBurning}, { 'red': !boiler.isBurning}]">燃烧状态</a>
-                        <a ui-sref="runtime.alarm({boiler: boiler.Uid})" ng-class="['btn', 'btn-outline', 'btn-sm', 'btn-circle', 'active', {'green': boiler.alarmLevel == 0}, { 'yellow-lemon': boiler.alarmLevel == 1}, { 'red': boiler.alarmLevel == 2}, { 'grey': boiler.alarmLevel == -1}]" >告警</a>
+                        <a ui-sref="runtime.alarm({boiler: boiler.Uid})"
+                           ng-class="['btn', 'btn-outline', 'btn-sm', 'btn-circle', 'active', {'green': boiler.alarmLevel == 0}, { 'yellow-lemon': boiler.alarmLevel == 1}, { 'red': boiler.alarmLevel == 2}, { 'grey': boiler.alarmLevel == -1}]" >告警</a>
                     </div>
                 </div>
             </div>
@@ -60,7 +142,43 @@
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <table class="table table-scrollable-borderless table-hover table-light">
+                        <table class="table table-scrollable-borderless table-hover table-light"
+                               ng-if="boiler.name == '崇明镇西手帕厂锅炉'">
+                            <thead>
+                            <tr class="uppercase">
+                                <th>测点排气温度</th>
+                                <th>测点烟道含氧量</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <span class="label label-lg label-success">90 ℃</span>
+                                </td>
+                                <td>
+                                    <span class="label label-lg label-success">8.39	%</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <thead>
+                            <tr class="uppercase">
+                                <th>实测二氧化硫浓度</th>
+                                <th>实测氮氧化物浓度</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <span class="label label-lg label-success">150 mg/g3</span>
+                                </td>
+                                <td>
+                                    <span class="label label-lg label-success">22 mg/g3</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-scrollable-borderless table-hover table-light"
+                               ng-if="boiler.name != '崇明镇西手帕厂锅炉'">
                             <thead ng-repeat-start="rtms in boiler.runtime">
                             <tr class="uppercase">
                                 <th ng-repeat="rtm in rtms">{{ rtm.name }}</th>
@@ -76,7 +194,10 @@
                         </table>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6" style="text-align: center; vertical-align: middle">
-                        <a ui-sref="runtime.dashboard({boiler: boiler.Uid})">
+                        <a ui-sref="dashboard-cm" ng-if="boiler.name == '崇明镇西手帕厂锅炉'">
+                            <img class="boiler-thumb" ng-src="../img/coalsingle.gif" />
+                        </a>
+                        <a ui-sref="runtime.dashboard({boiler: boiler.Uid})" ng-if="boiler.name != '崇明镇西手帕厂锅炉'">
                             <img class="boiler-thumb" ng-src="../img/{{ boiler.img }}" />
                         </a>
                     </div>
