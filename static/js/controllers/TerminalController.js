@@ -839,6 +839,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             $modal.dataMatrix[outerIndex][innerIndex].Status = -1;
             $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
+            if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
+                $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
+            }
         } else {
             if ($modal.dataMatrix[outerIndex][innerIndex].oParamId !== $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id) {
                 $modal.dataMatrix[outerIndex][innerIndex].Ranges = [];
@@ -853,7 +856,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 1;
             }
 
-            $modal.chanMatrix[outerIndex][innerIndex] = $modal.dataMatrix[outerIndex][innerIndex];
+            if($modal.chanMatrix[outerIndex][innerIndex].Name==="默认(未配置)"){
+                $modal.chanMatrix[outerIndex][innerIndex].Name = $modal.dataMatrix[outerIndex][innerIndex].Parameter.Name;
+            }
         }
 
     };

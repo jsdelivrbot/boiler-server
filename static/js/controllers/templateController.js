@@ -33,6 +33,10 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
         }
     ];
 
+
+    var currentData;
+    var editing;
+
     template.new = function () {
         currentData = null;
         editing = true;
@@ -42,6 +46,14 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
             controllerAs: '$modal',
             size: "lg",
             windowClass: 'zindex',
+            resolve: {
+                currentData: function () {
+                    return currentData;
+                },
+                editing: function () {
+                    return editing;
+                }
+            }
         });
 
 
@@ -61,6 +73,14 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
             controllerAs: '$modal',
             size: "lg",
             windowClass: 'zindex',
+            resolve: {
+                currentData: function () {
+                    return currentData;
+                },
+                editing: function () {
+                    return editing;
+                }
+            }
         });
 
 
@@ -105,10 +125,9 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
 
 })
 
-var currentData;
-var editing;
 
-angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($rootScope,$scope, $uibModalInstance,$http) {
+
+angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($rootScope,$scope, $uibModalInstance,$http,currentData,editing) {
     var $modal = this;
     $modal.currentData = currentData;
     $modal.editing = editing;
@@ -237,6 +256,9 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
             $modal.dataMatrix[outerIndex][innerIndex].Status = -1;
             $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
+            if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
+                $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
+            }
         } else {
             if ($modal.dataMatrix[outerIndex][innerIndex].oParamId !== $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id) {
                 $modal.dataMatrix[outerIndex][innerIndex].Ranges = [];
@@ -251,15 +273,22 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
                 $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 1;
             }
 
-            $modal.chanMatrix[outerIndex][innerIndex] = $modal.dataMatrix[outerIndex][innerIndex];
+            if($modal.chanMatrix[outerIndex][innerIndex].Name==="默认(未配置)"){
+                $modal.chanMatrix[outerIndex][innerIndex].Name = $modal.dataMatrix[outerIndex][innerIndex].Parameter.Name;
+            }
+            console.log($modal.chanMatrix);
         }
 
     };
 
+    //恢复默认
     $scope.matrixReset = function () {
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
                 $modal.dataMatrix[i][j] = null;
+                if($modal.chanMatrix[i][j].IsDefault!=true){
+                    $modal.chanMatrix[i][j].Name="默认(未配置)"
+                }
             }
         }
     };
@@ -280,6 +309,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
 
     $modal.initCurrent();
 
+    //位置设置
     $scope.setStatus = function(outerIndex, innerIndex, status, sn) {
         // console.warn("$scope.setStatus", outerIndex, innerIndex, status, sn);
         $modal.dataMatrix[outerIndex][innerIndex].Status = status;
@@ -290,6 +320,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         }
     };
 
+    //状态设置
     $scope.setSwitchStatus = function(outerIndex, innerIndex, status) {
         console.warn("$scope.setSwitchStatus", outerIndex, innerIndex, status);
         $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = status;
