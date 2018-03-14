@@ -30,8 +30,8 @@
         <!--</div>-->
     </div>
 </div>
-<div ng-show="currentUser.Role.RoleId < 10" class="pull-right" style="margin-bottom: 20px;">
-    <div class="btn-group btn-group-devided" data-toggle="buttons">
+<div ng-show="currentUser.Role.RoleId < 10" style="margin-bottom: 20px; overflow:hidden;">
+    <div class="btn-group btn-group-devided pull-right" data-toggle="buttons">
         <a ui-sref="organization.overview({tid: 0})" class="btn green btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 0}"> 所有企业 </a>
         <a ui-sref="organization.overview({tid: 2})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 2}"> 锅炉使用企业 </a>
         <a ui-sref="organization.overview({tid: 1})" class="btn blue btn-outline btn-circle btn-sm" ng-class="{'active': org.tid === 1}"> 锅炉制造企业 </a>
