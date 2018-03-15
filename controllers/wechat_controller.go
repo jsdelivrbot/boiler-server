@@ -83,7 +83,7 @@ type WeixinMessage struct {
 var WxCtl *WechatController = &WechatController{}
 
 var (
-	identity		string
+	identity		string = "yeep"
 	app, mini		*models.Application = &models.Application{}, &models.Application{}
 
 	msgHandler 		core.Handler
@@ -94,13 +94,6 @@ var (
 )
 
 func (ctl *WechatController) InitWechatService() {
-	//app.AppId = WEIXIN_PUBLIC_LUCID_APPID
-	if conf.IsRelease {
-		identity = "holder"
-	} else {
-		identity = "lucid"
-	}
-
 	mux := core.NewServeMux()
 	mux.DefaultMsgHandleFunc(defaultMsgHandler)
 	mux.DefaultEventHandleFunc(defaultEventHandler)

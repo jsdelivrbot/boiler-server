@@ -29,47 +29,47 @@ func init() {
 }
 
 func initApplications() {
-	/*======================== HOLDER ==========================*/
-	wechatWebHolder := models.Application{}
-	wechatWebHolder.Name = "微信网站 厚德能源2025"
-	wechatWebHolder.NameEn = "Weixin Web HolderBoiler"
-	wechatWebHolder.Platform = "weixin"
-	wechatWebHolder.App = "website"
-	wechatWebHolder.Identity = "holder"
-	wechatWebHolder.Domain = "www.holderboiler.com"
-	wechatWebHolder.AppId = "wxcd2d43cd41ef6912"
-	wechatWebHolder.AppSecret = "eb64cbee22c12c65f25af46761a3b98e"
+	/*======================== WEIXIN ==========================*/
+	wechatWeb := models.Application{}
+	wechatWeb.Name = "微信网站"
+	wechatWeb.NameEn = "Weixin Web"
+	wechatWeb.Platform = "weixin"
+	wechatWeb.App = "website"
+	wechatWeb.Identity = "yeep"
+	wechatWeb.Domain = "boilersp.yeep.net.cn"
+	wechatWeb.AppId = "wxcd2d43cd41ef6912"
+	wechatWeb.AppSecret = "eb64cbee22c12c65f25af46761a3b98e"
 
-	wechatServiceHolder := models.Application{}
-	wechatServiceHolder.Name = "微信服务号 炉管家"
-	wechatServiceHolder.NameEn = "Weixin Service HolderBoiler"
-	wechatServiceHolder.Platform = "weixin"
-	wechatServiceHolder.App = "service"
-	wechatServiceHolder.Identity = "holder"
-	wechatServiceHolder.Domain = "www.holderboiler.com"
-	wechatServiceHolder.Path = "wechat-server"
-	wechatServiceHolder.AppId = "wx7057a9dd005c2bd9"
-	wechatServiceHolder.AppSecret = "7cf71c5f2989a56c6cca5c323c351097"
-	wechatServiceHolder.OriginId = "gh_51f45f1ce9fa"
-	wechatServiceHolder.ApiToken = "kiaN8akaSl4ana"
-	wechatServiceHolder.AesKey = "Wp1tbvGfIBADQkFAyTMNCTavQgF4n4woOhxrZDkEBjf"
+	wechatService := models.Application{}
+	wechatService.Name = "微信服务号"
+	wechatService.NameEn = "Weixin Service"
+	wechatService.Platform = "weixin"
+	wechatService.App = "service"
+	wechatService.Identity = "yeep"
+	wechatService.Domain = "boilersp.yeep.net.cn"
+	wechatService.Path = "wechat-server"
+	wechatService.AppId = "wxb44aa73ca1a482e3"
+	wechatService.AppSecret = "bb4992baa471b30133ec532aab5f3714"
+	wechatService.OriginId = "gh_69eeac232703"
+	wechatService.ApiToken = "kiaN8akaSl4ana"
+	wechatService.AesKey = "9zdBkzKrVdovHdBFJoju2XBCNkxxpqbueIuEmNBvJLG"
 
-	wechatMiniHolder := models.Application{}
-	wechatMiniHolder.Name = "微信小程序 锅炉在线节能平台"
-	wechatMiniHolder.NameEn = "Weixin Mini Program HolderBoiler"
-	wechatMiniHolder.Platform = "weixin"
-	wechatMiniHolder.App = "mini"
-	wechatMiniHolder.Identity = "holder"
-	wechatMiniHolder.Domain = "www.holderboiler.com"
-	wechatMiniHolder.Path = "wechat-mini-server"
-	wechatMiniHolder.AppId = "wxe74ea02c8906c425"
-	wechatMiniHolder.AppSecret = "5af961b73ea272eceae3d28c23eb30c4"
-	wechatMiniHolder.ApiToken = "excalibur"
-	wechatMiniHolder.AesKey = "BbZ69KBORjgvgdTSkDbTFxDCOURpxuBJq5Jb7sXP0b7"
+	wechatMini := models.Application{}
+	wechatMini.Name = "微信小程序 工业锅炉节能平台"
+	wechatMini.NameEn = "Weixin Mini Program"
+	wechatMini.Platform = "weixin"
+	wechatMini.App = "mini"
+	wechatMini.Identity = "yeep"
+	wechatMini.Domain = "boilersp.yeep.net.cn"
+	wechatMini.Path = "wechat-mini-server"
+	wechatMini.AppId = "wx78cd56e22006c303"
+	wechatMini.AppSecret = "64e186c295e86f377674f823d97c7738"
+	wechatMini.ApiToken = "excalibur"
+	wechatMini.AesKey = "BbZ69KBORjgvgdTSkDbTFxDCOURpxuBJq5Jb7sXP0b7"
 
-	DataCtl.AddData(&wechatWebHolder, true, "AppId")
-	DataCtl.AddData(&wechatServiceHolder, true, "AppId")
-	DataCtl.AddData(&wechatMiniHolder, true, "AppId")
+	DataCtl.AddData(&wechatWeb, true, "AppId")
+	DataCtl.AddData(&wechatService, true, "AppId")
+	DataCtl.AddData(&wechatMini, true, "AppId")
 }
 
 func (ctl *MainController) Get() {
@@ -91,8 +91,6 @@ func (ctl *MainController) GetCurrentUser() *models.User {
 		//return ctl.getSysUser()
 		return nil
 	}
-
-	//goazure.Error("\n===========", ctl, "\n", reflect.TypeOf(ctl) ,"===========\n")
 
 	usrSession := ctl.GetSession(SESSION_CURRENT_USER)
 	if usrSession == nil {

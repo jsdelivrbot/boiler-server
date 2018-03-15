@@ -12,10 +12,13 @@ import (
 	"fmt"
 
 	_ "github.com/denisenkom/go-mssqldb"
+	"errors"
 )
 
 type DBController struct {
 	MainController
+
+	db		*sql.DB
 }
 
 var DBCtl *DBController = &DBController{}
@@ -30,23 +33,12 @@ var (
 )
 
 func init() {
-	db, err := DBCtl.DbConnect()
+	err := DBCtl.InitDbConnect()
 	if err != nil {
 		return
 	}
 
 	//defer db.Close()
-
-	go DBCtl.ImportMSSQLData(db, 0, time.Time{})
-
-	ticker := time.NewTicker(time.Minute * 5)
-	tick := func() {
-		for t := range ticker.C {
-			DBCtl.ImportMSSQLData(db, 1, t)
-		}
-	}
-
-	go tick()
 }
 
 func (ctl *DBController) GetStringFromMap(m orm.Params, defaults string, col string, cols ...string) string {
@@ -62,7 +54,26 @@ func (ctl *DBController) GetStringFromMap(m orm.Params, defaults string, col str
 	}
 }
 
-func (ctl *DBController)ImportMSSQLData(db *sql.DB, offset int, tm time.Time) error {
+func (ctl *DBController)InitMSSQLData() {
+	ctl.ImportMSSQLData(0, time.Time{})
+}
+
+func (ctl *DBController)LoadMSSQLData() {
+	ticker := time.NewTicker(time.Minute * 5)
+	tick := func() {
+		for t := range ticker.C {
+			DBCtl.ImportMSSQLData(1, t)
+		}
+	}
+
+	go tick()
+}
+
+func (ctl *DBController)ImportMSSQLData(offset int, tm time.Time) error {
+	if ctl.db == nil {
+		return errors.New("db conn can not be nil!")
+	}
+
 	query :=
 		"SELECT * " +
 		"FROM BoilerData_310101C027 " +
@@ -76,7 +87,7 @@ func (ctl *DBController)ImportMSSQLData(db *sql.DB, offset int, tm time.Time) er
 			"ORDER BY [timestamp] ASC; "
 	}
 
-	stmt, err := db.Prepare(query)
+	stmt, err := ctl.db.Prepare(query)
 	if err != nil {
 		goazure.Error("Prepare failed:", err.Error())
 		return err
@@ -147,7 +158,7 @@ func (ctl *DBController)ImportMSSQLData(db *sql.DB, offset int, tm time.Time) er
 	return nil
 }
 
-func (ctl *DBController)DbConnect() (*sql.DB, error) {
+func (ctl *DBController)InitDbConnect() error {
 	flag.Parse()
 
 	if *debug {
@@ -167,5 +178,7 @@ func (ctl *DBController)DbConnect() (*sql.DB, error) {
 		goazure.Error("Open connection failed:", err.Error())
 	}
 
-	return db, err
+	ctl.db = db
+
+	return err
 }
