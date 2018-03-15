@@ -358,6 +358,41 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
 
 
 
+    //下发
+    //功能码
+    $http.get("/term_function_code_list").then(function (res) {
+        $rootScope.fcode = res.data;
+    });
+
+    //高低字节
+    $http.get("/term_byte_list").then(function (res) {
+        $rootScope.hlCodes = res.data;
+    });
+
+    $http.get("/correspond_type_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/date_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/parity_bit").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/slave_address_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/stop_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
 
 });
 
@@ -682,16 +717,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
 
     //功能码
-    $http.get("/term_function_code_list").then(function (res) {
-        $modal.fcode = res.data;
-    });
+    $modal.fcode = $rootScope.fcode;
     $modal.fcodeName = ["01", "02", "03", "04"];
 
     //高低字节
-    $http.get("/term_byte_list").then(function (res) {
-        $modal.hlCodes = res.data;
-    });
-    $modal.hlCodeNames = ["16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数","32位无符号数"];
+    $modal.hlCodes = $rootScope.hlCodes;
+    $modal.hlCodeNames = ["16位无符号数", "32位无符号数ABCD", "32位浮点型数ABCD","32位无符号数ABCD"];
 
 
     $modal.bitAddress = ["1", "2", "3", "4", "0"];
@@ -703,29 +734,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.BaudRate  = "9600";
     $modal.BaudRates = ["9600","1000"];
 
-    $http.get("/correspond_type_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/date_bit_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/heartbeat_packet_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/parity_bit").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/slave_address_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/stop_bit_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
 
     $modal.dataBit  = "7";
     $modal.dataBits = ["4","5","6","7"];

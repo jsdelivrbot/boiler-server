@@ -250,11 +250,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
-                                {{fCode}}
+                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -263,11 +263,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode.Name in $modal.hlCodes | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="hlCode.Name as hlCode in $modal.hlCodes | filter: $select.search">
+                                {{hlCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -347,11 +347,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
-                                {{fCode}}
+                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -360,11 +360,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode.Name in $modal.hlCodes | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="hlCode.Name as hlCode in $modal.hlCodes | filter: $select.search">
+                                {{hlCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -459,11 +459,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
-                                {{fCode}}
+                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -561,11 +561,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
-                                {{fCode}}
+                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -663,11 +663,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
-                                {{fCode}}
+                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -733,7 +733,7 @@
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
                                        style="width: 80%;">
-                                <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}]
+                                <ui-select-match placeholder="{{chan_row[4].Name}}">[{{$select.selected.Name}}]
                                     [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
                                 </ui-select-match>
                                 <ui-select-choices repeat="param in $modal.parameters[4] | filter: $select.search">
@@ -755,11 +755,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name in $modal.fcode | filter: $select.search">
-                                {{fCode}}
+                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>
@@ -768,11 +768,11 @@
                                    theme="bootstrap"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
-                                {{$select.selected}}
+                                {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode.Name in $modal.hlCodes | filter: $select.search">
-                                {{hlCode}}
+                                    repeat="hlCode.Name as hlCode in $modal.hlCodes | filter: $select.search">
+                                {{hlCode.Name}}
                             </ui-select-choices>
                         </ui-select>
                     </td>

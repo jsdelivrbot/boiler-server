@@ -1,4 +1,4 @@
-angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$scope,$uibModal,$document,settings,DTOptionsBuilder, DTColumnDefBuilder) {
+angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$scope,$uibModal,$http,settings,DTOptionsBuilder, DTColumnDefBuilder) {
     var template = this;
 
     App.initAjax();
@@ -123,6 +123,43 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
         });
     };
 
+
+
+    //下发
+    //功能码
+    $http.get("/term_function_code_list").then(function (res) {
+        $rootScope.fcode = res.data;
+    });
+
+    //高低字节
+    $http.get("/term_byte_list").then(function (res) {
+        $rootScope.hlCodes = res.data;
+    });
+
+    $http.get("/correspond_type_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/date_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/parity_bit").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/slave_address_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/stop_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
 })
 
 
@@ -141,16 +178,12 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
 
 
     //功能码
-    $http.get("/term_function_code_list").then(function (res) {
-        $modal.fcode = res.data;
-    });
+    $modal.fcode = $rootScope.fcode;
     $modal.fcodeName = ["01", "02", "03", "04", "01"];
 
     //高低字节
-    $http.get("/term_byte_list").then(function (res) {
-        $modal.hlCodes = res.data;
-    });
-    $modal.hlCodeNames = ["16位无符号数", "32位无符号数", "32位浮点型数", "32位有符号数","32位无符号数"];
+    $modal.hlCodes = $rootScope.hlCodes;
+    $modal.hlCodeNames = ["16位无符号数", "32位无符号数ABCD", "32位浮点型数ABCD","32位无符号数ABCD"];
 
     $modal.bitAddress = ["1", "2", "3", "4", "0"];
     $modal.BaudRate  = "9600";
