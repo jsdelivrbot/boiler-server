@@ -556,12 +556,19 @@ func (ctl *RuntimeController) BoilerRuntimeList() {
 			tableName = "boiler_runtime_cache_excess_air"
 		}
 
-		if b.Range > RUNTIME_RANGE_TODAY {
-			tableName = "boiler_runtime"
+		switch b.Range {
+		case RUNTIME_RANGE_DEFAULT:
+			fallthrough
+		case RUNTIME_RANGE_TODAY:
+			tableName = "boiler_runtime_cache_day"
+		case RUNTIME_RANGE_THERE_DAY:
+			fallthrough
+		case RUNTIME_RANGE_WEEK:
+			tableName = "boiler_runtime_cache_week"
 		}
 
 		qr := dba.BoilerOrm.QueryTable(tableName)
-		if tableName == "boiler_runtime" {
+		if 	tableName == "boiler_runtime" {
 			qr = qr.RelatedSel("Alarm")
 		}
 		qr = qr.Filter("Boiler__Uid", boiler.Uid).Filter("Parameter__Id", param.Id)
@@ -1031,7 +1038,6 @@ func (ctl *RuntimeController) BoilerHeatRank() {
 }
 
 func (ctl *RuntimeController) RefreshBoilerRank(t time.Time) {
-
 	var fileNameCoal string = "dba/sql/select_boiler_evaporate_rank_coal.sql"
 	var fileNameGas string = "dba/sql/select_boiler_evaporate_rank_gas.sql"
 	var sqlCoal, sqlGas string
@@ -1335,8 +1341,6 @@ func addRuntimeParameter(param *models.RuntimeParameter) (error) {
 
 	return err
 }
-
-
 
 func addRuntimeParameterCategory(category models.RuntimeParameterCategory) (error) {
 	err := DataCtl.AddData(&category, true)

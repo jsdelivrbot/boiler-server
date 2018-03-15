@@ -213,8 +213,8 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 
 	BlrCtl.bWaitGroup.Done()
 
-	go RtmCtl.RefreshStatusRunningDuration(time.Now())
-	go RtmCtl.RefreshBoilerRank(time.Now())
+	//go RtmCtl.RefreshStatusRunningDuration(time.Now())
+	//go RtmCtl.RefreshBoilerRank(time.Now())
 
 	go TermCtl.TerminalBindReload()
 }
