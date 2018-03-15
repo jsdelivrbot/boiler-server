@@ -101,6 +101,11 @@
 
 /*global*/
 
+a:focus, a:hover {
+    text-decoration: none;
+}
+
+
 .table.table-boiler thead th{
     background-color: #edfaf8 ;
 }
