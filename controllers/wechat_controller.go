@@ -446,23 +446,23 @@ func (ctl *WechatController) WXCallbackHandler() {
 	w := ctl.Ctx.ResponseWriter
 	r := ctl.Ctx.Request
 
-	//domain := ctl.Ctx.Input.Domain()
-	//if app == nil || app.Domain != domain {
-	//	app = &models.Application{ Domain: domain, App: "service" }
-	//	if err := DataCtl.ReadData(app, "Domain", "App"); err != nil {
-	//		goazure.Error("Read AppInfo Error:", app)
-	//	}
-	//
-	//	msgServer = core.NewServer(app.OriginId, app.AppId, app.ApiToken, app.AesKey, msgHandler, nil)
-	//
-	//	accessTokenServer = core.NewDefaultAccessTokenServer(app.AppId, app.AppSecret, nil)
-	//	wechatClient = core.NewClient(accessTokenServer, nil)
-	//
-	//	//fmt.Println(base.GetCallbackIP(wechatClient))
-	//
-	//	ctl.SyncUserList()
-	//	ctl.SyncMenu()
-	//}
+	domain := ctl.Ctx.Input.Domain()
+	if app == nil || app.Domain != domain {
+		app = &models.Application{ Domain: domain, App: "service" }
+		if err := DataCtl.ReadData(app, "Domain", "App"); err != nil {
+			goazure.Error("Read AppInfo Error:", app)
+		}
+
+		msgServer = core.NewServer(app.OriginId, app.AppId, app.ApiToken, app.AesKey, msgHandler, nil)
+
+		accessTokenServer = core.NewDefaultAccessTokenServer(app.AppId, app.AppSecret, nil)
+		wechatClient = core.NewClient(accessTokenServer, nil)
+
+		//fmt.Println(base.GetCallbackIP(wechatClient))
+
+		ctl.SyncUserList()
+		ctl.SyncMenu()
+	}
 
 	msgServer.ServeHTTP(w, r, nil)
 }
