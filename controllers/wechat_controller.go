@@ -117,16 +117,16 @@ func (ctl *WechatController) InitWechatService() {
 	}
 
 	goazure.Warn("OriginId", app.OriginId)
-	goazure.Error("AppId", app.AppId)
+	goazure.Warn("AppId", app.AppId)
 	goazure.Warn("ApiToken", app.ApiToken)
-	goazure.Error("AesKey", app.AesKey)
+	goazure.Warn("AesKey", app.AesKey)
 
 	msgServer = core.NewServer(app.OriginId, app.AppId, app.ApiToken, app.AesKey, msgHandler, nil)
 
 	accessTokenServer = core.NewDefaultAccessTokenServer(app.AppId, app.AppSecret, nil)
 	wechatClient = core.NewClient(accessTokenServer, nil)
 
-	fmt.Println(base.GetCallbackIP(wechatClient))
+	goazure.Info(base.GetCallbackIP(wechatClient))
 
 	WxCtl.SyncUserList()
 	WxCtl.SyncMenu()
@@ -446,8 +446,9 @@ func (ctl *WechatController) WXCallbackHandler() {
 	w := ctl.Ctx.ResponseWriter
 	r := ctl.Ctx.Request
 
+	/*
 	domain := ctl.Ctx.Input.Domain()
-	if app == nil || app.Domain != domain {
+	if  app == nil || app.Domain != domain {
 		app = &models.Application{ Domain: domain, App: "service" }
 		if err := DataCtl.ReadData(app, "Domain", "App"); err != nil {
 			goazure.Error("Read AppInfo Error:", app)
@@ -463,6 +464,7 @@ func (ctl *WechatController) WXCallbackHandler() {
 		ctl.SyncUserList()
 		ctl.SyncMenu()
 	}
+	*/
 
 	msgServer.ServeHTTP(w, r, nil)
 }
