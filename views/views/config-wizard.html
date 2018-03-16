@@ -1,0 +1,138 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a>主页</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a>主监控台</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a>配置向导</a>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
+
+<style>
+    .wizard{
+        padding: 30px 50px;
+        overflow: hidden;
+    }
+    .wizard .w_part1{
+        float: left;
+        width: 26%;
+        text-align: center;
+    }
+    .wizard .w_part2{
+        float: left;
+        width: 11%;
+        text-align: center;
+    }
+    .wizard .w_part1 .w_img{
+        width: 100%;
+        height: 230px;
+        border: 1px dotted #ff3e24;
+        border-radius: 35px;
+        overflow: hidden;
+    }
+    .wizard .w_part2 .w_img{
+        line-height: 230px;
+    }
+    .wizard .w_part1 .w_img img{
+        width: 100%;
+        height: 100%;
+    }
+    .wizard .w_part2 .w_img img{
+        width: 80px;
+    }
+    .wizard .w_part1 .w_text{
+        margin-top: 30px;
+    }
+    .wizard .w_part1 .w_text h5{
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .wizard .w_part1 .btn{
+        width: 90%;
+        margin-bottom: 10px;
+    }
+</style>
+<!-- BEGIN MAIN CONTENT -->
+<div ng-controller="wizardCtrl" style="margin-top: 15px;">
+    <!-- BEGIN MAIN CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet light bordered">
+                <div class="wizard">
+                   <div class="w_part1">
+                       <div class="w_img">
+                           <img src="/images/no_image.png" alt="">
+                       </div>
+                       <div class="w_text">
+                           <h5>终端数据通道采集信息配置</h5>
+                           <a class="btn btn-outline btn-circle btn-sm blue" ui-sref="terminal.dashboard">
+                               <i class="fa fa-cogs"></i>
+                               配置终端信息
+                           </a>
+                       </div>
+                   </div>
+                    <div class="w_part2">
+                        <div class="w_img">
+                            <img src="/images/arrow_right.svg" alt="">
+                        </div>
+                    </div>
+
+                    <div class="w_part1">
+                        <div class="w_img">
+                            <img src="/images/no_image.png" alt="">
+                        </div>
+                        <div class="w_text">
+                            <h5>锅炉展示信息配置，终端设备关联</h5>
+                            <a class="btn btn-outline btn-circle btn-sm blue" ui-sref="boiler.dashboard">
+                                <i class="fa fa-cogs"></i>
+                                配置锅炉信息
+                            </a>
+                        </div>
+                    </div>
+                    <div class="w_part2">
+                        <div class="w_img">
+                            <img src="/images/arrow_right.svg" alt="">
+                        </div>
+                    </div>
+
+                    <div class="w_part1">
+                        <div class="w_img">
+                            <img src="/images/no_image.png" alt="">
+                        </div>
+                        <div class="w_text">
+                            <h5>完成设备关联匹配，查看设备数据展示信息</h5>
+                            <a class="btn btn-outline btn-circle btn-sm blue" ui-sref="monitor.thumb">
+                                <i class="fa fa-cogs"></i>
+                                查看设备概览
+                            </a>
+                            <a class="btn btn-outline btn-circle btn-sm blue" ui-sref="alarm">
+                                <i class="fa fa-cogs"></i>
+                                配置告警信息
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+
+
+
+
+
+
+
+
+</div>

@@ -24,7 +24,9 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4),
         DTColumnDefBuilder.newColumnDef(5),
-        DTColumnDefBuilder.newColumnDef(6).notSortable()
+        DTColumnDefBuilder.newColumnDef(6),
+        DTColumnDefBuilder.newColumnDef(7),
+        DTColumnDefBuilder.newColumnDef(8).notSortable()
     ];
 
     terminal.refreshDataTables = function (callback) {
@@ -271,6 +273,38 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         });
     };
 
+    //终端批量配置
+    terminal.groupConfig = function (){
+        var items = [
+            {
+                start:680001,
+                end:680100,
+                template:"通用模板一"
+            },
+            {
+                start:680001,
+                end:680100,
+                template:"通用模板一"
+            }
+        ];
+        var modalInstance = $uibModal.open({
+            templateUrl: 'groupConfig.html',
+            controller: 'ModalGroupConfigCtrl',
+            size: "lg",
+            windowClass: 'zindex',
+            resolve: {
+                items1: function () {
+                    return items;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+
+        });
+    }
 
     terminal.toggleAnimation = function () {
         terminal.animationsEnabled = !terminal.animationsEnabled;
@@ -323,6 +357,41 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     };
 
 
+
+    //下发
+    //功能码
+    $http.get("/term_function_code_list").then(function (res) {
+        $rootScope.fcode = res.data;
+    });
+
+    //高低字节
+    $http.get("/term_byte_list").then(function (res) {
+        $rootScope.hlCodes = res.data;
+    });
+
+    $http.get("/correspond_type_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/date_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/parity_bit").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/slave_address_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+
+    $http.get("/stop_bit_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
 
 
 });
@@ -426,6 +495,30 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
             });
         });
     };
+
+
+    $modal.sendConfMessage2 = function () {
+        var data = {
+            uid: currentData.Uid
+        };
+
+        $http.post("/terminal_restart", data)
+            .then(function (res) {
+                console.warn("Send Terminal Config Message Done:", res);
+                swal({
+                    title: "信息已发送",
+                    text: res.data,
+                    type: "success"
+                });
+            }, function (err) {
+                swal({
+                    title: "信息发送失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+    };
+
 
     $modal.bindSet = function (set) {
         if (set.hasDev) {
@@ -642,7 +735,98 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.editing = editing;
     $modal.editingCode = true;
 
-    $modal.category = 10;
+    $modal.category = 9;
+
+    //下发test
+    $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
+
+    //功能码
+    $modal.fcode = $rootScope.fcode;
+    $modal.fcodeName = ["01", "02", "03", "04"];
+
+    //高低字节
+    $modal.hlCodes = $rootScope.hlCodes;
+    $modal.hlCodeNames = ["16位无符号数", "32位无符号数ABCD", "32位浮点型数ABCD","32位无符号数ABCD"];
+
+
+    $modal.bitAddress = ["1", "2", "3", "4", "0"];
+
+    //波特率
+    $http.get("/baud_rate_list").then(function (res) {
+        // $modal.hlCodes = res.data;
+    });
+    $modal.BaudRate  = "9600";
+    $modal.BaudRates = ["9600","1000"];
+
+
+    $modal.dataBit  = "7";
+    $modal.dataBits = ["4","5","6","7"];
+    $modal.stopBit  = "1";
+    $modal.stopBits = ["1","2","3"];
+    $modal.checkDigit  = "无校验";
+    $modal.checkDigits = ["无校验","1","2"];
+    $modal.communicationInterface  = "RS485";
+    $modal.communicationInterfaces = ["RS485","00","22"];
+    $modal.subAdr  = "1";
+    $modal.subAdrs = ["1","2","3"];
+    $modal.terminalPass = "123456";
+
+
+    $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
+    for(i=0;i<12;i++){
+        if (!$modal.hlCodeNamesCopy[i]) {
+            $modal.hlCodeNamesCopy[i] = "默认(未配置)";
+        };
+        if (!$modal.hlCodeNames[i]) {
+            $modal.hlCodeNames[i] = null;
+        }
+    };
+    $modal.fcodeNameCopy = angular.copy($modal.fcodeName);
+    for(i=0;i<16;i++){
+        if (!$modal.fcodeNameCopy[i]) {
+            $modal.fcodeNameCopy[i] = "默认(未配置)";
+        };
+        if (!$modal.fcodeName[i]) {
+            $modal.fcodeName[i] = null;
+        }
+    }
+
+    //终端快速设置
+    $modal.quickSet = function (){
+        var items = [
+            {
+                id:680001,
+                template:"通用模板一"
+            },
+            {
+                id:680001,
+                template:"通用模板一"
+            }
+        ];
+        var modalInstance = $uibModal.open({
+            templateUrl: '/directives/modal/terminal_channel_quick_set.html',
+            controller: 'ModalQuickSetCtrl',
+            size: "lg",
+            windowClass: 'zindex_sub',
+            resolve: {
+                items1: function () {
+                    return items;
+                }
+            }
+        });
+
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+
+        });
+    }
+
+
+
+
+
 
     $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -714,6 +898,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         $modal.rangeParameters
     ];
 
+
+
+
+
+
     $modal.matrixChanged = function (outerIndex, innerIndex) {
         console.info("Data Matrix:", $modal.dataMatrix, "\n", outerIndex, ":", innerIndex);
         if ($modal.dataMatrix[outerIndex][innerIndex].Parameter.Id === 0) {
@@ -722,6 +911,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             $modal.dataMatrix[outerIndex][innerIndex].Status = -1;
             $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
+            if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
+                $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
+            }
         } else {
             if ($modal.dataMatrix[outerIndex][innerIndex].oParamId !== $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id) {
                 $modal.dataMatrix[outerIndex][innerIndex].Ranges = [];
@@ -735,7 +927,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             if ($modal.dataMatrix[outerIndex][innerIndex].Parameter.Category.Id === 11 && (!$modal.dataMatrix[outerIndex][innerIndex].SwitchStatus || $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus === 0)) {
                 $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 1;
             }
+
+            if($modal.chanMatrix[outerIndex][innerIndex].Name==="默认(未配置)"){
+                $modal.chanMatrix[outerIndex][innerIndex].Name = $modal.dataMatrix[outerIndex][innerIndex].Parameter.Name;
+            }
         }
+
     };
 
     $scope.matrixReset = function () {
@@ -1103,6 +1300,78 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', 
 
     $modalRange.rangeChanged();
 });
+
+
+angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance, items1) {
+    $scope.items = items1;
+
+    $scope.template = [
+        {
+            id:1,
+            name:"通用模板一"
+        },
+        {
+            id:2,
+            name:"通用模板二"
+        },
+        {
+            id:3,
+            name:"通用模板三"
+        }
+    ];
+    $scope.selectedTemplate = $scope.template[0];
+    $scope.addGroupConfig = function (){
+        $scope.items.push({
+            start:680001,
+            end:680100,
+            template:"通用模板一"});
+    };
+
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
+angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, $uibModalInstance, items1) {
+    $scope.items = items1;
+
+    $scope.template = [
+        {
+            id:1,
+            name:"通用模板一"
+        },
+        {
+            id:2,
+            name:"通用模板二"
+        },
+        {
+            id:3,
+            name:"通用模板三"
+        }
+    ];
+    $scope.selectedTemplate = $scope.template[0];
+    $scope.addQuickSet = function (){
+        $scope.items.push({
+            id:680001,
+            template:"通用模板一"});
+    };
+
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
+
 
 angular.module('BoilerAdmin').component('modalComponent', {
     templateUrl: '/directives/modal/terminal_config.html',

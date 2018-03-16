@@ -61,6 +61,8 @@
         <th>监测锅炉</th>
         <th>物联网卡号</th>
         <!--<th>消息调试</th>-->
+        <th>配置状态</th>
+        <th>模板状态</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -95,6 +97,14 @@
             <!--&lt;!&ndash;<span ng-class="[{'light-gray': data.LocalIp.length <= 0}]">{{ data.ip }}</span>&ndash;&gt;-->
             <!---->
         <!--</td>-->
+        <td>
+            <span ng-class="{'label-default':true}" class="label">
+                未配置
+            </span>
+        </td>
+        <td>
+            通用模板一
+        </td>
         <td style="min-width: 238px;">
             <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.code);">消息调试</button>
             <div class="btn-group">
@@ -127,3 +137,55 @@
     </tr>
     </tbody>
 </table>
+
+
+<script type="text/ng-template" id="groupConfig.html">
+    <div class="modal-header">
+        <h3 class="modal-title">终端批量配置</h3>
+    </div>
+    <div class="modal-body">
+        <ul style="list-style: none; padding: 10px 20px; padding-bottom: 0;">
+            <li ng-repeat="item in items" class="row" style="margin-bottom:20px; ">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">起始终端编号</span>
+                        <input type="text" class="form-control" placeholder="680001">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">结束终端编号</span>
+                        <input type="text" class="form-control" placeholder="680001">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <b class="" style="font-size: 18px; font-weight: bold; color: #0b94ea;">配置为</b>
+                    <div class="input-group">
+                        <span class="input-group-addon">通道模板</span>
+                        <!--<ui-select ng-model="selectedTemplate" theme="bootstrap">-->
+                            <!--<ui-select-match placeholder="通用模板一">{{$select.selected.name}}</ui-select-match>-->
+                            <!--<ui-select-choices repeat="tem in template | filter: $select.search">-->
+                                <!--<span ng-bind-html="tem.name"></span>-->
+                            <!--</ui-select-choices>-->
+                        <!--</ui-select>-->
+                        <select ng-model="selectedTemplate" ng-options="x.name for x in template" class="form-control">
+                        </select>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div style="text-align: center;">
+            <button type="button" ng-show="items.length < 5"
+                    ng-click="addGroupConfig()"
+                    class="btn green"
+                    style="width: 80%;">
+                <i class="fa fa-plus-circle"></i>
+                新增终端批量配置
+            </button>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">提交</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
+    </div>
+</script>

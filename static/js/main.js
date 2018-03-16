@@ -892,6 +892,51 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "views/wiki/dashboard.html" + clientkey,
             data: {pageTitle: '帮助总览'}
         })
+        .state("upload",{
+            url:"/upload",
+            templateUrl:"views/upload-file.html",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'BoilerAdmin',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'js/controllers/uploadFileController.js' + clientkey
+                        ]
+                    });
+                }]
+            }
+        })
+        .state("template",{
+            url:"/template",
+            templateUrl:"views/templates.html",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'BoilerAdmin',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'js/controllers/templateController.js' + clientkey
+                        ]
+                    });
+                }]
+            }
+        })
+        .state("wizard",{
+            url:"/config-wizard",
+            templateUrl:"views/config-wizard.html",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'BoilerAdmin',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'js/controllers/configWizardController.js' + clientkey
+                        ]
+                    });
+                }]
+            }
+        })
 
 }]);
 
