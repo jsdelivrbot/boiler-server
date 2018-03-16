@@ -113,19 +113,30 @@
                 <!--</div>-->
             <!--</div>-->
 
-            <!--<div class="form-group form-selector col-md-6">-->
-                <!--<div class="input-group">-->
-                    <!--<span style="margin-right: 12px;">终端启闭</span>-->
-                    <!--<input bs-switch-->
-                           <!--ng-model="$modal.upload"-->
-                           <!--ng-change="$modal.sendConfMessage();"-->
-                           <!--type="checkbox"-->
-                           <!--switch-on-text="开启"-->
-                           <!--switch-off-text="关闭"-->
-                           <!--switch-on-color="success"-->
-                           <!--switch-off-color="{{ off }}">-->
-                <!--</div>-->
-            <!--</div>-->
+            <!--<div class="form-group form-selector col-md-6">
+                <div class="input-group">
+                    <span style="margin-right: 12px;">终端启闭</span>
+                    <input bs-switch
+                           ng-model="$modal.upload"
+                           ng-change="$modal.sendConfMessage();"
+                           type="checkbox"
+                           switch-on-text="开启"
+                           switch-off-text="关闭"
+                           switch-on-color="success"
+                           switch-off-color="{{ off }}">
+                </div>
+            </div>-->
+
+            <div class="form-group form-selector col-md-6">
+                <div class="input-group">
+                    <span style="margin-right: 12px;">终端启闭</span>
+                    <input ng-click="$modal.sendConfMessage2();"
+                           type="button" class="btn btn-primary"
+                            value="提交">
+                </div>
+            </div>
+
+
         </div>
         <hr>
         <div class="row">

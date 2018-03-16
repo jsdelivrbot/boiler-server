@@ -124,6 +124,7 @@ func init() {
 	goazure.Router("/parity_bit",&controllers.IssuedController{},"get:ParityBitList")
 	goazure.Router("/slave_address_list",&controllers.IssuedController{},"get:SlaveAddressList")
 	goazure.Router("/stop_bit_list",&controllers.IssuedController{},"get:StopBitList")
+	goazure.Router("/terminal_restart",&controllers.TerminalController{},"post:TerminalRestart")
 
 	goazure.SetStaticPath("/assets", "static/assets/")
 	goazure.SetStaticPath("/js", "static/js/")

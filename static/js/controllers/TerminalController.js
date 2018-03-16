@@ -496,6 +496,30 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
         });
     };
 
+
+    $modal.sendConfMessage2 = function () {
+        var data = {
+            uid: currentData.Uid
+        };
+
+        $http.post("/terminal_restart", data)
+            .then(function (res) {
+                console.warn("Send Terminal Config Message Done:", res);
+                swal({
+                    title: "信息已发送",
+                    text: res.data,
+                    type: "success"
+                });
+            }, function (err) {
+                swal({
+                    title: "信息发送失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+    };
+
+
     $modal.bindSet = function (set) {
         if (set.hasDev) {
             swal({

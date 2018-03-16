@@ -16,7 +16,30 @@ type TerminalController struct {
 }
 
 var TermCtl *TerminalController = &TerminalController{}
-
+type Code struct {
+	Uid string  `json:"uid"`
+}
+func (ctl *TerminalController) TerminalRestart() {
+	var code Code
+	var terminal   models.Terminal
+	if err:=json.Unmarshal(ctl.Ctx.Input.RequestBody,&code); err!=nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	//fmt.Println(code.Uid)
+	terminal.Uid = code.Uid
+	if err := DataCtl.ReadData(&terminal); err != nil {
+		e := fmt.Sprintln("Read Terminal Error:", err)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	//fmt.Println(terminal.TerminalCode)
+	SocketCtrl.SocketTerminalRestart(fmt.Sprintf("%d",terminal.TerminalCode))
+}
 func (ctl *TerminalController) TerminalList() {
 	usr := ctl.GetCurrentUser()
 
