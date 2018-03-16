@@ -443,8 +443,12 @@ func (ctl *WechatController) SyncMenu() {
 }
 
 func (ctl *WechatController) WXCallbackHandler() {
+	goazure.Info("Ready WXCallbackHandler!")
 	w := ctl.Ctx.ResponseWriter
 	r := ctl.Ctx.Request
+
+	goazure.Error("ResponseWriter:", w)
+	goazure.Error("Request:", r)
 
 	/*
 	domain := ctl.Ctx.Input.Domain()
