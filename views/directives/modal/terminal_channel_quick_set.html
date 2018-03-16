@@ -1,0 +1,46 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">终端快速设置</h3>
+    </div>
+    <div class="modal-body">
+        <ul style="list-style: none; padding: 10px 20px; padding-bottom: 0;">
+            <li ng-repeat="item in items" class="row" style="margin-bottom:20px; ">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">终端编号</span>
+                        <input type="text" class="form-control" placeholder="680001">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <b class="col-md-2" style="font-size: 18px; font-weight: bold; color: #0b94ea;padding-left: 0px; padding-right:0px; ">配置为</b>
+                    <div class="input-group col-md-10" >
+                        <span class="input-group-addon">通道模板</span>
+                        <!--<ui-select ng-model="selectedTemplate" theme="bootstrap">-->
+                        <!--<ui-select-match placeholder="通用模板一">{{$select.selected.name}}</ui-select-match>-->
+                        <!--<ui-select-choices repeat="tem in template | filter: $select.search">-->
+                        <!--<span ng-bind-html="tem.name"></span>-->
+                        <!--</ui-select-choices>-->
+                        <!--</ui-select>-->
+                        <select ng-model="selectedTemplate" ng-options="x.name for x in template" class="form-control">
+                        </select>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div style="text-align: center;">
+            <button type="button"
+                    ng-click="addQuickSet()"
+                    class="btn green"
+                    style="width: 80%;">
+                <i class="fa fa-plus-circle"></i>
+                新增终端快速设置
+            </button>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">提交</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
+    </div>
+</div>

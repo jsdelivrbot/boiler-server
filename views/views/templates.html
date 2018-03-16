@@ -1,0 +1,94 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a>主页</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a>文件上传</a>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
+
+<!-- BEGIN MAIN CONTENT -->
+<div ng-controller="templateCtrl as template" style="margin-top: 15px;">
+    <!-- BEGIN MAIN CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-dark">
+                        <i class="icon-settings font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase font-green-sharp"> 模板列表</span>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <button id="sample_editable_1_new" ng-click="template.new()" class="btn sbold green">
+                            <i class="fa fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <table datatable="ng" dt-options="template.dtOptions" dt-column-defs="template.dtColumnDefs"
+                           class="table table-striped table-bordered table-hover order-column table-boiler">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>模板名称</th>
+                            <th>所属企业</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+
+                        <tbody style="text-align: center">
+                        <tr ng-repeat='data in template.datasource'>
+                            <td> {{data.num}} </td>
+
+                            <td> {{ data.name }} </td>
+                            <td>
+                                {{ data.enterprise }} <br>
+                            </td>
+
+                            <td>
+                                <a ng-click="template.edit(data)" class="btn view btn-outline btn-circle red delete_btn">
+                                    <i class="fa fa-trash"> 编辑 </i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+
+
+
+
+
+
+    <script type="text/ng-template" id="editTemplate.html">
+        <div class="modal-header">
+            <h3 class="modal-title">模板编辑</h3>
+        </div>
+        <div class="modal-body">
+            <div>
+                哈哈哈哈哈
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">提交</button>
+            <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
+        </div>
+
+
+    </script>
+
+
+</div>
