@@ -1,45 +1,45 @@
 package models
-type TermByte struct{
+type IssuedByte struct{
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type TermFunctionCode struct {
+type IssuedFunctionCode struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type BaudRate struct {
+type IssuedBaudRate struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type CorrespondType struct {
+type IssuedCorrespondType struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type DateBit struct {
+type IssuedDateBit struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type HeartbeatPacket struct {
+type IssuedHeartbeatPacket struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type ParityBit struct {
+type IssuedParityBit struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type SlaveAddress struct {
+type IssuedSlaveAddress struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
 }
-type StopBit struct {
+type IssuedStopBit struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int

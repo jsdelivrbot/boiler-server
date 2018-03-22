@@ -375,7 +375,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
             console.error("$modal.code error:", $modal.code);
             return;
         }
-        Ladda.create(document.getElementById('channel_ok')).start();
+        // Ladda.create(document.getElementById('channel_ok')).start();
 
         var configUpload = [];
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
@@ -458,6 +458,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
             }
         }
 
+
         console.warn("$modal channel update!", configUpload);
 
         App.startPageLoading({message: '正在加载数据...'});
@@ -479,7 +480,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
                     type: "error"
                 });
             });
-        Ladda.create(document.getElementById('channel_ok')).stop();
+        // Ladda.create(document.getElementById('channel_ok')).stop();
     };
 
     $modal.cancel = function () {
