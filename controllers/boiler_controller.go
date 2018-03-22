@@ -430,6 +430,7 @@ func (ctl *BoilerController) BoilerListWeixin() {
 
 	for _, b := range boilers {
 		b["IsBurning"] = ctl.IsBurning(b["Uid"].(string))
+		b["IsOnline"] = ctl.IsOnline(b["Uid"].(string))
 	}
 
 	goazure.Info("Returned Rows Num:", num, err)
@@ -746,7 +747,20 @@ func (ctl *BoilerController) BoilerConfig(boilerUid string, config string) (inte
 
 	return value, nil
 }
-
+func (ctl *BoilerController) IsOnline(boilerUid string) bool {
+	var status []orm.Params
+	var sql="select is_online  from terminal where uid=?"
+	num,err:=dba.MyORM.Raw(sql,boilerUid).Values(&status,"is_online")
+	if err!=nil || num <= 0{
+		goazure.Warning("Read Boiler online Status Error!",err)
+	}
+	fmt.Println(status)
+	fmt.Println(status[0]["is_online"])
+	if status[0]["is_online"]=="0"{
+		return false
+	}
+	return true
+}
 //***************************************** CONFIG END
 func (ctl *BoilerController) BoilerIsOnline(){
 	if ctl.Input()["boiler"] == nil || len(ctl.Input()["boiler"]) == 0 {

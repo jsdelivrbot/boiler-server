@@ -741,11 +741,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
 
     //功能码
-    $modal.fcode = $rootScope.fcode;
+    $modal.fcode = $rootScope.fcode; //分类
     $modal.fcodeName = ["01", "02", "03", "04"];
 
     //高低字节
-    $modal.hlCodes = $rootScope.hlCodes;
+    $modal.hlCodes = $rootScope.hlCodes; //分类
     $modal.hlCodeNames = ["16位无符号数", "32位无符号数ABCD", "32位浮点型数ABCD","32位无符号数ABCD"];
 
 
@@ -911,9 +911,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             $modal.dataMatrix[outerIndex][innerIndex].Status = -1;
             $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
-            if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
-                $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
-            }
+            // if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
+            //     $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
+            // }
         } else {
             if ($modal.dataMatrix[outerIndex][innerIndex].oParamId !== $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id) {
                 $modal.dataMatrix[outerIndex][innerIndex].Ranges = [];
@@ -1012,12 +1012,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             return;
         }
         Ladda.create(document.getElementById('channel_ok')).start();
-
+        console.log("data:",$modal.dataMatrix ,"chan:",$modal.chanMatrix );
         var configUpload = [];
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
                 if ($modal.dataMatrix[i][j] !== $modal.chanMatrix[i][j]) {
-                    if ((!$modal.dataMatrix[i][j] /*|| !$modal.dataMatrix[i][j].Parameter*/) && ($modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].IsDefault === true)) {
+                    if (!$modal.dataMatrix[i][j]  && (($modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].IsDefault === true) || $modal.chanMatrix[i][j].Name==="默认(未配置)")) {
                         console.warn('!!NULL data:', $modal.dataMatrix[i][j], $modal.chanMatrix[i][j]);
                         continue;
                     }
@@ -1032,6 +1032,17 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     if (j === 5) {
                         chanRanges = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Ranges : [] ;
                         dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
+                    }
+
+                    var fcodeName = $modal.fcodeName[j];
+                    var modbus = $modal.mcode[j];
+                    var termByte = "";
+                    var bitAddress ="";
+                    if(j===0 || j===1 || j===5){
+                        termByte = $modal.hlCodeNames[j];
+                    }
+                    if(j>=2 && j<5){
+                        bitAddress = $modal.bitAddress[j];
                     }
 
                     if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
@@ -1053,7 +1064,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             status: dataStatus,
                             sequence_number: dataSeqNo,
 
-                            switch_status: dataSwitch
+                            switch_status: dataSwitch,
+
+                            fcodeName:fcodeName,
+                            modbus:modbus,
+                            termByte:termByte,
+                            bitAddress:bitAddress
+
                         };
 
                         if (j === 5 && dataParamId > 0) {
@@ -1093,6 +1110,19 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 }
             }
         }
+
+        var cParam = {
+            baudRate : $modal.BaudRate,
+            dataBit : $modal.dataBit,
+            stopBit : $modal.stopBit,
+            checkDigit : $modal.checkDigit,
+            communInterface : $modal.communicationInterface,
+            subAddress : $modal.subAdr,
+            applicationSupport : $modal.BaudRate,
+            heartbeat:$modal.dataBit
+        };
+        configUpload.push(cParam);
+
 
         console.warn("$modal channel update!", configUpload);
 
