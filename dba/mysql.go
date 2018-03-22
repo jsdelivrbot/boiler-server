@@ -112,15 +112,15 @@ func init() {
 		new(models.Dialogue),
 		new(models.DialogueComment),
 			//下发
-		new(models.TermFunctionCode),
-		new(models.TermByte),
-		new(models.BaudRate),
-		new(models.CorrespondType),
-		new(models.DateBit),
-		new(models.HeartbeatPacket),
-		new(models.ParityBit),
-		new(models.SlaveAddress),
-		new(models.StopBit),
+		new(models.IssuedFunctionCode),
+		new(models.IssuedByte),
+		new(models.IssuedBaudRate),
+		new(models.IssuedCorrespondType),
+		new(models.IssuedDateBit),
+		new(models.IssuedHeartbeatPacket),
+		new(models.IssuedParityBit),
+		new(models.IssuedSlaveAddress),
+		new(models.IssuedStopBit),
 	)
 
 	orm.Debug = false//!conf.IsRelease
