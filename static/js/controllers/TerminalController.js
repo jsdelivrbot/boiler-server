@@ -406,6 +406,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
     $modal.editing = editing;
     $modal.editingCode = true;
 
+    console.log($modal.currentData);
+
     $modal.initCurrent = function () {
         if (currentData) {
             $modal.editingCode = false;
