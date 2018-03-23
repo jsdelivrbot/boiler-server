@@ -126,6 +126,9 @@ func init() {
 	goazure.Router("/stop_bit_list",&controllers.IssuedController{},"get:StopBitList")
 	goazure.Router("/terminal_restart",&controllers.TerminalController{},"post:TerminalRestart")
 
+	//bin文件上传
+	goazure.Router("/bin_upload",&controllers.IssuedController{},"post:BinUpload")
+
 	goazure.SetStaticPath("/assets", "static/assets/")
 	goazure.SetStaticPath("/js", "static/js/")
 	goazure.SetStaticPath("/css", "static/css/")

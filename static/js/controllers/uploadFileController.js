@@ -84,7 +84,15 @@ angular.module('BoilerAdmin').controller("uploadFileCtrl",function ($rootScope,$
 })
 
 
-angular.module('BoilerAdmin').controller('ModalFileUploadCtrl', function ($scope, $uibModalInstance) {
+angular.module('BoilerAdmin').controller('ModalFileUploadCtrl', function ($scope,$rootScope, $uibModalInstance) {
+
+    console.log($rootScope.organizations);
+    $scope.organizations = $rootScope.organizations;
+
+    $scope.org = function(organization){
+        $scope.orgUid = organization.Uid;
+        console.log($scope.orgUid);
+    }
 
     $scope.ok = function () {
         $uibModalInstance.close();
