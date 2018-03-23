@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 func connect(user, password, host string, port int) (*sftp.Client, error) {
@@ -62,7 +63,7 @@ func FtpClient(fileName string) bool{
 	defer sftpClient.Close()
 
 	// 用来测试的本地文件路径 和 远程机器上的文件夹
-	var localFilePath = "E://log//"+fileName
+	var localFilePath = conf.BinPath+fileName
 	var remoteDir = "./"
 	srcFile, err := os.Open(localFilePath)
 	if err != nil {

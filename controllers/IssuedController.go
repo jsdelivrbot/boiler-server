@@ -8,6 +8,7 @@ import (
 	"github.com/AzureRelease/boiler-server/util"
 	"github.com/AzureTech/goazure/orm"
 	"encoding/json"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type IssuedController struct {
@@ -136,7 +137,7 @@ func (ctl *IssuedController)BinUpload() {
 			fmt.Println("文件为空")
 		}
 		fileName := header.Filename
-		basePath := "E:\\log\\"
+		basePath := conf.BinPath
 		filePath := basePath + fileName
 		if err := ctl.SaveToFile("file", filePath); err != nil {
 			e := fmt.Sprintln("Save File Error:", err, fileName)
