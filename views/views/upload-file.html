@@ -76,10 +76,33 @@
         <div class="modal-header">
             <h3 class="modal-title">文件上传</h3>
         </div>
-        <form method="post" action="http://192.168.0.101:8080/fileupload" enctype="multipart/form-data">
+        <form method="post" action="/bin_upload" enctype="multipart/form-data" target="_blank">
             <div class="modal-body">
+
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">选择组织</span>
+                        <!--<select ng-model="organization"  name="{{organization.Uid}}"-->
+                                <!--ng-options="x.Name for x in organizations" class="form-control">-->
+                        <!--</select>-->
+                        <ui-select ng-model="organization" ng-change="org(organization)"
+                                   theme="bootstrap"
+                                   style="width: 100%;">
+                            <ui-select-match>
+                                {{$select.selected.Name}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="org in organizations | filter: $select.search">
+                                {{org.Name}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
                 <input type="file"  name="file">
 
+                <input type="text" ng-model="orgUid" value="{{orgUid}}" name="orgUid"
+                       style="opacity: 0; filter:Alpha(opacity=0); height: 0px;">
             </div>
             <div class="modal-footer">
                 <input type="submit" value="提交" class="btn btn-primary">
