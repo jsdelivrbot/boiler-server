@@ -125,6 +125,9 @@ func init() {
 	goazure.Router("/slave_address_list",&controllers.IssuedController{},"get:SlaveAddressList")
 	goazure.Router("/stop_bit_list",&controllers.IssuedController{},"get:StopBitList")
 
+	//重启
+	goazure.Router("/terminal_restart",&controllers.IssuedController{},"post:TerminalRestart")
+
 	//bin文件上传
 	goazure.Router("/bin_upload",&controllers.IssuedController{},"post:BinUpload")
 	//获取bin文件路径

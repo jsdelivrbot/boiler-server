@@ -26,7 +26,7 @@ func (ctl *IssuedController) TerminalRestart() {
 		goazure.Error("Unmarshal Terminal Error", err)
 		return
 	}
-	//fmt.Println(code.Uid)
+	terminal.Uid =code.Uid
 	if err := dba.BoilerOrm.QueryTable("terminal").RelatedSel("organization").Filter("Uid", terminal.Uid).One(&terminal); err != nil {
 		e := fmt.Sprintln("Read Terminal Error:", err)
 		goazure.Error(e)
@@ -34,7 +34,7 @@ func (ctl *IssuedController) TerminalRestart() {
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
-	//SocketCtrl.SocketTerminalRestart(fmt.Sprintf("%d", terminal.TerminalCode))
+	SocketCtrl.SocketTerminalRestart(fmt.Sprintf("%d", terminal.TerminalCode))
 }
 type AppBinInfo struct {
 	Uid string `json:"uid"`
@@ -80,7 +80,7 @@ func (ctl *IssuedController)UpgradeConfiguration() {
 			}
 		} else if maps[0]["burnedStatus"] == "0" && maps[0]["burningStatus"] == "2" {
 			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("终端未在线,等待终端连接升级"))
+			ctl.Ctx.Output.Body([]byte("终端未重启,等待终端连接升级"))
 		} else if maps[0]["burnedStatus"] == "0" && maps[0]["burningStatus"] == "1" {
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("正在升级中。。。"))

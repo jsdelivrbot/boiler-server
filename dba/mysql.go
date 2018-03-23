@@ -7,7 +7,6 @@ import (
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/models/caches"
-	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
 
 )

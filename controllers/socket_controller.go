@@ -21,7 +21,7 @@ type SocketController struct {
 
 var SocketCtrl *SocketController = &SocketController{}
 func e0(Code string)([]byte) {
-	words_1:="\xac\xeb\x00\x0b\x00\x00\xe0"+Code+"\x00\x00\xaf\xed"
+	words_1:="\xac\xeb\x00\x09\x00\x00\xc9"+Code+"\x00\x00\xaf\xed"
 	buf :=[]byte(words_1)
 	copy(buf[13:15],CRC16(buf[4:13]))
 	return buf
@@ -39,7 +39,7 @@ func Send(conn net.Conn,code string) {
 	fmt.Println("send over")
 	return
 }
-func Receive(conn net.Conn) {
+func Receive(conn net.Conn) []byte {
 	buf := make([]byte, 2048)
 	n, err := conn.Read(buf)
 	if err != nil {
@@ -48,10 +48,10 @@ func Receive(conn net.Conn) {
 		goazure.Info(fmt.Sprintf("Receive %d bytes, content is %s\n", n, string(buf[:n])))
 	}
 	fmt.Println(buf[:n])
-	return
+	return buf[:n]
 }
 func (ctl *SocketController)SocketTerminalRestart(code string) {
-	server := "47.100.0.27:18888"
+	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
@@ -64,7 +64,8 @@ func (ctl *SocketController)SocketTerminalRestart(code string) {
 	}
 	goazure.Info("connect success")
 	Send(conn,code)
-	Receive(conn)
+	b:=Receive(conn)
+	fmt.Println("aaaaaaa:",b)
 	conn.Close()
 }
 func b4()([]byte){
