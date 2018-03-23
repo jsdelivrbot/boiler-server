@@ -130,10 +130,10 @@
             <div class="form-group form-selector col-md-6">
                 <div class="input-group">
                     <span class="input-group-addon">bin文件选择</span>
-                    <select ng-model="$modal.BaudRate" ng-options="x for x in $modal.BaudRates" class="form-control">
+                    <select ng-model="$modal.bin" ng-options="x.Name for x in $modal.bins" class="form-control">
                     </select>
                     <div class=" input-group-btn">
-                        <input ng-click=""
+                        <input ng-click="$modal.upgrade()"
                                type="button" class="btn btn-info"
                                value="升级配置">
                     </div>

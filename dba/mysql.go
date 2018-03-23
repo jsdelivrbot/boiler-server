@@ -26,6 +26,7 @@ func init() {
 	orm.RegisterDataBase("default", "mysql", myConnection)
 
 	orm.RegisterModel(
+		new(models.IssuedBinUpload),
 		new(models.Application),
 
 		new(models.User),

@@ -408,6 +408,28 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
     $modal.editing = editing;
     $modal.editingCode = true;
 
+    $http.get("/bin_list").then(function (res) {
+        $modal.bins = res.data;
+        console.log(res.data);
+    });
+    $modal.upgrade = function () {
+        $http.post("/upgrade_configuration",
+            {path:$modal.bin.BinPath,uid:$modal.currentData.Uid})
+            .then(function (res) {
+                swal({
+                    title: "信息已发送",
+                    text: res.data,
+                    type: "success"
+                });
+                },function (err) {
+                swal({
+                    title: "升级未成功",
+                    text: err.data,
+                    type: "warning"
+                });
+            })
+    }
+
     console.log($modal.currentData);
 
     $modal.initCurrent = function () {
