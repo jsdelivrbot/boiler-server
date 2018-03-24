@@ -26,6 +26,7 @@ import (
 
 	"errors"
 	"math"
+	"github.com/AzureRelease/boiler-server/models/logs"
 )
 
 type RuntimeController struct {
@@ -91,6 +92,17 @@ func (ctl *RuntimeController) RuntimeReload() {
 }
 
 func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
+	startTime := time.Now()
+
+	var lgr logs.BoilerRuntimeLog
+	lgr.Name = "RuntimeDataReload()"
+	lgr.Runtime = rtm
+	lgr.TableName = "boiler_runtime"
+	lgr.Query = "UPDATED"
+	lgr.CreatedDate = startTime
+	lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
+	go DataCtl.AddData(&lgr, false)
+
 	v := float64(rtm.Value) * float64(rtm.Parameter.Scale)
 	var val interface{}
 	pow10_n := math.Pow10(int(rtm.Parameter.Fix))
@@ -171,6 +183,16 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	if err := DataCtl.UpdateData(rtm); err != nil {
 		goazure.Error("Updated Runtime With Alarm Error:", err, "\n", rtm)
 	}
+
+	var lgd logs.BoilerRuntimeLog
+	lgd.Name = "RuntimeDataReload()"
+	lgd.Runtime = rtm
+	lgd.TableName = "boiler_runtime"
+	lgd.Query = "UPDATED"
+	lgd.CreatedDate = time.Now()
+	lgd.Duration = int64(lgd.CreatedDate.Sub(startTime))
+	lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
+	go DataCtl.AddData(&lgr, false)
 }
 
 func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, val interface{}) {
@@ -1183,19 +1205,19 @@ func generateDefaultRuntimeParameterCategories() {
 	var cate10, cate11, cate12, cate13 models.RuntimeParameterCategory
 	cate10.Id = 10
 	cate10.Name = "模拟量采集参数"
-	cate10.NameEn = "Analogue Collection Parameters"
+	//cate10.NameEn = "Analogue Collection Parameters"
 
 	cate11.Id = 11
 	cate11.Name = "开关量采集参数"
-	cate11.NameEn = "Switch Signal Collection Parameters"
+	//cate11.NameEn = "Switch Signal Collection Parameters"
 
 	cate12.Id = 12
 	cate12.Name = "计算参数"
-	cate12.NameEn = "Calculation Parameters"
+	//cate12.NameEn = "Calculation Parameters"
 
 	cate13.Id = 13
 	cate13.Name = "状态量采集参数"
-	cate13.NameEn = "Status Parameters"
+	//cate13.NameEn = "Status Parameters"
 
 	addRuntimeParameterCategory(cate10)
 	addRuntimeParameterCategory(cate11)
@@ -1208,39 +1230,39 @@ func generateDefaultRuntimeParameterMediums() {
 
 	medium1.Id = 1
 	medium1.Name = "蒸汽"
-	medium1.NameEn = "Steam"
+	//medium1.NameEn = "Steam"
 
 	medium2.Id = 2
 	medium2.Name = "水"
-	medium2.NameEn = "Water"
+	//medium2.NameEn = "Water"
 
 	medium3.Id = 3
 	medium3.Name = "空气"
-	medium3.NameEn = "Air"
+	//medium3.NameEn = "Air"
 
 	medium4.Id = 4
 	medium4.Name = "电"
-	medium4.NameEn = "Electricity"
+	//medium4.NameEn = "Electricity"
 
 	medium5.Id = 5
 	medium5.Name = "燃料"
-	medium5.NameEn = "Fuel"
+	//medium5.NameEn = "Fuel"
 
 	medium6.Id = 6
 	medium6.Name = "烟气"
-	medium6.NameEn = "Exhaust Gas"
+	//medium6.NameEn = "Exhaust Gas"
 
 	medium7.Id = 7
 	medium7.Name = "炉膛"
-	medium7.NameEn = "Furnace"
+	//medium7.NameEn = "Furnace"
 
 	medium8.Id = 8
 	medium8.Name = "负荷"
-	medium8.NameEn = "Load"
+	//medium8.NameEn = "Load"
 
 	medium0.Id = 0
 	medium0.Name = "其他"
-	medium0.NameEn = "Other"
+	//medium0.NameEn = "Other"
 
 	addRuntimeParameterMedium(medium1)
 	addRuntimeParameterMedium(medium2)
@@ -1282,7 +1304,7 @@ func generateDefaultRuntimeParameters() {
 			} else {
 				paramId, _ := strconv.ParseInt(row[0], 10, 32)
 				name := row[1]
-				nameEn := row[2]
+				//nameEn := row[2]
 				categoryId, _ := strconv.ParseInt(row[3], 10, 32)
 				mediumId, _ := strconv.ParseInt(row[4], 10, 32)
 				applicableBoilerTypes := row[5]
@@ -1304,7 +1326,7 @@ func generateDefaultRuntimeParameters() {
 				param.Medium = runtimeParameterMedium(mediumId)
 
 				param.Name = name
-				param.NameEn = nameEn
+				//param.NameEn = nameEn
 				param.Remark = remark
 
 				param.Unit = unit

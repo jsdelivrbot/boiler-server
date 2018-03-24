@@ -32,7 +32,7 @@ func initApplications() {
 	/*======================== HOLDER ==========================*/
 	wechatWebHolder := models.Application{}
 	wechatWebHolder.Name = "微信网站 厚德能源2025"
-	wechatWebHolder.NameEn = "Weixin Web HolderBoiler"
+	//wechatWebHolder.NameEn = "Weixin Web HolderBoiler"
 	wechatWebHolder.Platform = "weixin"
 	wechatWebHolder.App = "website"
 	wechatWebHolder.Identity = "holder"
@@ -42,7 +42,7 @@ func initApplications() {
 
 	wechatServiceHolder := models.Application{}
 	wechatServiceHolder.Name = "微信服务号 炉管家"
-	wechatServiceHolder.NameEn = "Weixin Service HolderBoiler"
+	//wechatServiceHolder.NameEn = "Weixin Service HolderBoiler"
 	wechatServiceHolder.Platform = "weixin"
 	wechatServiceHolder.App = "service"
 	wechatServiceHolder.Identity = "holder"
@@ -56,7 +56,7 @@ func initApplications() {
 
 	wechatMiniHolder := models.Application{}
 	wechatMiniHolder.Name = "微信小程序 锅炉在线节能平台"
-	wechatMiniHolder.NameEn = "Weixin Mini Program HolderBoiler"
+	//wechatMiniHolder.NameEn = "Weixin Mini Program HolderBoiler"
 	wechatMiniHolder.Platform = "weixin"
 	wechatMiniHolder.App = "mini"
 	wechatMiniHolder.Identity = "holder"

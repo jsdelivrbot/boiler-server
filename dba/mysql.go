@@ -6,6 +6,7 @@ import (
 
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureRelease/boiler-server/models"
+	"github.com/AzureRelease/boiler-server/models/logs"
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
@@ -86,6 +87,8 @@ func init() {
 
 		new(caches.BoilerRuntimeCacheStatus),
 		new(caches.BoilerRuntimeCacheStatusRunning),
+
+		new(logs.BoilerRuntimeLog),
 
 		new(models.BoilerCalculateParameter),
 		new(models.BoilerCalculateResult),

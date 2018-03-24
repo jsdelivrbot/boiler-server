@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"sort"
 	"errors"
+	"github.com/AzureRelease/boiler-server/models/logs"
 )
 
 type ParameterController struct {
@@ -85,7 +86,21 @@ func (ctl *ParameterController) RuntimeParameterList() {
 }
 
 func (ctl *ParameterController) ChannelDataReload(t time.Time) {
+	var lgIn	logs.BoilerRuntimeLog
+	lgIn.Name = "ChannelDataReload()"
+	lgIn.CreatedDate = time.Now()
+	lgIn.Status = logs.BOILER_RUNTIME_LOG_STATUS_INIT
+	go DataCtl.AddData(&lgIn, false)
+
 	data := ctl.DataListNeedReload()
+
+	var lgRd	logs.BoilerRuntimeLog
+	lgRd.Name = "DataListNeedReload()"
+	lgRd.TableName = "boiler_m163"
+	lgRd.Query = "SELECT"
+	lgRd.CreatedDate = time.Now()
+	lgRd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
+	go DataCtl.AddData(&lgRd, false)
 
 	var disIds []string
 
@@ -119,6 +134,16 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 
 			continue
 		}
+
+		readyTime := time.Now()
+
+		var lgr logs.BoilerRuntimeLog
+		lgr.Name = "runtimeReload()"
+		lgr.TableName = "boiler_m163 -> boiler_runtime"
+		lgr.Query = d["uid"].(string)
+		lgr.CreatedDate = readyTime
+		lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
+		DataCtl.AddData(&lgr, false)
 
 		disIds = append(disIds, d["uid"].(string))
 
@@ -210,7 +235,17 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				//isSuccess = false
 				return
 			} else {
-				RtmCtl.RuntimeDataReload(&rtm)
+				var lgd logs.BoilerRuntimeLog
+				lgd.Name = "runtimeReload()"
+				lgd.Runtime = &rtm
+				lgd.TableName = "boiler_m163 -> boiler_runtime"
+				lgd.Query = "INSERT"
+				lgd.CreatedDate = time.Now()
+				lgd.Duration = int64(lgd.CreatedDate.Sub(readyTime))
+				lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
+				go DataCtl.AddData(&lgd, false)
+
+				go RtmCtl.RuntimeDataReload(&rtm)
 			}
 
 			if res, err := dba.BoilerOrm.Raw(rawReloadDisabled).Exec(); err != nil {
@@ -227,29 +262,14 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			}
 		}
 	}
-
-	//ids := "(" + strings.Join(disIds, ",") + ")"
-	//rawDisabled :=
-	//	"UPDATE	`boiler_m163` " +
-	//	"SET	`need_reload` = FALSE " +
-	//	"WHERE	`uid` IN " + ids + "';"
-	//
-	//if res, err := dba.BoilerOrm.Raw(rawDisabled).Exec(); err != nil {
-	//	goazure.Error("Update m163 after reload Error:", err, res)
-	//} else {
-	//	num, _ := res.RowsAffected()
-	//	goazure.Info("rawDis:", num, "\n", rawDisabled)
-	//	//time.Sleep(time.Minute * 20)
-	//}
 }
 
 func (ctl *ParameterController) DataListNeedReload() []orm.Params {
-	var data []orm.Params
+	var data 	[]orm.Params
+	var lg		logs.BoilerRuntimeLog
 
 	limit := ParamCtrl.ReloadLimit
 	if limit <= 0 { limit = 600 }
-
-	//raw := "SELECT * FROM `boiler_m163` WHERE `TS` > '2017-11-10 00:00:00' ORDER BY `TS` DESC LIMIT 1000;"
 
 	raw :=
 		/*
@@ -266,14 +286,16 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 		"FROM	`boiler_m163` "  +
 		"WHERE	`need_reload` = TRUE "
 
-	if limit <= 600 {
-		raw = raw + "ORDER BY `TS` DESC "
-	}
 	raw = raw +
 		"LIMIT	" + strconv.FormatInt(limit, 10) + ";"
 
-	//goazure.Warning("Limit:", limit, "\nRaw:", raw)
-	//time.Sleep(time.Minute * 1)
+	lg.Name = "DataListNeedReload()"
+	lg.TableName = "boiler_163m"
+	lg.Query = raw
+	lg.CreatedDate = time.Now()
+	lg.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
+
+	go DataCtl.AddData(&lg, false)
 
 	if num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil || num == 0 {
 		goazure.Error("Get DataListNeedReload Error", err, num)
@@ -982,9 +1004,9 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 2
+	interval := time.Second * 1
 	if !conf.IsRelease {
-		interval = time.Minute * 2
+		interval = time.Minute * 1
 	}
 	ticker := time.NewTicker(interval)
 	tick := func() {

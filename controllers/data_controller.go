@@ -92,7 +92,7 @@ func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, c
 	var crtUsr *models.User
 
 	isSysUser := t == reflect.TypeOf(models.User{}) &&
-		obj.Name == "system" && obj.NameEn == "system"
+		obj.Name == "system" //&& obj.NameEn == "system"
 	isSysRole := t == reflect.TypeOf(models.UserRole{}) &&
 		reflect.ValueOf(data).Elem().FieldByName("RoleId").Int() == 0
 
