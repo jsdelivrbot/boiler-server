@@ -222,6 +222,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				}
 			}
 
+
 			rtm.Parameter = cnf.Parameter
 			rtm.Boiler = combined.Boiler
 			rtm.Value = value
@@ -1011,7 +1012,7 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 1
+	interval := time.Second * 15
 	if !conf.IsRelease {
 		interval = time.Minute * 1
 	}

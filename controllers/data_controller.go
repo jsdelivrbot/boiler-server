@@ -51,11 +51,8 @@ func (ctl *DataController) ReadData(data models.DataInterface, cols ...string) (
 	return err
 }
 
-
 func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, cols ...string) (error) {
-	b := reflect.TypeOf(&models.Boiler{})
 	t := reflect.TypeOf(data)
-	goazure.Warn(fmt.Sprintf("Input Type %T %v %v", t, t, b))
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
