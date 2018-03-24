@@ -91,7 +91,7 @@ func (ctl *RuntimeController) RuntimeReload() {
 	go tick()
 }
 
-func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
+func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due float64) {
 	startTime := time.Now()
 
 	var lgr logs.BoilerRuntimeLog
@@ -100,6 +100,7 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	lgr.TableName = "boiler_runtime"
 	lgr.Query = "UPDATED"
 	lgr.CreatedDate = startTime
+	lgr.DurationTotal = due
 	lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
 	go DataCtl.AddData(&lgr, false)
 
@@ -191,6 +192,7 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	lgd.Query = "UPDATED"
 	lgd.CreatedDate = time.Now()
 	lgd.Duration = float64(lgd.CreatedDate.Sub(startTime)) / float64(time.Second)
+	lgd.DurationTotal = lgr.DurationTotal + lgd.Duration
 	lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
 	go DataCtl.AddData(&lgr, false)
 }
@@ -421,7 +423,7 @@ func runtimeReload(t time.Time) {
 	}
 
 	for _, rtm := range runtime {
-		RtmCtl.RuntimeDataReload(rtm)
+		RtmCtl.RuntimeDataReload(rtm, float64(0))
 	}
 
 }
@@ -1762,7 +1764,7 @@ func generateBoilerRuntime(boiler *models.Boiler, date time.Time, run Runtime, c
 		goazure.Error("Add Runtime", rtm.Parameter.Name, "Error:", err)
 	}
 
-	go RtmCtl.RuntimeDataReload(&rtm)
+	go RtmCtl.RuntimeDataReload(&rtm, float64(0))
 
 	return value
 }

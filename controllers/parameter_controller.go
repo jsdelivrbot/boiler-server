@@ -88,7 +88,7 @@ func (ctl *ParameterController) RuntimeParameterList() {
 func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	var lgIn	logs.BoilerRuntimeLog
 	lgIn.Name = "ChannelDataReload()"
-	lgIn.CreatedDate = time.Now()
+	lgIn.CreatedDate = t
 	lgIn.Status = logs.BOILER_RUNTIME_LOG_STATUS_INIT
 	go DataCtl.AddData(&lgIn, false)
 
@@ -99,17 +99,21 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	lgRd.TableName = "boiler_m163"
 	lgRd.Query = "SELECT"
 	lgRd.CreatedDate = time.Now()
+	lgRd.Duration = float64(lgRd.CreatedDate.Sub(t)) / float64(time.Second)
+	lgRd.DurationTotal = lgRd.Duration
 	lgRd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
 	go DataCtl.AddData(&lgRd, false)
 
 	var disIds []string
 
 	for _, d := range data {
+		var tm time.Time
 		code := d["Boiler_term_id"].(string)
 		set := d["Boiler_boiler_id"].(string)
 		t := d["TS"].(string)
 		//ver := d["Boiler_data_fmt_ver"].(string)
 		//sn := d["Boiler_sn"].(string)
+		tm, _ = time.ParseInLocation("2006-01-02 15:04:05", t, time.Local)
 
 		rawReloadDisabled :=
 			"UPDATE	`boiler_m163` " +
@@ -135,13 +139,15 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			continue
 		}
 
-		readyTime := time.Now()
+		startTime := time.Now()
 
 		var lgr logs.BoilerRuntimeLog
 		lgr.Name = "runtimeReload()"
 		lgr.TableName = "boiler_m163 -> boiler_runtime"
 		lgr.Query = d["uid"].(string)
-		lgr.CreatedDate = readyTime
+		lgr.CreatedDate = startTime
+		lgr.Duration = float64(startTime.Sub(tm)) / float64(time.Second)
+		lgr.DurationTotal = lgr.Duration
 		lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
 		DataCtl.AddData(&lgr, false)
 
@@ -241,11 +247,12 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				lgd.TableName = "boiler_m163 -> boiler_runtime"
 				lgd.Query = "INSERT"
 				lgd.CreatedDate = time.Now()
-				lgd.Duration = float64(lgd.CreatedDate.Sub(readyTime)) / float64(time.Second)
+				lgd.Duration = float64(lgd.CreatedDate.Sub(startTime)) / float64(time.Second)
+				lgd.DurationTotal = lgr.DurationTotal + lgd.Duration
 				lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
 				go DataCtl.AddData(&lgd, false)
 
-				go RtmCtl.RuntimeDataReload(&rtm)
+				go RtmCtl.RuntimeDataReload(&rtm, lgd.DurationTotal)
 			}
 
 			if res, err := dba.BoilerOrm.Raw(rawReloadDisabled).Exec(); err != nil {
