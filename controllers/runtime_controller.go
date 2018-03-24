@@ -190,7 +190,7 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime) {
 	lgd.TableName = "boiler_runtime"
 	lgd.Query = "UPDATED"
 	lgd.CreatedDate = time.Now()
-	lgd.Duration = int64(lgd.CreatedDate.Sub(startTime))
+	lgd.Duration = float64(lgd.CreatedDate.Sub(startTime)) / float64(time.Second)
 	lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
 	go DataCtl.AddData(&lgr, false)
 }

@@ -241,7 +241,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				lgd.TableName = "boiler_m163 -> boiler_runtime"
 				lgd.Query = "INSERT"
 				lgd.CreatedDate = time.Now()
-				lgd.Duration = int64(lgd.CreatedDate.Sub(readyTime))
+				lgd.Duration = float64(lgd.CreatedDate.Sub(readyTime)) / float64(time.Second)
 				lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
 				go DataCtl.AddData(&lgd, false)
 
