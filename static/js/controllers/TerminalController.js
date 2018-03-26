@@ -371,29 +371,6 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         $rootScope.hlCodes = res.data;
     });
 
-    $http.get("/correspond_type_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/date_bit_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/heartbeat_packet_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/parity_bit").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/slave_address_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/stop_bit_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
 
 
 });
@@ -768,33 +745,57 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
-    $modal.fcodeName = ["01", "02", "03", "04"];
+    $modal.fcodeName = [];
 
     //高低字节
     $modal.hlCodes = $rootScope.hlCodes; //分类
-    $modal.hlCodeNames = ["16位无符号数", "32位无符号数ABCD", "32位浮点型数ABCD","32位无符号数ABCD"];
+    $modal.hlCodeNames = [];
 
+    //通信接口地址
+    $http.get("/correspond_type_list").then(function (res) {
+        $modal.communiInterfaces = res.data;
+    });
+    $modal.communiInterface  = "";
+
+    //数据位
+    $http.get("/date_bit_list").then(function (res) {
+        $modal.dataBits = res.data;
+    });
+    $modal.dataBit  = "";
+
+    //心跳包频率
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        $modal.heartbeats = res.data;
+    });
+    $modal.heartbeat = "";
+
+    //校验位
+    $http.get("/parity_bit").then(function (res) {
+        $modal.checkDigits = res.data;
+    });
+    $modal.checkDigit  = "";
+
+    //从机地址
+    $http.get("/slave_address_list").then(function (res) {
+        $modal.subAdrs = res.data;
+    });
+    $modal.subAdr  = "";
+
+    //停止位
+    $http.get("/stop_bit_list").then(function (res) {
+        $modal.stopBits = res.data;
+    });
+    $modal.stopBit  = "";
 
     $modal.bitAddress = ["1", "2", "3", "4", "0"];
 
     //波特率
     $http.get("/baud_rate_list").then(function (res) {
-        // $modal.hlCodes = res.data;
+        $modal.BaudRates = res.data;
     });
-    $modal.BaudRate  = "9600";
-    $modal.BaudRates = ["9600","1000"];
+    $modal.BaudRate  = "";
 
 
-    $modal.dataBit  = "7";
-    $modal.dataBits = ["4","5","6","7"];
-    $modal.stopBit  = "1";
-    $modal.stopBits = ["1","2","3"];
-    $modal.checkDigit  = "无校验";
-    $modal.checkDigits = ["无校验","1","2"];
-    $modal.communicationInterface  = "RS485";
-    $modal.communicationInterfaces = ["RS485","00","22"];
-    $modal.subAdr  = "1";
-    $modal.subAdrs = ["1","2","3"];
     $modal.terminalPass = "123456";
 
 
@@ -1138,14 +1139,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         }
 
         var cParam = {
+            terminal_code:$modal.code,
             baudRate : $modal.BaudRate,
             dataBit : $modal.dataBit,
             stopBit : $modal.stopBit,
             checkDigit : $modal.checkDigit,
-            communInterface : $modal.communicationInterface,
-            subAddress : $modal.subAdr,
-            applicationSupport : $modal.BaudRate,
-            heartbeat:$modal.dataBit
+            communInterface : $modal.communiInterface,
+            slaveAddress : $modal.subAdr,
+            heartbeat:$modal.heartbeat,
+            password:$modal.terminalPass
         };
 
 
