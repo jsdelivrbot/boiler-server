@@ -799,7 +799,7 @@
                             波特率
                         </td>
                         <td>
-                            <select ng-model="$modal.BaudRate" ng-options="x for x in $modal.BaudRates" class="form-control">
+                            <select ng-model="$modal.BaudRate" ng-options="x.Name for x in $modal.BaudRates" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -808,7 +808,7 @@
                             数据位
                         </td>
                         <td>
-                            <select ng-model="$modal.dataBit" ng-options="x for x in $modal.dataBits" class="form-control">
+                            <select ng-model="$modal.dataBit" ng-options="x.Name for x in $modal.dataBits" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -817,7 +817,7 @@
                             停止位
                         </td>
                         <td>
-                            <select ng-model="$modal.stopBit" ng-options="x for x in $modal.stopBits" class="form-control">
+                            <select ng-model="$modal.stopBit" ng-options="x.Name for x in $modal.stopBits" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -826,7 +826,7 @@
                             校验位
                         </td>
                         <td>
-                            <select ng-model="$modal.checkDigit" ng-options="x for x in $modal.checkDigits" class="form-control">
+                            <select ng-model="$modal.checkDigit" ng-options="x.Name for x in $modal.checkDigits" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -835,7 +835,7 @@
                             通信接口地址
                         </td>
                         <td>
-                            <select ng-model="$modal.communicationInterface" ng-options="x for x in $modal.communicationInterfaces" class="form-control">
+                            <select ng-model="$modal.communiInterface" ng-options="x.Name for x in $modal.communiInterfaces" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -844,7 +844,7 @@
                             从机地址
                         </td>
                         <td>
-                            <select ng-model="$modal.subAdr" ng-options="x for x in $modal.subAdrs" class="form-control">
+                            <select ng-model="$modal.subAdr" ng-options="x.Name for x in $modal.subAdrs" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -863,7 +863,7 @@
                             心跳包频率
                         </td>
                         <td>
-                            <select ng-model="$modal.dataBit" ng-options="x for x in $modal.dataBits" class="form-control">
+                            <select ng-model="$modal.heartbeat" ng-options="x.Name for x in $modal.heartbeats" class="form-control">
                             </select>
                         </td>
                     </tr>
@@ -1108,7 +1108,7 @@
                         波特率
                     </td>
                     <td colspan="4">
-                        {{$modal.BaudRate}}
+                        {{$modal.BaudRate.Name}}
                     </td>
                 </tr>
                 <tr>
@@ -1116,7 +1116,7 @@
                         数据位
                     </td>
                     <td colspan="4">
-                        {{$modal.dataBit}}
+                        {{$modal.dataBit.Name}}
                     </td>
                 </tr>
                 <tr>
@@ -1124,7 +1124,7 @@
                         停止位
                     </td>
                     <td colspan="4">
-                        {{$modal.stopBit}}
+                        {{$modal.stopBit.Name}}
                     </td>
                 </tr>
                 <tr>
@@ -1132,7 +1132,7 @@
                         校验位
                     </td>
                     <td colspan="4">
-                        {{$modal.checkDigit}}
+                        {{$modal.checkDigit.Name}}
                     </td>
                 </tr>
                 <tr>
@@ -1140,7 +1140,7 @@
                         通信接口地址
                     </td>
                     <td colspan="4">
-                        {{$modal.communicationInterface}}
+                        {{$modal.communiInterface.Name}}
                     </td>
                 </tr>
                 <tr>
@@ -1148,23 +1148,23 @@
                         从机地址
                     </td>
                     <td colspan="4">
-                        {{$modal.subAdr}}
+                        {{$modal.subAdr.Name}}
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2" class="chanel_label">
-                        底层应用支持
-                    </td>
-                    <td colspan="4">
-                        {{$modal.BaudRate}}
-                    </td>
-                </tr>
+                <!--<tr>-->
+                    <!--<td colspan="2" class="chanel_label">-->
+                        <!--底层应用支持-->
+                    <!--</td>-->
+                    <!--<td colspan="4">-->
+                        <!--{{$modal.BaudRate}}-->
+                    <!--</td>-->
+                <!--</tr>-->
                 <tr>
                     <td colspan="2" class="chanel_label">
                         心跳包频率
                     </td>
                     <td colspan="4">
-                        {{$modal.dataBit}}
+                        {{$modal.heartbeat.Name}}
                     </td>
                 </tr>
 
