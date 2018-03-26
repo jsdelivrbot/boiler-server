@@ -787,7 +787,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     });
     $modal.stopBit  = 0;
 
-    $modal.bitAddress = ["1", "2", "3", "4", "0"];
+    $modal.bitAddress = [1, 2];
 
     //波特率
     $http.get("/baud_rate_list").then(function (res) {
@@ -1143,13 +1143,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         var cParam = {
             terminal_code:$modal.code,
-            baudRate : $modal.BaudRate.Value,
-            dataBit : $modal.dataBit.Value,
-            stopBit : $modal.stopBit.Value,
-            checkDigit : $modal.checkDigit.Value,
-            communInterface : $modal.communiInterface.Value,
-            slaveAddress : $modal.subAdr.Value,
-            heartbeat:$modal.heartbeat.Value,
+            baudRate : $modal.BaudRate?$modal.BaudRate.Value:0,
+            dataBit : $modal.dataBit?$modal.dataBit.Value:0,
+            stopBit : $modal.stopBit?$modal.stopBit.Value:0,
+            checkDigit : $modal.checkDigit?$modal.checkDigit.Value:0,
+            communInterface : $modal.communiInterface?$modal.communiInterface.Value:0,
+            slaveAddress : $modal.subAdr?$modal.subAdr.Value:0,
+            heartbeat:$modal.heartbeat?$modal.heartbeat.Value:0,
         };
 
 
