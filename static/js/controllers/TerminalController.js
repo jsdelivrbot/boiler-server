@@ -1046,10 +1046,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
                 if ($modal.dataMatrix[i][j] !== $modal.chanMatrix[i][j]) {
-                    if (!$modal.dataMatrix[i][j]  && (($modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].IsDefault === true))) {
-                        console.warn('!!NULL data:', $modal.dataMatrix[i][j], $modal.chanMatrix[i][j]);
-                        continue;
-                    }
+                    // if (!$modal.dataMatrix[i][j]  && (($modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].IsDefault === true))) {
+                    //     console.warn('!!NULL data:', $modal.dataMatrix[i][j], $modal.chanMatrix[i][j]);
+                    //     continue;
+                    // }
                     var chanParamId = $modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].Parameter ? $modal.chanMatrix[i][j].Parameter.Id : 0;
                     var dataParamId = $modal.dataMatrix[i][j] && $modal.dataMatrix[i][j].Parameter ? $modal.dataMatrix[i][j].Parameter.Id : 0;
                     var chanStatus = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Status : 0 ;
