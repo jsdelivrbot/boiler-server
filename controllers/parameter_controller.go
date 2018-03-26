@@ -149,7 +149,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 		lgr.Duration = float64(startTime.Sub(tm)) / float64(time.Second)
 		lgr.DurationTotal = lgr.Duration
 		lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
-		DataCtl.AddData(&lgr, false)
+		go DataCtl.AddData(&lgr, false)
 
 		disIds = append(disIds, d["uid"].(string))
 
@@ -1012,7 +1012,7 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 15
+	interval := time.Second * 5
 	if !conf.IsRelease {
 		interval = time.Minute * 1
 	}

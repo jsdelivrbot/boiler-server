@@ -10,8 +10,8 @@ type BoilerRuntimeLog struct {
 	TableName			string					`orm:"index"`
 	Query				string
 	Status				int						`orm:"index"`
-	Duration			float64
-	DurationTotal		float64
+	Duration			float64					`orm:"index"`
+	DurationTotal		float64					`orm:"index"`
 }
 
 func (bLog *BoilerRuntimeLog) GetLog() interface{} {

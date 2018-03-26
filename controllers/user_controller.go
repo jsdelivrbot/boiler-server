@@ -51,7 +51,7 @@ func (ctl *UserController) Post() {
 
 func (ctl *UserController) GetCurrentUser() *models.User {
 	if ctl == nil {
-		goazure.Warning("UserCtl is Nil!")
+		//goazure.Warning("UserCtl is Nil!")
 		//return ctl.getSysUser()
 		return nil
 	}
