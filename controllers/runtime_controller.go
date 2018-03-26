@@ -118,7 +118,7 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due f
 	//time.Sleep(time.Second * 5)
 
 	/* ALARM */
-	ctl.ReloadAlarmWithRuntime(rtm, val);
+	ctl.ReloadAlarmWithRuntime(rtm, val)
 	/* CACHE */
 	go ctl.ReloadCacheWithRuntime(rtm, val)
 	/* HISTORY */

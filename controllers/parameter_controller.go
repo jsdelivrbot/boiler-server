@@ -27,8 +27,6 @@ import (
 type ParameterController struct {
 	MainController
 
-	ReloadLimit				int64
-
 	Parameters 				[]*models.RuntimeParameter
 }
 
@@ -273,9 +271,6 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	var data 	[]orm.Params
 
-	limit := ParamCtrl.ReloadLimit
-	if limit <= 0 { limit = 2000 }
-
 	/*
 	rawReady :=
 		"UPDATE	`boiler_m163` " +
@@ -299,6 +294,8 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 		"FROM	`boiler_m163` "  +
 		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
 		"WHERE	`need_reload` = 1;"
+		//"WHERE	`TS` > '2018-03-26 14:00:00' " +
+		//"ORDER BY `TS`; "
 
 	var lg logs.BoilerRuntimeLog
 	lg.Name = "DataListNeedReload()"
@@ -939,7 +936,7 @@ func generateDefaultChannelConfig() error {
 		if errRead != nil {
 			log.Fatal(errRead)
 		}
-		fmt.Println("Records: ", records)
+		goazure.Info("Records: ", records)
 
 		var fieldNames []string
 		for i, row := range records {
@@ -1018,9 +1015,8 @@ func generateDefaultChannelConfig() error {
 	return err
 }
 
-func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
+func (ctl *ParameterController) InitParameterChannelConfig() {
 	// generateDefaultChannelConfig()
-	ParamCtrl.ReloadLimit = limit
 
 	interval := time.Second * 10
 	if !conf.IsRelease {

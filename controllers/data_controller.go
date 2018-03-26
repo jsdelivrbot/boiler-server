@@ -76,7 +76,7 @@ func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, c
 	//goazure.Debug("Ready to Read aData:", aData, cols)
 	err := dba.BoilerOrm.Read(aData, cols...)
 	if err != nil {
-		warn := fmt.Sprintf("ReadData Error: %T, %v, %s\n", aData, aData, err)
+		warn := fmt.Sprintf("ReadData Error: %T, %v, %s", aData, aData, err)
 		goazure.Warn(warn)
 	}
 
