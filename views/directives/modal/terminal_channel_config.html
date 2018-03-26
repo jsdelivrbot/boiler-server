@@ -249,11 +249,11 @@
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                    repeat="fCode in $modal.fcode | filter: $select.search">
                                 {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -262,11 +262,11 @@
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode.Name as hlCode in $modal.hlCodes | filter: $select.search">
+                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
                                 {{hlCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -346,11 +346,11 @@
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                    repeat="fCode in $modal.fcode | filter: $select.search">
                                 {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -359,11 +359,11 @@
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode.Name as hlCode in $modal.hlCodes | filter: $select.search">
+                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
                                 {{hlCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -458,11 +458,11 @@
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                    repeat="fCode in $modal.fcode | filter: $select.search">
                                 {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -560,11 +560,11 @@
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                    repeat="fCode in $modal.fcode | filter: $select.search">
                                 {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -662,11 +662,11 @@
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                    repeat="fCode in $modal.fcode | filter: $select.search">
                                 {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -754,11 +754,11 @@
                         <ui-select ng-model="$modal.fcodeName[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="fCode.Name as fCode in $modal.fcode | filter: $select.search">
+                                    repeat="fCode in $modal.fcode | filter: $select.search">
                                 {{fCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -767,11 +767,11 @@
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex]"
                                    theme="bootstrap"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex]}}">
+                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex].Name}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
-                                    repeat="hlCode.Name as hlCode in $modal.hlCodes | filter: $select.search">
+                                    repeat="hlCode in $modal.hlCodes | filter: $select.search">
                                 {{hlCode.Name}}
                             </ui-select-choices>
                         </ui-select>
@@ -917,10 +917,10 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex]}}
+                        {{$modal.fcodeName[outerIndex].Name}}
                     </td>
                     <td>
-                        {{$modal.hlCodeNames[outerIndex]}}
+                        {{$modal.hlCodeNames[outerIndex].Name}}
                     </td>
                     <td>
                         {{$modal.mcode[outerIndex]}}
@@ -948,10 +948,10 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex]}}
+                        {{$modal.fcodeName[outerIndex].Name}}
                     </td>
                     <td>
-                        {{$modal.hlCodeNames[outerIndex]}}
+                        {{$modal.hlCodeNames[outerIndex].Name}}
                     </td>
                     <td>
                         {{$modal.mcode[outerIndex]}}
@@ -987,7 +987,7 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex]}}
+                        {{$modal.fcodeName[outerIndex].Name}}
                     </td>
                     <td>
                         {{$modal.mcode[outerIndex]}}
@@ -1015,7 +1015,7 @@
 
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex]}}
+                        {{$modal.fcodeName[outerIndex].Name}}
                     </td>
                     <td>
                         {{$modal.mcode[outerIndex]}}
@@ -1042,7 +1042,7 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex]}}
+                        {{$modal.fcodeName[outerIndex].Name}}
                     </td>
                     <td>
                         {{$modal.mcode[outerIndex]}}
@@ -1083,10 +1083,10 @@
 
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex]}}
+                        {{$modal.fcodeName[outerIndex].Name}}
                     </td>
                     <td>
-                        {{$modal.hlCodeNames[outerIndex]}}
+                        {{$modal.hlCodeNames[outerIndex].Name}}
                     </td>
                     <td>
                         {{$modal.mcode[outerIndex]}}
