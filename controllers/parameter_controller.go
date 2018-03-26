@@ -266,8 +266,8 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	rawDis :=
 		"UPDATE	`boiler_m163` " +
 		"SET	`need_reload` = 0 " +
-		"WHERE	`need_reload` = ?;"
-	go dba.BoilerOrm.Raw(rawDis, nonce).Exec()
+		"WHERE	`need_reload` = 1;"
+	go dba.BoilerOrm.Raw(rawDis).Exec()
 }
 
 func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
@@ -278,11 +278,13 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	limit := ParamCtrl.ReloadLimit
 	if limit <= 0 { limit = 600 }
 
+	/*
 	rawReady :=
 		"UPDATE	`boiler_m163` " +
 		"SET	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + " " +
 		"WHERE	`need_reload` = 1 " +
 		"LIMIT	" + strconv.FormatInt(limit, 10) + ";"
+	*/
 
 	raw :=
 		/*
@@ -297,7 +299,7 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 
 		"SELECT	* " +
 		"FROM	`boiler_m163` "  +
-		"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
+		"WHERE	`need_reload` = " + strconv.FormatInt(int64(1), 10) + ";"
 
 	var lg		logs.BoilerRuntimeLog
 	lg.Name = "DataListNeedReload()"
@@ -307,10 +309,12 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	lg.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
 	go DataCtl.AddData(&lg, false)
 
+	/*
 	if res, err := dba.BoilerOrm.Raw(rawReady).Exec(); err != nil {
 		goazure.Error("Ready DataListNeedReload Error", err, res)
 		return data
 	}
+	*/
 
 	if num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil {
 		goazure.Error("Get DataListNeedReload Error", err, num)
@@ -1019,7 +1023,7 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	// generateDefaultChannelConfig()
 	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 5
+	interval := time.Second * 10
 	if !conf.IsRelease {
 		interval = time.Minute * 1
 	}
