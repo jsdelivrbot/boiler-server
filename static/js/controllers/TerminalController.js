@@ -1170,6 +1170,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     text: err.data,
                     type: "error"
                 });
+                App.stopPageLoading();
             });
         Ladda.create(document.getElementById('channel_ok')).stop();
     };
