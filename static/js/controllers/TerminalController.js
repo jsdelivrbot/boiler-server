@@ -741,7 +741,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.category = 9;
 
     //下发test
-    $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
+    $modal.mcode = [40001, 40002, 40003, 40004, 40005];
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
@@ -755,37 +755,37 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $http.get("/correspond_type_list").then(function (res) {
         $modal.communiInterfaces = res.data;
     });
-    $modal.communiInterface  = "";
+    $modal.communiInterface  = 0;
 
     //数据位
     $http.get("/date_bit_list").then(function (res) {
         $modal.dataBits = res.data;
     });
-    $modal.dataBit  = "";
+    $modal.dataBit  = 0;
 
     //心跳包频率
     $http.get("/heartbeat_packet_list").then(function (res) {
         $modal.heartbeats = res.data;
     });
-    $modal.heartbeat = "";
+    $modal.heartbeat = 0;
 
     //校验位
     $http.get("/parity_bit").then(function (res) {
         $modal.checkDigits = res.data;
     });
-    $modal.checkDigit  = "";
+    $modal.checkDigit  = 0;
 
     //从机地址
     $http.get("/slave_address_list").then(function (res) {
         $modal.subAdrs = res.data;
     });
-    $modal.subAdr  = "";
+    $modal.subAdr  = 0;
 
     //停止位
     $http.get("/stop_bit_list").then(function (res) {
         $modal.stopBits = res.data;
     });
-    $modal.stopBit  = "";
+    $modal.stopBit  = 0;
 
     $modal.bitAddress = ["1", "2", "3", "4", "0"];
 
@@ -793,7 +793,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $http.get("/baud_rate_list").then(function (res) {
         $modal.BaudRates = res.data;
     });
-    $modal.BaudRate  = "";
+    $modal.BaudRate  = 0;
 
 
     $modal.terminalPass = "123456";
@@ -802,7 +802,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
     for(i=0;i<12;i++){
         if (!$modal.hlCodeNamesCopy[i]) {
-            $modal.hlCodeNamesCopy[i] = "默认(未配置)";
+            $modal.hlCodeNamesCopy[i]={};
+            $modal.hlCodeNamesCopy[i].Name = "默认(未配置)";
         };
         if (!$modal.hlCodeNames[i]) {
             $modal.hlCodeNames[i] = null;
@@ -811,7 +812,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.fcodeNameCopy = angular.copy($modal.fcodeName);
     for(i=0;i<16;i++){
         if (!$modal.fcodeNameCopy[i]) {
-            $modal.fcodeNameCopy[i] = "默认(未配置)";
+            $modal.fcodeNameCopy[i]={};
+            $modal.fcodeNameCopy[i].Name = "默认(未配置)";
         };
         if (!$modal.fcodeName[i]) {
             $modal.fcodeName[i] = null;
@@ -1061,15 +1063,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
                     }
 
-                    var fcodeName = $modal.fcodeName[j];
-                    var modbus = $modal.mcode[j];
-                    var termByte = "";
-                    var bitAddress ="";
+                    var fcodeName = $modal.fcodeName[j] ? $modal.fcodeName[j].Value:0;
+                    var modbus = $modal.fcodeName[j] ? $modal.mcode[j]:0;
+                    var termByte = 0;
+                    var bitAddress = 0;
                     if(j===0 || j===1 || j===5){
-                        termByte = $modal.hlCodeNames[j];
+                        //高低字节
+                        termByte = $modal.hlCodeNames[j]?$modal.hlCodeNames[j].Value:0 ;
                     }
                     if(j>=2 && j<5){
-                        bitAddress = $modal.bitAddress[j];
+                        bitAddress = $modal.bitAddress[j]? $modal.bitAddress[j]:0;
                     }
 
                     if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
@@ -1140,14 +1143,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         var cParam = {
             terminal_code:$modal.code,
-            baudRate : $modal.BaudRate,
-            dataBit : $modal.dataBit,
-            stopBit : $modal.stopBit,
-            checkDigit : $modal.checkDigit,
-            communInterface : $modal.communiInterface,
-            slaveAddress : $modal.subAdr,
-            heartbeat:$modal.heartbeat,
-            password:$modal.terminalPass
+            baudRate : $modal.BaudRate.Value,
+            dataBit : $modal.dataBit.Value,
+            stopBit : $modal.stopBit.Value,
+            checkDigit : $modal.checkDigit.Value,
+            communInterface : $modal.communiInterface.Value,
+            slaveAddress : $modal.subAdr.Value,
+            heartbeat:$modal.heartbeat.Value,
         };
 
 
