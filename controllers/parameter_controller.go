@@ -92,7 +92,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	lgIn.Name = "ChannelDataReload()"
 	lgIn.CreatedDate = t
 	lgIn.Status = logs.BOILER_RUNTIME_LOG_STATUS_INIT
-	go DataCtl.AddData(&lgIn, false)
+	LogCtl.AddReloadLog(&lgIn)
 
 	data := ctl.DataListNeedReload(nonce)
 
@@ -104,7 +104,106 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	lgRd.Duration = float64(lgRd.CreatedDate.Sub(t)) / float64(time.Second)
 	lgRd.DurationTotal = lgRd.Duration
 	lgRd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
-	go DataCtl.AddData(&lgRd, false)
+	LogCtl.AddReloadLog(&lgRd)
+
+	runtimeReload := func(rt orm.Params, cnf *models.RuntimeParameterChannelConfig, b *models.Boiler, lastLog *logs.BoilerRuntimeLog) {
+		var rtm models.BoilerRuntime
+		var value int64
+		chName := models.ChannelName(cnf.ChannelType, cnf.ChannelNumber)
+		//goazure.Info("Channel_Name", chName, rt[chName], reflect.ValueOf(rt[chName]).Kind())
+		switch reflect.ValueOf(rt[chName]).Kind() {
+		case reflect.String:
+			value, _ = strconv.ParseInt(rt[chName].(string), 10, 64)
+			if value == 0 {
+				v, _ := strconv.ParseFloat(rt[chName].(string), 10)
+				value = int64(v)
+			}
+		case reflect.Int32:
+			value = int64(rt[chName].(int32))
+		case reflect.Int64:
+			value = rt[chName].(int64)
+		case reflect.Float32:
+			value = int64(rt[chName].(float32))
+		case reflect.Float64:
+			value = int64(rt[chName].(float64))
+		}
+
+		if value > 65535 {
+			return
+		}
+
+		switch cnf.Parameter.Category.Id {
+		case models.RUNTIME_PARAMETER_CATEGORY_ANALOG:
+			if cnf.Signed == true && value > int64(cnf.NegativeThreshold) {
+				value = int64(cnf.NegativeThreshold) - value
+			}
+
+			if cnf.Scale > 0 {
+				value = int64(float32(value) * cnf.Scale)
+			}
+		case models.RUNTIME_PARAMETER_CATEGORY_SWITCH:
+			idx := (cnf.ChannelNumber - 1) % 16 + 1
+			var d int64 = 1
+			for i := int32(1); i < idx; i++ {
+				d *= 2
+			}
+			v := value / d
+			v = v % 2
+
+			value = v
+		case models.RUNTIME_PARAMETER_CATEGORY_CALCULATE:
+			fallthrough
+		case models.RUNTIME_PARAMETER_CATEGORY_RANGE:
+			var v 	int64 = -1
+			var rmk string = ""
+			for _, rg := range cnf.Ranges {
+				if value >= rg.Min && value <= rg.Max {
+					v = rg.Value
+					rmk = rg.Name
+
+					goazure.Warn("Channel Range Matched!", rg, value, v)
+					break
+				}
+			}
+
+			if v >= 0 {
+				cnf.Remark = rmk
+			}
+		}
+
+		rtm.Parameter = cnf.Parameter
+		rtm.Boiler = b
+		rtm.Value = value
+		rtm.Remark = cnf.Remark
+
+		rtm.Status = models.RUNTIME_STATUS_NEW
+
+		if tm, err := time.ParseInLocation("2006-01-02 15:04:05", rt["TS"].(string), time.Local); err != nil {
+			goazure.Error("Parse Time Error:", err)
+		} else {
+			//goazure.Info("Parse Time:", t, "||", tm)
+			rtm.CreatedDate = tm
+		}
+
+		if err := DataCtl.AddData(&rtm, true); err != nil {
+			goazure.Error("Reload Runtime Error:", err)
+			//isSuccess = false
+			return
+		} else {
+			var lgd logs.BoilerRuntimeLog
+			lgd.Name = "runtimeReload()"
+			lgd.Runtime = &rtm
+			lgd.TableName = "boiler_m163 -> boiler_runtime"
+			lgd.Query = "INSERT"
+			lgd.CreatedDate = time.Now()
+			lgd.Duration = float64(lgd.CreatedDate.Sub(lastLog.CreatedDate)) / float64(time.Second)
+			lgd.DurationTotal = lastLog.DurationTotal + lgd.Duration
+			lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
+			LogCtl.AddReloadLog(&lgd)
+
+			go RtmCtl.RuntimeDataReload(&rtm, lgd.DurationTotal)
+		}
+	}
 
 	for _, d := range data {
 		var tm time.Time
@@ -148,135 +247,34 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 		lgr.Duration = float64(startTime.Sub(tm)) / float64(time.Second)
 		lgr.DurationTotal = lgr.Duration
 		lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
-		go DataCtl.AddData(&lgr, false)
-
-		runtimeReload := func(cnf *models.RuntimeParameterChannelConfig) {
-			var rtm models.BoilerRuntime
-			var value int64
-			chName := models.ChannelName(cnf.ChannelType, cnf.ChannelNumber)
-			goazure.Info("Channel_Name", chName, d[chName], reflect.ValueOf(d[chName]).Kind())
-			switch reflect.ValueOf(d[chName]).Kind() {
-			case reflect.String:
-				value, _ = strconv.ParseInt(d[chName].(string), 10, 64)
-				if value == 0 {
-					v, _ := strconv.ParseFloat(d[chName].(string), 10)
-					value = int64(v)
-				}
-			case reflect.Int32:
-				value = int64(d[chName].(int32))
-			case reflect.Int64:
-				value = d[chName].(int64)
-			case reflect.Float32:
-				value = int64(d[chName].(float32))
-			case reflect.Float64:
-				value = int64(d[chName].(float64))
-			}
-
-			if value > 65535 {
-				go dba.BoilerOrm.Raw(rawDisUid).Exec()
-				return
-			}
-
-			switch cnf.Parameter.Category.Id {
-			case models.RUNTIME_PARAMETER_CATEGORY_ANALOG:
-				if cnf.Signed == true && value > int64(cnf.NegativeThreshold) {
-					value = int64(cnf.NegativeThreshold) - value
-				}
-
-				if cnf.Scale > 0 {
-					value = int64(float32(value) * cnf.Scale)
-				}
-			case models.RUNTIME_PARAMETER_CATEGORY_SWITCH:
-				idx := (cnf.ChannelNumber - 1) % 16 + 1
-				var d int64 = 1
-				for i := int32(1); i < idx; i++ {
-					d *= 2
-				}
-				v := value / d
-				v = v % 2
-
-				value = v
-			case models.RUNTIME_PARAMETER_CATEGORY_CALCULATE:
-				fallthrough
-			case models.RUNTIME_PARAMETER_CATEGORY_RANGE:
-				var v 	int64 = -1
-				var rmk string = ""
-				for _, rg := range cnf.Ranges {
-					if value >= rg.Min && value <= rg.Max {
-						v = rg.Value
-						rmk = rg.Name
-
-						goazure.Warn("Channel Range Matched!", rg, value, v)
-						break
-					}
-				}
-
-				if v >= 0 {
-					cnf.Remark = rmk
-				}
-			}
-
-
-			rtm.Parameter = cnf.Parameter
-			rtm.Boiler = combined.Boiler
-			rtm.Value = value
-			rtm.Remark = cnf.Remark
-
-			rtm.Status = models.RUNTIME_STATUS_NEW
-
-			if tm, err := time.ParseInLocation("2006-01-02 15:04:05", t, time.Local); err != nil {
-				goazure.Error("Parse Time Error:", err)
-			} else {
-				//goazure.Info("Parse Time:", t, "||", tm)
-				rtm.CreatedDate = tm
-			}
-
-			if err := DataCtl.AddData(&rtm, true); err != nil {
-				goazure.Error("Reload Runtime Error:", err)
-				//isSuccess = false
-				return
-			} else {
-				var lgd logs.BoilerRuntimeLog
-				lgd.Name = "runtimeReload()"
-				lgd.Runtime = &rtm
-				lgd.TableName = "boiler_m163 -> boiler_runtime"
-				lgd.Query = "INSERT"
-				lgd.CreatedDate = time.Now()
-				lgd.Duration = float64(lgd.CreatedDate.Sub(startTime)) / float64(time.Second)
-				lgd.DurationTotal = lgr.DurationTotal + lgd.Duration
-				lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
-				go DataCtl.AddData(&lgd, false)
-
-				go RtmCtl.RuntimeDataReload(&rtm, lgd.DurationTotal)
-			}
-
-			go dba.BoilerOrm.Raw(rawDisUid).Exec()
-		}
+		LogCtl.AddReloadLog(&lgr)
 
 		if 	combined.Boiler != nil &&
 			len(combined.Boiler.Uid) > 0 {
 
 			bConfs := ctl.ChannelConfigList(code)
 			for _, cnf := range bConfs {
-				go runtimeReload(cnf)
+				go runtimeReload(d, cnf, combined.Boiler, &lgr)
 			}
 		}
+
+		go dba.BoilerOrm.Raw(rawDisUid).Exec()
 	}
 
+	/*
 	rawDis :=
 		"UPDATE	`boiler_m163` " +
 		"SET	`need_reload` = 0 " +
-		"WHERE	`need_reload` = 1;"
+		"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
 	go dba.BoilerOrm.Raw(rawDis).Exec()
+	*/
 }
 
 func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	var data 	[]orm.Params
 
-	//nonce = 255
-
 	limit := ParamCtrl.ReloadLimit
-	if limit <= 0 { limit = 600 }
+	if limit <= 0 { limit = 2000 }
 
 	/*
 	rawReady :=
@@ -299,15 +297,16 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 
 		"SELECT	* " +
 		"FROM	`boiler_m163` "  +
-		"WHERE	`need_reload` = " + strconv.FormatInt(int64(1), 10) + ";"
+		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
+		"WHERE	`need_reload` = 1;"
 
-	var lg		logs.BoilerRuntimeLog
+	var lg logs.BoilerRuntimeLog
 	lg.Name = "DataListNeedReload()"
 	lg.TableName = "boiler_163m"
 	lg.Query = raw
 	lg.CreatedDate = time.Now()
 	lg.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
-	go DataCtl.AddData(&lg, false)
+	LogCtl.AddReloadLog(&lg)
 
 	/*
 	if res, err := dba.BoilerOrm.Raw(rawReady).Exec(); err != nil {
