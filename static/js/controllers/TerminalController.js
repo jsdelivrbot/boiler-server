@@ -1043,7 +1043,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
                 if ($modal.dataMatrix[i][j] !== $modal.chanMatrix[i][j]) {
-                    if (!$modal.dataMatrix[i][j]  && (($modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].IsDefault === true) || $modal.chanMatrix[i][j].Name==="默认(未配置)")) {
+                    if (!$modal.dataMatrix[i][j]  && (($modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].IsDefault === true))) {
                         console.warn('!!NULL data:', $modal.dataMatrix[i][j], $modal.chanMatrix[i][j]);
                         continue;
                     }
@@ -1147,13 +1147,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             applicationSupport : $modal.BaudRate,
             heartbeat:$modal.dataBit
         };
-        configUpload.push(cParam);
+
 
 
         console.warn("$modal channel update!", configUpload);
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/channel_config_update/", configUpload)
+        $http.post("/channel_config_update/", {channel:configUpload,param:cParam})
             .then(function (res) {
                  App.stopPageLoading();
 
@@ -1170,6 +1170,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     text: err.data,
                     type: "error"
                 });
+                App.stopPageLoading();
             });
         Ladda.create(document.getElementById('channel_ok')).stop();
     };
