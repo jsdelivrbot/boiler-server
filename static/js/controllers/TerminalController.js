@@ -1106,9 +1106,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             switch_status: dataSwitch,
 
                             fcodeName:fcodeName,
-                            modbus:modbus,
-                            termByte:termByte,
-                            bitAddress:bitAddress
+                            modbus:parseInt(modbus),
+                            termByte:parseInt(termByte),
+                            bitAddress:parseInt(bitAddress)
 
                         };
 
