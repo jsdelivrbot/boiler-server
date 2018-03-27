@@ -143,7 +143,6 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due f
 }
 
 func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, val interface{}) (*models.BoilerAlarm, error) {
-	//TODO: Alarm Has ISSUES
 	var alarm 	models.BoilerAlarm
 	var rule 	models.RuntimeAlarmRule
 
@@ -152,22 +151,17 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
 	condFm := orm.NewCondition().Or("BoilerForm__Id", boiler.Form.Id).Or("BoilerForm__Id", 0)
 	condMed := orm.NewCondition().Or("BoilerMedium__Id", boiler.Medium.Id).Or("BoilerMedium__Id", 0)
-	condFt := orm.NewCondition().Or("BoilerFuelType__Id", boiler.Fuel.Type.Id).Or("BoilerFuelType__Id", boiler.Fuel.Type.Id)
-	condEvapDummy := orm.NewCondition().And("BoilerCapacityMin", 0).And("BoilerCapacityMax", 0)
-	condEvapValid := orm.NewCondition().And("BoilerCapacityMin__lte", boiler.EvaporatingCapacity).And("BoilerCapacityMax__gte", boiler.EvaporatingCapacity)
-	condEva := orm.NewCondition().OrCond(condEvapDummy).OrCond(condEvapValid)
-
+	condFt := orm.NewCondition().Or("BoilerFuelType__Id", boiler.Fuel.Type.Id).Or("BoilerFuelType__Id", 0)
+	condEvaDummy := orm.NewCondition().And("BoilerCapacityMin", 0).And("BoilerCapacityMax", 0)
+	condEvaValid := orm.NewCondition().And("BoilerCapacityMin__lte", boiler.EvaporatingCapacity).And("BoilerCapacityMax__gte", boiler.EvaporatingCapacity)
+	condEva := orm.NewCondition().OrCond(condEvaDummy).OrCond(condEvaValid)
 	cond := orm.NewCondition().AndCond(condFm).AndCond(condMed).AndCond(condFt).AndCond(condEva)
-
 	qr = qr.SetCond(cond)
 	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false)
 	if err := qr.One(&rule); err != nil {
 		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
-
 		return nil, err
 	}
-
-	//goazure.Info("===>Get AlarmRule:\n", rule, "\n", rtm.Boiler)
 
 	var alarmDesc string
 	if rule.Warning > rule.Normal && val.(float64) > float64(rule.Warning) {
@@ -179,10 +173,9 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 
 	qa := dba.BoilerOrm.QueryTable("boiler_alarm").
 		Filter("TriggerRule__Uid", rule.Uid).Filter("Boiler__Uid", rtm.Boiler.Uid).
-		Filter("EndDate__lte", rtm.CreatedDate.Add(time.Hour*4)).Filter("EndDate__gte", rtm.CreatedDate.Add(time.Hour * -4)).
+		Filter("EndDate__lte", rtm.CreatedDate.Add(time.Hour * 4)).Filter("EndDate__gte", rtm.CreatedDate.Add(time.Hour * -4)).
 		Filter("IsDeleted", false)
-	if er := qa.One(&alarm); er != nil {
-		goazure.Warning("Get Exist Alarm Error:", alarm)
+	if err := qa.One(&alarm); err != nil {
 		alarm.Uid = uuid.New()
 		alarm.Boiler = boiler
 		alarm.Parameter = rule.Parameter
@@ -193,11 +186,21 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		alarm.State = models.BOILER_ALARM_STATE_NEW
 		alarm.NeedSend = rule.NeedSend
 
-		alarm.StartDate = time.Now()
-		alarm.EndDate = time.Now()
+		alarm.StartDate = rtm.CreatedDate
+		alarm.EndDate = rtm.CreatedDate
+
+		goazure.Warning("Get Exist Alarm Error:", alarm)
 	} else {
-		alarm.EndDate = time.Now()
+		if !alarm.EndDate.After(rtm.CreatedDate) {
+			alarm.EndDate = rtm.CreatedDate
+		}
+
+		if alarm.StartDate.After(rtm.CreatedDate) {
+			alarm.StartDate = rtm.CreatedDate
+		}
 	}
+
+	goazure.Info("Alarm:", alarm)
 
 	if err := DataCtl.AddData(&alarm, true); err != nil {
 		goazure.Error("Added/Updated Alarm Error:", err, "\n", alarm)
@@ -301,25 +304,25 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 
 	rawInst :=
 		"INSERT IGNORE `" + tableNamePrefix + tableNameInst + "` " +
-			"( " +
-			"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
-			"`created_date` , `updated_date` , `name` , `value` , " +
-			"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
-			") " +
-			"VALUES " +
-			"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-			"ON DUPLICATE KEY UPDATE " +
-			"`runtime_id` = ? , " +
-			"`alarm_id` = ? , " +
-			"`updated_date` = IF(`updated_date` > ?, `updated_date`, ?) , " +
-			"`value` = ? , " +
-			"`name` = ? , " +
-			"`parameter_name` = ? , " +
-			"`unit` = ? , " +
-			"`alarm_level` = ? , " +
-			"`alarm_description` = ? , " +
-			"`remark` = ?, " +
-			"`is_deleted` = FALSE;"
+		"( " +
+		"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
+		"`created_date` , `updated_date` , `name` , `value` , " +
+		"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
+		") " +
+		"VALUES " +
+		"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+		"ON DUPLICATE KEY UPDATE " +
+		"`runtime_id` = ? , " +
+		"`alarm_id` = ? , " +
+		"`updated_date` = IF(`updated_date` > ?, `updated_date`, ?) , " +
+		"`value` = ? , " +
+		"`name` = ? , " +
+		"`parameter_name` = ? , " +
+		"`unit` = ? , " +
+		"`alarm_level` = ? , " +
+		"`alarm_description` = ? , " +
+		"`remark` = ?, " +
+		"`is_deleted` = FALSE;"
 
 	if 	res, err := dba.BoilerOrm.Raw(rawInst,
 		rtm.Id, rtm.Boiler.Uid, rtm.Parameter.Id, alarmId,
@@ -351,13 +354,13 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 	for _, name := range tableNameList {
 		raw :=
 			"INSERT IGNORE `" + tableNamePrefix + name + "` " +
-				"( " +
-				"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
-				"`created_date` , `name` , `value` , " +
-				"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
-				") " +
-				"VALUES " +
-				"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
+			"( " +
+			"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
+			"`created_date` , `name` , `value` , " +
+			"`parameter_name` , `unit` , `alarm_level` , `alarm_description`, `remark` " +
+			") " +
+			"VALUES " +
+			"( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
 
 		if	res, err := dba.BoilerOrm.
 			Raw(raw,
@@ -423,8 +426,8 @@ func (ctl *RuntimeController) ReloadHistoryWithRuntime(rtm *models.BoilerRuntime
 
 	history.Marshal()
 
-	if err := DataCtl.AddData(&history, true); err != nil {
-		goazure.Error("Added/Updated History Failed:", err)
+	if num, err := dba.BoilerOrm.InsertOrUpdate(&history); err != nil {
+		goazure.Error("Added/Updated History Failed:", err, num)
 	}
 }
 

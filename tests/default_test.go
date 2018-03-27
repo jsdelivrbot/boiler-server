@@ -1,17 +1,21 @@
 package test
 
 import (
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"runtime"
 	"path/filepath"
 
-	"github.com/AzureRelease/boiler-server/controllers"
-
+	//"net/http"
+	//"net/http/httptest"
 	"github.com/AzureTech/goazure"
-	. "github.com/smartystreets/goconvey/convey"
+
+	"github.com/AzureRelease/boiler-server/controllers"
 	"github.com/AzureRelease/boiler-server/models"
+
+	//. "github.com/smartystreets/goconvey/convey"
+
+
+
 )
 
 func init() {
@@ -20,11 +24,12 @@ func init() {
 	goazure.TestAzureInit(apppath)
 }
 
+/*
 func TestAzure(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
 	goazure.BeeApp.Handlers.ServeHTTP(w, r)
-	goazure.Trace("testing", "TestBeego", "Code[%d]\n%s", w.Code, w.Body.String())
+	goazure.Trace("testing", "TestAzure", "Code[%d]\n%s", w.Code, w.Body.String())
 	Convey("Subject: Test Station Endpoint\n", t, func() {
 		Convey("Status Code Should Be 200", func() {
 			So(w.Code, ShouldEqual, 200)
@@ -34,6 +39,7 @@ func TestAzure(t *testing.T) {
 		})
 	})
 }
+*/
 
 func TestAlarmReload(t *testing.T) {
 	controllers.BlrCtl.WaitGroup.Wait()

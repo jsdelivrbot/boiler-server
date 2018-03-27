@@ -170,8 +170,8 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			rtm.CreatedDate = tm
 		}
 
-		if err := DataCtl.AddData(&rtm, true); err != nil {
-			goazure.Error("Reload Runtime Error:", err)
+		if  num, err := dba.BoilerOrm.InsertOrUpdate(&rtm); err != nil {
+			goazure.Error("Reload Runtime Error:", err, num)
 			//isSuccess = false
 			return
 		} else {
@@ -299,7 +299,7 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	}
 	*/
 
-	if num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil {
+	if  num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil {
 		goazure.Error("Get DataListNeedReload Error", err, num)
 	}
 

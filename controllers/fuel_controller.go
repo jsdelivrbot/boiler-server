@@ -143,7 +143,7 @@ func (ctl *FuelController) FuelRecordUpdate() {
 	qr := dba.BoilerOrm.QueryTable("boiler_runtime_cache_flow")
 	qr = qr.Filter("Boiler__Uid", rec.BoilerUid).Filter("Parameter__Id", 1003).
 		Filter("CreatedDate__gte", rec.StartDate).Filter("CreatedDate__lte", rec.EndDate)
-	if num, err := qr.Filter("IsDeleted", false).OrderBy("-CreatedDate").Values(&rtms, "CreatedDate", "Value"); (err != nil || num == 0) {
+	if num, err := qr.Filter("IsDeleted", false).OrderBy("-CreatedDate").Values(&rtms, "CreatedDate", "Value"); err != nil || num == 0 {
 		goazure.Warning("Read BoilerRuntime Error", err)
 	} else {
 		sum := float64(0)
