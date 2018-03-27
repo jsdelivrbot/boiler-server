@@ -741,15 +741,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.category = 9;
 
     //下发test
-    $modal.mcode = [40001, 40002, 40003, 40004, 40005];
+    $modal.mcode = [[]];
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
-    $modal.fcodeName = [];
+    $modal.fcodeName = [[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null]];
 
     //高低字节
     $modal.hlCodes = $rootScope.hlCodes; //分类
-    $modal.hlCodeNames = [];
+    $modal.hlCodeNames = [[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null]];
 
     //通信接口地址
     $http.get("/correspond_type_list").then(function (res) {
@@ -787,7 +787,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     });
     $modal.stopBit  = 0;
 
-    $modal.bitAddress = [1, 2];
+    $modal.bitAddress = [[]];
 
     //波特率
     $http.get("/baud_rate_list").then(function (res) {
@@ -800,23 +800,32 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
 
     $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
-    for(i=0;i<12;i++){
-        if (!$modal.hlCodeNamesCopy[i]) {
-            $modal.hlCodeNamesCopy[i]={};
-            $modal.hlCodeNamesCopy[i].Name = "默认(未配置)";
-        };
-        if (!$modal.hlCodeNames[i]) {
-            $modal.hlCodeNames[i] = null;
+    for(var i=0;i<16;i++){
+        for(var j=0; j<6; j++){
+            if (!$modal.hlCodeNamesCopy[i][j]) {
+                $modal.hlCodeNamesCopy[i][j]={
+                    Name: "默认(未配置)"
+                };
+            }
+            if (!$modal.hlCodeNames[i][j]) {
+                $modal.hlCodeNames[i][j] = null;
+            }
         }
-    };
+    }
+    console.log($modal.hlCodeNamesCopy);
+
     $modal.fcodeNameCopy = angular.copy($modal.fcodeName);
-    for(i=0;i<16;i++){
-        if (!$modal.fcodeNameCopy[i]) {
-            $modal.fcodeNameCopy[i]={};
-            $modal.fcodeNameCopy[i].Name = "默认(未配置)";
-        };
-        if (!$modal.fcodeName[i]) {
-            $modal.fcodeName[i] = null;
+    console.log($modal.fcodeNameCopy);
+    for(var i=0;i<16;i++){
+        for(var j=0; j<6; j++){
+            if (!$modal.fcodeNameCopy[i][j]) {
+                $modal.fcodeNameCopy[i][j]={
+                    Name: "默认(未配置)"
+                };
+            }
+            if (!$modal.fcodeName[i][j]) {
+                $modal.fcodeName[i][j] = null;
+            }
         }
     }
 
@@ -1063,16 +1072,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
                     }
 
-                    var fcodeName = $modal.fcodeName[j] ? $modal.fcodeName[j].Value:0;
-                    var modbus = $modal.fcodeName[j] ? $modal.mcode[j]:0;
+                    var fcodeName = $modal.fcodeName[i]&&$modal.fcodeName[i][j] ? $modal.fcodeName[i][j].Value:0;
+                    var modbus = $modal.mcode[i]&&$modal.mcode[i][j] ? $modal.mcode[i][j]:0;
                     var termByte = 0;
                     var bitAddress = 0;
                     if(j===0 || j===1 || j===5){
                         //高低字节
-                        termByte = $modal.hlCodeNames[j]?$modal.hlCodeNames[j].Value:0 ;
+                        termByte = $modal.hlCodeNames[i]&&$modal.hlCodeNames[i][j]?$modal.hlCodeNames[i][j].Value:0 ;
                     }
                     if(j>=2 && j<5){
-                        bitAddress = $modal.bitAddress[j]? $modal.bitAddress[j]:0;
+                        bitAddress = $modal.bitAddress[i]&&$modal.bitAddress[i][j]? $modal.bitAddress[i][j]:0;
                     }
 
                     if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
