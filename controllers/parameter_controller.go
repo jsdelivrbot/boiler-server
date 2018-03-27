@@ -19,7 +19,6 @@ import (
 	"time"
 	"encoding/json"
 	"sort"
-	"errors"
 	"github.com/AzureRelease/boiler-server/models/logs"
 	"math/rand"
 )
@@ -39,7 +38,7 @@ func init() {
 }
 
 func (ctl *ParameterController) RefreshParameters() {
-	ParamCtrl.bWaitGroup.Add(1)
+	ParamCtrl.WaitGroup.Add(1)
 
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
@@ -61,24 +60,12 @@ func (ctl *ParameterController) RefreshParameters() {
 
 	ParamCtrl.Parameters = params
 
-	ParamCtrl.bWaitGroup.Done()
-}
-
-func (ctl *ParameterController) GetRuntimeParameter(typeId int32) (*models.RuntimeParameter, error) {
-	for _, param := range ParamCtrl.Parameters {
-		if param.ParamId == typeId {
-			return param, nil
-		}
-	}
-
-	err := errors.New("can not find any parameter with this Id")
-
-	return nil, err
+	ParamCtrl.WaitGroup.Done()
 }
 
 func (ctl *ParameterController) RuntimeParameterList() {
 	goazure.Warning("Ready to Get RuntimeParameterList")
-	ParamCtrl.bWaitGroup.Wait()
+	ParamCtrl.WaitGroup.Wait()
 
 	ctl.Data["json"] = ParamCtrl.Parameters
 	ctl.ServeJSON()
@@ -869,8 +856,8 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 }
 
 
-func runtimeParameter(pid int) *models.RuntimeParameter {
-	param := models.RuntimeParameter{}
+func (ctl *ParameterController) RuntimeParameter(pid int) *models.RuntimeParameter {
+	var param models.RuntimeParameter
 
 	if  err := dba.BoilerOrm.QueryTable("runtime_parameter").
 		RelatedSel("Category").
@@ -959,7 +946,7 @@ func generateDefaultChannelConfig() error {
 					switch j {
 					case paramIdCol:
 						pid, _ := strconv.ParseInt(field, 10, 64)
-						value = runtimeParameter(int(pid))
+						value = ParamCtrl.RuntimeParameter(int(pid))
 						name = value.(*models.RuntimeParameter).Name
 						if strings.Index(name, "室内温度") >= 0 {
 							name = "室内温度"

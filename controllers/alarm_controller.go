@@ -746,7 +746,7 @@ func generateDefaultAlarmRules() (error) {
 					switch j {
 					case paramIdCol:
 						pid, _ := strconv.ParseInt(field, 10, 64)
-						value = runtimeParameter(int(pid))
+						value = ParamCtrl.RuntimeParameter(int(pid))
 					case boilerFormCol:
 						id, _ := strconv.ParseInt(field, 10, 64)
 						value = boilerForm(int(id))

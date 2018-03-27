@@ -15,7 +15,7 @@ type MainController struct {
 	goazure.Controller
 
 	Boilers				[]*models.Boiler
-	bWaitGroup			sync.WaitGroup
+	WaitGroup			sync.WaitGroup
 }
 
 var IsRelease bool = (goazure.AppConfig.String("runmode") == "prod");

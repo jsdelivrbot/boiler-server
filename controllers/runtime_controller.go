@@ -11,6 +11,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"github.com/AzureRelease/boiler-server/conf"
+	"github.com/AzureRelease/boiler-server/models/logs"
 
 	"strconv"
 	"io/ioutil"
@@ -26,7 +27,6 @@ import (
 
 	"errors"
 	"math"
-	"github.com/AzureRelease/boiler-server/models/logs"
 	"github.com/pborman/uuid"
 )
 
@@ -146,14 +146,8 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	//TODO: Alarm Has ISSUES
 	var alarm 	models.BoilerAlarm
 	var rule 	models.RuntimeAlarmRule
-	var boiler 	*models.Boiler
 
-	for _, b := range MainCtrl.Boilers {
-		if b.Uid == rtm.Boiler.Uid {
-			boiler = b
-			break
-		}
-	}
+	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
 
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
 	condFm := orm.NewCondition().Or("BoilerForm__Id", boiler.Form.Id).Or("BoilerForm__Id", 0)
@@ -550,14 +544,7 @@ func (ctl *RuntimeController) BoilerRuntimeList() {
 		return
 	}
 
-	//goazure.Warning("Uid:", uid)
-	var boiler *models.Boiler
-	for _, ab := range MainCtrl.Boilers {
-		if ab.Uid == b.Uid {
-			boiler = ab
-			break
-		}
-	}
+	boiler := BlrCtl.Boiler(b.Uid)
 
 	runtimes := func(param *models.RuntimeParameter, limit int) []orm.Params {
 		var rtm []orm.Params
@@ -857,12 +844,7 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 		return
 	}
 
-	for _, mb := range MainCtrl.Boilers {
-		if mb.Uid == b.Uid {
-			boiler = mb
-			break
-		}
-	}
+	boiler = BlrCtl.Boiler(b.Uid)
 
 	if len(b.RuntimeQueue) <= 0 {
 		b.RuntimeQueue = ParamCtrl.ParamQueueWithBoiler(boiler)
@@ -927,7 +909,7 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 	rtms := []orm.Params{}
 	for _, paramId := range b.RuntimeQueue {
 		num := 0
-		param := runtimeParameter(paramId)
+		param := ParamCtrl.RuntimeParameter(paramId)
 		for _, r := range rs {
 			if  r["Parameter"] == int64(paramId) {
 				r["ParameterCategory"] = param.Category.Id
@@ -1440,7 +1422,7 @@ func (ctl *RuntimeController) RefreshRuntimeStatusRunning() {
 				fmt.Println("timeNumber:", t, timeNumber)
 
 				var run caches.BoilerRuntimeCacheStatusRunning
-				param := runtimeParameter(1107)
+				param := ParamCtrl.RuntimeParameter(1107)
 				value := 0
 
 				if isBurning {
@@ -1758,7 +1740,7 @@ func generateBoilerRuntime(boiler *models.Boiler, date time.Time, run Runtime, c
 	}
 
 	//value := int64(float32(run.BaseValue) + fl * float32(run.DynamicValue))
-	param := runtimeParameter(int(run.Pid))
+	param := ParamCtrl.RuntimeParameter(int(run.Pid))
 
 	if param.Category.Id == 11 && value > 0 {
 		value = 1
@@ -1795,7 +1777,7 @@ func generateBoilerStatus(boiler *models.Boiler, date time.Time, value int64, ru
 		value = int64(float32(run.BaseValue) + rand.Float32() * float32(run.DynamicValue))
 	}
 
-	param := runtimeParameter(int(run.Pid))
+	param := ParamCtrl.RuntimeParameter(int(run.Pid))
 
 	if param == nil {
 		goazure.Error("Get Param", run.Pid, "Error!")

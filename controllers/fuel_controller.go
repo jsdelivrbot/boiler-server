@@ -159,7 +159,7 @@ func (ctl *FuelController) FuelRecordUpdate() {
 	goazure.Warn("Fuel Flows", total, rate);
 
 	record := &models.BoilerFuelRecord{}
-	boiler := boilerWithUid(rec.BoilerUid)
+	boiler := BlrCtl.Boiler(rec.BoilerUid)
 	fuel := &models.Fuel{ FuelId: int32(401) }
 	if err := DataCtl.ReadData(fuel, "FuelId"); err != nil {
 		goazure.Error("Read Biomess Fuel Error:", err)

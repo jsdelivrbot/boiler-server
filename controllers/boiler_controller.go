@@ -96,7 +96,7 @@ func (ctl *BoilerController) BoilerCount() {
 }
 
 func (ctl *BoilerController) RefreshGlobalBoilerList() {
-	BlrCtl.bWaitGroup.Add(1)
+	BlrCtl.WaitGroup.Add(1)
 	//goazure.Error("")
 	var boilers []*models.Boiler
 	//var bMap []orm.Params
@@ -211,7 +211,7 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 
 	MainCtrl.Boilers = boilers
 
-	BlrCtl.bWaitGroup.Done()
+	BlrCtl.WaitGroup.Done()
 
 	//go RtmCtl.RefreshStatusRunningDuration(time.Now())
 	//go RtmCtl.RefreshBoilerRank(time.Now())
@@ -220,7 +220,7 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 }
 
 func (ctl *BoilerController) CurrentBoilerList(usr *models.User) ([]*models.Boiler, error) {
-	BlrCtl.bWaitGroup.Wait()
+	BlrCtl.WaitGroup.Wait()
 
 	var boilers []*models.Boiler
 	var err error
@@ -1682,18 +1682,16 @@ func (ctl *BoilerController) InitBoilerDefaults() {
 	DataCtl.GenerateDefaultData(reflect.TypeOf(bf), boilerDefautlPath, "fuel", reflect.TypeOf(bft))
 }
 
-func boilerWithUid(uid string) *models.Boiler {
-	if len(uid) <= 0 {
-		return nil
-	}
-	boiler := &models.Boiler{}
-	boiler.Uid = uid
-	if err := DataCtl.ReadData(boiler); err != nil {
-		goazure.Error("Read Boiler With Uid Error:", err.Error())
-		return nil
+func (ctl *BoilerController) Boiler(uid string) *models.Boiler {
+	BlrCtl.WaitGroup.Wait()
+
+	for _, b := range MainCtrl.Boilers {
+		if b.Uid == uid {
+			return b
+		}
 	}
 
-	return boiler
+	return nil
 }
 
 func boilerForm(formId int) *models.BoilerTypeForm {

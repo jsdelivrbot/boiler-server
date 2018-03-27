@@ -4,6 +4,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models/logs"
 	"github.com/AzureRelease/boiler-server/conf"
 	"errors"
+	"github.com/AzureRelease/boiler-server/dba"
 )
 
 type LogController struct {
@@ -20,7 +21,7 @@ func (ctl *LogController) AddReloadLog(lg *logs.BoilerRuntimeLog) error {
 	var err error
 
 	go func() {
-		err = DataCtl.AddData(lg, false)
+		_, err = dba.BoilerOrm.Insert(lg)
 	}()
 
 	return err
