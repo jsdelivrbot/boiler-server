@@ -119,6 +119,10 @@ func init() {
 		new(models.IssuedParityBit),
 		new(models.IssuedSlaveAddress),
 		new(models.IssuedStopBit),
+		new(models.IssuedAnalogue),
+		new(models.IssuedSwitch),
+		new(models.IssuedSwitchBurning),
+		new(models.IssuedCommunication),
 	)
 
 	orm.Debug = false//!conf.IsRelease

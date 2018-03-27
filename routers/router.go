@@ -38,7 +38,8 @@ func init() {
 
 	goazure.Router("/channel_config_list/", &controllers.ParameterController{}, "post:ChannelConfigList")
 	goazure.Router("/channel_config_matrix/", &controllers.ParameterController{}, "post:ChannelConfigMatrix")
-	goazure.Router("/channel_config_update/", &controllers.ParameterController{}, "post:ChannelConfigUpdate")
+	//修改
+	goazure.Router("/channel_config_update/", &controllers.ParameterController{}, "post:ChannelIssuedUpdate")
 
 	goazure.Router("/organization_list/", &controllers.OrganizationController{}, "get:OrganizationList")
 	goazure.Router("/organization_type_list/", &controllers.OrganizationController{}, "get:OrganizationTypeList")

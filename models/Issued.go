@@ -44,3 +44,35 @@ type IssuedStopBit struct {
 	Name string
 	Value int
 }
+
+type IssuedAnalogue struct {
+	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
+	Function  int
+	Byte        int
+	Modbus   int
+}
+
+type IssuedSwitch struct {
+	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
+	Function   int
+	Modbus    int
+	BitAddress  int
+}
+
+type IssuedSwitchBurning struct {
+	Terminal      *Terminal         `orm:"pk;rel(fk)"`
+	Function      int
+	Modbus        int
+	BitAddress    int
+}
+
+type IssuedCommunication struct {
+	Terminal *Terminal    `orm:"pk;rel(fk)"`
+	BaudRate   int
+	DataBit    int
+	StopBit    int
+	CheckBit   int
+	CorrespondType   int
+	SubAddress   int
+	HeartBeat    int
+}
