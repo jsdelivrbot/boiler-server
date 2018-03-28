@@ -141,6 +141,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         };
 
         bRuntime.data = { Uid: bRuntime.boiler.Uid };
+        bRuntime.currentDate = undefined;
 
         $http.post('/boiler_runtime_instants/', data).then(function (res) {
             $log.info("instants Resp:", res);
@@ -215,7 +216,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     boiler.hasRangeValue = true;
                 }
 
-                instants.push({
+                var inst = {
                     id: d.Parameter,
                     name: name,
                     category: d.ParameterCategory,
@@ -226,10 +227,16 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     alarmDesc: label,
                     date: new Date(d.UpdatedDate),
                     remark:d.Remark
-                });
+                };
 
-                bRuntime.instants = instants;
+                instants.push(inst);
+
+                if (!bRuntime.currentDate || inst.date > bRuntime.currentDate) {
+                    bRuntime.currentDate = inst.date;
+                }
             }
+
+            bRuntime.instants = instants;
 
             $rootScope.boiler = bRuntime.boiler;
             $rootScope.instants = bRuntime.instants;
