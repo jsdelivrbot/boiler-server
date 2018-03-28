@@ -234,14 +234,17 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 		lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
 		LogCtl.AddReloadLog(&lgr)
 
-		if 	combined.Boiler != nil &&
-			len(combined.Boiler.Uid) > 0 {
+		go func() {
+			if combined.Boiler != nil &&
+				len(combined.Boiler.Uid) > 0 {
 
-			bConfs := ctl.ChannelConfigList(code)
-			for _, cnf := range bConfs {
-				go runtimeReload(d, cnf, combined.Boiler, &lgr)
+				bConfs := ctl.ChannelConfigList(code)
+
+				for _, cnf := range bConfs {
+					runtimeReload(d, cnf, combined.Boiler, &lgr)
+				}
 			}
-		}
+		}()
 
 		go dba.BoilerOrm.Raw(rawDisUid).Exec()
 	}
@@ -280,9 +283,9 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 		"SELECT	* " +
 		"FROM	`boiler_m163` "  +
 		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
-		"WHERE	`need_reload` = 1;"
+		"WHERE	`need_reload` = 1 " +
 		//"WHERE	`TS` > '2018-03-26 14:00:00' " +
-		//"ORDER BY `TS`; "
+		"ORDER BY `TS` DESC; "
 
 	var lg logs.BoilerRuntimeLog
 	lg.Name = "DataListNeedReload()"
@@ -982,7 +985,6 @@ func generateDefaultChannelConfig() error {
 					da.FieldByName(fieldNames[j]).Set(reflect.ValueOf(value))
 				}
 
-				//fmt.Println("Da: ", da)
 				//idx := i - fieldRowNo - 1
 				DataCtl.AddData(in, true,
 					"Parameter",
