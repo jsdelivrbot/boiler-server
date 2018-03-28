@@ -282,9 +282,9 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 		"SELECT	* " +
 		"FROM	`boiler_m163` "  +
 		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
-		"WHERE	`need_reload` = 1 " +
+		"WHERE	`need_reload` = 1;"
 		//"WHERE	`TS` > '2018-03-26 14:00:00' " +
-		"ORDER BY `TS` DESC; "
+		//"ORDER BY `TS` DESC; "
 
 	var lg logs.BoilerRuntimeLog
 	lg.Name = "DataListNeedReload()"
