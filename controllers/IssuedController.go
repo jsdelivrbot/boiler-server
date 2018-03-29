@@ -9,14 +9,299 @@ import (
 	"github.com/AzureTech/goazure/orm"
 	"encoding/json"
 	"github.com/AzureRelease/boiler-server/conf"
+	"encoding/binary"
+	"bytes"
 )
 
 type IssuedController struct {
 	MainController
 }
+var IssuedCtl *IssuedController = &IssuedController{}
 type Code struct {
 	Uid string `json:"uid"`
 }
+type ConfIssued struct {
+	Uid string  `json:"uid"`
+	Code string  `json:"code"`
+}
+
+type AnalogueIssued struct {
+	ChannelType  int
+	ChannelNumber int
+	Func         int
+	Byte         int
+	Modbus       int
+}
+
+type SwitchIssued struct {
+	ChannelType int
+	ChannelNumber int
+	Func        int
+	Modbus      int
+	BitAddress  int
+}
+type SwitchBurnIssued struct {
+	Func      int
+	Modbus    int
+	BitAddress  int
+}
+
+type CommunicationIssued struct {
+	BaudRate     int
+	DataBit      int
+	StopBit      int
+	CheckBit     int
+	CorrespondType  int
+	SubAddress   int
+	HeartBeat    int
+}
+func IntToByteOne(Int int32)([]byte){
+	b_buf := bytes.NewBuffer([]byte{})
+	err := binary.Write(b_buf, binary.BigEndian, Int)
+	if err != nil {
+		fmt.Println("binary.Read failed:", err)
+	}
+	r_buf := []byte{b_buf.Bytes()[3]}
+	return r_buf
+}
+func IntToByteTwo(Int int32)([]byte) {
+	b_buf := bytes.NewBuffer([]byte{})
+	err := binary.Write(b_buf, binary.BigEndian, Int)
+	if err != nil {
+		fmt.Println("binary.Read failed:", err)
+	}
+	r_buf := []byte{b_buf.Bytes()[2],b_buf.Bytes()[3]}
+	return r_buf
+}
+
+//下发配置
+func (ctl *IssuedController) IssuedConfig() {
+	var confIssued ConfIssued
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &confIssued); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	byte:=make([]byte,0)
+	var analogues []AnalogueIssued
+	var temp =1
+	var swi   SwitchBurnIssued
+	var switchs []SwitchIssued
+	var communication CommunicationIssued
+	sql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
+	"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=1" +
+	" ORDER BY r.channel_number; "
+	if _,err:=dba.BoilerOrm.Raw(sql,confIssued.Uid).QueryRows(&analogues);err!=nil {
+		goazure.Error("Query issued_analogue Error",err)
+	} else {
+		//组模拟通道1
+		L:=len(analogues)
+		if L ==0 {
+			for c := 0; c < 12; c++ {
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteTwo(0)...)
+			}
+		} else {
+			for i:=0;i<L;i++{
+				value:=analogues[i]
+				if temp == value.ChannelNumber {
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteOne(int32(value.Byte))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+				} else {
+					for c := 0; c < (value.ChannelNumber - temp); c++ {
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteTwo(0)...)
+					}
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteOne(int32(value.Byte))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					temp=value.ChannelNumber
+				}
+				if i==L-1 {
+					if temp !=12 {
+						for c := 0; c < (12 - temp); c++ {
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteTwo(0)...)
+						}
+					}
+				}
+			}
+		}
+	}
+	anasql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
+		"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=2" +
+		" ORDER BY r.channel_number; "
+	if _,err:=dba.BoilerOrm.Raw(anasql,confIssued.Uid).QueryRows(&analogues);err!=nil {
+		goazure.Error("Query issued_analogue Error",err)
+	} else {
+		//组模拟通道2
+		temp=1
+		L:=len(analogues)
+		if L ==0 {
+			for c := 0; c < 12; c++ {
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteTwo(0)...)
+			}
+		} else {
+			for i:=0;i<L;i++{
+				value:=analogues[i]
+				if temp == value.ChannelNumber {
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteOne(int32(value.Byte))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+				} else {
+					for c := 0; c < (value.ChannelNumber - temp); c++ {
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteTwo(0)...)
+					}
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteOne(int32(value.Byte))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					temp=value.ChannelNumber
+				}
+				if i==L-1 {
+					if temp !=12 {
+						for c := 0; c < (12 - temp); c++ {
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteTwo(0)...)
+						}
+					}
+				}
+			}
+		}
+	}
+	//组开关量点火位
+	switchBurnSql:="select func,modbus,bit_address from issued_switch_burning where terminal_id=?"
+	if err:=dba.BoilerOrm.Raw(switchBurnSql,confIssued.Uid).QueryRow(&swi);err!=nil {
+		byte = append(byte, IntToByteOne(0)...)
+		byte = append(byte, IntToByteTwo(0)...)
+		byte = append(byte, IntToByteOne(0)...)
+	}else {
+		byte = append(byte, IntToByteOne(int32(swi.Func))...)
+		byte = append(byte, IntToByteTwo(int32(swi.Modbus))...)
+		byte = append(byte, IntToByteOne(int32(swi.BitAddress))...)
+	}
+	//组剩余开关量
+	switchsql:="select r.channel_type,r.channel_number, i.func,i.modbus,i.bit_address " +
+		"from runtime_parameter_channel_config r INNER JOIN issued_switch i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=3" +
+		" ORDER BY r.channel_number; "
+	if _,err:=dba.BoilerOrm.Raw(switchsql,confIssued.Uid).QueryRows(&switchs);err!=nil {
+		goazure.Error("Query issued_switch Error",err)
+	} else {
+		temp=2
+		L:=len(switchs)
+		if L ==0 {
+			for c := 0; c < 47; c++ {
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteTwo(0)...)
+				byte = append(byte, IntToByteOne(0)...)
+			}
+		} else {
+			for i:=0;i<L;i++{
+				value:=switchs[i]
+				if temp == value.ChannelNumber {
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					byte = append(byte, IntToByteOne(int32(value.BitAddress))...)
+				} else {
+					for c := 0; c < (value.ChannelNumber - temp); c++ {
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteTwo(0)...)
+						byte = append(byte, IntToByteOne(0)...)
+					}
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					byte = append(byte, IntToByteOne(int32(value.BitAddress))...)
+					temp=value.ChannelNumber
+				}
+				if i==L-1 {
+					if temp !=48 {
+						for c := 0; c < (48 - temp); c++ {
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteTwo(0)...)
+							byte = append(byte, IntToByteOne(0)...)
+						}
+					}
+				}
+			}
+		}
+	}
+	//组状态量
+	statussql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
+		"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=5" +
+		" ORDER BY r.channel_number; "
+	if _,err:=dba.BoilerOrm.Raw(statussql,confIssued.Uid).QueryRows(&analogues);err!=nil {
+		goazure.Error("Query issued_analogue Error",err)
+	} else {
+		//组状态量
+		temp=1
+		L:=len(analogues)
+		if L ==0 {
+			for c := 0; c < 12; c++ {
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteOne(0)...)
+				byte = append(byte, IntToByteTwo(0)...)
+			}
+		} else {
+			for i:=0;i<L;i++{
+				value:=analogues[i]
+				if temp == value.ChannelNumber {
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteOne(int32(value.Byte))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+				} else {
+					for c := 0; c < (value.ChannelNumber - temp); c++ {
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteOne(0)...)
+						byte = append(byte, IntToByteTwo(0)...)
+					}
+					byte = append(byte, IntToByteOne(int32(value.Func))...)
+					byte = append(byte, IntToByteOne(int32(value.Byte))...)
+					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					temp=value.ChannelNumber
+				}
+				if i==L-1 {
+					if temp !=12 {
+						for c := 0; c < (12 - temp); c++ {
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteOne(0)...)
+							byte = append(byte, IntToByteTwo(0)...)
+						}
+					}
+				}
+			}
+		}
+	}
+	//组装通信参数
+	communicationsql:="select baud_rate,data_bit,stop_bit,check_bit,correspond_type,sub_address,heart_beat from issued_communication where terminal_id=?"
+	if err:=dba.BoilerOrm.Raw(communicationsql,confIssued.Uid).QueryRow(&communication);err!=nil{
+		byte = append(byte,IntToByteOne(0)...)
+		byte = append(byte,IntToByteOne(0)...)
+		byte = append(byte,IntToByteOne(0)...)
+		byte = append(byte,IntToByteOne(0)...)
+		byte = append(byte,IntToByteOne(0)...)
+		byte = append(byte,IntToByteOne(0)...)
+		byte = append(byte,IntToByteOne(0)...)
+	} else {
+		byte = append(byte,IntToByteOne(int32(communication.BaudRate))...)
+		byte = append(byte,IntToByteOne(int32(communication.DataBit))...)
+		byte = append(byte,IntToByteOne(int32(communication.StopBit))...)
+		byte = append(byte,IntToByteOne(int32(communication.CheckBit))...)
+		byte = append(byte,IntToByteOne(int32(communication.CorrespondType))...)
+		byte = append(byte,IntToByteOne(int32(communication.SubAddress))...)
+		byte = append(byte,IntToByteOne(int32(communication.HeartBeat))...)
+	}
+	SocketCtrl.SocketConfigSend(byte,confIssued.Code)
+}
+
 //重启
 func (ctl *IssuedController) TerminalRestart() {
 	var code Code

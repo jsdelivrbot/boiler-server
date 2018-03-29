@@ -133,8 +133,11 @@ func init() {
 	goazure.Router("/bin_upload",&controllers.IssuedController{},"post:BinUpload")
 	//获取bin文件路径
 	goazure.Router("/bin_list",&controllers.IssuedController{},"get:BinFileList")
-	//升级配置
+	//bin升级配置
 	goazure.Router("/upgrade_configuration",&controllers.IssuedController{},"post:UpgradeConfiguration")
+
+	//下方配置报文
+	goazure.Router("/issued_config",&controllers.IssuedController{},"post:IssuedConfig")
 
 	goazure.SetStaticPath("/assets", "static/assets/")
 	goazure.SetStaticPath("/js", "static/js/")

@@ -148,7 +148,7 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 				err:=dba.BoilerOrm.Read(&sBurn)
 				fmt.Println(sBurn)
 				sBurn.Modbus=c.Modbus
-				sBurn.Function=c.FcodeName
+				sBurn.Func=c.FcodeName
 				sBurn.BitAddress=c.BitAddress
 				switch err {
 				case orm.ErrNoRows:
@@ -229,7 +229,7 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 			err:=dba.BoilerOrm.Read(&iSwitch)
 			iSwitch.BitAddress= c.BitAddress
 			iSwitch.Modbus= c.Modbus
-			iSwitch.Function= c.FcodeName
+			iSwitch.Func= c.FcodeName
 			switch err {
 			case orm.ErrNoRows:
 				fallthrough
@@ -248,7 +248,7 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 			err:=dba.BoilerOrm.Read(&iAna)
 			iAna.Modbus = c.Modbus
 			iAna.Byte = c.TermByte
-			iAna.Function = c.FcodeName
+			iAna.Func = c.FcodeName
 			switch err {
 			case orm.ErrNoRows:
 				fallthrough

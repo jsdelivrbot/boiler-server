@@ -47,21 +47,21 @@ type IssuedStopBit struct {
 
 type IssuedAnalogue struct {
 	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
-	Function  int
+	Func int
 	Byte        int
 	Modbus   int
 }
 
 type IssuedSwitch struct {
 	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
-	Function   int
+	Func   int
 	Modbus    int
 	BitAddress  int
 }
 
 type IssuedSwitchBurning struct {
 	Terminal      *Terminal         `orm:"pk;rel(fk)"`
-	Function      int
+	Func      int
 	Modbus        int
 	BitAddress    int
 }
