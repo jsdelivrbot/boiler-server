@@ -28,7 +28,7 @@ func c9(Code string)([]byte) {
 }
 
 func c0(Code string,b []byte)([]byte) {
-	words_1:="\xac\xeb\x00\x00\x00\x00\xc0"+Code
+	words_1:="\xac\xeb\x01\x60\x00\x00\xc0"+Code
 	buf:=append([]byte(words_1),b...)
 	words_2:="\x00\x00\xaf\xed"
 	buf=append(buf,[]byte(words_2)...)
