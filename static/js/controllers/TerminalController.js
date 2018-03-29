@@ -385,10 +385,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
     $modal.editing = editing;
     $modal.editingCode = true;
 
+    //bin文件选择
     $http.get("/bin_list").then(function (res) {
         $modal.bins = res.data;
         console.log(res.data);
     });
+    //升级配置
     $modal.upgrade = function () {
         $http.post("/upgrade_configuration",
             {path:$modal.bin.BinPath,uid:$modal.currentData.Uid})
@@ -407,7 +409,28 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
             })
     }
 
-    console.log($modal.currentData);
+    //按钮
+    $modal.down = function () {
+        $http.post("/issued_config",
+            {uid:$modal.currentData.Uid, code:$modal.currentData.code})
+            .then(function (res) {
+                swal({
+                    title: "信息已发送",
+                    text: res.data,
+                    type: "success"
+                });
+            },function (err) {
+                swal({
+                    title: "失败",
+                    text: err.data,
+                    type: "warning"
+                });
+            });
+    }
+
+
+
+    console.log("currentData:",$modal.currentData);
 
     $modal.initCurrent = function () {
         if (currentData) {
@@ -1072,6 +1095,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
                     }
 
+
+                    //功能码
                     var fcodeName = $modal.fcodeName[i]&&$modal.fcodeName[i][j] ? $modal.fcodeName[i][j].Value:0;
                     var modbus = $modal.mcode[i]&&$modal.mcode[i][j] ? $modal.mcode[i][j]:0;
                     var termByte = 0;
