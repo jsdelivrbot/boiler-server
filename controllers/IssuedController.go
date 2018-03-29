@@ -84,7 +84,9 @@ func (ctl *IssuedController) IssuedConfig() {
 		return
 	}
 	byte:=make([]byte,0)
-	var analogues []AnalogueIssued
+	var anaOne []AnalogueIssued
+	var anaTwo []AnalogueIssued
+	var anaThree []AnalogueIssued
 	var temp =1
 	var swi   SwitchBurnIssued
 	var switchs []SwitchIssued
@@ -92,11 +94,11 @@ func (ctl *IssuedController) IssuedConfig() {
 	sql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
 	"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=1" +
 	" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(sql,confIssued.Uid).QueryRows(&analogues);err!=nil {
+	if _,err:=dba.BoilerOrm.Raw(sql,confIssued.Uid).QueryRows(&anaOne);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
 	} else {
 		//组模拟通道1
-		L:=len(analogues)
+		L:=len(anaOne)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
 				byte = append(byte, IntToByteOne(0)...)
@@ -105,7 +107,7 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		} else {
 			for i:=0;i<L;i++{
-				value:=analogues[i]
+				value:=anaOne[i]
 				if temp == value.ChannelNumber {
 					byte = append(byte, IntToByteOne(int32(value.Func))...)
 					byte = append(byte, IntToByteOne(int32(value.Byte))...)
@@ -137,12 +139,12 @@ func (ctl *IssuedController) IssuedConfig() {
 	anasql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
 		"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=2" +
 		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(anasql,confIssued.Uid).QueryRows(&analogues);err!=nil {
+	if _,err:=dba.BoilerOrm.Raw(anasql,confIssued.Uid).QueryRows(&anaTwo);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
 	} else {
 		//组模拟通道2
 		temp=1
-		L:=len(analogues)
+		L:=len(anaTwo)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
 				byte = append(byte, IntToByteOne(0)...)
@@ -151,7 +153,7 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		} else {
 			for i:=0;i<L;i++{
-				value:=analogues[i]
+				value:=anaTwo[i]
 				if temp == value.ChannelNumber {
 					byte = append(byte, IntToByteOne(int32(value.Func))...)
 					byte = append(byte, IntToByteOne(int32(value.Byte))...)
@@ -241,12 +243,12 @@ func (ctl *IssuedController) IssuedConfig() {
 	statussql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
 		"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=5" +
 		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(statussql,confIssued.Uid).QueryRows(&analogues);err!=nil {
+	if _,err:=dba.BoilerOrm.Raw(statussql,confIssued.Uid).QueryRows(&anaThree);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
 	} else {
 		//组状态量
 		temp=1
-		L:=len(analogues)
+		L:=len(anaThree)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
 				byte = append(byte, IntToByteOne(0)...)
@@ -255,7 +257,7 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		} else {
 			for i:=0;i<L;i++{
-				value:=analogues[i]
+				value:=anaThree[i]
 				if temp == value.ChannelNumber {
 					byte = append(byte, IntToByteOne(int32(value.Func))...)
 					byte = append(byte, IntToByteOne(int32(value.Byte))...)
