@@ -411,15 +411,18 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
 
     //按钮
     $modal.down = function () {
+        App.startPageLoading({message: '正在加载数据...'});
         $http.post("/issued_config",
             {uid:$modal.currentData.Uid, code:$modal.currentData.code})
             .then(function (res) {
+                App.stopPageLoading();
                 swal({
                     title: "信息已发送",
                     text: res.data,
                     type: "success"
                 });
             },function (err) {
+                App.stopPageLoading();
                 swal({
                     title: "失败",
                     text: err.data,
