@@ -380,58 +380,21 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 	//}
 }
 
-func (ctl *RuntimeController) ReloadHistory(boiler *models.Boiler, param *models.RuntimeParameter, date time.Time, val interface{}) {
-	if boiler == nil || param == nil {
-		return
-	}
+func (ctl *RuntimeController) ReloadHistory() {
+	interval := time.Minute * 5
 
-	var history caches.BoilerRuntimeHistory
-
-	if  err := dba.BoilerOrm.QueryTable("boiler_runtime_history").
-		Filter("Boiler__Uid", boiler.Uid).
-		Filter("CreatedDate", date).
-		One(&history);
-		err != nil {
-		goazure.Warning("History Data Read Error:", err)
-		history.Boiler = boiler
-		history.Name = boiler.Name
-		history.CreatedDate = date
-	} else {
-		history.Unmarshal()
-		//goazure.Info("Get History:", history)
-	}
-
-	his := &caches.History{}
-	var isMatched bool = false
-
-	for _, h := range history.Histories {
-		if 	h.ParameterId == param.Id {
-			his = h
-			isMatched = true
-			break
+	ticker := time.NewTicker(interval)
+	tick := func() {
+		for t := range ticker.C {
+			ctl.ReloadHistoryWithArchived(t.Add(time.Minute * -10), t.Add(time.Minute * 2))
 		}
 	}
 
-	his.Value = val
-	//if rtm.Alarm != nil {
-	//	his.Alarm = int(rtm.Alarm.Priority)
-	//}
-
-	if !isMatched {
-		his.ParameterId = param.Id
-		history.Histories = append(history.Histories, his)
-	}
-
-	history.Marshal()
-
-	//goazure.Warn("Write History:", history)
-
-	if  num, err := dba.BoilerOrm.InsertOrUpdate(&history); err != nil {
-		goazure.Error("Added/Updated History Failed:", err, num)
-	}
+	go tick()
+	go ctl.ReloadHistoryWithArchived(time.Now().Add(time.Minute * -10), time.Now().Add(time.Minute * 2))
 }
 
-func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time) {
+func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time, endDate time.Time) {
 	BlrCtl.WaitGroup.Wait()
 	ParamCtrl.WaitGroup.Wait()
 
@@ -440,11 +403,9 @@ func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time) {
 	//rounded := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 
 	if  num, err := dba.BoilerOrm.QueryTable("boiler_runtime_history_archived").
-		Filter("CreatedDate__gte", startDate).
+		Filter("CreatedDate__gte", startDate).Filter("CreatedDate__lte", endDate).
 		Limit(-1).
 		All(&archives);
-
-
 		err != nil {
 		goazure.Error("History Archives Read Error:", err, num)
 
