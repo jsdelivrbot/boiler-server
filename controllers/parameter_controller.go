@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/AzureRelease/boiler-server/dba"
 	"github.com/AzureRelease/boiler-server/models"
-	"github.com/AzureRelease/boiler-server/conf"
 
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureTech/goazure"
@@ -92,10 +91,10 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	LogCtl.AddReloadLog(&lgRd)
 
 	runtimeReload := func(rt orm.Params, bCnfs []*models.RuntimeParameterChannelConfig, b *models.Boiler, lastLog *logs.BoilerRuntimeLog) {
-		var rtm models.BoilerRuntime
-		var value int64
-
 		for _, cnf := range bCnfs {
+			var rtm models.BoilerRuntime
+			var value int64
+
 			chName := models.ChannelName(cnf.ChannelType, cnf.ChannelNumber)
 			//goazure.Info("Channel_Name", chName, rt[chName], reflect.ValueOf(rt[chName]).Kind())
 			switch reflect.ValueOf(rt[chName]).Kind() {
@@ -116,7 +115,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			}
 
 			if value > 65535 {
-				return
+				continue
 			}
 
 			switch cnf.Parameter.Category.Id {
@@ -172,10 +171,9 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				rtm.CreatedDate = tm
 			}
 
-			if  num, err := dba.BoilerOrm.InsertOrUpdate(&rtm); err != nil {
-				goazure.Error("Reload Runtime Error:", err, num)
+			if  err := DataCtl.AddData(&rtm, true); err != nil {
+				goazure.Error("Reload Runtime Error:", err)
 				//isSuccess = false
-				return
 			} else {
 				var lgd logs.BoilerRuntimeLog
 				lgd.Name = "runtimeReload()"
@@ -1007,9 +1005,6 @@ func (ctl *ParameterController) InitParameterChannelConfig() {
 	// generateDefaultChannelConfig()
 
 	interval := time.Second * 10
-	if !conf.IsRelease {
-		interval = time.Minute * 1
-	}
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {

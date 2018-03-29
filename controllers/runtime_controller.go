@@ -296,7 +296,7 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 	}
 
 	rawInst :=
-		"INSERT IGNORE `" + tableNamePrefix + tableNameInst + "` " +
+		"INSERT INTO `" + tableNamePrefix + tableNameInst + "` " +
 		"( " +
 		"`runtime_id` , `boiler_id` , `parameter_id` , `alarm_id` , " +
 		"`created_date` , `updated_date` , `name` , `value` , " +
@@ -411,6 +411,8 @@ func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time, end
 
 		return
 	}
+
+	goazure.Error("Get Archives:", archives)
 
 	var histories []*caches.BoilerRuntimeHistory
 
