@@ -38,7 +38,8 @@ func init() {
 
 	goazure.Router("/channel_config_list/", &controllers.ParameterController{}, "post:ChannelConfigList")
 	goazure.Router("/channel_config_matrix/", &controllers.ParameterController{}, "post:ChannelConfigMatrix")
-	goazure.Router("/channel_config_update/", &controllers.ParameterController{}, "post:ChannelConfigUpdate")
+	//修改
+	goazure.Router("/channel_config_update/", &controllers.ParameterController{}, "post:ChannelIssuedUpdate")
 
 	goazure.Router("/organization_list/", &controllers.OrganizationController{}, "get:OrganizationList")
 	goazure.Router("/organization_type_list/", &controllers.OrganizationController{}, "get:OrganizationTypeList")
@@ -125,12 +126,21 @@ func init() {
 	goazure.Router("/slave_address_list",&controllers.IssuedController{},"get:SlaveAddressList")
 	goazure.Router("/stop_bit_list",&controllers.IssuedController{},"get:StopBitList")
 
+	//重启
+	goazure.Router("/terminal_restart",&controllers.IssuedController{},"post:TerminalRestart")
+
 	//bin文件上传
 	goazure.Router("/bin_upload",&controllers.IssuedController{},"post:BinUpload")
 	//获取bin文件路径
 	goazure.Router("/bin_list",&controllers.IssuedController{},"get:BinFileList")
-	//升级配置
+	//bin升级配置
 	goazure.Router("/upgrade_configuration",&controllers.IssuedController{},"post:UpgradeConfiguration")
+
+	//下方配置报文
+	goazure.Router("/issued_config",&controllers.IssuedController{},"post:IssuedConfig")
+
+	//下发测试按钮
+
 
 	goazure.SetStaticPath("/assets", "static/assets/")
 	goazure.SetStaticPath("/js", "static/js/")
