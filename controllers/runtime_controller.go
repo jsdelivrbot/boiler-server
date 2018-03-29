@@ -5,7 +5,7 @@ import (
 
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureTech/goazure"
-	//"github.com/pborman/uuid"
+	"github.com/pborman/uuid"
 
 	"github.com/AzureRelease/boiler-server/dba"
 	"github.com/AzureRelease/boiler-server/models"
@@ -23,11 +23,8 @@ import (
 	"time"
 	"math/rand"
 
-	"reflect"
-
 	"errors"
 	"math"
-	"github.com/pborman/uuid"
 )
 
 type RuntimeController struct {
@@ -114,15 +111,12 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due f
 		val = rtm.Remark
 	}
 
-	//goazure.Error("reload value:", rtm.Value, v, val)
-	//time.Sleep(time.Second * 5)
-
 	/* ALARM */
 	ctl.ReloadAlarmWithRuntime(rtm, val)
 	/* CACHE */
-	go ctl.ReloadCacheWithRuntime(rtm, val)
+	ctl.ReloadCacheWithRuntime(rtm, val)
 	/* HISTORY */
-	go ctl.ReloadHistoryWithRuntime(rtm, val)
+	//ctl.ReloadHistoryWithRuntime(rtm, val)
 
 	rtm.Status = models.RUNTIME_STATUS_NEEDRELOAD
 
@@ -301,7 +295,6 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 		alarmDesc = rtm.Alarm.Description
 	}
 
-
 	rawInst :=
 		"INSERT IGNORE `" + tableNamePrefix + tableNameInst + "` " +
 		"( " +
@@ -387,27 +380,32 @@ func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, 
 	//}
 }
 
-func (ctl *RuntimeController) ReloadHistoryWithRuntime(rtm *models.BoilerRuntime, val interface{}) {
-	var history caches.BoilerRuntimeHistory
-	history.Boiler = rtm.Boiler
-	history.Name = rtm.Boiler.Name
-	history.Remark = rtm.Remark
-	history.CreatedDate = rtm.CreatedDate
+func (ctl *RuntimeController) ReloadHistory(boiler *models.Boiler, param *models.RuntimeParameter, date time.Time, val interface{}) {
+	if boiler == nil || param == nil {
+		return
+	}
 
-	if err := dba.BoilerOrm.QueryTable("boiler_runtime_history").
-		Filter("Boiler__Uid", rtm.Boiler.Uid).
-		Filter("CreatedDate__lte", rtm.CreatedDate.Add(time.Minute * 5)).Filter("CreatedDate__gte", rtm.CreatedDate.Add(time.Minute * -5)).
-		One(&history); err != nil {
+	var history caches.BoilerRuntimeHistory
+
+	if  err := dba.BoilerOrm.QueryTable("boiler_runtime_history").
+		Filter("Boiler__Uid", boiler.Uid).
+		Filter("CreatedDate", date).
+		One(&history);
+		err != nil {
 		goazure.Warning("History Data Read Error:", err)
+		history.Boiler = boiler
+		history.Name = boiler.Name
+		history.CreatedDate = date
 	} else {
 		history.Unmarshal()
+		//goazure.Info("Get History:", history)
 	}
 
 	his := &caches.History{}
 	var isMatched bool = false
 
 	for _, h := range history.Histories {
-		if h.ParameterId == rtm.Parameter.Id {
+		if 	h.ParameterId == param.Id {
 			his = h
 			isMatched = true
 			break
@@ -415,19 +413,108 @@ func (ctl *RuntimeController) ReloadHistoryWithRuntime(rtm *models.BoilerRuntime
 	}
 
 	his.Value = val
-	if rtm.Alarm != nil {
-		his.Alarm = int(rtm.Alarm.Priority)
-	}
+	//if rtm.Alarm != nil {
+	//	his.Alarm = int(rtm.Alarm.Priority)
+	//}
 
 	if !isMatched {
-		his.ParameterId = rtm.Parameter.Id
+		his.ParameterId = param.Id
 		history.Histories = append(history.Histories, his)
 	}
 
 	history.Marshal()
 
-	if num, err := dba.BoilerOrm.InsertOrUpdate(&history); err != nil {
+	//goazure.Warn("Write History:", history)
+
+	if  num, err := dba.BoilerOrm.InsertOrUpdate(&history); err != nil {
 		goazure.Error("Added/Updated History Failed:", err, num)
+	}
+}
+
+func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time) {
+	BlrCtl.WaitGroup.Wait()
+	ParamCtrl.WaitGroup.Wait()
+
+	var archives 	[]*caches.BoilerRuntimeHistoryArchived
+	//t := time.Now()
+	//rounded := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+
+	if  num, err := dba.BoilerOrm.QueryTable("boiler_runtime_history_archived").
+		Filter("CreatedDate__gte", startDate).
+		Limit(-1).
+		All(&archives);
+
+
+		err != nil {
+		goazure.Error("History Archives Read Error:", err, num)
+
+		return
+	}
+
+	var histories []*caches.BoilerRuntimeHistory
+
+	for _, arch := range archives {
+		var history *caches.BoilerRuntimeHistory
+		var isMatched bool = false
+		for _, h := range histories {
+			if h.Boiler != nil && h.Boiler.Uid == arch.Boiler.Uid && h.CreatedDate.Equal(arch.CreatedDate) {
+				history = h
+				isMatched = true
+				break
+			}
+		}
+
+		if !isMatched {
+			boiler := BlrCtl.Boiler(arch.Boiler.Uid)
+
+			history = &caches.BoilerRuntimeHistory{}
+			history.Boiler = boiler
+			history.Name = boiler.Name
+			history.CreatedDate = arch.CreatedDate
+			history.Histories = []*caches.History{}
+		}
+
+		//goazure.Error("History:", history)
+		his := &caches.History{}
+		param := ParamCtrl.RuntimeParameter(int(arch.Parameter.Id))
+		var val interface{}
+		if param.Category.Id == models.RUNTIME_PARAMETER_CATEGORY_SWITCH {
+			val = float64(arch.Value)
+		} else {
+			v := float64(arch.Value) * float64(param.Scale)
+			pow10_n := math.Pow10(int(param.Fix))
+			val = math.Trunc(v * pow10_n + 0.5) / pow10_n
+		}
+
+		isDataMatched := false
+		for _, d := range history.Histories {
+			if 	d.ParameterId == param.Id {
+				his = d
+				isDataMatched = true
+				break
+			}
+		}
+
+		his.Value = val
+
+		if !isDataMatched {
+			his.ParameterId = param.Id
+			history.Histories = append(history.Histories, his)
+		}
+
+		if !isMatched {
+			histories = append(histories, history)
+		}
+
+	}
+
+	for _, history := range histories {
+		history.Marshal()
+		if  num, err := dba.BoilerOrm.InsertOrUpdate(history); err != nil {
+			goazure.Error("History Add Failed:", err, num)
+		} else {
+			goazure.Info("History Added:", history)
+		}
 	}
 }
 
@@ -1238,39 +1325,39 @@ func generateDefaultRuntimeParameterMediums() {
 
 	medium1.Id = 1
 	medium1.Name = "蒸汽"
-	//medium1.NameEn = "Steam"
+	medium1.NameEn = "Steam"
 
 	medium2.Id = 2
 	medium2.Name = "水"
-	//medium2.NameEn = "Water"
+	medium2.NameEn = "Water"
 
 	medium3.Id = 3
 	medium3.Name = "空气"
-	//medium3.NameEn = "Air"
+	medium3.NameEn = "Air"
 
 	medium4.Id = 4
 	medium4.Name = "电"
-	//medium4.NameEn = "Electricity"
+	medium4.NameEn = "Electricity"
 
 	medium5.Id = 5
 	medium5.Name = "燃料"
-	//medium5.NameEn = "Fuel"
+	medium5.NameEn = "Fuel"
 
 	medium6.Id = 6
 	medium6.Name = "烟气"
-	//medium6.NameEn = "Exhaust Gas"
+	medium6.NameEn = "Exhaust Gas"
 
 	medium7.Id = 7
 	medium7.Name = "炉膛"
-	//medium7.NameEn = "Furnace"
+	medium7.NameEn = "Furnace"
 
 	medium8.Id = 8
 	medium8.Name = "负荷"
-	//medium8.NameEn = "Load"
+	medium8.NameEn = "Load"
 
 	medium0.Id = 0
 	medium0.Name = "其他"
-	//medium0.NameEn = "Other"
+	medium0.NameEn = "Other"
 
 	addRuntimeParameterMedium(medium1)
 	addRuntimeParameterMedium(medium2)
@@ -1461,11 +1548,9 @@ func (ctl *RuntimeController) RefreshRuntimeStatusRunning() {
 		}
 
 	}
-
 }
 
-//=========DEMO=========//
-
+/*
 func (ctl *RuntimeController) UpdateRuntimeHistory(since time.Time, until time.Time) {
 	//if since.IsZero() {
 	//	since = time.Now().Add(time.Hour * -24)
@@ -1516,15 +1601,6 @@ func (ctl *RuntimeController) UpdateRuntimeHistory(since time.Time, until time.T
 				goazure.Warning("Read Runtime History Error:", err)
 			}
 
-			/*
-			if r.Value > 0 {
-				v := float32(r.Value) * r.Parameter.Scale
-				valueSum += v
-				count++
-			}
-			value = valueSum / float32(count)
-			*/
-
 			value := float32(r.Value) * r.Parameter.Scale
 			if r.Alarm != nil && alarmLevel < int(r.Alarm.AlarmLevel) {
 				alarmLevel = int(r.Alarm.AlarmLevel)
@@ -1540,6 +1616,7 @@ func (ctl *RuntimeController) UpdateRuntimeHistory(since time.Time, until time.T
 		}
 	}
 }
+*/
 
 func (ctl *RuntimeController) GenerateBoilerStatus(isOn bool) {
 	var status []Runtime

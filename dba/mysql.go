@@ -66,7 +66,7 @@ func init() {
 		new(models.BoilerRuntimeArchived),
 
 		new(caches.BoilerRuntimeCacheInstant),
-		//new(caches.BoilerRuntimeCacheHistory),
+
 		new(caches.BoilerRuntimeCacheDay),
 		new(caches.BoilerRuntimeCacheWeek),
 		new(caches.BoilerRuntimeCacheMonth),
@@ -84,6 +84,7 @@ func init() {
 		new(caches.BoilerRuntimeCacheExcessAir),
 
 		new(caches.BoilerRuntimeHistory),
+		new(caches.BoilerRuntimeHistoryArchived),
 
 		new(caches.BoilerRuntimeCacheStatus),
 		new(caches.BoilerRuntimeCacheStatusRunning),
