@@ -139,6 +139,9 @@ func init() {
 	//下方配置报文
 	goazure.Router("/issued_config",&controllers.IssuedController{},"post:IssuedConfig")
 
+	//下发测试按钮
+
+
 	goazure.SetStaticPath("/assets", "static/assets/")
 	goazure.SetStaticPath("/js", "static/js/")
 	goazure.SetStaticPath("/css", "static/css/")

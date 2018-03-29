@@ -130,6 +130,7 @@ func (ctl *IssuedController) IssuedConfig() {
 						}
 					}
 				}
+				temp++
 			}
 		}
 	}
@@ -175,6 +176,7 @@ func (ctl *IssuedController) IssuedConfig() {
 						}
 					}
 				}
+				temp++
 			}
 		}
 	}
@@ -231,6 +233,7 @@ func (ctl *IssuedController) IssuedConfig() {
 						}
 					}
 				}
+				temp++
 			}
 		}
 	}
@@ -277,6 +280,7 @@ func (ctl *IssuedController) IssuedConfig() {
 						}
 					}
 				}
+				temp++
 			}
 		}
 	}
