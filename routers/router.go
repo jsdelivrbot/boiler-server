@@ -120,7 +120,7 @@ func init() {
 	goazure.Router("/term_byte_list",&controllers.IssuedController{},"get:ByteCodeList")
 	goazure.Router("/baud_rate_list",&controllers.IssuedController{},"get:BaudRateList")
 	goazure.Router("/correspond_type_list",&controllers.IssuedController{},"get:CorrespondTypeList")
-	goazure.Router("/date_bit_list",&controllers.IssuedController{},"get:DateBitList")
+	goazure.Router("/date_bit_list",&controllers.IssuedController{},"get:DataBitList")
 	goazure.Router("/heartbeat_packet_list",&controllers.IssuedController{},"get:HeartbeatPacketList")
 	goazure.Router("/parity_bit",&controllers.IssuedController{},"get:ParityBitList")
 	goazure.Router("/slave_address_list",&controllers.IssuedController{},"get:SlaveAddressList")

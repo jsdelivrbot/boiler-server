@@ -4,6 +4,12 @@ import (
 	"strconv"
 )
 
+type RuntimeParameterChannelConfigIssued struct {
+	RuntimeParameterChannelConfig *RuntimeParameterChannelConfig
+	Analogue     IssuedAnalogue
+	Switch       IssuedSwitch
+}
+
 type RuntimeParameterChannelConfig struct {
 	MyUidObject
 

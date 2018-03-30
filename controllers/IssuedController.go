@@ -25,36 +25,7 @@ type ConfIssued struct {
 	Code string  `json:"code"`
 }
 
-type AnalogueIssued struct {
-	ChannelType  int
-	ChannelNumber int
-	Func         int
-	Byte         int
-	Modbus       int
-}
 
-type SwitchIssued struct {
-	ChannelType int
-	ChannelNumber int
-	Func        int
-	Modbus      int
-	BitAddress  int
-}
-type SwitchBurnIssued struct {
-	Func      int
-	Modbus    int
-	BitAddress  int
-}
-
-type CommunicationIssued struct {
-	BaudRate     int
-	DataBit      int
-	StopBit      int
-	CheckBit     int
-	CorrespondType  int
-	SubAddress   int
-	HeartBeat    int
-}
 func IntToByteOne(Int int32)([]byte){
 	b_buf := bytes.NewBuffer([]byte{})
 	err := binary.Write(b_buf, binary.BigEndian, Int)
@@ -74,6 +45,32 @@ func IntToByteTwo(Int int32)([]byte) {
 	return r_buf
 }
 
+type AnalogueIssued struct {
+	ChannelType int
+	ChannelNumber int
+	Func    int
+	Byte    int
+	Modbus  int
+}
+
+type SwitchIssued struct {
+	ChannelType int
+	ChannelNumber int
+	Func int
+	Modbus int
+	BitAddress int
+}
+
+type CommunicationIssued struct {
+	BaudRate   int
+	DataBit    int
+	StopBit    int
+	CheckBit   int
+	CorrespondType      int
+	SubAddress      int
+	HeartBeat    int
+}
+
 //下发配置
 func (ctl *IssuedController) IssuedConfig() {
 	var confIssued ConfIssued
@@ -84,15 +81,15 @@ func (ctl *IssuedController) IssuedConfig() {
 		return
 	}
 	byte:=make([]byte,0)
+	var temp =1
 	var anaOne []AnalogueIssued
 	var anaTwo []AnalogueIssued
 	var anaThree []AnalogueIssued
-	var temp =1
-	var swi   SwitchBurnIssued
+	var swi   SwitchIssued
 	var switchs []SwitchIssued
 	var communication CommunicationIssued
-	sql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
-	"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=1" +
+	sql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
+	"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=1 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
 	" ORDER BY r.channel_number; "
 	if _,err:=dba.BoilerOrm.Raw(sql,confIssued.Uid).QueryRows(&anaOne);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
@@ -136,8 +133,8 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		}
 	}
-	anasql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
-		"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=2" +
+	anasql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
+		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=2 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
 	if _,err:=dba.BoilerOrm.Raw(anasql,confIssued.Uid).QueryRows(&anaTwo);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
@@ -183,7 +180,7 @@ func (ctl *IssuedController) IssuedConfig() {
 		}
 	}
 	//组开关量点火位
-	switchBurnSql:="select func,modbus,bit_address from issued_switch_burning where terminal_id=?"
+	switchBurnSql:="select ifc.value as func,isb.modbus,isb.bit_address from issued_switch_burn isb,issued_function_code ifc where terminal_id=? and isb.function_id=ifc.id"
 	if err:=dba.BoilerOrm.Raw(switchBurnSql,confIssued.Uid).QueryRow(&swi);err!=nil {
 		byte = append(byte, IntToByteOne(0)...)
 		byte = append(byte, IntToByteTwo(0)...)
@@ -194,9 +191,9 @@ func (ctl *IssuedController) IssuedConfig() {
 		byte = append(byte, IntToByteOne(int32(swi.BitAddress))...)
 	}
 	//组剩余开关量
-	switchsql:="select r.channel_type,r.channel_number, i.func,i.modbus,i.bit_address " +
-		"from runtime_parameter_channel_config r INNER JOIN issued_switch i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=3" +
-		" ORDER BY r.channel_number; "
+	switchsql:="select r.channel_type,r.channel_number,ifc.value as func,iswitch.modbus,iswitch.bit_address "+
+		"from runtime_parameter_channel_config r,issued_switch iswitch, issued_function_code ifc where r.terminal_id=? and r.uid=iswitch.channel_id and iswitch.function_id=ifc.id and r.channel_type=3 "+
+			" ORDER BY r.channel_number;"
 	if _,err:=dba.BoilerOrm.Raw(switchsql,confIssued.Uid).QueryRows(&switchs);err!=nil {
 		goazure.Error("Query issued_switch Error",err)
 	} else {
@@ -240,8 +237,8 @@ func (ctl *IssuedController) IssuedConfig() {
 		}
 	}
 	//组状态量
-	statussql:="select r.channel_type,r.channel_number, i.func,i.byte,i.modbus " +
-		"from runtime_parameter_channel_config r INNER JOIN issued_analogue i on r.uid = i.channel_id where r.terminal_id=? and r.channel_type=5" +
+	statussql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
+		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=5 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
 	if _,err:=dba.BoilerOrm.Raw(statussql,confIssued.Uid).QueryRows(&anaThree);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
@@ -287,7 +284,9 @@ func (ctl *IssuedController) IssuedConfig() {
 		}
 	}
 	//组装通信参数
-	communicationsql:="select baud_rate,data_bit,stop_bit,check_bit,correspond_type,sub_address,heart_beat from issued_communication where terminal_id=?"
+	communicationsql:="select ibr.value as baud_rate , idb.value as data_bit, isb.value as stop_bit, ipb.value as check_bit, ict.value as correspond_type,isa.value as sub_address,ihp.value as heart_beat "+
+		"from issued_communication ic,issued_baud_rate as ibr,issued_data_bit as idb,issued_stop_bit as isb,issued_parity_bit as ipb,issued_correspond_type as ict,issued_slave_address as isa,issued_heartbeat_packet as ihp " +
+			"where ic.baud_rate_id=ibr.id and ic.data_bit_id=idb.id and ic.stop_bit_id=isb.id and ic.check_bit_id=ipb.id and ic.correspond_type_id=ict.id and ic.sub_address_id=isa.id and ic.heart_beat_id=ihp.id and ic.terminal_id=?"
 	if err:=dba.BoilerOrm.Raw(communicationsql,confIssued.Uid).QueryRow(&communication);err!=nil{
 		byte = append(byte,IntToByteOne(0)...)
 		byte = append(byte,IntToByteOne(0)...)
@@ -305,6 +304,8 @@ func (ctl *IssuedController) IssuedConfig() {
 		byte = append(byte,IntToByteOne(int32(communication.SubAddress))...)
 		byte = append(byte,IntToByteOne(int32(communication.HeartBeat))...)
 	}
+	fmt.Println(communication)
+	fmt.Println(byte)
 	SocketCtrl.SocketConfigSend(byte,confIssued.Code)
 }
 
@@ -485,9 +486,9 @@ func (ctl *IssuedController)CorrespondTypeList() {
 	ctl.Data["json"]=correspondTypes
 	ctl.ServeJSON()
 }
-func (ctl *IssuedController)DateBitList() {
-	var dateBits []models.IssuedDateBit
-	if _,err:=dba.MyORM.QueryTable("issued_date_bit").OrderBy("Id").All(&dateBits);err!=nil{
+func (ctl *IssuedController)DataBitList() {
+	var dateBits []models.IssuedDataBit
+	if _,err:=dba.MyORM.QueryTable("issued_data_bit").OrderBy("Id").All(&dateBits);err!=nil{
 		goazure.Error("Fetch ByteCodes List Error: ",err)
 	}
 	ctl.Data["json"]=dateBits
