@@ -1100,14 +1100,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
 
                     //功能码
-                    var fcodeName = $modal.fcodeName[i]&&$modal.fcodeName[i][j] ? $modal.fcodeName[i][j].Value:0;
+                    var fcodeName = $modal.fcodeName[i]&&$modal.fcodeName[i][j] ? $modal.fcodeName[i][j].Id:0;
                     var modbus = $modal.mcode[i]&&$modal.mcode[i][j] ? $modal.mcode[i][j]:0;
                     var termByte = 0;
                     var bitAddress = 0;
                     if(j===0 || j===1 || j===5){
                         //高低字节
-                        termByte = $modal.hlCodeNames[i]&&$modal.hlCodeNames[i][j]?$modal.hlCodeNames[i][j].Value:0 ;
+                        termByte = $modal.hlCodeNames[i]&&$modal.hlCodeNames[i][j]?$modal.hlCodeNames[i][j].Id:0 ;
                     }
+
                     if(j>=2 && j<5){
                         bitAddress = $modal.bitAddress[i]&&$modal.bitAddress[i][j]? $modal.bitAddress[i][j]:0;
                     }
@@ -1180,13 +1181,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         var cParam = {
             terminal_code:$modal.code,
-            baudRate : $modal.BaudRate?$modal.BaudRate.Value:0,
-            dataBit : $modal.dataBit?$modal.dataBit.Value:0,
-            stopBit : $modal.stopBit?$modal.stopBit.Value:0,
-            checkDigit : $modal.checkDigit?$modal.checkDigit.Value:0,
-            communInterface : $modal.communiInterface?$modal.communiInterface.Value:0,
-            slaveAddress : $modal.subAdr?$modal.subAdr.Value:0,
-            heartbeat:$modal.heartbeat?$modal.heartbeat.Value:0,
+            baudRate : $modal.BaudRate?$modal.BaudRate.Id:0,
+            dataBit : $modal.dataBit?$modal.dataBit.Id:0,
+            stopBit : $modal.stopBit?$modal.stopBit.Id:0,
+            checkDigit : $modal.checkDigit?$modal.checkDigit.Id:0,
+            communInterface : $modal.communiInterface?$modal.communiInterface.Id:0,
+            slaveAddress : $modal.subAdr?$modal.subAdr.Id:0,
+            heartbeat:$modal.heartbeat?$modal.heartbeat.Id:0
         };
 
 
