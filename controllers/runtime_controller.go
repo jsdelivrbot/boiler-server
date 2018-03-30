@@ -158,11 +158,18 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	}
 
 	var alarmDesc string
+	var alarmLevel int32 = models.RUNTIME_ALARM_LEVEL_UNDEFINED
 	if rule.Warning > rule.Normal && val.(float64) > float64(rule.Warning) {
 		alarmDesc = "过高"
+		alarmLevel = rule.Priority
 	}
 	if rule.Warning < rule.Normal && val.(float64) < float64(rule.Warning) {
 		alarmDesc = "过低"
+		alarmLevel = rule.Priority
+	}
+
+	if alarmLevel <= models.RUNTIME_ALARM_LEVEL_NORMAL {
+		return nil, errors.New("no alarm occurs")
 	}
 
 	qa := dba.BoilerOrm.QueryTable("boiler_alarm").
@@ -175,7 +182,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		alarm.Parameter = rule.Parameter
 		alarm.TriggerRule = &rule
 		alarm.Description = alarmDesc
-		alarm.AlarmLevel = 1
+		alarm.AlarmLevel = alarmLevel
 		alarm.Priority = rule.Priority
 		alarm.State = models.BOILER_ALARM_STATE_NEW
 		alarm.NeedSend = rule.NeedSend
@@ -194,7 +201,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		}
 	}
 
-	goazure.Info("Alarm:", alarm)
+	goazure.Info("Alarm Occurs:", alarm)
 
 	if err := DataCtl.AddData(&alarm, true); err != nil {
 		goazure.Error("Added/Updated Alarm Error:", err, "\n", alarm)
