@@ -247,7 +247,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.fcodeName[outerIndex][0]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][0].Name}}">
                                 {{$select.selected.Name}}
@@ -260,7 +260,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex][0]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex][0].Name}}">
                                 {{$select.selected.Name}}
@@ -272,7 +272,8 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][0]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.mcode[outerIndex][0]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][0]"  class="form-control" >
                     </td>
                 </tr>
                 </tbody>
@@ -344,7 +345,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.fcodeName[outerIndex][1]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][1].Name}}">
                                 {{$select.selected.Name}}
@@ -357,7 +358,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex][1]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex][1].Name}}">
                                 {{$select.selected.Name}}
@@ -369,7 +370,8 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][1]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.mcode[outerIndex][1]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][1]" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -456,7 +458,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.fcodeName[outerIndex][2]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][2]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][2].Name}}">
                                 {{$select.selected.Name}}
@@ -468,10 +470,12 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][2]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.mcode[outerIndex][2]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][2]" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.bitAddress[outerIndex][2]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.bitAddress[outerIndex][2]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][2]" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -558,7 +562,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.fcodeName[outerIndex][3]"
-                                   theme="bootstrap"
+                                   theme="bootstrap"  ng-disabled="!$modal.dataMatrix[outerIndex][3]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][3].Name}}">
                                 {{$select.selected.Name}}
@@ -570,10 +574,12 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][3]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.mcode[outerIndex][3]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][3]" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.bitAddress[outerIndex][3]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.bitAddress[outerIndex][3]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][3]" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -660,7 +666,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.fcodeName[outerIndex][4]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][4]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][4].Name}}">
                                 {{$select.selected.Name}}
@@ -672,10 +678,12 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][4]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.mcode[outerIndex][4]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][4]" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.bitAddress[outerIndex][4]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.bitAddress[outerIndex][4]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][4]" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -752,7 +760,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.fcodeName[outerIndex][5]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][5].Name}}">
                                 {{$select.selected.Name}}
@@ -765,7 +773,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.hlCodeNames[outerIndex][5]"
-                                   theme="bootstrap"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex][5].Name}}">
                                 {{$select.selected.Name}}
@@ -777,7 +785,8 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][5]" placeholder="默认（未配置）"  class="form-control">
+                        <input type="text" ng-model="$modal.mcode[outerIndex][5]" placeholder="默认（未配置）"
+                               ng-disabled="!$modal.dataMatrix[outerIndex][5]" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -785,7 +794,7 @@
             <!--RANGE TABLE END-->
 
             <!--Communication TABLE BEGIN-->
-            <table ng-if="$modal.category === 15"
+            <table ng-if="$modal.category === 15" ng-init="$modal.initParam();"
                    class="table table-striped table-hover table-checkable order-column table-boiler">
                 <thead>
                 <tr>
