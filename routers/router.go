@@ -139,6 +139,8 @@ func init() {
 	//下方配置报文
 	goazure.Router("/issued_config",&controllers.IssuedController{},"post:IssuedConfig")
 
+	//获取通信参数
+	goazure.Router("/issued_communication",&controllers.ParameterController{},"post:IssuedCommunication")
 	//下发测试按钮
 
 

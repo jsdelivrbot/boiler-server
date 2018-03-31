@@ -78,6 +78,23 @@ type ChannelIssued struct {
 	IsDeleted		bool		`json:"is_deleted"`
 }
 
+//传递前台通信参数
+func (ctl *ParameterController)IssuedCommunication() {
+	var issuedCommunication models.IssuedCommunication
+	var param Param
+	if err:=json.Unmarshal(ctl.Ctx.Input.RequestBody,&param);err!=nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	if err:=dba.BoilerOrm.QueryTable("issued_communication").Filter("Terminal__TerminalCode").One(&issuedCommunication);err!=nil {
+		goazure.Error("Query issued_communication Error",err)
+	}
+	ctl.Data["json"] = issuedCommunication
+	ctl.ServeJSON()
+}
+
 func (ctl *ParameterController)ChannelIssuedUpdate() {
 	var chanIssu Channel
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &chanIssu); err != nil {
