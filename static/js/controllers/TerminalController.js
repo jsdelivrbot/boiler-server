@@ -818,15 +818,18 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         $modal.BaudRates = res.data;
     });
     $modal.BaudRate  = 0;
-    
+
 
     $modal.terminalPass = "123456";
 
-   /* $modal.initParam = function () {
-        $http.get("").then(function (res) {
-
+    $modal.initParam = function () {
+        // if(){
+        //
+        // }
+        $http.post("/issued_communication",{code:currentData.code}).then(function (res) {
+            console.log(res.data);
         })
-    };*/
+    };
 
 
     //终端快速设置
