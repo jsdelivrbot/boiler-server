@@ -88,7 +88,7 @@ func (ctl *ParameterController)IssuedCommunication() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-	if err:=dba.BoilerOrm.QueryTable("issued_communication").Filter("Terminal__TerminalCode").One(&issuedCommunication);err!=nil {
+	if err:=dba.BoilerOrm.QueryTable("issued_communication").Filter("Terminal__TerminalCode",&param.TerminalCode).One(&issuedCommunication);err!=nil {
 		goazure.Error("Query issued_communication Error",err)
 	}
 	ctl.Data["json"] = issuedCommunication
