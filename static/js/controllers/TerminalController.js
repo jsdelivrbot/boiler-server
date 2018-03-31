@@ -814,6 +814,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.terminalPass = "123456";
 
+    //通信参数
     $modal.initParam = function () {
         if(!$modal.communParams){
             $http.post("/issued_communication",{terminal_code:currentData.code}).then(function (res) {
@@ -901,7 +902,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     $modal.chanMatrix[i][j].Name = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Name;
                     $modal.chanMatrix[i][j].Parameter =  $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
                     $modal.chanMatrix[i][j].Status = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Status;
-
+                    $modal.chanMatrix[i][j].Ranges = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Ranges;
 
                    /*if(j===0||j===1||j===5){
 
@@ -940,6 +941,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     $modal.dataMatrix[i][j].Name = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Name;
                     $modal.dataMatrix[i][j].Parameter =  $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
                     $modal.dataMatrix[i][j].Status = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Status;
+                    $modal.dataMatrix[i][j].Ranges = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Ranges;
 
                 }
             }
@@ -1066,6 +1068,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     };
 
     $modal.openRange = function (currentChannel, number, size, parentSelector) {
+        console.log(currentChannel);
         var parentElem = parentSelector ?
             angular.element($document[0].querySelector('.modal-body ' + parentSelector)) : undefined;
         var modalInstance = $uibModal.open({
