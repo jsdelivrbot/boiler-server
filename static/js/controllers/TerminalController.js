@@ -779,56 +779,70 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $http.get("/correspond_type_list").then(function (res) {
         $modal.communiInterfaces = res.data;
     });
-    $modal.communiInterface  = 0;
 
     //数据位
     $http.get("/date_bit_list").then(function (res) {
         $modal.dataBits = res.data;
     });
-    $modal.dataBit  = 0;
 
     //心跳包频率
     $http.get("/heartbeat_packet_list").then(function (res) {
         $modal.heartbeats = res.data;
     });
-    $modal.heartbeat = 0;
 
     //校验位
     $http.get("/parity_bit").then(function (res) {
         $modal.checkDigits = res.data;
     });
-    $modal.checkDigit  = 0;
 
     //从机地址
     $http.get("/slave_address_list").then(function (res) {
         $modal.subAdrs = res.data;
     });
-    $modal.subAdr  = 0;
 
     //停止位
     $http.get("/stop_bit_list").then(function (res) {
         $modal.stopBits = res.data;
     });
-    $modal.stopBit  = 0;
-
 
 
     //波特率
     $http.get("/baud_rate_list").then(function (res) {
         $modal.BaudRates = res.data;
     });
-    $modal.BaudRate  = 0;
 
 
     $modal.terminalPass = "123456";
 
     $modal.initParam = function () {
-        // if(){
-        //
-        // }
-        $http.post("/issued_communication",{code:currentData.code}).then(function (res) {
-            console.log(res.data);
-        })
+        if(!$modal.communParams){
+            $http.post("/issued_communication",{terminal_code:currentData.code}).then(function (res) {
+                $modal.communParams = res.data;
+                console.log($modal.communParams);
+                //通信接口地址
+                $modal.communiInterface  = $modal.communParams.CorrespondType;
+
+                //数据位
+                $modal.dataBit  = $modal.communParams.DataBit;
+
+                //心跳包频率
+                $modal.heartbeat = $modal.communParams.HeartBeat;
+
+                //校验位
+                $modal.checkDigit  = $modal.communParams.CheckBit;
+
+                //从机地址
+                $modal.subAdr  = $modal.communParams.SubAddress;
+
+                //停止位
+                $modal.stopBit  = $modal.communParams.StopBit;
+
+                //波特率
+                $modal.BaudRate = $modal.communParams.BaudRate;
+
+            })
+        }
+
     };
 
 
