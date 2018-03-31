@@ -114,14 +114,14 @@ func init() {
 		new(models.IssuedByte),
 		new(models.IssuedBaudRate),
 		new(models.IssuedCorrespondType),
-		new(models.IssuedDateBit),
+		new(models.IssuedDataBit),
 		new(models.IssuedHeartbeatPacket),
 		new(models.IssuedParityBit),
 		new(models.IssuedSlaveAddress),
 		new(models.IssuedStopBit),
 		new(models.IssuedAnalogue),
 		new(models.IssuedSwitch),
-		new(models.IssuedSwitchBurning),
+		new(models.IssuedSwitchBurn),
 		new(models.IssuedCommunication),
 	)
 
