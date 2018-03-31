@@ -824,6 +824,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.terminalPass = "123456";
 
+   /* $modal.initParam = function () {
+        $http.get("").then(function (res) {
+
+        })
+    };*/
 
     $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
     for(var i=0;i<16;i++){
@@ -1101,11 +1106,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                     //功能码
                     var fcodeName = $modal.fcodeName[i]&&$modal.fcodeName[i][j] ? $modal.fcodeName[i][j].Id:0;
+                    //MODBUS
                     var modbus = $modal.mcode[i]&&$modal.mcode[i][j] ? $modal.mcode[i][j]:0;
-                    var termByte = 0;
+                    //位地址
                     var bitAddress = 0;
+                    //高低字节
+                    var termByte = 0;
                     if(j===0 || j===1 || j===5){
-                        //高低字节
                         termByte = $modal.hlCodeNames[i]&&$modal.hlCodeNames[i][j]?$modal.hlCodeNames[i][j].Id:0 ;
                     }
 
