@@ -752,7 +752,7 @@
                             <button type="button"
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
                                     ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'blue-sharp': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"
-                                    ng-click="$modal.openRange($modal.dataMatrix[outerIndex][innerIndex].RuntimeParameterChannelConfig, outerIndex)"
+                                    ng-click="$modal.openRange($modal.dataMatrix[outerIndex][innerIndex], outerIndex)"
                                     style="width: 10%;">
                                 <i ng-class="['fa', {'fa-calendar-plus-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'fa-calendar-check-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"></i>
                             </button>
@@ -808,8 +808,17 @@
                             波特率
                         </td>
                         <td>
-                            <select ng-model="$modal.BaudRate" ng-options="x.Name for x in $modal.BaudRates" class="form-control">
-                            </select>
+                            <ui-select ng-model="$modal.BaudRate"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.BaudRates | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr>
@@ -817,8 +826,17 @@
                             数据位
                         </td>
                         <td>
-                            <select ng-model="$modal.dataBit" ng-options="x.Name for x in $modal.dataBits" class="form-control">
-                            </select>
+                            <ui-select ng-model="$modal.dataBit"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.dataBits | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr>
@@ -826,8 +844,17 @@
                             停止位
                         </td>
                         <td>
-                            <select ng-model="$modal.stopBit" ng-options="x.Name for x in $modal.stopBits" class="form-control">
-                            </select>
+                            <ui-select ng-model="$modal.stopBit"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.stopBits | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr>
@@ -835,8 +862,18 @@
                             校验位
                         </td>
                         <td>
-                            <select ng-model="$modal.checkDigit" ng-options="x.Name for x in $modal.checkDigits" class="form-control">
-                            </select>
+
+                            <ui-select ng-model="$modal.checkDigit"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.checkDigits | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr>
@@ -844,8 +881,17 @@
                             通信接口地址
                         </td>
                         <td>
-                            <select ng-model="$modal.communiInterface" ng-options="x.Name for x in $modal.communiInterfaces" class="form-control">
-                            </select>
+                            <ui-select ng-model="$modal.communiInterface"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.communiInterfaces | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr>
@@ -853,8 +899,17 @@
                             从机地址
                         </td>
                         <td>
-                            <select ng-model="$modal.subAdr" ng-options="x.Name for x in $modal.subAdrs" class="form-control">
-                            </select>
+                            <ui-select ng-model="$modal.subAdr"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.subAdrs | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr style="height: 20px;"></tr>
@@ -872,8 +927,17 @@
                             心跳包频率
                         </td>
                         <td>
-                            <select ng-model="$modal.heartbeat" ng-options="x.Name for x in $modal.heartbeats" class="form-control">
-                            </select>
+                            <ui-select ng-model="$modal.heartbeat"
+                                       theme="bootstrap"
+                                       style="width: 100%;">
+                                <ui-select-match>
+                                    {{$select.selected.Name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="x in $modal.heartbeats | filter: $select.search">
+                                    {{x.Name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </td>
                     </tr>
                     <tr style="height: 20px;"></tr>
