@@ -19,7 +19,7 @@ type IssuedCorrespondType struct {
 	Name string
 	Value int
 }
-type IssuedDateBit struct {
+type IssuedDataBit struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
@@ -43,4 +43,36 @@ type IssuedStopBit struct {
 	Id int `orm:"pk"`
 	Name string
 	Value int
+}
+
+type IssuedAnalogue struct {
+	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
+	Function   *IssuedFunctionCode               `orm:"rel(fk)"`
+	Byte       *IssuedByte                     `orm:"rel(fk)"`
+	Modbus   int
+}
+
+type IssuedSwitch struct {
+	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
+	Function   *IssuedFunctionCode             `orm:"rel(fk)"`
+	Modbus    int
+	BitAddress  int
+}
+
+type IssuedSwitchBurn struct {
+	Terminal      *Terminal         `orm:"pk;rel(fk)"`
+	Function      *IssuedFunctionCode      `orm:"rel(fk)"`
+	Modbus        int
+	BitAddress    int
+}
+
+type IssuedCommunication struct {
+	Terminal *Terminal    `orm:"pk;rel(fk)"`
+	BaudRate   *IssuedBaudRate   `orm:"rel(fk)"`
+	DataBit    *IssuedDataBit     `orm:"rel(fk)"`
+	StopBit    *IssuedStopBit      `orm:"rel(fk)"`
+	CheckBit   *IssuedParityBit       `orm:"rel(fk)"`
+	CorrespondType   *IssuedCorrespondType      `orm:"rel(fk)"`
+	SubAddress  *IssuedSlaveAddress        `orm:"rel(fk)"`
+	HeartBeat   *IssuedHeartbeatPacket        `orm:"rel(fk)"`
 }

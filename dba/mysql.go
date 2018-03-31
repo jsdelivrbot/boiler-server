@@ -7,7 +7,6 @@ import (
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/models/caches"
-	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
 
 )
@@ -19,9 +18,7 @@ func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
 
-	var myConnection string = "root:hold2017@tcp(47.100.0.27:3306)/boiler?charset=utf8&loc=" + url.QueryEscape("PRC")
-
-
+	var myConnection string = "root:hold2017@tcp(47.100.0.27:3306)/boiler?charset=utf8" //&loc=" + url.QueryEscape("PRC")
 
 	orm.RegisterDataBase("default", "mysql", myConnection)
 
@@ -117,11 +114,15 @@ func init() {
 		new(models.IssuedByte),
 		new(models.IssuedBaudRate),
 		new(models.IssuedCorrespondType),
-		new(models.IssuedDateBit),
+		new(models.IssuedDataBit),
 		new(models.IssuedHeartbeatPacket),
 		new(models.IssuedParityBit),
 		new(models.IssuedSlaveAddress),
 		new(models.IssuedStopBit),
+		new(models.IssuedAnalogue),
+		new(models.IssuedSwitch),
+		new(models.IssuedSwitchBurn),
+		new(models.IssuedCommunication),
 	)
 
 	orm.Debug = false//!conf.IsRelease
