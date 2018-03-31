@@ -247,7 +247,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Function"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]||!$modal.dataMatrix[outerIndex][0].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].Analogue.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -260,7 +260,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Byte"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]||!$modal.dataMatrix[outerIndex][0].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].Analogue.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -273,7 +273,7 @@
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][0]"  class="form-control" >
+                               ng-disabled="!$modal.dataMatrix[outerIndex][0]||!$modal.dataMatrix[outerIndex][0].Parameter"  class="form-control" >
                     </td>
                 </tr>
                 </tbody>
@@ -345,7 +345,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Function"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]||!$modal.dataMatrix[outerIndex][1].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].Analogue.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -358,7 +358,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Byte"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]||!$modal.dataMatrix[outerIndex][1].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].Analogue.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -371,7 +371,7 @@
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][1]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][1]||!$modal.dataMatrix[outerIndex][1].Parameter" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -458,7 +458,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][2].Switch.Function"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][2]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][2].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -471,11 +471,11 @@
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].Switch.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][2]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter" class="form-control">
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].Switch.BitAddress" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][2]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -562,7 +562,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][3].Switch.Function"
-                                   theme="bootstrap"  ng-disabled="!$modal.dataMatrix[outerIndex][3]"
+                                   theme="bootstrap"  ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][3].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -575,11 +575,11 @@
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].Switch.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][3]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter" class="form-control">
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].Switch.BitAddress" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][3]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -666,7 +666,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][4].Switch.Function"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][4]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][4].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -679,11 +679,11 @@
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].Switch.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][4]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter" class="form-control">
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].Switch.BitAddress" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][4]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -760,7 +760,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Function"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]||!$modal.dataMatrix[outerIndex][5].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].Analogue.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -773,7 +773,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Byte"
-                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]"
+                                   theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]||!$modal.dataMatrix[outerIndex][5].Parameter"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].Analogue.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -786,7 +786,7 @@
                     </td>
                     <td>
                         <input type="text" ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!$modal.dataMatrix[outerIndex][5]" class="form-control">
+                               ng-disabled="!$modal.dataMatrix[outerIndex][5]||!$modal.dataMatrix[outerIndex][5].Parameter" class="form-control">
                     </td>
                 </tr>
                 </tbody>
@@ -968,7 +968,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[0].Name!='默认(未配置)'">
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && !chan_row[0].noStatus">
                     <td width="10%" class="chanel_label">
                         模拟通道A
                     </td>
@@ -976,13 +976,8 @@
                         通道{{outerIndex +1}}
                     </td>
                     <td>
-                        <div ng-if="$modal.dataMatrix[outerIndex][0].Parameter==null">
-                            [{{chan_row[0].Parameter.Name}}]
-                            [<small class="font-blue-oleo">{{ chan_row[0].Parameter.Id }}</small>]
-                            (<small class="font-blue-oleo">{{ chan_row[0].Parameter.Scale }}</small>
-                            <small class="font-blue-oleo">{{ chan_row[0].Parameter.Unit }}</small>)
-                        </div>
-                        <div ng-if="$modal.dataMatrix[outerIndex][0].Parameter!=null">
+
+                        <div>
                             [{{$modal.dataMatrix[outerIndex][0].Parameter.Name}}]
                             [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Id }}</small>]
                             (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Scale }}</small>
@@ -999,7 +994,7 @@
                         {{$modal.chanMatrix[outerIndex][0].Analogue.Modbus}}
                     </td>
                 </tr>
-                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[1].Name!='默认(未配置)'">
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && !chan_row[1].noStatus">
                     <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         模拟通道B
                     </td>
@@ -1007,13 +1002,7 @@
                         通道{{outerIndex +1}}
                     </td>
                     <td>
-                        <div ng-if="$modal.dataMatrix[outerIndex][1].Parameter==null">
-                            [{{chan_row[1].Parameter.Name}}]
-                            [<small class="font-blue-oleo">{{ chan_row[1].Parameter.Id }}</small>]
-                            (<small class="font-blue-oleo">{{ chan_row[1].Parameter.Scale }}</small>
-                            <small class="font-blue-oleo">{{ chan_row[1].Parameter.Unit }}</small>)
-                        </div>
-                        <div ng-if="$modal.dataMatrix[outerIndex][1].Parameter!=null">
+                        <div>
                             [{{$modal.dataMatrix[outerIndex][1].Parameter.Name}}]
                             [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Id }}</small>]
                             (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Scale }}</small>
@@ -1042,7 +1031,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[2].Name!='默认(未配置)'">
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[2].noStatus">
                     <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         开关通道1
                     </td>
@@ -1050,11 +1039,8 @@
                         通道{{outerIndex +1}}
                     </td>
                     <td>
-                        <div ng-if="$modal.dataMatrix[outerIndex][2].Parameter==null">
-                            [{{chan_row[2].Parameter.Name}}]
-                            [<small class="font-blue-oleo">{{ chan_row[2].Parameter.Id }}</small>]
-                        </div>
-                        <div ng-if="$modal.dataMatrix[outerIndex][2].Parameter!=null">
+
+                        <div>
                             [{{$modal.dataMatrix[outerIndex][2].Parameter.Name}}]
                             [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][2].Parameter.Id }}</small>]
                         </div>
@@ -1069,7 +1055,7 @@
                         {{$modal.chanMatrix[outerIndex][2].Switch.BitAddress}}
                     </td>
                 </tr>
-                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[3].Name!='默认(未配置)'">
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[3].noStatus">
                     <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         开关通道2
                     </td>
@@ -1097,7 +1083,7 @@
                         {{$modal.chanMatrix[outerIndex][3].Switch.BitAddress}}
                     </td>
                 </tr>
-                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[4].Name!='默认(未配置)'">
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[4].noStatus">
                     <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         开关通道3
                     </td>
@@ -1105,11 +1091,7 @@
                         通道{{outerIndex +1}}
                     </td>
                     <td>
-                        <div ng-if="$modal.dataMatrix[outerIndex][4].Parameter==null">
-                            [{{chan_row[4].Parameter.Name}}]
-                            [<small class="font-blue-oleo">{{ chan_row[4].Parameter.Id }}</small>]
-                        </div>
-                        <div ng-if="$modal.dataMatrix[outerIndex][4].Parameter!=null">
+                        <div>
                             [{{$modal.dataMatrix[outerIndex][4].Parameter.Name}}]
                             [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][4].Parameter.Id }}</small>]v
                         </div>
@@ -1137,7 +1119,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[5].Name!='默认(未配置)'">
+                <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index"
+                    ng-if="!chan_row[5].noStatus && $index<12">
                     <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
                         状态通道
                     </td>
@@ -1145,11 +1128,7 @@
                         通道{{outerIndex +1}}
                     </td>
                     <td>
-                        <div ng-if="$modal.dataMatrix[outerIndex][5].Parameter==null">
-                            [{{chan_row[5].Parameter.Name}}]
-                            [<small class="font-blue-oleo">{{ chan_row[5].Parameter.Id }}</small>]
-                        </div>
-                        <div ng-if="$modal.dataMatrix[outerIndex][5].Parameter!=null">
+                        <div>
                             [{{$modal.dataMatrix[outerIndex][5].Parameter.Name}}]
                             [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][5].Parameter.Id }}</small>]
                         </div>
