@@ -767,15 +767,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.category = 9;
 
     //下发test
-    $modal.mcode = [[]];
+
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
-    $modal.fcodeName = [[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null]];
 
     //高低字节
     $modal.hlCodes = $rootScope.hlCodes; //分类
-    $modal.hlCodeNames = [[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null]];
 
     //通信接口地址
     $http.get("/correspond_type_list").then(function (res) {
@@ -813,14 +811,14 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     });
     $modal.stopBit  = 0;
 
-    $modal.bitAddress = [[]];
+
 
     //波特率
     $http.get("/baud_rate_list").then(function (res) {
         $modal.BaudRates = res.data;
     });
     $modal.BaudRate  = 0;
-
+    
 
     $modal.terminalPass = "123456";
 
@@ -830,35 +828,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         })
     };*/
 
-    $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
-    for(var i=0;i<16;i++){
-        for(var j=0; j<6; j++){
-            if (!$modal.hlCodeNamesCopy[i][j]) {
-                $modal.hlCodeNamesCopy[i][j]={
-                    Name: "默认(未配置)"
-                };
-            }
-            if (!$modal.hlCodeNames[i][j]) {
-                $modal.hlCodeNames[i][j] = null;
-            }
-        }
-    }
-    console.log($modal.hlCodeNamesCopy);
-
-    $modal.fcodeNameCopy = angular.copy($modal.fcodeName);
-    console.log($modal.fcodeNameCopy);
-    for(var i=0;i<16;i++){
-        for(var j=0; j<6; j++){
-            if (!$modal.fcodeNameCopy[i][j]) {
-                $modal.fcodeNameCopy[i][j]={
-                    Name: "默认(未配置)"
-                };
-            }
-            if (!$modal.fcodeName[i][j]) {
-                $modal.fcodeName[i][j] = null;
-            }
-        }
-    }
 
     //终端快速设置
     $modal.quickSet = function (){
@@ -909,16 +878,52 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         for (var i = 0; i < $modal.chanMatrix.length; i++) {
             for (var j = 0; j < $modal.chanMatrix[i].length; j++) {
-                if (!$modal.chanMatrix[i][j]) {
+
+                if($modal.chanMatrix[i][j].RuntimeParameterChannelConfig){
+                    $modal.chanMatrix[i][j].IsDefault = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.IsDefault;
+                    $modal.chanMatrix[i][j].Name = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Name;
+                    $modal.chanMatrix[i][j].Parameter =  $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
+                    $modal.chanMatrix[i][j].Status = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Status;
+
+
+                   /*if(j===0||j===1||j===5){
+
+                       $modal.fcodeName[i][j] = $modal.chanMatrix[i][j].Analogue.Function;
+                       //MODBUS
+                       $modal.mcode[i][j] = $modal.chanMatrix[i][j].Analogue.Modbus;
+                       //高低字节
+                       $modal.hlCodeNames[i][j] = $modal.chanMatrix[i][j].Analogue.Byte;
+
+                   }
+                   if(j>=2 && j<5){
+                       $modal.fcodeName[i][j] = $modal.chanMatrix[i][j].Switch.Function;
+                       //MODBUS
+                       $modal.mcode[i][j] = $modal.chanMatrix[i][j].Switch.Modbus;
+                       //位地址
+                       $modal.bitAddress[i][j] = $modal.chanMatrix[i][j].Switch.BitAddress;
+                   }*/
+
+
+                }
+
+
+
+                if (!$modal.chanMatrix[i][j].RuntimeParameterChannelConfig) {
                     $modal.chanMatrix[i][j] = {
                         Name: "默认(未配置)"
                     }
+
                 }
 
-                if (!$modal.dataMatrix[i][j] || $modal.dataMatrix[i][j].IsDefault) {
+                if (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) {
                     $modal.dataMatrix[i][j] = null;
                 } else {
-                    $modal.dataMatrix[i][j].oParamId = $modal.dataMatrix[i][j].Parameter.Id;
+                    $modal.dataMatrix[i][j].oParamId = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter.Id;
+                    $modal.dataMatrix[i][j].IsDefault = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault;
+                    $modal.dataMatrix[i][j].Name = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Name;
+                    $modal.dataMatrix[i][j].Parameter =  $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
+                    $modal.dataMatrix[i][j].Status = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Status;
+
                 }
             }
         }
@@ -1105,19 +1110,23 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
 
                     //功能码
-                    var fcodeName = $modal.fcodeName[i]&&$modal.fcodeName[i][j] ? $modal.fcodeName[i][j].Id:0;
+                    var fcodeName = 0;
                     //MODBUS
-                    var modbus = $modal.mcode[i]&&$modal.mcode[i][j] ? $modal.mcode[i][j]:0;
+                    var modbus = 0;
                     //位地址
                     var bitAddress = 0;
                     //高低字节
                     var termByte = 0;
                     if(j===0 || j===1 || j===5){
-                        termByte = $modal.hlCodeNames[i]&&$modal.hlCodeNames[i][j]?$modal.hlCodeNames[i][j].Id:0 ;
+                        fcodeName = $modal.chanMatrix[i][j].Analogue && $modal.chanMatrix[i][j].Analogue.Function ? $modal.chanMatrix[i][j].Analogue.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Modbus ? $modal.chanMatrix[i][j].Analogue.Modbus:0;
+                        termByte = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Byte?$modal.chanMatrix[i][j].Analogue.Byte.Id:0 ;
                     }
 
                     if(j>=2 && j<5){
-                        bitAddress = $modal.bitAddress[i]&&$modal.bitAddress[i][j]? $modal.bitAddress[i][j]:0;
+                        fcodeName = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Function?$modal.chanMatrix[i][j].Switch.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Modbus? $modal.chanMatrix[i][j].Switch.Modbus:0;
+                        bitAddress = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.BitAddress? $modal.chanMatrix[i][j].Switch.BitAddress:0;
                     }
 
                     if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
