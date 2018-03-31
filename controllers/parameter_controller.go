@@ -214,7 +214,7 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 		}
 		//模拟量插入issued_analogue
 		//开关量插入issued_switch
-		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
+		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber!=1 {
 			switchsql:="REPLACE into issued_switch(channel_id,function_id,modbus,bit_address) values(?,?,?,?)"
 			if _,err:=dba.BoilerOrm.Raw(switchsql,cnf.Uid,c.FcodeId,c.Modbus,c.BitAddress).Exec();err!=nil{
 				goazure.Error("Insert issued_switch Error",err)
