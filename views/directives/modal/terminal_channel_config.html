@@ -246,10 +246,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.fcodeName[outerIndex][0]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][0].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].Analogue.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -259,10 +259,10 @@
                         </ui-select>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.hlCodeNames[outerIndex][0]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Byte"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex][0].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].Analogue.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -272,7 +272,7 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][0]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][0]"  class="form-control" >
                     </td>
                 </tr>
@@ -344,10 +344,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.fcodeName[outerIndex][1]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][1].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].Analogue.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -357,10 +357,10 @@
                         </ui-select>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.hlCodeNames[outerIndex][1]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Byte"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex][1].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].Analogue.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -370,7 +370,7 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][1]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][1]" class="form-control">
                     </td>
                 </tr>
@@ -457,10 +457,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.fcodeName[outerIndex][2]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][2].Switch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][2]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][2].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][2].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -470,11 +470,11 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][2]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].Switch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][2]" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.bitAddress[outerIndex][2]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].Switch.BitAddress" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][2]" class="form-control">
                     </td>
                 </tr>
@@ -561,10 +561,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.fcodeName[outerIndex][3]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][3].Switch.Function"
                                    theme="bootstrap"  ng-disabled="!$modal.dataMatrix[outerIndex][3]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][3].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][3].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -574,11 +574,11 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][3]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].Switch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][3]" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.bitAddress[outerIndex][3]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].Switch.BitAddress" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][3]" class="form-control">
                     </td>
                 </tr>
@@ -665,10 +665,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.fcodeName[outerIndex][4]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][4].Switch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][4]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][4].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][4].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -678,11 +678,11 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][4]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].Switch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][4]" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.bitAddress[outerIndex][4]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].Switch.BitAddress" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][4]" class="form-control">
                     </td>
                 </tr>
@@ -759,10 +759,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.fcodeName[outerIndex][5]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.fcodeNameCopy[outerIndex][5].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].Analogue.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -772,10 +772,10 @@
                         </ui-select>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.hlCodeNames[outerIndex][5]"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Byte"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.hlCodeNamesCopy[outerIndex][5].Name}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].Analogue.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -785,7 +785,7 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.mcode[outerIndex][5]" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][5]" class="form-control">
                     </td>
                 </tr>
@@ -926,13 +926,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex][0].Name}}
+                        {{$modal.chanMatrix[outerIndex][0].Analogue.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.hlCodeNames[outerIndex][0].Name}}
+                        {{$modal.chanMatrix[outerIndex][0].Analogue.Byte.Name}}
                     </td>
                     <td>
-                        {{$modal.mcode[outerIndex][0]}}
+                        {{$modal.chanMatrix[outerIndex][0].Analogue.Modbus}}
                     </td>
                 </tr>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && chan_row[1].Name!='默认(未配置)'">
@@ -957,13 +957,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex][1].Name}}
+                        {{$modal.chanMatrix[outerIndex][1].Analogue.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.hlCodeNames[outerIndex][1].Name}}
+                        {{$modal.chanMatrix[outerIndex][1].Analogue.Byte.Name}}
                     </td>
                     <td>
-                        {{$modal.mcode[outerIndex][1]}}
+                        {{$modal.chanMatrix[outerIndex][1].Analogue.Modbus}}
                     </td>
                 </tr>
                 </tbody>
@@ -996,13 +996,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex][2].Name}}
+                        {{$modal.chanMatrix[outerIndex][2].Switch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.mcode[outerIndex][2]}}
+                        {{$modal.chanMatrix[outerIndex][2].Switch.Modbus}}
                     </td>
                     <td>
-                        {{$modal.bitAddress[outerIndex][2]}}
+                        {{$modal.chanMatrix[outerIndex][2].Switch.BitAddress}}
                     </td>
                 </tr>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[3].Name!='默认(未配置)'">
@@ -1024,13 +1024,13 @@
 
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex][3].Name}}
+                        {{$modal.chanMatrix[outerIndex][3].Switch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.mcode[outerIndex][3]}}
+                        {{$modal.chanMatrix[outerIndex][3].Switch.Modbus}}
                     </td>
                     <td>
-                        {{$modal.bitAddress[outerIndex][3]}}
+                        {{$modal.chanMatrix[outerIndex][3].Switch.BitAddress}}
                     </td>
                 </tr>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="chan_row[4].Name!='默认(未配置)'">
@@ -1051,13 +1051,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex][4].Name}}
+                        {{$modal.chanMatrix[outerIndex][4].Switch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.mcode[outerIndex][4]}}
+                        {{$modal.chanMatrix[outerIndex][4].Switch.Modbus}}
                     </td>
                     <td>
-                        {{$modal.bitAddress[outerIndex][4]}}
+                        {{$modal.chanMatrix[outerIndex][4].Switch.BitAddress}}
                     </td>
                 </tr>
                 </tbody>
@@ -1092,13 +1092,13 @@
 
                     </td>
                     <td>
-                        {{$modal.fcodeName[outerIndex][5].Name}}
+                        {{$modal.chanMatrix[outerIndex][5].Analogue.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.hlCodeNames[outerIndex][5].Name}}
+                        {{$modal.chanMatrix[outerIndex][5].Analogue.Byte.Name}}
                     </td>
                     <td>
-                        {{$modal.mcode[outerIndex][5]}}
+                        {{$modal.chanMatrix[outerIndex][5].Analogue.Modbus}}
                     </td>
                 </tr>
                 </tbody>
