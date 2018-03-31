@@ -752,7 +752,7 @@
                             <button type="button"
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
                                     ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'blue-sharp': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"
-                                    ng-click="$modal.openRange($modal.dataMatrix[outerIndex][innerIndex], outerIndex)"
+                                    ng-click="$modal.openRange($modal.dataMatrix[outerIndex][innerIndex].RuntimeParameterChannelConfig, outerIndex)"
                                     style="width: 10%;">
                                 <i ng-class="['fa', {'fa-calendar-plus-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length <= 0}, {'fa-calendar-check-o': $modal.dataMatrix[outerIndex][innerIndex].Ranges.length > 0}]"></i>
                             </button>
