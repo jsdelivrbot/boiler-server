@@ -814,6 +814,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.terminalPass = "123456";
 
+    //通信参数
     $modal.initParam = function () {
         if(!$modal.communParams){
             $http.post("/issued_communication",{terminal_code:currentData.code}).then(function (res) {
@@ -901,8 +902,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     $modal.chanMatrix[i][j].Name = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Name;
                     $modal.chanMatrix[i][j].Parameter =  $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
                     $modal.chanMatrix[i][j].Status = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Status;
-
-
+                    $modal.chanMatrix[i][j].Ranges = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Ranges;
+                    $modal.chanMatrix[i][j].SwitchStatus = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.SwitchStatus;
+                    $modal.chanMatrix[i][j].SequenceNumber = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.SequenceNumber;
+                    $modal.chanMatrix[i][j].noStatus = false;
                    /*if(j===0||j===1||j===5){
 
                        $modal.fcodeName[i][j] = $modal.chanMatrix[i][j].Analogue.Function;
@@ -927,20 +930,24 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                 if (!$modal.chanMatrix[i][j].RuntimeParameterChannelConfig) {
                     $modal.chanMatrix[i][j] = {
-                        Name: "默认(未配置)"
+                        Name: "默认(未配置)",
+                        noStatus:true
                     }
 
                 }
 
-                if (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) {
+                if ((i !== 0 ||j !== 2 ) &&  (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) ) {
                     $modal.dataMatrix[i][j] = null;
+                    $modal.chanMatrix[i][j].noStatus=true;
                 } else {
                     $modal.dataMatrix[i][j].oParamId = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter.Id;
                     $modal.dataMatrix[i][j].IsDefault = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault;
                     $modal.dataMatrix[i][j].Name = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Name;
                     $modal.dataMatrix[i][j].Parameter =  $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
                     $modal.dataMatrix[i][j].Status = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Status;
-
+                    $modal.dataMatrix[i][j].Ranges = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Ranges;
+                    $modal.dataMatrix[i][j].SwitchStatus = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.SwitchStatus;
+                    $modal.dataMatrix[i][j].SequenceNumber = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.SequenceNumber;
                 }
             }
         }
@@ -1002,6 +1009,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             $modal.dataMatrix[outerIndex][innerIndex].Status = -1;
             $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
+
+            $modal.chanMatrix[outerIndex][innerIndex].Analogue = null;
+            $modal.chanMatrix[outerIndex][innerIndex].Switch = null;
+            $modal.chanMatrix[outerIndex][innerIndex].noStatus=true;
             // if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
             //     $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
             // }
@@ -1019,9 +1030,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 1;
             }
 
-            if($modal.chanMatrix[outerIndex][innerIndex].Name==="默认(未配置)"){
-                $modal.chanMatrix[outerIndex][innerIndex].Name = $modal.dataMatrix[outerIndex][innerIndex].Parameter.Name;
-            }
+            $modal.chanMatrix[outerIndex][innerIndex].noStatus = false;
+            // if($modal.chanMatrix[outerIndex][innerIndex].Name==="默认(未配置)"){
+            //     $modal.chanMatrix[outerIndex][innerIndex].Name = $modal.dataMatrix[outerIndex][innerIndex].Parameter.Name;
+            // }
         }
 
     };
@@ -1066,6 +1078,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     };
 
     $modal.openRange = function (currentChannel, number, size, parentSelector) {
+        console.log(currentChannel);
         var parentElem = parentSelector ?
             angular.element($document[0].querySelector('.modal-body ' + parentSelector)) : undefined;
         var modalInstance = $uibModal.open({
@@ -1102,7 +1115,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             console.error("$modal.code error:", $modal.code);
             return;
         }
-        Ladda.create(document.getElementById('channel_ok')).start();
+        // Ladda.create(document.getElementById('channel_ok')).start();
         console.log("data:",$modal.dataMatrix ,"chan:",$modal.chanMatrix );
         var configUpload = [];
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
@@ -1174,6 +1187,35 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                         };
 
+
+                        if(configData.parameter_id){
+                            if(j===0 || j===1 || j===5){
+                                if(fcodeName===0||modbus===0||termByte===0){
+                                    swal({
+                                        title: "通道配置更新失败",
+                                        text:"配置信息不全 ，参数不能为0 "+ i + j,
+                                        type: "error"
+                                    });
+                                    App.stopPageLoading();
+                                    return false;
+                                }
+                            }
+
+                            if(j>=2 && j<5){
+                                if(fcodeName===0||modbus===0||bitAddress===0){
+                                    swal({
+                                        title: "通道配置更新失败",
+                                        text:"配置信息不全"+ i + j,
+                                        type: "error"
+                                    });
+                                    App.stopPageLoading();
+                                    return false;
+                                }
+                            }
+
+                        }
+
+
                         if (j === 5 && dataParamId > 0) {
                             configData.ranges = [];
                             if (dataRanges.length <= 0) {
@@ -1212,6 +1254,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             }
         }
 
+
+
         var cParam = {
             terminal_code:$modal.code,
             baudRate : $modal.BaudRate?$modal.BaudRate.Id:0,
@@ -1247,7 +1291,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 });
                 App.stopPageLoading();
             });
-        Ladda.create(document.getElementById('channel_ok')).stop();
+        // Ladda.create(document.getElementById('channel_ok')).stop();
     };
 
     $modal.cancel = function () {
