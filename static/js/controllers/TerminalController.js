@@ -1267,6 +1267,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             heartbeat:$modal.heartbeat?$modal.heartbeat.Id:0
         };
 
+        if(!cParam.baudRate||!cParam.dataBit||!cParam.stopBit||!cParam.checkDigit||!cParam.communInterface||!cParam.slaveAddress||!cParam.heartbeat){
+            swal({
+                title: "通道配置更新失败",
+                text:"通信参数不能为空 ",
+                type: "error"
+            });
+            App.stopPageLoading();
+            return false;
+        }
 
 
         console.warn("$modal channel update!", configUpload);
