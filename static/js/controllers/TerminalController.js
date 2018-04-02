@@ -25,8 +25,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         DTColumnDefBuilder.newColumnDef(4),
         DTColumnDefBuilder.newColumnDef(5),
         DTColumnDefBuilder.newColumnDef(6),
-        DTColumnDefBuilder.newColumnDef(7),
-        DTColumnDefBuilder.newColumnDef(8).notSortable()
+        DTColumnDefBuilder.newColumnDef(7).notSortable()
     ];
 
     terminal.refreshDataTables = function (callback) {
@@ -384,21 +383,33 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
     $modal.currentData = currentData;
     $modal.editing = editing;
     $modal.editingCode = true;
+    $modal.upgradeValue = "升级配置";
+
 
     //bin文件选择
     $http.get("/bin_list").then(function (res) {
         $modal.bins = res.data;
         console.log(res.data);
     });
+
+
     //升级配置
     $modal.upgrade = function () {
         $http.post("/upgrade_configuration",
             {path:$modal.bin.BinPath,uid:$modal.currentData.Uid})
             .then(function (res) {
                 swal({
-                    title: "信息已发送",
+                    title: '升级成功，是否现在重启?',
                     text: res.data,
-                    type: "success"
+                    type: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '重启'
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        $modal.sendConfMessage2();
+                    }
                 });
                 },function (err) {
                 swal({
@@ -406,7 +417,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
                     text: err.data,
                     type: "warning"
                 });
+                // $modal.upgradeValue = err.data;
+
+
             })
+
     }
 
     //按钮
@@ -771,6 +786,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
+    $modal.fcode1 = [
+        {Id: 1, Name: "01", Value: 1},
+        {Id: 2, Name: "02", Value: 2},
+        {Id: 3, Name: "03", Value: 3}
+    ];
+    $modal.fcode2 = [
+        {Id: 3, Name: "03", Value: 3},
+        {Id: 4, Name: "04", Value: 4},
+        {Id: 99, Name: "None", Value: 99}
+    ];
 
     //高低字节
     $modal.hlCodes = $rootScope.hlCodes; //分类
@@ -924,6 +949,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                    }*/
 
 
+                }
+
+                if($modal.chanMatrix[i][j].Analogue.Modbus===0){
+                    $modal.chanMatrix[i][j].Analogue.Modbus = null;
+                }
+                if($modal.chanMatrix[i][j].Switch.Modbus===0){
+                    $modal.chanMatrix[i][j].Switch.Modbus = null;
+                }
+                if($modal.chanMatrix[i][j].Switch.BitAddress===0){
+                    $modal.chanMatrix[i][j].Switch.BitAddress = null;
                 }
 
 
@@ -1284,11 +1319,34 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         $http.post("/channel_config_update/", {channel:configUpload,param:cParam})
             .then(function (res) {
                  App.stopPageLoading();
-
                 swal({
-                    title: "通道配置更新成功",
-                    type: "success"
-                }).then(function () {
+                    title: "通道配置更新成功，是否立刻下发？",
+                    type: "success",
+                        showCancelButton: true,
+                        confirmButtonText: "确定下发",
+                        cancelButtonText: "取消",
+                        showLoaderOnConfirm:true
+                    }).then(function(isConfirm){
+                        App.startPageLoading({message: '正在加载数据...'});
+                        $http.post("/issued_config",
+                            {uid:$modal.currentData.Uid, code:$modal.currentData.code})
+                            .then(function (res) {
+                                App.stopPageLoading();
+                                swal({
+                                    title: "信息已发送",
+                                    text: res.data,
+                                    type: "success"
+                                });
+                            },function (err) {
+                                App.stopPageLoading();
+                                swal({
+                                    title: "失败",
+                                    text: err.data,
+                                    type: "warning"
+                                });
+                            });
+                    })
+                    .then(function () {
                     $uibModalInstance.close('success');
                     currentData = null;
                 });

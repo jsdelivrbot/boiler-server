@@ -59,7 +59,7 @@
         <th>终端编码</th>
         <th>状态</th>
         <th>监测锅炉</th>
-        <th>物联网卡号</th>
+        <!--<th>物联网卡号</th>-->
         <!--<th>消息调试</th>-->
         <th>配置状态</th>
         <th>模板状态</th>
@@ -90,9 +90,9 @@
             </a>
             <!--</a>-->
         </td>
-        <td>
-            <span ng-class="[{'light-gray': data.SimNumber.length <= 0}]">{{ data.simNum }}</span>
-        </td>
+        <!--<td>-->
+            <!--<span ng-class="[{'light-gray': data.SimNumber.length <= 0}]">{{ data.simNum }}</span>-->
+        <!--</td>-->
         <!--<td>-->
             <!--&lt;!&ndash;<span ng-class="[{'light-gray': data.LocalIp.length <= 0}]">{{ data.ip }}</span>&ndash;&gt;-->
             <!---->
@@ -106,7 +106,10 @@
             通用模板一
         </td>
         <td style="min-width: 238px;">
-            <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.code);">消息调试</button>
+            <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.code);">
+                <i class="fa fa-eye"></i>
+                消息调试
+            </button>
             <div class="btn-group">
             <button ng-show="currentUser.Role.RoleId >= 10"
                     ng-click="terminal.view(data)"
@@ -117,13 +120,13 @@
                     ng-click="terminal.setting(data)"
                     class="btn edit btn-outline btn-circle btn-sm blue"
                     >
-                <i class="fa fa-cogs"></i> 配置
+                <i class="fa fa-cogs"></i> 终端关联
             </button>
             <button
                     ng-click="terminal.channel(data)"
                     class="btn edit btn-outline btn-circle btn-sm blue-hoki"
                     style="margin-left: 8px;">
-                <i class="fa fa-server"></i> 通道
+                <i class="fa fa-server"></i> 通道配置
             </button>
             </div>
             <!--
