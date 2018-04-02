@@ -13,6 +13,7 @@ import (
 	"net"
 	"github.com/AzureRelease/boiler-server/dba"
 	"time"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type SocketController struct {
@@ -71,43 +72,43 @@ func SendConfig(conn net.Conn,b []byte,Code string) {
 }
 
 //下发配置
-func (ctl *SocketController)SocketConfigSend(b []byte,code string) {
+func (ctl *SocketController)SocketConfigSend(b []byte,code string)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	goazure.Info("connect success")
 	SendConfig(conn,b,code)
 	buf:=Receive(conn)
-	fmt.Println("配置下发返回包：",buf)
 	conn.Close()
+	return buf
 }
 
 //重启
-func (ctl *SocketController)SocketTerminalRestart(code string) {
+func (ctl *SocketController)SocketTerminalRestart(code string)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	goazure.Info("connect success")
 	Send(conn,code)
-	b:=Receive(conn)
-	fmt.Println("aaaaaaa:",b)
+	buf:=Receive(conn)
 	conn.Close()
+	return buf
 }
 func b4()([]byte){
 	words_2 := "\xac\xeb\x00\x0b\x00\x00\xb4\x30\x33\x30\x30\x39\x30\x30\x31\x00\x00\xaf\xed"

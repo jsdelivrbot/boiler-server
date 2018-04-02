@@ -306,7 +306,20 @@ func (ctl *IssuedController) IssuedConfig() {
 	}
 	fmt.Println(communication)
 	fmt.Println(byte)
-	SocketCtrl.SocketConfigSend(byte,confIssued.Code)
+	buf:=SocketCtrl.SocketConfigSend(byte,confIssued.Code)
+	if buf == nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("发送报文失败"))
+		return
+	} else if bytes.Equal(conf.TermNoRegist,buf) {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
+		return
+	} else if bytes.Equal(conf.TermTimeout,buf) {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
+		return
+	}
 }
 
 //重启
@@ -327,7 +340,20 @@ func (ctl *IssuedController) TerminalRestart() {
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
-	SocketCtrl.SocketTerminalRestart(fmt.Sprintf("%d", terminal.TerminalCode))
+	buf:=SocketCtrl.SocketTerminalRestart(fmt.Sprintf("%d", terminal.TerminalCode))
+	if buf==nil{
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("发送报文失败"))
+		return
+	} else if bytes.Equal(conf.TermNoRegist,buf) {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
+		return
+	} else if bytes.Equal(conf.TermTimeout,buf) {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
+		return
+	}
 }
 type AppBinInfo struct {
 	Uid string `json:"uid"`
