@@ -13,7 +13,6 @@ import (
 	"net"
 	"github.com/AzureRelease/boiler-server/dba"
 	"time"
-	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type SocketController struct {

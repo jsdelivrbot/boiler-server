@@ -80,7 +80,7 @@ func (ctl *IssuedController) IssuedConfig() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-	byte:=make([]byte,0)
+	Byte:=make([]byte,0)
 	var temp =1
 	var anaOne []AnalogueIssued
 	var anaTwo []AnalogueIssued
@@ -98,34 +98,34 @@ func (ctl *IssuedController) IssuedConfig() {
 		L:=len(anaOne)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteTwo(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteTwo(0)...)
 			}
 		} else {
 			for i:=0;i<L;i++{
 				value:=anaOne[i]
 				if temp == value.ChannelNumber {
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteOne(int32(value.Byte))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 				} else {
 					for c := 0; c < (value.ChannelNumber - temp); c++ {
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteTwo(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteTwo(0)...)
 					}
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteOne(int32(value.Byte))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 					temp=value.ChannelNumber
 				}
 				if i==L-1 {
 					if temp !=12 {
 						for c := 0; c < (12 - temp); c++ {
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteTwo(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteTwo(0)...)
 						}
 					}
 				}
@@ -144,34 +144,34 @@ func (ctl *IssuedController) IssuedConfig() {
 		L:=len(anaTwo)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteTwo(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteTwo(0)...)
 			}
 		} else {
 			for i:=0;i<L;i++{
 				value:=anaTwo[i]
 				if temp == value.ChannelNumber {
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteOne(int32(value.Byte))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 				} else {
 					for c := 0; c < (value.ChannelNumber - temp); c++ {
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteTwo(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteTwo(0)...)
 					}
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteOne(int32(value.Byte))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 					temp=value.ChannelNumber
 				}
 				if i==L-1 {
 					if temp !=12 {
 						for c := 0; c < (12 - temp); c++ {
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteTwo(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteTwo(0)...)
 						}
 					}
 				}
@@ -182,13 +182,13 @@ func (ctl *IssuedController) IssuedConfig() {
 	//组开关量点火位
 	switchBurnSql:="select ifc.value as func,isb.modbus,isb.bit_address from issued_switch_burn isb,issued_function_code ifc where terminal_id=? and isb.function_id=ifc.id"
 	if err:=dba.BoilerOrm.Raw(switchBurnSql,confIssued.Uid).QueryRow(&swi);err!=nil {
-		byte = append(byte, IntToByteOne(0)...)
-		byte = append(byte, IntToByteTwo(0)...)
-		byte = append(byte, IntToByteOne(0)...)
+		Byte = append(Byte, IntToByteOne(0)...)
+		Byte = append(Byte, IntToByteTwo(0)...)
+		Byte = append(Byte, IntToByteOne(0)...)
 	}else {
-		byte = append(byte, IntToByteOne(int32(swi.Func))...)
-		byte = append(byte, IntToByteTwo(int32(swi.Modbus))...)
-		byte = append(byte, IntToByteOne(int32(swi.BitAddress))...)
+		Byte = append(Byte, IntToByteOne(int32(swi.Func))...)
+		Byte = append(Byte, IntToByteTwo(int32(swi.Modbus))...)
+		Byte = append(Byte, IntToByteOne(int32(swi.BitAddress))...)
 	}
 	//组剩余开关量
 	switchsql:="select r.channel_type,r.channel_number,ifc.value as func,iswitch.modbus,iswitch.bit_address "+
@@ -201,34 +201,34 @@ func (ctl *IssuedController) IssuedConfig() {
 		L:=len(switchs)
 		if L ==0 {
 			for c := 0; c < 47; c++ {
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteTwo(0)...)
-				byte = append(byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteTwo(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
 			}
 		} else {
 			for i:=0;i<L;i++{
 				value:=switchs[i]
 				if temp == value.ChannelNumber {
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
-					byte = append(byte, IntToByteOne(int32(value.BitAddress))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.BitAddress))...)
 				} else {
 					for c := 0; c < (value.ChannelNumber - temp); c++ {
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteTwo(0)...)
-						byte = append(byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteTwo(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
 					}
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
-					byte = append(byte, IntToByteOne(int32(value.BitAddress))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.BitAddress))...)
 					temp=value.ChannelNumber
 				}
 				if i==L-1 {
 					if temp !=48 {
 						for c := 0; c < (48 - temp); c++ {
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteTwo(0)...)
-							byte = append(byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte= append(Byte, IntToByteTwo(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
 						}
 					}
 				}
@@ -248,34 +248,34 @@ func (ctl *IssuedController) IssuedConfig() {
 		L:=len(anaThree)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteOne(0)...)
-				byte = append(byte, IntToByteTwo(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteOne(0)...)
+				Byte = append(Byte, IntToByteTwo(0)...)
 			}
 		} else {
 			for i:=0;i<L;i++{
 				value:=anaThree[i]
 				if temp == value.ChannelNumber {
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteOne(int32(value.Byte))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 				} else {
 					for c := 0; c < (value.ChannelNumber - temp); c++ {
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteOne(0)...)
-						byte = append(byte, IntToByteTwo(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteOne(0)...)
+						Byte = append(Byte, IntToByteTwo(0)...)
 					}
-					byte = append(byte, IntToByteOne(int32(value.Func))...)
-					byte = append(byte, IntToByteOne(int32(value.Byte))...)
-					byte = append(byte, IntToByteTwo(int32(value.Modbus))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 					temp=value.ChannelNumber
 				}
 				if i==L-1 {
 					if temp !=12 {
 						for c := 0; c < (12 - temp); c++ {
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteOne(0)...)
-							byte = append(byte, IntToByteTwo(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteOne(0)...)
+							Byte = append(Byte, IntToByteTwo(0)...)
 						}
 					}
 				}
@@ -288,26 +288,26 @@ func (ctl *IssuedController) IssuedConfig() {
 		"from issued_communication ic,issued_baud_rate as ibr,issued_data_bit as idb,issued_stop_bit as isb,issued_parity_bit as ipb,issued_correspond_type as ict,issued_slave_address as isa,issued_heartbeat_packet as ihp " +
 			"where ic.baud_rate_id=ibr.id and ic.data_bit_id=idb.id and ic.stop_bit_id=isb.id and ic.check_bit_id=ipb.id and ic.correspond_type_id=ict.id and ic.sub_address_id=isa.id and ic.heart_beat_id=ihp.id and ic.terminal_id=?"
 	if err:=dba.BoilerOrm.Raw(communicationsql,confIssued.Uid).QueryRow(&communication);err!=nil{
-		byte = append(byte,IntToByteOne(0)...)
-		byte = append(byte,IntToByteOne(0)...)
-		byte = append(byte,IntToByteOne(0)...)
-		byte = append(byte,IntToByteOne(0)...)
-		byte = append(byte,IntToByteOne(0)...)
-		byte = append(byte,IntToByteOne(0)...)
-		byte = append(byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
+		Byte = append(Byte,IntToByteOne(0)...)
 	} else {
-		byte = append(byte,IntToByteOne(int32(communication.BaudRate))...)
-		byte = append(byte,IntToByteOne(int32(communication.DataBit))...)
-		byte = append(byte,IntToByteOne(int32(communication.StopBit))...)
-		byte = append(byte,IntToByteOne(int32(communication.CheckBit))...)
-		byte = append(byte,IntToByteOne(int32(communication.CorrespondType))...)
-		byte = append(byte,IntToByteOne(int32(communication.SubAddress))...)
-		byte = append(byte,IntToByteOne(int32(communication.HeartBeat))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.BaudRate))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.DataBit))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.StopBit))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.CheckBit))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.CorrespondType))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.SubAddress))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.HeartBeat))...)
 	}
 	fmt.Println(communication)
-	fmt.Println(byte)
-	buf:=SocketCtrl.SocketConfigSend(byte,confIssued.Code)
-	if buf == nil {
+	fmt.Println(Byte)
+	buf:=SocketCtrl.SocketConfigSend(Byte,confIssued.Code)
+	if buf==nil{
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("发送报文失败"))
 		return
@@ -361,7 +361,6 @@ type AppBinInfo struct {
 }
 //升级配置
 func (ctl *IssuedController)UpgradeConfiguration() {
-	fmt.Println("aaaaaaaaaaaa")
 	var appBinInfo AppBinInfo
 	var terminal models.Terminal
 	if err:= json.Unmarshal(ctl.Ctx.Input.RequestBody,&appBinInfo);err!=nil {
