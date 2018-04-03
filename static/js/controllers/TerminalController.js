@@ -789,15 +789,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
-    $modal.fcode1 = [
+    $modal.fcode2 = [
         {Id: 1, Name: "01", Value: 1},
         {Id: 2, Name: "02", Value: 2},
-        {Id: 3, Name: "03", Value: 3}
-    ];
-    $modal.fcode2 = [
         {Id: 3, Name: "03", Value: 3},
-        {Id: 4, Name: "04", Value: 4},
         {Id: 99, Name: "None", Value: 99}
+    ];
+    $modal.fcode1 = [
+        {Id: 3, Name: "03", Value: 3},
+        {Id: 4, Name: "04", Value: 4}
+
     ];
 
     //高低字节
