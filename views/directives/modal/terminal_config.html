@@ -189,14 +189,15 @@
 </div>
 
 <div class="modal-footer">
-    <!--<div class="form-group form-selector pull-left">
+    <div class="form-group form-selector pull-left">
         <div class="input-group">
             <input ng-click="$modal.sendConfMessage2();"
                    type="button" class="btn btn-primary"
+                   ng-show="$modal.editing && $modal.currentData"
                    ng-disabled="!$modal.currentData.IsOnline"
                    value="重启">
         </div>
-    </div>-->
+    </div>
     <!--<button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.reboot()" style="float: left">重新启动</button>-->
     <button class="btn red" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.delete()">删除</button>
     <button type="button" class="btn ladda-button"
