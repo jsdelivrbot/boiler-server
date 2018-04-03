@@ -1274,7 +1274,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     return false;
                                 }
                                 if(fcodeName===1){
-                                    if(modbus<=1||modbus>10000){
+                                    if(modbus<1||modbus>10000){
                                         swal({
                                             title: "开关通道MODBUS地址错误",
                                             text:"功能码为01，MODBUS地址范围00001-10000",
