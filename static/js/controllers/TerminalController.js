@@ -403,18 +403,19 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
                     text: res.data,
                     type: 'success',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '重启'
+                    confirmButtonText: '重启',
+                    cancelButtonText: "取消",
+                    // showLoaderOnConfirm: true
                 }).then(function(isConfirm) {
+                    App.startPageLoading({message: '正在加载数据...'});
                     if (isConfirm) {
                         $modal.sendConfMessage2();
                     }
                 });
                 },function (err) {
                 swal({
-                    title: "升级未成功",
-                    text: err.data,
+                    title: "升级未成功...",
+                    text:  err.data,
                     type: "warning"
                 });
                 // $modal.upgradeValue = err.data;
@@ -545,16 +546,18 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
         var data = {
             uid: currentData.Uid
         };
-
+        App.startPageLoading({message: '正在加载数据...'});
         $http.post("/terminal_restart", data)
             .then(function (res) {
                 console.warn("Send Terminal Config Message Done:", res);
+                App.stopPageLoading();
                 swal({
                     title: "信息已发送",
                     text: res.data,
                     type: "success"
                 });
             }, function (err) {
+                App.stopPageLoading();
                 swal({
                     title: "信息发送失败",
                     text: err.data,
@@ -786,15 +789,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
-    $modal.fcode1 = [
+    $modal.fcode2 = [
         {Id: 1, Name: "01", Value: 1},
         {Id: 2, Name: "02", Value: 2},
-        {Id: 3, Name: "03", Value: 3}
-    ];
-    $modal.fcode2 = [
         {Id: 3, Name: "03", Value: 3},
-        {Id: 4, Name: "04", Value: 4},
         {Id: 99, Name: "None", Value: 99}
+    ];
+    $modal.fcode1 = [
+        {Id: 3, Name: "03", Value: 3},
+        {Id: 4, Name: "04", Value: 4}
+
     ];
 
     //高低字节
@@ -1223,6 +1227,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         };
 
 
+                        //表单验证
                         if(configData.parameter_id){
                             if(j===0 || j===1 || j===5){
                                 if(fcodeName===0||modbus===0||termByte===0){
@@ -1233,6 +1238,28 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     });
                                     App.stopPageLoading();
                                     return false;
+                                }
+                                if(fcodeName===3){
+                                    if(modbus<=40000||modbus>50000){
+                                        swal({
+                                            title: "MODBUS地址错误",
+                                            text:"功能码为03，MODBUS地址范围40001-50000",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                                if(fcodeName===4){
+                                    if(modbus<=30000||modbus>40000){
+                                        swal({
+                                            title: "MODBUS地址错误",
+                                            text:"功能码为04，MODBUS地址范围30001-40000",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
                                 }
                             }
 
@@ -1245,6 +1272,66 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     });
                                     App.stopPageLoading();
                                     return false;
+                                }
+                                if(fcodeName===1){
+                                    if(modbus<=1||modbus>10000){
+                                        swal({
+                                            title: "开关通道MODBUS地址错误",
+                                            text:"功能码为01，MODBUS地址范围00001-10000",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                    if(bitAddress<1||bitAddress>8){
+                                        swal({
+                                            title: "位地址错误",
+                                            text:"功能码为01，对应位地址范围为1-8",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                                if(fcodeName===2){
+                                    if(modbus<=10000||modbus>20000){
+                                        swal({
+                                            title: "开关通道MODBUS地址错误",
+                                            text:"功能码为02，MODBUS地址范围10001-20000",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                    if(bitAddress<1||bitAddress>8){
+                                        swal({
+                                            title: "位地址错误",
+                                            text:"功能码为02，对应位地址范围为1-8",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                                if(fcodeName===3){
+                                    if(modbus<=40000||modbus>50000){
+                                        swal({
+                                            title: "开关通道MODBUS地址错，请修改",
+                                            text:"功能码为03，MODBUS地址范围40001-50000",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                    if(bitAddress<1||bitAddress>16){
+                                        swal({
+                                            title: "位地址错误",
+                                            text: "功能码为03，对应位地址范围为1-16",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
                                 }
                             }
 
@@ -1326,7 +1413,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         confirmButtonText: "确定下发",
                         cancelButtonText: "取消",
                         showLoaderOnConfirm:true
-                    }).then(function(isConfirm){
+                    }).then(function(){
                         App.startPageLoading({message: '正在加载数据...'});
                         $http.post("/issued_config",
                             {uid:$modal.currentData.Uid, code:$modal.currentData.code})
