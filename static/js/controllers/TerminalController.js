@@ -29,7 +29,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     ];
 
     terminal.refreshDataTables = function (callback) {
-        $http.get('/terminal_list/')
+        $http.get('/terminal_issued_list')
             .then(function (res) {
                 // $scope.parameters = data;
                 var datasource = res.data;
