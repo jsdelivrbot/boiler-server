@@ -21,7 +21,7 @@ func (ctl *TerminalController) TerminalList() {
 	usr := ctl.GetCurrentUser()
 
 	var terminals []*models.Terminal
-
+	//查询终端
 	qs := dba.BoilerOrm.QueryTable("terminal")
 	qs = qs.RelatedSel("Organization__Type")
 	if usr.IsCommonUser() ||
@@ -35,19 +35,39 @@ func (ctl *TerminalController) TerminalList() {
 	} else {
 		goazure.Info("Returned Terminals RowNum:", num)
 	}
-
+	//查询绑定锅炉的终端
 	var combines []*models.BoilerTerminalCombined
 	if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Boiler").
 		OrderBy("TerminalSetId").
 		All(&combines); err != nil {
 		goazure.Error("Get TerminalCombined Error:", err, num)
 	}
-
-	for _, ter := range terminals {
+	//查询终端版本号
+	verSql:="select sn,ver,update_time from issued_version"
+	var vi []VersionIssued
+	termIssued:=make([]models.TerminalIssued,len(terminals))
+	if _,error:=dba.BoilerOrm.Raw(verSql).QueryRows(&vi);error!=nil{
+		goazure.Error("Select issued_version Error")
+	}
+	fmt.Println("versionIssued:",vi)
+    //有绑定的将绑定的锅炉加进去
+	for t, ter := range terminals {
+		fmt.Println("ttt:",t)
+		termIssued[t].Terminal=ter
 		for _, cb := range combines {
 			if ter.Uid == cb.Terminal.Uid {
 				cb.Boiler.TerminalSetId = cb.TerminalSetId
 				ter.Boilers = append(ter.Boilers, cb.Boiler)
+			}
+		}
+		for _,v := range vi {
+			i,err:=strconv.ParseInt(v.Sn,10,64)
+			if err!=nil{
+				goazure.Error("ParseInt Error")
+			}
+			if i == ter.TerminalCode {
+				termIssued[t].Ver = v.Ver
+				termIssued[t].UpdateTime = v.UpdateTime
 			}
 		}
 	}
@@ -55,7 +75,7 @@ func (ctl *TerminalController) TerminalList() {
 	//se := ctl.GetSession(SESSION_CURRENT_USER)
 	//fmt.Println("\nBoiler Get CurrentUser: ", usr, " | ", se);
 
-	ctl.Data["json"] = terminals
+	ctl.Data["json"] = termIssued
 	ctl.ServeJSON()
 }
 

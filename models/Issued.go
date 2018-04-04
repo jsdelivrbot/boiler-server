@@ -1,4 +1,6 @@
 package models
+
+
 type IssuedByte struct{
 	Id int `orm:"pk"`
 	Name string
