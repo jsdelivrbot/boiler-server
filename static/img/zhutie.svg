@@ -303,7 +303,9 @@
 </g>
 
 	<g>
-		
+		<text x="780" y="50" fill="#000000" font-size="32">供水</text>
+		<text x="180" y="605" fill="#000000" font-size="32">回水</text>
+		<text x="200" y="215" fill="#000000" font-size="32">排烟</text>
 	</g>
 
 	<g id="dash_container">
