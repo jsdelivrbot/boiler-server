@@ -69,20 +69,20 @@
 
     <tbody style="text-align: center">
     <tr ng-repeat="data in terminal.datasource">
-        <td> {{ data.num }} </td>
+        <td> {{ data.Terminal.num }} </td>
         <td>
-            {{ data.Name }} <br>
+            {{ data.Terminal.Name }} <br>
             <span class="label label-sm label-default">
-            {{ data.Organization.Name }}
+            {{ data.Terminal.Organization.Name }}
             </span>
         </td>
-        <td> {{ data.code }} </td>
+        <td> {{ data.Terminal.code }} </td>
         <td>
-            <span ng-class="['label', {'label-success': data.IsOnline||data.isBurning}, {'label-default': !data.IsOnline && !data.isBurning}]">{{ data.online }}</span>
+            <span ng-class="['label', {'label-success': data.Terminal.IsOnline||data.Terminal.isBurning}, {'label-default': !data.Terminal.IsOnline && !data.Terminal.isBurning}]">{{ data.Terminal.online }}</span>
         </td>
         <td>
             <!--<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">-->
-            <a ng-repeat="boiler in data.Boilers"
+            <a ng-repeat="boiler in data.Terminal.Boilers"
                ui-sref="runtime.info({boiler: boiler.Uid, from: 'terminal'})"
                class="label label-info label-sm"
                style="margin: 4px 4px; display: inline-block; clear: both;">
@@ -98,32 +98,34 @@
             <!---->
         <!--</td>-->
         <td>
-            <span ng-class="{'label-default':true}" class="label">
-                未配置
+
+            {{data.Ver}}<br/>
+            <span ng-if="data.UpdateTime" class="label label-default label-sm">
+                {{data.UpdateTime | date:'yyyy-MM-dd' }}
             </span>
         </td>
         <td>
             通用模板一
         </td>
         <td style="min-width: 238px;">
-            <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.code);">
+            <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.Terminal.code);">
                 <i class="fa fa-eye"></i>
                 消息调试
             </button>
             <div class="btn-group">
             <button ng-show="currentUser.Role.RoleId >= 10"
-                    ng-click="terminal.view(data)"
+                    ng-click="terminal.view(data.Terminal)"
                     class="btn edit btn-outline btn-circle btn-sm green">
                 <i class="fa fa-eye"></i> 查看
             </button>
             <button ng-show="currentUser.Role.RoleId < 10"
-                    ng-click="terminal.setting(data)"
+                    ng-click="terminal.setting(data.Terminal)"
                     class="btn edit btn-outline btn-circle btn-sm blue"
                     >
                 <i class="fa fa-cogs"></i> 终端关联
             </button>
             <button
-                    ng-click="terminal.channel(data)"
+                    ng-click="terminal.channel(data.Terminal)"
                     class="btn edit btn-outline btn-circle btn-sm blue-hoki"
                     style="margin-left: 8px;">
                 <i class="fa fa-server"></i> 通道配置

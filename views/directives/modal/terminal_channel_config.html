@@ -283,9 +283,9 @@
                         <script type="text/ng-template" id="modbusTips.html">
                             <div>
                                 <p>
-                                    功能码03对应范围 <b>40001-50000</b>
+                                    功能码03对应范围 <b>40001-49999</b>
                                     <br/>
-                                    功能码04对应范围 <b>30001-40000</b>
+                                    功能码04对应范围 <b>30001-39999</b>
                                 </p>
                             </div>
                         </script>
@@ -399,20 +399,20 @@
             <script type="text/ng-template" id="modbusTips2.html">
                 <div>
                     <p>
-                        功能码01对应范围 <b>00001-10000</b>
+                        功能码01对应范围 <b>00001-09999</b>
                         <br/>
-                        功能码02对应范围 <b>10001-20000</b>
+                        功能码02对应范围 <b>10001-19999</b>
                         <br/>
-                        功能码03对应范围 <b>40001-50000</b>
+                        功能码03对应范围 <b>40001-49999</b>
                     </p>
                 </div>
             </script>
             <script type="text/ng-template" id="bitAddressTips.html">
                 <div>
                     <p>
-                        功能码01对应位地址 <b>1-8</b>
+                        功能码01对应位地址 <b>1</b>
                         <br/>
-                        功能码02对应位地址 <b>1-8</b>
+                        功能码02对应位地址 <b>1</b>
                         <br/>
                         功能码03对应位地址 <b>1-16</b>
                     </p>
@@ -499,6 +499,7 @@
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][2].Switch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter"
+                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][2].Switch.Function,outerIndex,2)"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][2].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -605,6 +606,7 @@
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][3].Switch.Function"
                                    theme="bootstrap"  ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter"
+                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][3].Switch.Function,outerIndex,3)"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][3].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
@@ -711,6 +713,7 @@
                     <td>
                         <ui-select ng-model="$modal.chanMatrix[outerIndex][4].Switch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter"
+                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][4].Switch.Function,outerIndex,4)"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][4].Switch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
