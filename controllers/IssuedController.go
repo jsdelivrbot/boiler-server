@@ -340,20 +340,28 @@ func (ctl *IssuedController) IssuedConfig() {
 		return
 	}else if len(buf) >4 {
 		if buf[15]==16 {
+			fmt.Println("返回的配置状态:",buf[15])
 			newVer:=ByteToInt(buf[13:15])
+			fmt.Println("返回的版本号:",newVer)
 			termCode:=fmt.Sprintf("%s",buf[7:13])
+			fmt.Println("返回的终端版本号:",termCode)
 			if newVer==1 {
 				sql:="insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now())"
 				if _,err:=dba.BoilerOrm.Raw(sql,termCode,newVer).Exec();err!=nil{
 					goazure.Error("insert issued_version Error",err)
+					fmt.Println("终端版本号插入失败")
 				}
+				fmt.Println("终端版本号插入成功")
 			} else {
 				sql:="update issued_version set ver=?,update_time=now() where sn=?"
 				if _,err:=dba.BoilerOrm.Raw(sql,newVer,termCode).Exec();err!=nil{
 					goazure.Error("update issued_version Error",err)
+					fmt.Println("终端版本号修改失败")
 				}
+				fmt.Println("终端版本号修改成功")
 			}
 		} else {
+			fmt.Println("返回的配置状态:",buf[15])
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("终端配置错误"))
 		}
