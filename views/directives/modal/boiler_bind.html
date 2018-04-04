@@ -26,7 +26,7 @@
             <!--<label class="control-label">选择终端</label>-->
             <ui-select ng-model="$modalBind.terminal" theme="bootstrap">
                 <ui-select-match placeholder="请输入要绑定的终端号...">{{$select.selected.text}}</ui-select-match>
-                <ui-select-choices ng-show="$select.search.length >= 4 && " repeat="ter in $modalBind.terminals | filter: $select.search">
+                <ui-select-choices  repeat="ter in $modalBind.terminals | filter: $select.search">
                     <span ng-bind-html="ter.text | highlight: $select.search"></span>
                     <!--<small ng-bind-html="ter.text | highlight: $select.search"></small>-->
                 </ui-select-choices>
