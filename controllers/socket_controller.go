@@ -27,12 +27,15 @@ func c9(Code string)([]byte) {
 	return buf
 }
 
-func c0(Code string,b []byte)([]byte) {
+func c0(b []byte,Code string,ver int32)([]byte) {
 	words_1:="\xac\xeb\x01\x60\x00\x00\xc0"+Code
-	buf:=append([]byte(words_1),b...)
+	buf:=append([]byte(words_1),IntToByte(ver)...)
+	fmt.Println(buf)
+	buf=append(buf,b...)
+	fmt.Println(buf)
 	words_2:="\x00\x00\xaf\xed"
 	buf=append(buf,[]byte(words_2)...)
-	copy(buf[356:358],CRC16(buf[4:356]))
+	copy(buf[358:360],CRC16(buf[4:358]))
 	return buf
 }
 
@@ -59,8 +62,8 @@ func Receive(conn net.Conn) ([]byte) {
 	return buf[:n]
 }
 
-func SendConfig(conn net.Conn,b []byte,Code string) {
-		buf:=c0(Code,b)
+func SendConfig(conn net.Conn,b []byte,ver int32,Code string) {
+		buf:=c0(b,Code,ver)
 		n,err:=conn.Write(buf)
 		if err!=nil {
 			goazure.Error("%s%s","Write error:", err)
@@ -71,43 +74,43 @@ func SendConfig(conn net.Conn,b []byte,Code string) {
 }
 
 //下发配置
-func (ctl *SocketController)SocketConfigSend(b []byte,code string) {
+func (ctl *SocketController)SocketConfigSend(b []byte,ver int32,code string)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	goazure.Info("connect success")
-	SendConfig(conn,b,code)
+	SendConfig(conn,b,ver,code)
 	buf:=Receive(conn)
-	fmt.Println("配置下发返回包：",buf)
 	conn.Close()
+	return buf
 }
 
 //重启
-func (ctl *SocketController)SocketTerminalRestart(code string) {
+func (ctl *SocketController)SocketTerminalRestart(code string)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		return
+		return nil
 	}
 	goazure.Info("connect success")
 	Send(conn,code)
-	b:=Receive(conn)
-	fmt.Println("aaaaaaa:",b)
+	buf:=Receive(conn)
 	conn.Close()
+	return buf
 }
 func b4()([]byte){
 	words_2 := "\xac\xeb\x00\x0b\x00\x00\xb4\x30\x33\x30\x30\x39\x30\x30\x31\x00\x00\xaf\xed"

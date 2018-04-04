@@ -2,6 +2,12 @@ package models
 
 import "time"
 
+type TerminalIssued struct {
+	Terminal *Terminal
+	Ver    int32
+	UpdateTime time.Time
+}
+
 type Terminal struct {
 	MyUidObject
 
