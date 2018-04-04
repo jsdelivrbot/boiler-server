@@ -342,6 +342,7 @@ func (ctl *IssuedController) IssuedConfig() {
 		if buf[15]==16 {
 			fmt.Println("返回的配置状态:",buf[15])
 			newVer:=ByteToInt(buf[13:15])
+			fmt.Println("14到15字节：",buf[13:15])
 			fmt.Println("返回的版本号:",newVer)
 			termCode:=fmt.Sprintf("%s",buf[7:13])
 			fmt.Println("返回的终端版本号:",termCode)
