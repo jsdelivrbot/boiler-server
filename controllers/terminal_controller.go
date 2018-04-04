@@ -42,6 +42,43 @@ func (ctl *TerminalController) TerminalList() {
 		All(&combines); err != nil {
 		goazure.Error("Get TerminalCombined Error:", err, num)
 	}
+	for _, ter := range terminals {
+		for _, cb := range combines {
+			if ter.Uid == cb.Terminal.Uid {
+				cb.Boiler.TerminalSetId = cb.TerminalSetId
+				ter.Boilers = append(ter.Boilers, cb.Boiler)
+			}
+		}
+	}
+	ctl.Data["json"] = terminals
+	ctl.ServeJSON()
+}
+
+func (ctl *TerminalController) TerminalIssuedList() {
+	usr := ctl.GetCurrentUser()
+
+	var terminals []*models.Terminal
+	//查询终端
+	qs := dba.BoilerOrm.QueryTable("terminal")
+	qs = qs.RelatedSel("Organization__Type")
+	if usr.IsCommonUser() ||
+		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
+		qs = qs.Filter("IsDemo", true)
+	} else if usr.IsOrganizationUser() {
+		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
+	}
+	if num, err := qs.Filter("IsDeleted", false).OrderBy("IsDemo", "TerminalCode").All(&terminals); err != nil || num == 0 {
+		goazure.Error("Read Terminal List Error:", err, num)
+	} else {
+		goazure.Info("Returned Terminals RowNum:", num)
+	}
+	//查询绑定锅炉的终端
+	var combines []*models.BoilerTerminalCombined
+	if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Boiler").
+		OrderBy("TerminalSetId").
+		All(&combines); err != nil {
+		goazure.Error("Get TerminalCombined Error:", err, num)
+	}
 	//查询终端版本号
 	verSql:="select sn,ver,update_time from issued_version"
 	var vi []VersionIssued

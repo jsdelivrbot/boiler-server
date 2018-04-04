@@ -28,7 +28,7 @@ func c9(Code string)([]byte) {
 }
 
 func c0(b []byte,Code string,ver int32)([]byte) {
-	words_1:="\xac\xeb\x01\x60\x00\x00\xc0"+Code
+	words_1:="\xac\xeb\x01\x62\x00\x00\xc0"+Code
 	buf:=append([]byte(words_1),IntToByte(ver)...)
 	fmt.Println(buf)
 	buf=append(buf,b...)
