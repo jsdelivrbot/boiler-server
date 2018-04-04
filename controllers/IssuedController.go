@@ -11,6 +11,7 @@ import (
 	"github.com/AzureRelease/boiler-server/conf"
 	"encoding/binary"
 	"bytes"
+	"time"
 )
 
 type IssuedController struct {
@@ -24,7 +25,6 @@ type ConfIssued struct {
 	Uid string  `json:"uid"`
 	Code string  `json:"code"`
 }
-
 
 func IntToByteOne(Int int32)([]byte){
 	b_buf := bytes.NewBuffer([]byte{})
@@ -69,6 +69,12 @@ type CommunicationIssued struct {
 	CorrespondType      int
 	SubAddress      int
 	HeartBeat    int
+}
+
+type VersionIssued struct {
+	Sn         string
+	Ver         int32
+	UpdateTime  time.Time
 }
 
 //下发配置
@@ -304,9 +310,22 @@ func (ctl *IssuedController) IssuedConfig() {
 		Byte = append(Byte,IntToByteOne(int32(communication.SubAddress))...)
 		Byte = append(Byte,IntToByteOne(int32(communication.HeartBeat))...)
 	}
-	fmt.Println(communication)
-	fmt.Println(Byte)
-	buf:=SocketCtrl.SocketConfigSend(Byte,confIssued.Code)
+	//查询终端版本号
+	var versionIssued VersionIssued
+	var version int32
+	versionSql:="select sn,ver from issued_version where sn=?"
+	if err:=dba.BoilerOrm.Raw(versionSql,confIssued.Code).QueryRow(&versionIssued);err!=nil{
+		goazure.Error("Query issued_version Error",err)
+		version =1
+	} else {
+		fmt.Println("versionIssued:",versionIssued)
+		version = versionIssued.Ver + 1
+		if version >=32769 {
+			version = 1
+		}
+	}
+	fmt.Println("终端版本号为：",version)
+	buf:=SocketCtrl.SocketConfigSend(Byte,version,confIssued.Code)
 	if buf==nil{
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("发送报文失败"))
@@ -319,6 +338,28 @@ func (ctl *IssuedController) IssuedConfig() {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
 		return
+	}else if len(buf) >4 {
+		if buf[15]==16 {
+			newVer:=ByteToInt(buf[13:15])
+			termCode:=fmt.Sprintf("%s",buf[7:13])
+			if newVer==1 {
+				sql:="insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now())"
+				if _,err:=dba.BoilerOrm.Raw(sql,termCode,newVer).Exec();err!=nil{
+					goazure.Error("insert issued_version Error",err)
+				}
+			} else {
+				sql:="update issued_version set ver=?,update_time=now() where sn=?"
+				if _,err:=dba.BoilerOrm.Raw(sql,newVer,termCode).Exec();err!=nil{
+					goazure.Error("update issued_version Error",err)
+				}
+			}
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端配置错误"))
+		}
+	} else {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
 	}
 }
 
@@ -353,6 +394,15 @@ func (ctl *IssuedController) TerminalRestart() {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
 		return
+	} else if len(buf)>4 {
+		if buf[15]!=16 {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端配置错误"))
+		return
+		}
+	} else {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
 	}
 }
 type AppBinInfo struct {
@@ -398,13 +448,13 @@ func (ctl *IssuedController)UpgradeConfiguration() {
 			}
 		} else if maps[0]["burnedStatus"] == "0" && maps[0]["burningStatus"] == "2" {
 			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("终端未重启,等待终端连接升级"))
+			ctl.Ctx.Output.Body([]byte("等待连接升级"))
 		} else if maps[0]["burnedStatus"] == "0" && maps[0]["burningStatus"] == "1" {
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("正在升级中。。。"))
 		} else if maps[0]["burnedStatus"] == "0" && maps[0]["burningStatus"] == "0" {
 			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("等待升级"))
+			ctl.Ctx.Output.Body([]byte("等待连接升级"))
 		}
 	} else {
 		fmt.Println("organized:", terminal.Organization.Name)
@@ -412,8 +462,6 @@ func (ctl *IssuedController)UpgradeConfiguration() {
 			" values(?,?,now(),now(),0,0,0,0)", terminal.TerminalCode, terminal.Organization.Name).Exec()
 		if err != nil {
 			goazure.Error("Insert appBinSatus Error:", err)
-		} else {
-
 		}
 	}
 
