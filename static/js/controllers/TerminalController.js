@@ -33,37 +33,39 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
             .then(function (res) {
                 // $scope.parameters = data;
                 var datasource = res.data;
-
                 var num = 0;
                 console.info("Get Terminal List Resp:", res);
                 angular.forEach(datasource, function (d, key) {
-                    d.num = ++num;
-                    d.code = d.TerminalCode.toString();
-
-                    d.online = d.IsOnline? "在线" : "离线";
-                    if(d.Boilers){
-                        $http.get('/boiler/state/is_burning/?boiler=' + d.Boilers[0].Uid)
+                    var t = d.Terminal;
+                    t.num = ++num;
+                    t.code = t.TerminalCode.toString();
+                    t.online = t.IsOnline? "在线" : "离线";
+                    if(t.Boilers){
+                        $http.get('/boiler/state/is_burning/?boiler=' + t.Boilers[0].Uid)
                             .then(function (res) {
                                 // console.error("Fetch Status Resp:", res.data, d);
-                                d.isBurning = (res.data.value === "true");
-                                d.online = (d.IsOnline||d.isBurning) ? "在线" : "离线";
+                                t.isBurning = (res.data.value === "true");
+                                t.online = (t.IsOnline||t.isBurning) ? "在线" : "离线";
                             }, function (err) {
                                 console.error('Fetch Status Err!', err);
                             });
                     }
 
+                    if(d.UpdateTime==="0001-01-01T00:00:00Z"){
+                        d.UpdateTime = null;
+                    }
 
-                    if (d.code.length < 6) {
-                        for (var l = d.code.length; l < 6; l++) {
-                            d.code = "0" + d.code;
+                    if (t.code.length < 6) {
+                        for (var l = t.code.length; l < 6; l++) {
+                            t.code = "0" + t.code;
                         }
                     }
-                    d.simNum = d.SimNumber.length > 0 ? d.SimNumber : " - ";
-                    d.ip = d.LocalIp.length > 0 ? d.LocalIp : " - ";
+                    t.simNum = t.SimNumber.length > 0 ? t.SimNumber : " - ";
+                    t.ip = t.LocalIp.length > 0 ? t.LocalIp : " - ";
 
 
-                    if (currentData && currentData.Uid === d.Uid) {
-                        currentData = d;
+                    if (currentData && currentData.Uid === t.Uid) {
+                        currentData = t;
                     }
                 });
 
@@ -935,22 +937,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     $modal.chanMatrix[i][j].SwitchStatus = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.SwitchStatus;
                     $modal.chanMatrix[i][j].SequenceNumber = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.SequenceNumber;
                     $modal.chanMatrix[i][j].noStatus = false;
-                   /*if(j===0||j===1||j===5){
 
-                       $modal.fcodeName[i][j] = $modal.chanMatrix[i][j].Analogue.Function;
-                       //MODBUS
-                       $modal.mcode[i][j] = $modal.chanMatrix[i][j].Analogue.Modbus;
-                       //高低字节
-                       $modal.hlCodeNames[i][j] = $modal.chanMatrix[i][j].Analogue.Byte;
-
-                   }
-                   if(j>=2 && j<5){
-                       $modal.fcodeName[i][j] = $modal.chanMatrix[i][j].Switch.Function;
-                       //MODBUS
-                       $modal.mcode[i][j] = $modal.chanMatrix[i][j].Switch.Modbus;
-                       //位地址
-                       $modal.bitAddress[i][j] = $modal.chanMatrix[i][j].Switch.BitAddress;
-                   }*/
 
 
                 }
@@ -1101,6 +1088,14 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.initCurrent();
 
+
+    $scope.fCodeChange =function (fcode,i,j) {
+        console.log(fcode);
+        if(fcode.Id ===1||fcode.Id ===2){
+            $modal.chanMatrix[i][j].Switch.BitAddress = 1;
+        }
+    };
+
     $scope.setStatus = function(outerIndex, innerIndex, status, sn) {
         // console.warn("$scope.setStatus", outerIndex, innerIndex, status, sn);
         $modal.dataMatrix[outerIndex][innerIndex].Status = status;
@@ -1240,10 +1235,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     return false;
                                 }
                                 if(fcodeName===3){
-                                    if(modbus<=40000||modbus>50000){
+                                    if(modbus<=40000||modbus>=50000){
                                         swal({
                                             title: "MODBUS地址错误",
-                                            text:"功能码为03，MODBUS地址范围40001-50000",
+                                            text:"功能码为03，MODBUS地址范围40001-49999",
                                             type: "error"
                                         });
                                         App.stopPageLoading();
@@ -1251,10 +1246,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     }
                                 }
                                 if(fcodeName===4){
-                                    if(modbus<=30000||modbus>40000){
+                                    if(modbus<=30000||modbus>=40000){
                                         swal({
                                             title: "MODBUS地址错误",
-                                            text:"功能码为04，MODBUS地址范围30001-40000",
+                                            text:"功能码为04，MODBUS地址范围30001-39999",
                                             type: "error"
                                         });
                                         App.stopPageLoading();
@@ -1274,19 +1269,19 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     return false;
                                 }
                                 if(fcodeName===1){
-                                    if(modbus<1||modbus>10000){
+                                    if(modbus<1||modbus>=10000){
                                         swal({
                                             title: "开关通道MODBUS地址错误",
-                                            text:"功能码为01，MODBUS地址范围00001-10000",
+                                            text:"功能码为01，MODBUS地址范围00001-09999",
                                             type: "error"
                                         });
                                         App.stopPageLoading();
                                         return false;
                                     }
-                                    if(bitAddress<1||bitAddress>8){
+                                    if(bitAddress!=1){
                                         swal({
                                             title: "位地址错误",
-                                            text:"功能码为01，对应位地址范围为1-8",
+                                            text:"功能码为01，对应位地址为1" ,
                                             type: "error"
                                         });
                                         App.stopPageLoading();
@@ -1294,19 +1289,19 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     }
                                 }
                                 if(fcodeName===2){
-                                    if(modbus<=10000||modbus>20000){
+                                    if(modbus<=10000||modbus>=20000){
                                         swal({
                                             title: "开关通道MODBUS地址错误",
-                                            text:"功能码为02，MODBUS地址范围10001-20000",
+                                            text:"功能码为02，MODBUS地址范围10001-19999",
                                             type: "error"
                                         });
                                         App.stopPageLoading();
                                         return false;
                                     }
-                                    if(bitAddress<1||bitAddress>8){
+                                    if(bitAddress!=1){
                                         swal({
                                             title: "位地址错误",
-                                            text:"功能码为02，对应位地址范围为1-8",
+                                            text:"功能码为02，对应位地址为1",
                                             type: "error"
                                         });
                                         App.stopPageLoading();
@@ -1314,10 +1309,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     }
                                 }
                                 if(fcodeName===3){
-                                    if(modbus<=40000||modbus>50000){
+                                    if(modbus<=40000||modbus>=50000){
                                         swal({
                                             title: "开关通道MODBUS地址错，请修改",
-                                            text:"功能码为03，MODBUS地址范围40001-50000",
+                                            text:"功能码为03，MODBUS地址范围40001-49999",
                                             type: "error"
                                         });
                                         App.stopPageLoading();
