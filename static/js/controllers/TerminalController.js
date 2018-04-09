@@ -147,6 +147,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         terminal.msgData.code = data;
     }
 
+    //消息调试
     terminal.getOriginMessages = function () {
         // terminal.msgData = {};
         // terminal.msgData.isEmpty = true;
@@ -282,28 +283,17 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
 
     //终端批量配置
     terminal.groupConfig = function (){
-        var items = [
-            {
-                start:680001,
-                end:680100,
-                template:"通用模板一"
-            },
-            {
-                start:680001,
-                end:680100,
-                template:"通用模板一"
-            }
-        ];
+
         var modalInstance = $uibModal.open({
             templateUrl: 'groupConfig.html',
             controller: 'ModalGroupConfigCtrl',
             size: "lg",
             windowClass: 'zindex',
-            resolve: {
+           /* resolve: {
                 items1: function () {
                     return items;
                 }
-            }
+            }*/
         });
 
         modalInstance.result.then(function (selectedItem) {
@@ -431,7 +421,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
 
     }
 
-    //按钮
+    //下发按钮
     $modal.down = function () {
         App.startPageLoading({message: '正在加载数据...'});
         $http.post("/issued_config",
@@ -443,6 +433,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
                     text: res.data,
                     type: "success"
                 });
+                terminal.refreshDataTables();
             },function (err) {
                 App.stopPageLoading();
                 swal({
@@ -790,9 +781,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.category = 9;
 
-    //下发test
-
-
+    //--------------下发----------------
     //功能码
     $modal.fcode = $rootScope.fcode; //分类
     $modal.fcode2 = [
@@ -854,7 +843,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         if(!$modal.communParams){
             $http.post("/issued_communication",{terminal_code:currentData.code}).then(function (res) {
                 $modal.communParams = res.data;
-                console.log($modal.communParams);
+                // console.log($modal.communParams);
                 //通信接口地址
                 $modal.communiInterface  = $modal.communParams.CorrespondType;
 
@@ -886,8 +875,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.quickSet = function (){
         var items = [
             {
-                id:$modal.currentData.code,
-                template:"通用模板一"
+                id: $modal.currentData.code,
+                template: {
+                    id:1,
+                    name:"通用模板一"
+                }
             }
         ];
         var modalInstance = $uibModal.open({
@@ -1402,7 +1394,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             .then(function (res) {
                  App.stopPageLoading();
                 terminal.refreshDataTables();
-                $uibModalInstance.close('success');
                 swal({
                     title: "通道配置更新成功，是否立刻下发？",
                     type: "success",
@@ -1421,6 +1412,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     text: res.data,
                                     type: "success"
                                 });
+                                terminal.refreshDataTables();
                             },function (err) {
                                 App.stopPageLoading();
                                 swal({
@@ -1429,9 +1421,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     type: "warning"
                                 });
                             });
+                    $uibModalInstance.close('success');
                     })
                     .then(function () {
-
                     currentData = null;
                 });
             }, function (err) {
@@ -1451,6 +1443,269 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         currentData = null;
     };
+
+    //模板另存为
+    $modal.templateSave = function () {
+        if (!$modal.code.length || $modal.code.length !== 6) {
+            console.error("$modal.code error:", $modal.code);
+            return;
+        }
+        var configUpload = [];
+        for (var i = 0; i < $modal.dataMatrix.length; i++) {
+            for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
+                if ($modal.dataMatrix[i][j] !== $modal.chanMatrix[i][j]) {
+                    var chanParamId = $modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].Parameter ? $modal.chanMatrix[i][j].Parameter.Id : 0;
+                    var dataParamId = $modal.dataMatrix[i][j] && $modal.dataMatrix[i][j].Parameter ? $modal.dataMatrix[i][j].Parameter.Id : 0;
+                    var chanStatus = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Status : 0 ;
+                    var dataStatus = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Status : 0 ;
+                    var dataSeqNo = $modal.dataMatrix[i][j] && dataStatus === 1 ? $modal.dataMatrix[i][j].SequenceNumber : -1;
+                    var chanSwitch = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].SwitchStatus : 0 ;
+                    var dataSwitch = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].SwitchStatus : 0 ;
+                    var chanRanges, dataRanges = [];
+                    if (j === 5) {
+                        chanRanges = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Ranges : [] ;
+                        dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
+                    }
+                    //功能码
+                    var fcodeName = 0;
+                    //MODBUS
+                    var modbus = 0;
+                    //位地址
+                    var bitAddress = 0;
+                    //高低字节
+                    var termByte = 0;
+                    if(j===0 || j===1 || j===5){
+                        fcodeName = $modal.chanMatrix[i][j].Analogue && $modal.chanMatrix[i][j].Analogue.Function ? $modal.chanMatrix[i][j].Analogue.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Modbus ? $modal.chanMatrix[i][j].Analogue.Modbus:0;
+                        termByte = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Byte?$modal.chanMatrix[i][j].Analogue.Byte.Id:0 ;
+                    }
+
+                    if(j>=2 && j<5){
+                        fcodeName = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Function?$modal.chanMatrix[i][j].Switch.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Modbus? $modal.chanMatrix[i][j].Switch.Modbus:0;
+                        bitAddress = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.BitAddress? $modal.chanMatrix[i][j].Switch.BitAddress:0;
+                    }
+
+                    if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
+                        var chan = j + 1;
+                        var num = i + 1;
+                        if (j >= 2 && j < 5) {
+                            chan = 3;
+                            num = i + (j - 2) * 16 + 1;
+                        } else if (j === 5) {
+                            chan = j;
+                        }
+
+                        var configData = {
+                            terminal_code: $modal.code,
+                            parameter_id: dataParamId,
+                            channel_type: chan,
+                            channel_number: num,
+
+                            status: dataStatus,
+                            sequence_number: dataSeqNo,
+
+                            switch_status: dataSwitch,
+
+                            fcodeName:fcodeName,
+                            modbus:parseInt(modbus),
+                            termByte:parseInt(termByte),
+                            bitAddress:parseInt(bitAddress)
+
+                        };
+
+                        //表单验证
+                        if(configData.parameter_id){
+                            if(j===0 || j===1 || j===5){
+                                if(fcodeName===0||modbus===0||termByte===0){
+                                    swal({
+                                        title: "通道配置更新失败",
+                                        text:"配置信息不全 ，参数不能为0 "+ i + j,
+                                        type: "error"
+                                    });
+                                    App.stopPageLoading();
+                                    return false;
+                                }
+                                if(fcodeName===3){
+                                    if(modbus<=40000||modbus>=50000){
+                                        swal({
+                                            title: "MODBUS地址错误",
+                                            text:"功能码为03，MODBUS地址范围40001-49999",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                                if(fcodeName===4){
+                                    if(modbus<=30000||modbus>=40000){
+                                        swal({
+                                            title: "MODBUS地址错误",
+                                            text:"功能码为04，MODBUS地址范围30001-39999",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                            }
+
+                            if(j>=2 && j<5){
+                                if(fcodeName===0||modbus===0||bitAddress===0){
+                                    swal({
+                                        title: "通道配置更新失败",
+                                        text:"配置信息不全"+ i + j,
+                                        type: "error"
+                                    });
+                                    App.stopPageLoading();
+                                    return false;
+                                }
+                                if(fcodeName===1){
+                                    if(modbus<1||modbus>=10000){
+                                        swal({
+                                            title: "开关通道MODBUS地址错误",
+                                            text:"功能码为01，MODBUS地址范围00001-09999",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                    if(bitAddress!=1){
+                                        swal({
+                                            title: "位地址错误",
+                                            text:"功能码为01，对应位地址为1" ,
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                                if(fcodeName===2){
+                                    if(modbus<=10000||modbus>=20000){
+                                        swal({
+                                            title: "开关通道MODBUS地址错误",
+                                            text:"功能码为02，MODBUS地址范围10001-19999",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                    if(bitAddress!=1){
+                                        swal({
+                                            title: "位地址错误",
+                                            text:"功能码为02，对应位地址为1",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                                if(fcodeName===3){
+                                    if(modbus<=40000||modbus>=50000){
+                                        swal({
+                                            title: "开关通道MODBUS地址错，请修改",
+                                            text:"功能码为03，MODBUS地址范围40001-49999",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                    if(bitAddress<1||bitAddress>16){
+                                        swal({
+                                            title: "位地址错误",
+                                            text: "功能码为03，对应位地址范围为1-16",
+                                            type: "error"
+                                        });
+                                        App.stopPageLoading();
+                                        return false;
+                                    }
+                                }
+                            }
+
+                        }
+
+                        if (j === 5 && dataParamId > 0) {
+                            configData.ranges = [];
+                            if (dataRanges.length <= 0) {
+                                console.warn("data:", dataParamId, dataStatus, dataRanges);
+                                console.warn("chan:", chanParamId, chanStatus, chanRanges);
+                                swal({
+                                    title: "状态量通道配置错误",
+                                    text: "已配置的状态量通道，需要完成其状态值的配置才可提交",
+                                    type: "error"
+                                });
+                                Ladda.create(document.getElementById('channel_ok')).stop();
+                                return;
+                            }
+                            for (var n in dataRanges) {
+                                var r = dataRanges[n];
+                                var rg = {};
+                                rg.min = r.Min;
+                                rg.max = r.Max;
+                                rg.name = r.Name;
+                                switch (typeof n) {
+                                    case "number":
+                                        rg.value = n;
+                                        break;
+                                    case "string":
+                                        rg.value = parseInt(n, 10);
+                                        break;
+                                }
+
+                                configData.ranges.push(rg);
+                            }
+                        }
+
+                        configUpload.push(configData);
+                    }
+                }
+            }
+        }
+
+        var cParam = {
+            terminal_code:$modal.code,
+            baudRate : $modal.BaudRate?$modal.BaudRate.Id:0,
+            dataBit : $modal.dataBit?$modal.dataBit.Id:0,
+            stopBit : $modal.stopBit?$modal.stopBit.Id:0,
+            checkDigit : $modal.checkDigit?$modal.checkDigit.Id:0,
+            communInterface : $modal.communiInterface?$modal.communiInterface.Id:0,
+            slaveAddress : $modal.subAdr?$modal.subAdr.Id:0,
+            heartbeat:$modal.heartbeat?$modal.heartbeat.Id:0
+        };
+
+        if(!cParam.baudRate||!cParam.dataBit||!cParam.stopBit||!cParam.checkDigit||!cParam.communInterface||!cParam.slaveAddress||!cParam.heartbeat){
+            swal({
+                title: "通道配置更新失败",
+                text:"通信参数不能为空 ",
+                type: "error"
+            });
+            App.stopPageLoading();
+            return false;
+        }
+
+        var modalInstance = $uibModal.open({
+            templateUrl: '/directives/modal/terminal_channel_template.html',
+            controller: 'ModalTerminalTemplateCtrl',
+            size: " ",
+            windowClass: 'zindex_sub',
+            resolve: {
+                cParam: function () {
+                    return cParam;
+                },
+                configUpload: function () {
+                    return configUpload;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            // $scope.selected = selectedItem;
+        }, function () {
+
+        });
+    }
+
+
 });
 
 angular.module('BoilerAdmin').controller('ModalTerminalBindCtrl', function ($uibModalInstance, $rootScope, $http, $filter, $modal, currentTerminal, setId) {
@@ -1629,11 +1884,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', 
     $modalRange.rangeChanged();
 });
 
-
-angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance, items1) {
-    $scope.items = items1;
-
-    $scope.template = [
+//批量导入配置
+angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance) {
+    $scope.items = [
+        {
+            start:null,
+            end:null,
+            template:null
+        }
+    ];
+    $scope.templates = [
         {
             id:1,
             name:"通用模板一"
@@ -1647,12 +1907,12 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             name:"通用模板三"
         }
     ];
-    $scope.selectedTemplate = $scope.template[0];
+    // $scope.selectedTemplate = $scope.template[0];
     $scope.addGroupConfig = function (){
         $scope.items.push({
-            start:680001,
-            end:680100,
-            template:"通用模板一"});
+            start:null,
+            end:null,
+            template:null});
     };
 
 
@@ -1665,6 +1925,7 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
     };
 });
 
+//快速设置
 angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, $uibModalInstance, items1) {
     /*var items = [
         {
@@ -1692,7 +1953,7 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
     $scope.addQuickSet = function (){
         $scope.items.push({
             id: null,
-            template:"通用模板一"});
+            template:null});
     };
 
 
@@ -1704,6 +1965,25 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
         $uibModalInstance.dismiss('cancel');
     };
 });
+
+//模板另存为
+angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $uibModalInstance,cParam,configUpload) {
+
+    console.log("cParam:",cParam,"configUpload:",configUpload);
+    $scope.templateName = "";
+    $scope.ok = function () {
+        if(!$scope.templateName){
+            return;
+        }
+        console.log($scope.templateName);
+        $uibModalInstance.close();
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
 
 
 

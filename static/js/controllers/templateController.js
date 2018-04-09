@@ -41,7 +41,7 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
         currentData = null;
         editing = true;
         var modalInstance = $uibModal.open({
-            templateUrl: '/directives/modal/terminal_channel_config.html',
+            templateUrl: '/directives/modal/template_config.html',
             controller: 'ModalEditTemplateCtrl',
             controllerAs: '$modal',
             size: "lg",
@@ -68,7 +68,7 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
         currentData = data;
         editing = true;
         var modalInstance = $uibModal.open({
-            templateUrl: '/directives/modal/terminal_channel_config.html',
+            templateUrl: '/directives/modal/template_config.html',
             controller: 'ModalEditTemplateCtrl',
             controllerAs: '$modal',
             size: "lg",
@@ -136,31 +136,7 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
         $rootScope.hlCodes = res.data;
     });
 
-    $http.get("/correspond_type_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/date_bit_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/heartbeat_packet_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/parity_bit").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/slave_address_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-    $http.get("/stop_bit_list").then(function (res) {
-        // $modal.hlCodes = res.data;
-    });
-
-})
+});
 
 
 
@@ -169,56 +145,103 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
     $modal.currentData = currentData;
     $modal.editing = editing;
     $modal.editingCode = true;
-    $modal.template = true;
+    // $modal.template = true;
 
     $modal.category = 9;
 
     //下发test
-    $modal.mcode = ["40001", "40002", "40003", "40004", "40005"];
-
-
     //功能码
-    $modal.fcode = $rootScope.fcode;
-    $modal.fcodeName = ["01", "02", "03", "04", "01"];
+    $modal.fcode = $rootScope.fcode; //分类
+    $modal.fcode2 = [
+        {Id: 1, Name: "01", Value: 1},
+        {Id: 2, Name: "02", Value: 2},
+        {Id: 3, Name: "03", Value: 3},
+        {Id: 99, Name: "None", Value: 99}
+    ];
+    $modal.fcode1 = [
+        {Id: 3, Name: "03", Value: 3},
+        {Id: 4, Name: "04", Value: 4}
+
+    ];
 
     //高低字节
-    $modal.hlCodes = $rootScope.hlCodes;
-    $modal.hlCodeNames = ["16位无符号数", "32位无符号数ABCD", "32位浮点型数ABCD","32位无符号数ABCD"];
+    $modal.hlCodes = $rootScope.hlCodes; //分类
 
-    $modal.bitAddress = ["1", "2", "3", "4", "0"];
-    $modal.BaudRate  = "9600";
-    $modal.BaudRates = ["9600","1000"];
-    $modal.dataBit  = "7";
-    $modal.dataBits = ["4","5","6","7"];
-    $modal.stopBit  = "1";
-    $modal.stopBits = ["1","2","3"];
-    $modal.checkDigit  = "无校验";
-    $modal.checkDigits = ["无校验","1","2"];
-    $modal.communicationInterface  = "RS485";
-    $modal.communicationInterfaces = ["RS485","00","22"];
-    $modal.subAdr  = "1";
-    $modal.subAdrs = ["1","2","3"];
+    //通信接口地址
+    $http.get("/correspond_type_list").then(function (res) {
+        $modal.communiInterfaces = res.data;
+    });
+
+    //数据位
+    $http.get("/date_bit_list").then(function (res) {
+        $modal.dataBits = res.data;
+    });
+
+    //心跳包频率
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        $modal.heartbeats = res.data;
+    });
+
+    //校验位
+    $http.get("/parity_bit").then(function (res) {
+        $modal.checkDigits = res.data;
+    });
+
+    //从机地址
+    $http.get("/slave_address_list").then(function (res) {
+        $modal.subAdrs = res.data;
+    });
+
+    //停止位
+    $http.get("/stop_bit_list").then(function (res) {
+        $modal.stopBits = res.data;
+    });
+
+
+    //波特率
+    $http.get("/baud_rate_list").then(function (res) {
+        $modal.BaudRates = res.data;
+    });
+
+
     $modal.terminalPass = "123456";
 
+    //通信参数
+    $modal.initParam = function () {
+        if(!$modal.communParams){
+            $http.post("/issued_communication",{terminal_code:currentData.code}).then(function (res) {
+                $modal.communParams = res.data;
+                // console.log($modal.communParams);
+                //通信接口地址
+                $modal.communiInterface  = $modal.communParams.CorrespondType;
 
-    $modal.hlCodeNamesCopy = angular.copy($modal.hlCodeNames);
-    for(i=0;i<12;i++){
-        if (!$modal.hlCodeNamesCopy[i]) {
-            $modal.hlCodeNamesCopy[i] = "默认(未配置)";
-        };
-        if (!$modal.hlCodeNames[i]) {
-            $modal.hlCodeNames[i] = null;
+                //数据位
+                $modal.dataBit  = $modal.communParams.DataBit;
+
+                //心跳包频率
+                $modal.heartbeat = $modal.communParams.HeartBeat;
+
+                //校验位
+                $modal.checkDigit  = $modal.communParams.CheckBit;
+
+                //从机地址
+                $modal.subAdr  = $modal.communParams.SubAddress;
+
+                //停止位
+                $modal.stopBit  = $modal.communParams.StopBit;
+
+                //波特率
+                $modal.BaudRate = $modal.communParams.BaudRate;
+
+            })
         }
+
     };
-    $modal.fcodeNameCopy = angular.copy($modal.fcodeName);
-    for(i=0;i<16;i++){
-        if (!$modal.fcodeNameCopy[i]) {
-            $modal.fcodeNameCopy[i] = "默认(未配置)";
-        };
-        if (!$modal.fcodeName[i]) {
-            $modal.fcodeName[i] = null;
-        }
-    }
+
+
+
+
+
 
     $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -237,16 +260,53 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
 
         for (var i = 0; i < $modal.chanMatrix.length; i++) {
             for (var j = 0; j < $modal.chanMatrix[i].length; j++) {
-                if (!$modal.chanMatrix[i][j]) {
-                    $modal.chanMatrix[i][j] = {
-                        Name: "默认(未配置)"
-                    }
+
+                if($modal.chanMatrix[i][j].RuntimeParameterChannelConfig){
+                    $modal.chanMatrix[i][j].IsDefault = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.IsDefault;
+                    $modal.chanMatrix[i][j].Name = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Name;
+                    $modal.chanMatrix[i][j].Parameter =  $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
+                    $modal.chanMatrix[i][j].Status = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Status;
+                    $modal.chanMatrix[i][j].Ranges = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.Ranges;
+                    $modal.chanMatrix[i][j].SwitchStatus = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.SwitchStatus;
+                    $modal.chanMatrix[i][j].SequenceNumber = $modal.chanMatrix[i][j].RuntimeParameterChannelConfig.SequenceNumber;
+                    $modal.chanMatrix[i][j].noStatus = false;
+
+
+
                 }
 
-                if (!$modal.dataMatrix[i][j] || $modal.dataMatrix[i][j].IsDefault) {
+                if($modal.chanMatrix[i][j].Analogue.Modbus===0){
+                    $modal.chanMatrix[i][j].Analogue.Modbus = null;
+                }
+                if($modal.chanMatrix[i][j].Switch.Modbus===0){
+                    $modal.chanMatrix[i][j].Switch.Modbus = null;
+                }
+                if($modal.chanMatrix[i][j].Switch.BitAddress===0){
+                    $modal.chanMatrix[i][j].Switch.BitAddress = null;
+                }
+
+
+
+                if (!$modal.chanMatrix[i][j].RuntimeParameterChannelConfig) {
+                    $modal.chanMatrix[i][j] = {
+                        Name: "默认(未配置)",
+                        noStatus:true
+                    }
+
+                }
+
+                if ((i !== 0 ||j !== 2 ) &&  (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) ) {
                     $modal.dataMatrix[i][j] = null;
+                    $modal.chanMatrix[i][j].noStatus=true;
                 } else {
-                    $modal.dataMatrix[i][j].oParamId = $modal.dataMatrix[i][j].Parameter.Id;
+                    $modal.dataMatrix[i][j].oParamId = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter.Id;
+                    $modal.dataMatrix[i][j].IsDefault = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault;
+                    $modal.dataMatrix[i][j].Name = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Name;
+                    $modal.dataMatrix[i][j].Parameter =  $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Parameter;
+                    $modal.dataMatrix[i][j].Status = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Status;
+                    $modal.dataMatrix[i][j].Ranges = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.Ranges;
+                    $modal.dataMatrix[i][j].SwitchStatus = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.SwitchStatus;
+                    $modal.dataMatrix[i][j].SequenceNumber = $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.SequenceNumber;
                 }
             }
         }
@@ -260,6 +320,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         $modal.category = category;
     };
 
+    //运行参数列表导入
     $modal.analogParameters = [{Id: 0, Name: '默认配置'}];
     $modal.switchParameters = [{Id: 0, Name: '默认配置'}];
     $modal.calculateParameters = [{Id: 0, Name: '默认配置'}];
@@ -351,6 +412,14 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
     };
 
     $modal.initCurrent();
+
+    $scope.fCodeChange =function (fcode,i,j) {
+        console.log(fcode);
+        if(fcode.Id ===1||fcode.Id ===2){
+            $modal.chanMatrix[i][j].Switch.BitAddress = 1;
+        }
+    };
+
 
     //位置设置
     $scope.setStatus = function(outerIndex, innerIndex, status, sn) {
