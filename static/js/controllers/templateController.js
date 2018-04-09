@@ -320,6 +320,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         $modal.category = category;
     };
 
+    //运行参数列表导入
     $modal.analogParameters = [{Id: 0, Name: '默认配置'}];
     $modal.switchParameters = [{Id: 0, Name: '默认配置'}];
     $modal.calculateParameters = [{Id: 0, Name: '默认配置'}];

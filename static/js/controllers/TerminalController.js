@@ -282,28 +282,17 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
 
     //终端批量配置
     terminal.groupConfig = function (){
-        var items = [
-            {
-                start:680001,
-                end:680100,
-                template:"通用模板一"
-            },
-            {
-                start:680001,
-                end:680100,
-                template:"通用模板一"
-            }
-        ];
+
         var modalInstance = $uibModal.open({
             templateUrl: 'groupConfig.html',
             controller: 'ModalGroupConfigCtrl',
             size: "lg",
             windowClass: 'zindex',
-            resolve: {
+           /* resolve: {
                 items1: function () {
                     return items;
                 }
-            }
+            }*/
         });
 
         modalInstance.result.then(function (selectedItem) {
@@ -884,8 +873,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.quickSet = function (){
         var items = [
             {
-                id:$modal.currentData.code,
-                template:"通用模板一"
+                id: $modal.currentData.code,
+                template: {
+                    id:1,
+                    name:"通用模板一"
+                }
             }
         ];
         var modalInstance = $uibModal.open({
@@ -1890,10 +1882,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', 
 });
 
 //批量导入配置
-angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance, items1) {
-    $scope.items = items1;
-
-    $scope.template = [
+angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance) {
+    $scope.items = [
+        {
+            start:null,
+            end:null,
+            template:null
+        }
+    ];
+    $scope.templates = [
         {
             id:1,
             name:"通用模板一"
@@ -1907,12 +1904,12 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             name:"通用模板三"
         }
     ];
-    $scope.selectedTemplate = $scope.template[0];
+    // $scope.selectedTemplate = $scope.template[0];
     $scope.addGroupConfig = function (){
         $scope.items.push({
-            start:680001,
-            end:680100,
-            template:"通用模板一"});
+            start:null,
+            end:null,
+            template:null});
     };
 
 
@@ -1953,7 +1950,7 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
     $scope.addQuickSet = function (){
         $scope.items.push({
             id: null,
-            template:"通用模板一"});
+            template:null});
     };
 
 
