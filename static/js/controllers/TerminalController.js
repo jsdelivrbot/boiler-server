@@ -25,7 +25,8 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         DTColumnDefBuilder.newColumnDef(4),
         DTColumnDefBuilder.newColumnDef(5),
         DTColumnDefBuilder.newColumnDef(6),
-        DTColumnDefBuilder.newColumnDef(7).notSortable()
+        DTColumnDefBuilder.newColumnDef(7),
+        DTColumnDefBuilder.newColumnDef(8).notSortable()
     ];
 
     terminal.refreshDataTables = function (callback) {
@@ -51,8 +52,11 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                             });
                     }
 
-                    if(d.UpdateTime==="0001-01-01T00:00:00Z"){
-                        d.UpdateTime = null;
+                    if(d.TermUpdateTime==="0001-01-01T00:00:00Z"){
+                        d.TermUpdateTime = null;
+                    }
+                    if(d.PlatUpdateTime==="0001-01-01T00:00:00Z"){
+                        d.PlatUpdateTime = null;
                     }
 
                     if (t.code.length < 6) {
@@ -1397,6 +1401,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         $http.post("/channel_config_update/", {channel:configUpload,param:cParam})
             .then(function (res) {
                  App.stopPageLoading();
+                terminal.refreshDataTables();
+                $uibModalInstance.close('success');
                 swal({
                     title: "通道配置更新成功，是否立刻下发？",
                     type: "success",
@@ -1425,7 +1431,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             });
                     })
                     .then(function () {
-                    $uibModalInstance.close('success');
+
                     currentData = null;
                 });
             }, function (err) {
@@ -1437,6 +1443,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 App.stopPageLoading();
             });
         // Ladda.create(document.getElementById('channel_ok')).stop();
+
     };
 
     $modal.cancel = function () {
