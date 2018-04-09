@@ -606,6 +606,12 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 if (boiler.Form.Id === 1003) {
                     imgName = 'gasboiler_v';
                 }
+                if (boiler.Form.Id === 1004) {
+                    imgName = 'zhulv';
+                }
+                if (boiler.Form.Id === 1005) {
+                    imgName = 'zhutie';
+                }
 
                 return imgName;
             };
