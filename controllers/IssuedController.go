@@ -245,6 +245,7 @@ func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
 			}
 		}
 	}
+	fmt.Println("开关位的Byte:",Byte)
 	return Byte
 }
 //组状态量
@@ -347,11 +348,17 @@ func (ctl *IssuedController) IssuedVersion(Code string)(int32)  {
 func (ctl *IssuedController) IssuedMessage(Uid string)([]byte) {
 	Byte:=make([]byte,0)
 	Byte = append(Byte,ctl.IssuedAnalogOne(Uid)...)
+	fmt.Println("模拟量1长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedAnalogTwo(Uid)...)
+	fmt.Println("模拟量2长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedSwitchBurn(Uid)...)
+	fmt.Println("开关量点火位长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedSwitch(Uid)...)
+	fmt.Println("开关位长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedRange(Uid)...)
+	fmt.Println("状态量长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedCommunication(Uid)...)
+	fmt.Println("数据长度:",len(Byte))
 	return Byte
 }
 //根据Code获取报文
@@ -383,6 +390,7 @@ func (ctl *IssuedController) IssuedConfig() {
 		ctl.Ctx.Output.Body([]byte("还未保存配置"))
 		return
 	}
+	fmt.Println("要下发的buf:",reqBuf)
 	buf:=SocketCtrl.SocketConfigSend(reqBuf)
 	if buf==nil{
 		ctl.Ctx.Output.SetStatus(400)

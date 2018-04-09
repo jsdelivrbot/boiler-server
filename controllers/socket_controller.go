@@ -30,12 +30,12 @@ func c9(Code string)([]byte) {
 func (ctl *SocketController)c0(b []byte,Code string,ver int32)([]byte) {
 	words_1:="\xac\xeb\x01\x62\x00\x00\xc0"+Code
 	buf:=append([]byte(words_1),IntToByte(ver)...)
-	fmt.Println(buf)
 	buf=append(buf,b...)
-	fmt.Println(buf)
 	words_2:="\x00\x00\xaf\xed"
 	buf=append(buf,[]byte(words_2)...)
 	copy(buf[358:360],CRC16(buf[4:358]))
+	fmt.Println("组成的buf:",buf)
+	fmt.Println("buf len:",len(buf))
 	return buf
 }
 
@@ -69,6 +69,7 @@ type Info struct {
 
 func SendConfig(reqBuf string,conn net.Conn) {
 		buf:=[]byte(reqBuf)
+		fmt.Println("buf：",buf)
 		n,err:=conn.Write(buf)
 		if err!=nil {
 			goazure.Error("%s%s","Write error:", err)
