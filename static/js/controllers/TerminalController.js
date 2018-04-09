@@ -147,6 +147,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         terminal.msgData.code = data;
     }
 
+    //消息调试
     terminal.getOriginMessages = function () {
         // terminal.msgData = {};
         // terminal.msgData.isEmpty = true;
@@ -420,7 +421,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
 
     }
 
-    //按钮
+    //下发按钮
     $modal.down = function () {
         App.startPageLoading({message: '正在加载数据...'});
         $http.post("/issued_config",
@@ -432,6 +433,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
                     text: res.data,
                     type: "success"
                 });
+                terminal.refreshDataTables();
             },function (err) {
                 App.stopPageLoading();
                 swal({
@@ -1410,6 +1412,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     text: res.data,
                                     type: "success"
                                 });
+                                terminal.refreshDataTables();
                             },function (err) {
                                 App.stopPageLoading();
                                 swal({
