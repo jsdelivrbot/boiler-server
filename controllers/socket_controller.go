@@ -27,7 +27,7 @@ func c9(Code string)([]byte) {
 	return buf
 }
 
-func c0(b []byte,Code string,ver int32)([]byte) {
+func (ctl *SocketController)c0(b []byte,Code string,ver int32)([]byte) {
 	words_1:="\xac\xeb\x01\x62\x00\x00\xc0"+Code
 	buf:=append([]byte(words_1),IntToByte(ver)...)
 	fmt.Println(buf)
@@ -61,9 +61,25 @@ func Receive(conn net.Conn) ([]byte) {
 	fmt.Println(buf[:n])
 	return buf[:n]
 }
+type Info struct {
+	Sn string
+	CurrMessage string
+}
+func (ctl *SocketController)Message(Code string)(string) {
+	var info Info
+	info.Sn=Code
+	fmt.Println("infoSn",info.Sn)
+	sql:="select curr_message from issued_message where sn=?"
+	if err:=dba.BoilerOrm.Raw(sql,Code).QueryRow(&info);err!=nil{
+		goazure.Error("Query curr_message Error",err)
+	}
+	fmt.Println("下发的报文:",info.CurrMessage)
+	return info.CurrMessage
+}
 
-func SendConfig(conn net.Conn,b []byte,ver int32,Code string) {
-		buf:=c0(b,Code,ver)
+func SendConfig(conn net.Conn,Code string) {
+		b:=SocketCtrl.Message(Code)
+		buf:=[]byte(b)
 		n,err:=conn.Write(buf)
 		if err!=nil {
 			goazure.Error("%s%s","Write error:", err)
@@ -74,7 +90,7 @@ func SendConfig(conn net.Conn,b []byte,ver int32,Code string) {
 }
 
 //下发配置
-func (ctl *SocketController)SocketConfigSend(b []byte,ver int32,code string)([]byte) {
+func (ctl *SocketController)SocketConfigSend(Code string)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
@@ -87,7 +103,7 @@ func (ctl *SocketController)SocketConfigSend(b []byte,ver int32,code string)([]b
 		return nil
 	}
 	goazure.Info("connect success")
-	SendConfig(conn,b,ver,code)
+	SendConfig(conn,Code)
 	buf:=Receive(conn)
 	conn.Close()
 	return buf

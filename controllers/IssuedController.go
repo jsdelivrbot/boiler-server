@@ -76,28 +76,15 @@ type VersionIssued struct {
 	Ver         int32
 	UpdateTime  time.Time
 }
-
-//下发配置
-func (ctl *IssuedController) IssuedConfig() {
-	var confIssued ConfIssued
-	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &confIssued); err != nil {
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
-		goazure.Error("Unmarshal Error", err)
-		return
-	}
-	Byte:=make([]byte,0)
+//第一个模拟通道
+func (ctl *IssuedController) IssuedAnalogOne(Uid string)([]byte) {
 	var temp =1
+	Byte:=make([]byte,0)
 	var anaOne []AnalogueIssued
-	var anaTwo []AnalogueIssued
-	var anaThree []AnalogueIssued
-	var swi   SwitchIssued
-	var switchs []SwitchIssued
-	var communication CommunicationIssued
 	sql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
-	"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=1 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
-	" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(sql,confIssued.Uid).QueryRows(&anaOne);err!=nil {
+		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=1 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
+		" ORDER BY r.channel_number; "
+	if _,err:=dba.BoilerOrm.Raw(sql,Uid).QueryRows(&anaOne);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
 	} else {
 		//组模拟通道1
@@ -139,14 +126,20 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		}
 	}
+	return Byte
+}
+//第二个模拟通道
+func (ctl *IssuedController) IssuedAnalogTwo(Uid string)([]byte) {
+	var temp =1
+	Byte:=make([]byte,0)
+	var anaTwo []AnalogueIssued
 	anasql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
 		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=2 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(anasql,confIssued.Uid).QueryRows(&anaTwo);err!=nil {
+	if _,err:=dba.BoilerOrm.Raw(anasql,Uid).QueryRows(&anaTwo);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
 	} else {
 		//组模拟通道2
-		temp=1
 		L:=len(anaTwo)
 		if L ==0 {
 			for c := 0; c < 12; c++ {
@@ -185,9 +178,14 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		}
 	}
-	//组开关量点火位
+	return Byte
+}
+//组开关量点火位
+func (ctl *IssuedController) IssuedSwitchBurn(Uid string)([]byte) {
+	Byte:=make([]byte,0)
+	var swi   SwitchIssued
 	switchBurnSql:="select ifc.value as func,isb.modbus,isb.bit_address from issued_switch_burn isb,issued_function_code ifc where terminal_id=? and isb.function_id=ifc.id"
-	if err:=dba.BoilerOrm.Raw(switchBurnSql,confIssued.Uid).QueryRow(&swi);err!=nil {
+	if err:=dba.BoilerOrm.Raw(switchBurnSql,Uid).QueryRow(&swi);err!=nil {
 		Byte = append(Byte, IntToByteOne(0)...)
 		Byte = append(Byte, IntToByteTwo(0)...)
 		Byte = append(Byte, IntToByteOne(0)...)
@@ -196,14 +194,19 @@ func (ctl *IssuedController) IssuedConfig() {
 		Byte = append(Byte, IntToByteTwo(int32(swi.Modbus))...)
 		Byte = append(Byte, IntToByteOne(int32(swi.BitAddress))...)
 	}
-	//组剩余开关量
+	return Byte
+}
+//组剩余开关量
+func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
+	Byte:=make([]byte,0)
+	var temp =2
+	var switchs []SwitchIssued
 	switchsql:="select r.channel_type,r.channel_number,ifc.value as func,iswitch.modbus,iswitch.bit_address "+
 		"from runtime_parameter_channel_config r,issued_switch iswitch, issued_function_code ifc where r.terminal_id=? and r.uid=iswitch.channel_id and iswitch.function_id=ifc.id and r.channel_type=3 "+
-			" ORDER BY r.channel_number;"
-	if _,err:=dba.BoilerOrm.Raw(switchsql,confIssued.Uid).QueryRows(&switchs);err!=nil {
+		" ORDER BY r.channel_number;"
+	if _,err:=dba.BoilerOrm.Raw(switchsql,Uid).QueryRows(&switchs);err!=nil {
 		goazure.Error("Query issued_switch Error",err)
 	} else {
-		temp=2
 		L:=len(switchs)
 		if L ==0 {
 			for c := 0; c < 47; c++ {
@@ -242,11 +245,17 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		}
 	}
-	//组状态量
+	return Byte
+}
+//组状态量
+func (ctl *IssuedController) IssuedRange(Uid string)([]byte) {
+	Byte:=make([]byte,0)
+	var temp =1
+	var anaThree []AnalogueIssued
 	statussql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
 		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=5 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(statussql,confIssued.Uid).QueryRows(&anaThree);err!=nil {
+	if _,err:=dba.BoilerOrm.Raw(statussql,Uid).QueryRows(&anaThree);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
 	} else {
 		//组状态量
@@ -289,11 +298,16 @@ func (ctl *IssuedController) IssuedConfig() {
 			}
 		}
 	}
-	//组装通信参数
+	return Byte
+}
+//组装通信参数
+func (ctl *IssuedController) IssuedCommunication(Uid string)([]byte) {
+	Byte:=make([]byte,0)
+	var communication CommunicationIssued
 	communicationsql:="select ibr.value as baud_rate , idb.value as data_bit, isb.value as stop_bit, ipb.value as check_bit, ict.value as correspond_type,isa.value as sub_address,ihp.value as heart_beat "+
 		"from issued_communication ic,issued_baud_rate as ibr,issued_data_bit as idb,issued_stop_bit as isb,issued_parity_bit as ipb,issued_correspond_type as ict,issued_slave_address as isa,issued_heartbeat_packet as ihp " +
-			"where ic.baud_rate_id=ibr.id and ic.data_bit_id=idb.id and ic.stop_bit_id=isb.id and ic.check_bit_id=ipb.id and ic.correspond_type_id=ict.id and ic.sub_address_id=isa.id and ic.heart_beat_id=ihp.id and ic.terminal_id=?"
-	if err:=dba.BoilerOrm.Raw(communicationsql,confIssued.Uid).QueryRow(&communication);err!=nil{
+		"where ic.baud_rate_id=ibr.id and ic.data_bit_id=idb.id and ic.stop_bit_id=isb.id and ic.check_bit_id=ipb.id and ic.correspond_type_id=ict.id and ic.sub_address_id=isa.id and ic.heart_beat_id=ihp.id and ic.terminal_id=?"
+	if err:=dba.BoilerOrm.Raw(communicationsql,Uid).QueryRow(&communication);err!=nil{
 		Byte = append(Byte,IntToByteOne(0)...)
 		Byte = append(Byte,IntToByteOne(0)...)
 		Byte = append(Byte,IntToByteOne(0)...)
@@ -310,11 +324,14 @@ func (ctl *IssuedController) IssuedConfig() {
 		Byte = append(Byte,IntToByteOne(int32(communication.SubAddress))...)
 		Byte = append(Byte,IntToByteOne(int32(communication.HeartBeat))...)
 	}
-	//查询终端版本号
+	return Byte
+}
+//查询终端版本号
+func (ctl *IssuedController) IssuedVersion(Code string)(int32)  {
 	var versionIssued VersionIssued
 	var version int32
 	versionSql:="select sn,ver from issued_version where sn=?"
-	if err:=dba.BoilerOrm.Raw(versionSql,confIssued.Code).QueryRow(&versionIssued);err!=nil{
+	if err:=dba.BoilerOrm.Raw(versionSql,Code).QueryRow(&versionIssued);err!=nil{
 		goazure.Error("Query issued_version Error",err)
 		version =1
 	} else {
@@ -324,8 +341,30 @@ func (ctl *IssuedController) IssuedConfig() {
 			version = 1
 		}
 	}
-	fmt.Println("终端版本号为：",version)
-	buf:=SocketCtrl.SocketConfigSend(Byte,version,confIssued.Code)
+	return version
+}
+
+func (ctl *IssuedController) IssuedMessage(Uid string)([]byte) {
+	Byte:=make([]byte,0)
+	Byte = append(Byte,ctl.IssuedAnalogOne(Uid)...)
+	Byte = append(Byte,ctl.IssuedAnalogTwo(Uid)...)
+	Byte = append(Byte,ctl.IssuedSwitchBurn(Uid)...)
+	Byte = append(Byte,ctl.IssuedSwitch(Uid)...)
+	Byte = append(Byte,ctl.IssuedRange(Uid)...)
+	Byte = append(Byte,ctl.IssuedCommunication(Uid)...)
+	return Byte
+}
+
+//下发配置
+func (ctl *IssuedController) IssuedConfig() {
+	var confIssued ConfIssued
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &confIssued); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	buf:=SocketCtrl.SocketConfigSend(confIssued.Code)
 	if buf==nil{
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("发送报文失败"))

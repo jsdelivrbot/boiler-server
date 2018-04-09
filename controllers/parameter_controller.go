@@ -244,7 +244,6 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 					ctl.Ctx.Output.Body([]byte(e))
 					return
 				}
-
 				for _, ar := range aRanges {
 					if ar.Max >= r.Min {
 						e := fmt.Sprintln("状态值范围设定有误，请不要设定重复的范围区间！")
@@ -254,7 +253,6 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 						return
 					}
 				}
-
 				rg.ChannelConfig = &cnf
 				rg.Min = r.Min
 				rg.Max = r.Max
@@ -266,6 +264,39 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 				}
 			}
 		}
+	}
+	var param []orm.Params
+	var ver int32
+	verSql:="select ver from issued_message where sn=?"
+	if num,err:=dba.BoilerOrm.Raw(verSql,ter.TerminalCode).Values(&param);err!=nil || num==0 {
+		goazure.Error("Query issued_message Error",err)
+		ver = 1
+	} else {
+		a:=fmt.Sprintf("%s",param[0]["ver"])
+		v,err:=strconv.Atoi(a)
+		ver=int32(v) + 1
+		if ver >=32769 {
+			ver = 1
+		}
+		if err!=nil {
+			goazure.Error("ParseInt Error")
+			return
+		}
+	}
+	fmt.Println("ver:",ver)
+	fmt.Println("TerUid",ter.Uid)
+	Byte:=IssuedCtl.IssuedMessage(ter.Uid)
+	fmt.Println("组的Byte:",Byte)
+	fmt.Println(ter.TerminalCode)
+	Code:=strconv.FormatInt(ter.TerminalCode,10)
+	message:=SocketCtrl.c0(Byte,Code,ver)
+	mess:=fmt.Sprintf("%x",string(message))
+	fmt.Println("mess:",mess)
+	messageSql:="insert into issued_message(sn,ver,create_time,update_time,curr_message) values(?,?,now(),now(),?) on duplicate key update ver=?,update_time=now(),curr_message=?"
+	if _,err:=dba.BoilerOrm.Raw(messageSql,ter.TerminalCode,ver,mess,ver,mess).Exec();err!=nil{
+		goazure.Error("Insert issued_message Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("组包失败"))
 	}
 }
 
