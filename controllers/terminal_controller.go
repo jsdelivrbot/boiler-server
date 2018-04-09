@@ -80,13 +80,20 @@ func (ctl *TerminalController) TerminalIssuedList() {
 		goazure.Error("Get TerminalCombined Error:", err, num)
 	}
 	//查询终端版本号
-	verSql:="select sn,ver,update_time from issued_version"
-	var vi []VersionIssued
+	termSql:="select sn,ver,update_time from issued_version"
+	var termVi []VersionIssued
 	termIssued:=make([]models.TerminalIssued,len(terminals))
-	if _,error:=dba.BoilerOrm.Raw(verSql).QueryRows(&vi);error!=nil{
+	if _,error:=dba.BoilerOrm.Raw(termSql).QueryRows(&termVi);error!=nil{
 		goazure.Error("Select issued_version Error")
 	}
-	fmt.Println("versionIssued:",vi)
+	fmt.Println("versionIssued:",termVi)
+	//查询平台版本号
+	platSql:="select sn,ver,update_time from issued_message"
+	var platVi []VersionIssued
+	if _,error:=dba.BoilerOrm.Raw(platSql).QueryRows(&platVi);error!=nil{
+		goazure.Error("Select issued_message Error")
+	}
+	fmt.Println("versionIssued:",platVi)
     //有绑定的将绑定的锅炉加进去
 	for t, ter := range terminals {
 		fmt.Println("ttt:",t)
@@ -97,14 +104,26 @@ func (ctl *TerminalController) TerminalIssuedList() {
 				ter.Boilers = append(ter.Boilers, cb.Boiler)
 			}
 		}
-		for _,v := range vi {
-			i,err:=strconv.ParseInt(v.Sn,10,64)
+		//加上终端的版本号
+		for _,tv := range termVi {
+			i,err:=strconv.ParseInt(tv.Sn,10,64)
 			if err!=nil{
 				goazure.Error("ParseInt Error")
 			}
 			if i == ter.TerminalCode {
-				termIssued[t].Ver = v.Ver
-				termIssued[t].UpdateTime = v.UpdateTime
+				termIssued[t].TermVer = tv.Ver
+				termIssued[t].TermUpdateTime = tv.UpdateTime
+			}
+		}
+		//加上平台的版本号
+		for _,pv := range platVi {
+			i,err:=strconv.ParseInt(pv.Sn,10,64)
+			if err!=nil{
+				goazure.Error("ParseInt Error")
+			}
+			if i == ter.TerminalCode {
+				termIssued[t].PlatVer = pv.Ver
+				termIssued[t].PlatUpdateTime = pv.UpdateTime
 			}
 		}
 	}

@@ -4,8 +4,10 @@ import "time"
 
 type TerminalIssued struct {
 	Terminal *Terminal
-	Ver    int32
-	UpdateTime time.Time
+	TermVer    int32
+	TermUpdateTime time.Time
+	PlatVer    int32
+	PlatUpdateTime time.Time
 }
 
 type Terminal struct {

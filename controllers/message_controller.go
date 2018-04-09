@@ -621,6 +621,17 @@ func addMessageTag(tag models.MessageTag) error {
 
 	return err
 }
+func ByteToIntTwo(Bytes []byte)(int32){
+	Append_byte := []byte{0x00, 0x00, Bytes[0], Bytes[1]}
+	//Bytes        = Append_byte + Bytes
+	b_buf := bytes.NewBuffer(Append_byte)
+	var x int32
+	err := binary.Read(b_buf, binary.BigEndian, &x)
+	if err != nil {
+		fmt.Println("binary.Read failed:", err)
+	}
+	return x
+}
 
 func ByteToInt(Bytes []byte) (int8) {
 	b_buf := bytes.NewBuffer(Bytes)
