@@ -61,7 +61,8 @@
         <th>监测锅炉</th>
         <!--<th>物联网卡号</th>-->
         <!--<th>消息调试</th>-->
-        <th>配置状态</th>
+        <th>终端版本</th>
+        <th>平台版本</th>
         <th>模板状态</th>
         <th>操作</th>
     </tr>
@@ -99,9 +100,16 @@
         <!--</td>-->
         <td>
 
-            {{data.Ver}}<br/>
-            <span ng-if="data.UpdateTime" class="label label-default label-sm">
-                {{data.UpdateTime | date:'yyyy-MM-dd' }}
+            {{data.TermVer}}<br/>
+            <span ng-if="data.TermUpdateTime" class="label label-default label-sm">
+                {{data.TermUpdateTime | date:'yyyy-MM-dd' }}
+            </span>
+        </td>
+        <td>
+
+            {{data.PlatVer}}<br/>
+            <span ng-if="data.PlatUpdateTime" class="label label-default label-sm">
+                {{data.PlatUpdateTime | date:'yyyy-MM-dd' }}
             </span>
         </td>
         <td>
