@@ -145,7 +145,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
     $modal.currentData = currentData;
     $modal.editing = editing;
     $modal.editingCode = true;
-    $modal.template = true;
+    // $modal.template = true;
 
     $modal.category = 9;
 
@@ -412,6 +412,14 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
     };
 
     $modal.initCurrent();
+
+    $scope.fCodeChange =function (fcode,i,j) {
+        console.log(fcode);
+        if(fcode.Id ===1||fcode.Id ===2){
+            $modal.chanMatrix[i][j].Switch.BitAddress = 1;
+        }
+    };
+
 
     //位置设置
     $scope.setStatus = function(outerIndex, innerIndex, status, sn) {
