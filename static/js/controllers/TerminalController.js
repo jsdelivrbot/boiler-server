@@ -882,11 +882,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.quickSet = function (){
         var items = [
             {
-                id:680001,
-                template:"通用模板一"
-            },
-            {
-                id:680001,
+                id:$modal.currentData.code,
                 template:"通用模板一"
             }
         ];
@@ -908,7 +904,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         }, function () {
 
         });
-    }
+    };
 
 
 
@@ -1663,9 +1659,15 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
 });
 
 angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, $uibModalInstance, items1) {
+    /*var items = [
+        {
+            id:$modal.currentData.code,
+            template:"通用模板一"
+        }
+    ];*/
     $scope.items = items1;
 
-    $scope.template = [
+    $scope.templates = [
         {
             id:1,
             name:"通用模板一"
@@ -1679,10 +1681,10 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
             name:"通用模板三"
         }
     ];
-    $scope.selectedTemplate = $scope.template[0];
+    // $scope.selectedTemplate = $scope.template[0];
     $scope.addQuickSet = function (){
         $scope.items.push({
-            id:680001,
+            id: null,
             template:"通用模板一"});
     };
 
