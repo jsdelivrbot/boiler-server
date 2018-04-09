@@ -354,6 +354,19 @@ func (ctl *IssuedController) IssuedMessage(Uid string)([]byte) {
 	Byte = append(Byte,ctl.IssuedCommunication(Uid)...)
 	return Byte
 }
+//根据Code获取报文
+func (ctl *IssuedController)ReqMessage(Code string)(string) {
+	var info Info
+	info.Sn=Code
+	fmt.Println("infoSn",info.Sn)
+	sql:="select curr_message from issued_message where sn=?"
+	if err:=dba.BoilerOrm.Raw(sql,Code).QueryRow(&info);err!=nil{
+		goazure.Error("Query issued_message Error",err)
+		return ""
+	}
+	fmt.Println("下发的报文:",info.CurrMessage)
+	return info.CurrMessage
+}
 
 //下发配置
 func (ctl *IssuedController) IssuedConfig() {
@@ -364,7 +377,13 @@ func (ctl *IssuedController) IssuedConfig() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-	buf:=SocketCtrl.SocketConfigSend(confIssued.Code)
+	reqBuf:=ctl.ReqMessage(confIssued.Code)
+	if reqBuf=="" {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("还未保存配置"))
+		return
+	}
+	buf:=SocketCtrl.SocketConfigSend(reqBuf)
 	if buf==nil{
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("发送报文失败"))

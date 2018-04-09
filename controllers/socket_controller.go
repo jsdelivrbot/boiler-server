@@ -65,21 +65,10 @@ type Info struct {
 	Sn string
 	CurrMessage string
 }
-func (ctl *SocketController)Message(Code string)(string) {
-	var info Info
-	info.Sn=Code
-	fmt.Println("infoSn",info.Sn)
-	sql:="select curr_message from issued_message where sn=?"
-	if err:=dba.BoilerOrm.Raw(sql,Code).QueryRow(&info);err!=nil{
-		goazure.Error("Query curr_message Error",err)
-	}
-	fmt.Println("下发的报文:",info.CurrMessage)
-	return info.CurrMessage
-}
 
-func SendConfig(conn net.Conn,Code string) {
-		b:=SocketCtrl.Message(Code)
-		buf:=[]byte(b)
+
+func SendConfig(reqBuf string,conn net.Conn) {
+		buf:=[]byte(reqBuf)
 		n,err:=conn.Write(buf)
 		if err!=nil {
 			goazure.Error("%s%s","Write error:", err)
@@ -90,7 +79,7 @@ func SendConfig(conn net.Conn,Code string) {
 }
 
 //下发配置
-func (ctl *SocketController)SocketConfigSend(Code string)([]byte) {
+func (ctl *SocketController)SocketConfigSend(reqBuf string)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
@@ -103,7 +92,7 @@ func (ctl *SocketController)SocketConfigSend(Code string)([]byte) {
 		return nil
 	}
 	goazure.Info("connect success")
-	SendConfig(conn,Code)
+	SendConfig(reqBuf,conn)
 	buf:=Receive(conn)
 	conn.Close()
 	return buf
