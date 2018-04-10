@@ -1977,6 +1977,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
     $scope.templateName = "";
     $scope.ok = function () {
         if(!$scope.templateName){
+            swal({
+                title: "模板未命名",
+                text: "请填写需要保存的模板名称" ,
+                type: "error"
+            });
             return;
         }
         App.startPageLoading({message: '正在加载数据...'});
@@ -1989,7 +1994,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
                     type: "success"
                 }).then(function() {
                     $uibModalInstance.close('success');
-                    currentData = null;
                 })
             }, function (err) {
                 swal({
@@ -1997,7 +2001,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
                     text: err.data,
                     type: "error"
                 });
-                App.stopPageLoading();
             });
         // Ladda.create(document.getElementById('channel_ok')).stop();
 
