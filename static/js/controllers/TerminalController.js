@@ -1694,9 +1694,13 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 },
                 configUpload: function () {
                     return configUpload;
+                },
+                org:function () {
+                    return currentData.Organization;
                 }
             }
         });
+
 
         modalInstance.result.then(function (selectedItem) {
             // $scope.selected = selectedItem;
@@ -1967,16 +1971,16 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
 });
 
 //模板另存为
-angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $http, $uibModalInstance,cParam,configUpload) {
+angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $http, $uibModalInstance,cParam,configUpload,org) {
 
-    console.log("cParam:",cParam,"configUpload:",configUpload);
+    console.log("cParam:",cParam,"configUpload:",configUpload,"org:",org);
     $scope.templateName = "";
     $scope.ok = function () {
         if(!$scope.templateName){
             return;
         }
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/issued_template", {name:$scope.templateName,channel:configUpload,param:cParam})
+        $http.post("/issued_template", {name:$scope.templateName,channel:configUpload,param:cParam,organizationUid:org.Uid})
             .then(function (res) {
                 App.stopPageLoading();
                 swal({
