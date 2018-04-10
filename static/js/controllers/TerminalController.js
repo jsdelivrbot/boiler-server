@@ -1967,7 +1967,7 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
 });
 
 //模板另存为
-angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $uibModalInstance,cParam,configUpload) {
+angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $http, $uibModalInstance,cParam,configUpload) {
 
     console.log("cParam:",cParam,"configUpload:",configUpload);
     $scope.templateName = "";
@@ -1975,9 +1975,30 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
         if(!$scope.templateName){
             return;
         }
-        console.log($scope.templateName);
-        $uibModalInstance.close();
+        App.startPageLoading({message: '正在加载数据...'});
+        $http.post("/issued_template", {name:$scope.templateName,channel:configUpload,param:cParam})
+            .then(function (res) {
+                App.stopPageLoading();
+                swal({
+                    title: "模板保存成功",
+                    text: res.data,
+                    type: "success"
+                }).then(function() {
+                    $uibModalInstance.close('success');
+                    currentData = null;
+                })
+            }, function (err) {
+                swal({
+                    title: "模板保存失败",
+                    text: err.data,
+                    type: "error"
+                });
+                App.stopPageLoading();
+            });
+        // Ladda.create(document.getElementById('channel_ok')).stop();
+
     };
+
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
