@@ -1453,6 +1453,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         var configUpload = [];
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
+
                 if ($modal.dataMatrix[i][j] !== $modal.chanMatrix[i][j]) {
                     var chanParamId = $modal.chanMatrix[i][j] && $modal.chanMatrix[i][j].Parameter ? $modal.chanMatrix[i][j].Parameter.Id : 0;
                     var dataParamId = $modal.dataMatrix[i][j] && $modal.dataMatrix[i][j].Parameter ? $modal.dataMatrix[i][j].Parameter.Id : 0;
@@ -1462,6 +1463,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     var chanSwitch = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].SwitchStatus : 0 ;
                     var dataSwitch = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].SwitchStatus : 0 ;
                     var chanRanges, dataRanges = [];
+
+                    if(dataParamId===0){
+                        continue;
+                    }
+
+
                     if (j === 5) {
                         chanRanges = $modal.chanMatrix[i][j] ? $modal.chanMatrix[i][j].Ranges : [] ;
                         dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
@@ -1497,7 +1504,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         }
 
                         var configData = {
-                            terminal_code: $modal.code,
+                            // terminal_code: $modal.code,
                             parameter_id: dataParamId,
                             channel_type: chan,
                             channel_number: num,
@@ -1663,7 +1670,6 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         }
 
         var cParam = {
-            terminal_code:$modal.code,
             baudRate : $modal.BaudRate?$modal.BaudRate.Id:0,
             dataBit : $modal.dataBit?$modal.dataBit.Id:0,
             stopBit : $modal.stopBit?$modal.stopBit.Id:0,
@@ -1996,6 +2002,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
                     $uibModalInstance.close('success');
                 })
             }, function (err) {
+                App.stopPageLoading();
                 swal({
                     title: "模板保存失败",
                     text: err.data,
