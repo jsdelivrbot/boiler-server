@@ -4,7 +4,7 @@ import "time"
 
 type IssuedTemplate struct {
 	Uid string `orm:"pk"`
-	name string
+	Name string
 	CreateTime time.Time        `orm:"type(datetime);auto_now;index"`
 	UpdateTime time.Time         `orm:"type(datetime);auto_now;index"`
 	IsDeleted  bool		         `orm:"index"`
