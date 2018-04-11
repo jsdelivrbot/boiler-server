@@ -48,7 +48,7 @@ func (ctl *TemplateController) IssuedTemplate() {
 		if c.ParameterId <=0 {
 			continue
 		} else {
-			//channelSql:="insert into issued"
+			//channelSql:="insert into issued_channel_config_template(uid,name,create_time,update_time,parameter_id,)"
 		}
 	}
 

@@ -484,7 +484,7 @@ func (ctl *IssuedController) IssuedBoiler() {
 			ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
 			return
 		} else if len(buf)>4 {
-			if buf[15]!=16 {
+			if buf[13]!=16 {
 				ctl.Ctx.Output.SetStatus(400)
 				ctl.Ctx.Output.Body([]byte("终端配置错误"))
 				return
