@@ -153,14 +153,27 @@ func init() {
 	//模板列表
 	goazure.Router("/template_list",&controllers.TemplateController{},"get:TemplateList")
 
-	//获取模板信息
-	goazure.Router("/template_info",&controllers.TemplateController{},"post:TemplateInfo")
-
 	//编辑模板
 	goazure.Router("/template_update",&controllers.TemplateController{},"post:TemplateUpdate")
 
 	//删除模板
 	goazure.Router("/template_delete",&controllers.TemplateController{},"post:TemplateDelete")
+
+	//获取模拟量一
+	goazure.Router("/template_analog_one",&controllers.TemplateController{},"post:TemplateAnalogOne")
+	//获取模拟量二
+	goazure.Router("/template_analog_two",&controllers.TemplateController{},"post:TemplateAnalogTwo")
+	//获取模拟量一
+	goazure.Router("/template_switch_one",&controllers.TemplateController{},"post:TemplateSwitchOne")
+	//获取开关量二
+	goazure.Router("/template_switch_two",&controllers.TemplateController{},"post:TemplateSwitchTwo")
+	//获取开关量三
+	goazure.Router("/template_switch_Three",&controllers.TemplateController{},"post:TemplateSwitchThree")
+	//获取状态量
+	goazure.Router("/template_range",&controllers.TemplateController{},"post:TemplateRange")
+	//获取通信参数
+	goazure.Router("/template_communication",&controllers.TemplateController{},"post:TemplateCommunication")
+
 
 
 	//下发测试按钮
