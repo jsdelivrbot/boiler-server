@@ -194,16 +194,8 @@
                             </td>
                         </tr>
 
-                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 10">
+                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11">
                             <td colspan="4" align="center">
-                                <!--
-                                <button ng-show="info.dataMode == 'edit' && info.editing.basic" ng-click="info.save('basic')" class="btn btn-outline btn-circle green">
-                                    <i class="fa fa-save"></i> 保存
-                                </button>
-                                <button ng-show="info.dataMode == 'edit' && info.editing.basic" ng-click="info.reset()" class="btn btn-outline btn-circle grey-cascade">
-                                    <i class="fa fa-reply"></i> 取消
-                                </button>
-                                -->
                                 <button ng-click="info.edit('basic')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
                                 </button>
@@ -246,7 +238,7 @@
                             <th>纬度</th>
                             <td>{{ info.currentData.Address.Latitude }}</td>
                         </tr>
-                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 10">
+                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11">
                             <td colspan="4" align="center">
                                 <button ng-click="info.edit('location')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
@@ -331,7 +323,7 @@
                             <td>{{ info.currentData.Remark }}</td>
                         </tr>
                         -->
-                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 10">
+                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11">
                             <td colspan="4" align="center">
                                 <button ng-click="info.edit('maintain')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
@@ -372,11 +364,13 @@
                         <tr ng-repeat="terminal in info.currentData.TerminalsCombined">
                             <td>{{ terminal.tid }}</td>
                             <td>
-                                <span ng-class="['label', {'label-success': terminal.IsOnline}, {'label-default': !terminal.IsOnline}]">{{ terminal.online }}</span>
+                                <span ng-class="['label', {'label-success': terminal.IsOnline || terminal.isBurning}, {'label-default': !terminal.IsOnline && !terminal.isBurning}]">
+                                    {{ terminal.online }}
+                                </span>
                             </td>
                             <td>{{ terminal.Name }}</td>
                             <td>{{ terminal.setId }}</td>
-                            <td><a ng-click="info.unbind(terminal)"
+                            <td><a ng-click="info.unbind(terminal) "
                                    class="btn btn-sm btn-outline btn-circle red delete_btn">
                                 <i class="fa fa-minus"></i> 解绑
                             </a></td>

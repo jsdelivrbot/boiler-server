@@ -154,6 +154,15 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
         var num = 0;
         angular.forEach(datasource, function (d, key) {
             d.num = ++num;
+
+            $http.get('/boiler/state/is_burning/?boiler=' + d.Uid)
+                .then(function (res) {
+                    // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                    d.isBurning = (res.data.value === "true");
+                }, function (err) {
+                    console.error('Fetch Status Err!', err);
+                });
+
             if (d.TerminalsCombined) {
                 for (var i = 0; i < d.TerminalsCombined.length; i++) {
                     var terminal = d.TerminalsCombined[i];
@@ -167,6 +176,7 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
 
                     terminal.online = terminal.IsOnline ? "在线" : "离线";
                     terminal.setId = terminal.Remark;
+
                 }
 
             }
@@ -180,10 +190,10 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
 
                 bInfo.reset();
             }
+            // console.log(d);
         });
 
         bInfo.datasource = datasource;
-
         bInfo.isDone = true;
         setTimeout(function () {
             App.stopPageLoading();
@@ -225,7 +235,7 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
     };
 
     $rootScope.$watch('boilers', function () {
-        console.error("$rootScope.$watch('boilers'");
+        // console.error("$rootScope.$watch('boilers')");
         bInfo.refreshDataTables();
     });
 
@@ -1296,7 +1306,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerBindCtrl', function ($uibMo
             var terminals = [];
             console.error("Get Bind Terminal List Resp:", res);
             boiler_loop:
-            for (var i = 0; i < res.data.length; i++) {
+            for (var i in res.data) {
                 var d = res.data[i];
                 if (!d.Boilers) {
                     d.Boilers = [];

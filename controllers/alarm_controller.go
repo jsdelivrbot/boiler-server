@@ -110,7 +110,9 @@ func (ctl *AlarmController) BoilerAlarmList() {
 	if !usr.IsAdmin() || len(boilers) > 0 {
 		qa = qa.Filter("Boiler__in", boilers)
 	}
-	if num, err := qa.Filter("IsDeleted", false).OrderBy("-EndDate").Values(&objs, "Uid", "StartDate", "EndDate", "Priority", "State", "Description",
+	if num, err := qa.Filter("IsDeleted", false).
+		OrderBy("-EndDate").
+		Values(&objs, "Uid", "StartDate", "EndDate", "Priority", "State", "Description",
 		"Boiler__Uid", "Boiler__Name", "Boiler__Enterprise__Name",
 		"Parameter__Name"); num == 0 || err != nil {
 		goazure.Error("Read AlarmList Error:", num, err)
@@ -395,19 +397,19 @@ func (ctl *AlarmController) BoilerAlarmFeedbackList() {
 }
 
 type bAlarmRule struct {
-	Uid			string		`json:"uid"`
-	ParamId 		int64		`json:"paramId"`
+	Uid					string		`json:"uid"`
+	ParamId 			int64		`json:"paramId"`
 	BoilerFormId 		int64		`json:"boilerFormId"`
 	BoilerMediumId		int64		`json:"boilerMediumId"`
 	BoilerFuelTypeId 	int64 		`json:"boilerFuelTypeId"`
 	BoilerCapacityMin 	int 		`json:"boilerCapacityMin"`
 	BoilerCapacityMax 	int 		`json:"boilerCapacityMax"`
 
-	NormalValue		float32		`json:"normalValue"`
+	NormalValue			float32		`json:"normalValue"`
 	WarningValue		float32		`json:"warningValue"`
-	Delay			int64		`json:"delay"`
-	Priority		int		`json:"priority"`
-	Description		string		`json:"description"`
+	Delay				int64		`json:"delay"`
+	Priority			int			`json:"priority"`
+	Description			string		`json:"description"`
 }
 
 func (ctl *AlarmController) AlarmRuleUpdate() {
@@ -521,8 +523,39 @@ func (ctl *AlarmController) AlarmRuleUpdate() {
 	goazure.Info("\nUpdate AlarmRule:", rule, al)
 }
 
+type Alarm struct {
+	Uid     string    `json:"uid"`
+}
 func (ctl *AlarmController) AlarmRuleDelete() {
+	usr := ctl.GetCurrentUser()
+	var a Alarm
+	var alarmRule models.RuntimeAlarmRule
 
+	if !usr.IsAdmin() {
+		ctl.Ctx.Output.SetStatus(403)
+		ctl.Ctx.Output.Body([]byte("Permission Denied!"))
+		goazure.Error("Permission Denied!")
+		return
+	}
+
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &a); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		fmt.Println("Unmarshal Error", err)
+		return
+	}
+	if err := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Parameter__Category").RelatedSel("BoilerForm").RelatedSel("BoilerMedium").RelatedSel("BoilerFuelType").Filter("Uid", a.Uid).One(&alarmRule); err != nil {
+		e := fmt.Sprintf("Read runtime_alarm_rule for Delete Error: %v", err)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	if err := DataCtl.DeleteData(&alarmRule); err != nil {
+		e := fmt.Sprintln("Delete runtime_alarm_rule Error!", alarmRule, err)
+		goazure.Error(e)
+		ctl.Ctx.Output.Body([]byte(e))
+	}
 }
 
 type bAlarmFeedback struct {
@@ -618,36 +651,39 @@ func (ctl *AlarmController) BoilerAlarmUpdate() {
 
 func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	var alarms []*models.BoilerAlarm
-	qa := dba.BoilerOrm.QueryTable("boiler_alarm").RelatedSel("Boiler__Address")
-	qa = qa.Filter("State", models.BOILER_ALARM_STATE_NEW).
-		Filter("StartDate__lte", t.Add(time.Minute * -10))
-	if num, err := qa.Filter("IsDeleted", false).All(&alarms); err != nil {
+	if 	num, err := dba.BoilerOrm.QueryTable("boiler_alarm").
+		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").
+		Filter("State", models.BOILER_ALARM_STATE_NEW).Filter("IsDeleted", false).
+		All(&alarms); err != nil {
 		goazure.Error("Fetch New Alarm Error:", num, err)
 	}
 
 	for i, al := range alarms {
-		if al.Priority > 0 {
+		if 	al.Priority > 0 &&
+			al.StartDate.Before(time.Now().Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) {
 			var users []*models.User
-			raw := "SELECT 	`user`.* "
-			raw += "FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` "
-			raw += "WHERE	`boiler`.`uid` = `sub`.`boiler_id` AND `user`.`uid` = `sub`.`user_id` "
-			raw += fmt.Sprintf("AND	`boiler`.`uid` = '%s';", al.Boiler.Uid)
-			if num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil {
+			raw := 	"SELECT `user`.* " +
+					"FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` " +
+					"WHERE	`boiler`.`uid` = `sub`.`boiler_id` AND `user`.`uid` = `sub`.`user_id` " +
+					fmt.Sprintf("AND	`boiler`.`uid` = '%s';", al.Boiler.Uid)
+			if 	num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil {
 				goazure.Error("Get Boiler Subscribers Error:", err, num)
 			}
 			al.Boiler.Subscribers = users
 
 			for _, u := range al.Boiler.Subscribers {
-				var su models.UserThird
-				qu := dba.BoilerOrm.QueryTable("user_third")
-				qu = qu.Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false)
-				if err := qu.One(&su); err != nil {
-					goazure.Error("User", u.Name, "Is NOT Subscribed.")
+				var tds []*models.UserThird
+				if 	num, err := dba.BoilerOrm.QueryTable("user_third").
+					Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false).
+					All(&tds); err != nil {
+					goazure.Error("User", u.Name, "Is NOT Subscribed.", num)
 					continue
 				}
 
 				tempMsg, _ := WxCtl.TemplateMessageAlarm(al)
-				WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				for _, su := range tds {
+					WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				}
 			}
 		}
 
@@ -710,7 +746,7 @@ func generateDefaultAlarmRules() (error) {
 					switch j {
 					case paramIdCol:
 						pid, _ := strconv.ParseInt(field, 10, 64)
-						value = runtimeParameter(int(pid))
+						value = ParamCtrl.RuntimeParameter(int(pid))
 					case boilerFormCol:
 						id, _ := strconv.ParseInt(field, 10, 64)
 						value = boilerForm(int(id))

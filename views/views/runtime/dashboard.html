@@ -22,10 +22,11 @@
         </div>
         <div class="">
             <h6 class="font-grey-salsa" style="padding-bottom: 6px;">
-                采样时间: {{ runtime.instants[0].date | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
+                采样时间: {{ runtime.currentDate | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
             </h6>
             <!-- BEGIN SAMPLE TABLE PORTLET-->
-            <div class="portlet light bordered" style="padding:0px 5px; height: 405px;width: 100%; overflow: auto; overflow-x: hidden;" ng-show="(runtime.instants|filter:{category:'13'}).length>0">
+            <div class="portlet light bordered" style="padding:0px 5px; height: 405px;width: 100%; overflow: auto; overflow-x: hidden;"
+                 ng-show="(runtime.instants|filter:{category:'13'}).length>0 && runtime.boiler.isOnline">
 
                 <div class="portlet-body">
                     <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
@@ -60,12 +61,14 @@
                         </table>
 
                     </div>
+
+
                 </div>
             </div>
 
             <div class="portlet light bordered"
-                 ng-show="(runtime.instants|filter:{category:'13'}).length==0"
-                style="padding: 0px 10px 0px 10px;">
+                 ng-show="(runtime.instants|filter:{category:'13'}).length==0 "
+                style="padding: 0px 10px 0px 10px; overflow: hidden;">
 
                 <div class="portlet-body">
 
@@ -100,7 +103,8 @@
                             <tr>
                                 <td> 对应终端 </td>
                                 <td>
-                                    <span ng-repeat="terminal in runtime.boiler.TerminalsCombined" style="display: inline-block; clear: both;"> {{ terminal.Name }} [机组{{ terminal.TerminalSetId }}]</span>
+                                    <span ng-repeat="terminal in runtime.boiler.TerminalsCombined" style="display: block; clear: both; "> {{ terminal.Name }} [机组{{ terminal.TerminalSetId }}]</span>
+
                                 </td>
                             </tr>
                             <tr>
@@ -122,7 +126,7 @@
     <div class="col-md-6" style="padding: 0; ">
         <boiler-module></boiler-module>
         <div class="" >
-            <div ng-show="runtime.boiler.hasSwitchValue"
+            <div ng-show="runtime.boiler.hasSwitchValue && runtime.boiler.isOnline"
                  style="margin-left: 10px;margin-right: 10px;">
                 <div style=" border-radius: 4px; ">
                     <!--<span class="" style="color: #999;">开关量</span>-->
@@ -152,7 +156,8 @@
     </div>
     <div class="col-md-3" style="padding: 0; padding-right: 10px;">
         <!-- BEGIN SAMPLE TABLE PORTLET-->
-        <div class="portlet light bordered" style="padding: 5px;padding-top: 0; ">
+        <div class="portlet light bordered" style="padding: 5px;padding-top: 0; "
+            ng-show="runtime.boiler.isBurning || runtime.boiler.isOnline">
 
             <div class="portlet-body">
                 <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
@@ -189,7 +194,11 @@
                     </table>
                 </div>
             </div>
+
+
         </div>
+
+
         <!-- END SAMPLE TABLE PORTLET-->
     </div>
 </div>

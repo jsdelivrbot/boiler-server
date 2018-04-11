@@ -96,7 +96,7 @@ func (ctl *BoilerController) BoilerCount() {
 }
 
 func (ctl *BoilerController) RefreshGlobalBoilerList() {
-	BlrCtl.bWaitGroup.Add(1)
+	BlrCtl.WaitGroup.Add(1)
 	//goazure.Error("")
 	var boilers []*models.Boiler
 	//var bMap []orm.Params
@@ -211,16 +211,16 @@ func (ctl *BoilerController) RefreshGlobalBoilerList() {
 
 	MainCtrl.Boilers = boilers
 
-	BlrCtl.bWaitGroup.Done()
+	BlrCtl.WaitGroup.Done()
 
-	go RtmCtl.RefreshStatusRunningDuration(time.Now())
-	go RtmCtl.RefreshBoilerRank(time.Now())
+	//go RtmCtl.RefreshStatusRunningDuration(time.Now())
+	//go RtmCtl.RefreshBoilerRank(time.Now())
 
 	go TermCtl.TerminalBindReload()
 }
 
 func (ctl *BoilerController) CurrentBoilerList(usr *models.User) ([]*models.Boiler, error) {
-	BlrCtl.bWaitGroup.Wait()
+	BlrCtl.WaitGroup.Wait()
 
 	var boilers []*models.Boiler
 	var err error
@@ -772,9 +772,6 @@ func (ctl *BoilerController) BoilerIsOnline(){
 	ctl.ServeJSON()
 }
 
-
-
-
 func (ctl *BoilerController) BoilerIsBurning() {
 	//goazure.Info("Ready to BoilerIsBurning!")
 	//goazure.Info("Params:", ctl.Input())
@@ -904,8 +901,8 @@ func (ctl *BoilerController) BoilerMessageSend() {
 		return
 	}
 
-	qs := dba.BoilerOrm.QueryTable("boiler")
-	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
+	qs := dba.BoilerOrm.QueryTable("boiler").
+		RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
 		RelatedSel("Fuel__Type").RelatedSel("Template").
 		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").
 		RelatedSel("RegisterOrg").
@@ -917,22 +914,22 @@ func (ctl *BoilerController) BoilerMessageSend() {
 		goazure.Warn("Get Boiler Info For Test Message: ", err, "\n", boiler, "\n", cnf)
 	} else {
 		var users []*models.User
-		raw := "SELECT 	`user`.* "
-		raw += "FROM	`user`, `boiler_message_subscriber` AS `sub` "
-		raw += "WHERE	`user`.`uid` = `sub`.`user_id` "
+		raw := 	"SELECT `user`.* " +
+				"FROM	`user`, `boiler_message_subscriber` AS `sub` " +
+				"WHERE	`user`.`uid` = `sub`.`user_id` "
 		raw += fmt.Sprintf("AND	`sub`.`boiler_id` = '%s' ", boiler.Uid)
 		raw += fmt.Sprintf("AND	`user`.`uid` = '%s';", usr.Uid)
 
-		if num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil || num == 0 {
+		if 	num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil || num == 0 {
 			goazure.Error("Get Boiler Subscribers Error:", err, num)
 		} else {
 			u = users[0]
 
-			var su models.UserThird
-			qu := dba.BoilerOrm.QueryTable("user_third")
-			qu = qu.Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false)
-			if err := qu.One(&su); err != nil {
-				goazure.Error("User", u.Name, "Is NOT Subscribed.")
+			var tds []*models.UserThird
+			if  num, err := dba.BoilerOrm.QueryTable("user_third").
+				Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false).
+				All(&tds); err != nil {
+				goazure.Error("User", u.Name, "Is NOT Subscribed.", err, num)
 			} else {
 				//content := "锅炉测试消息：\n"
 				//content += "送达" + u.Name + "OpenId:" + su.OpenId + "\n"
@@ -949,8 +946,10 @@ func (ctl *BoilerController) BoilerMessageSend() {
 				}
 
 				tempMsg, _ := WxCtl.TemplateMessageAlarm(&alarm)
-				goazure.Info("WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)", su.OpenId, tempMsg)
-				WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				for _, su := range tds {
+					goazure.Info("WXCtrl.SendTemplateMessage(su.OpenId, tempMsg)", su.OpenId, "|", tempMsg)
+					WxCtl.SendTemplateMessage(su.OpenId, tempMsg)
+				}
 			}
 		}
 	}
@@ -1051,10 +1050,10 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	goazure.Info("Ready to Updated Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	/*if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		return nil, errors.New(e)
-	}
+	}*/
 
 	var info 	BoilerInfo
 	var boiler 	models.Boiler
@@ -1105,6 +1104,18 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if err := DataCtl.ReadData(&maintainer); err == nil { boiler.Maintainer = &maintainer }
 	if err := DataCtl.ReadData(&supervisor); err == nil { boiler.Supervisor = &supervisor }
 
+	if boiler.InspectInnerDateNext.IsZero() { boiler.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
+	if boiler.InspectOuterDateNext.IsZero() { boiler.InspectOuterDateNext = time.Now().Add(time.Hour * 24 * 30) }
+	if boiler.InspectValveDateNext.IsZero() { boiler.InspectValveDateNext = time.Now().Add(time.Hour * 24 * 30) }
+	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
+
+	boiler.UpdatedBy = usr
+
+	if err := DataCtl.AddData(&boiler, true); err != nil {
+		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
+		return nil, errors.New(e)
+	}
+
 	if	num, err := dba.BoilerOrm.QueryTable("boiler_organization_linked").
 		Filter("Boiler__Uid", boiler.Uid).Delete(); err != nil {
 		goazure.Warn("Deleted Old Links Error:", err, num)
@@ -1138,18 +1149,6 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 		}
 	}
 
-	if boiler.InspectInnerDateNext.IsZero() { boiler.InspectInnerDateNext = time.Now().Add(time.Hour * 24 * 30) }
-	if boiler.InspectOuterDateNext.IsZero() { boiler.InspectOuterDateNext = time.Now().Add(time.Hour * 24 * 30) }
-	if boiler.InspectValveDateNext.IsZero() { boiler.InspectValveDateNext = time.Now().Add(time.Hour * 24 * 30) }
-	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
-
-	boiler.UpdatedBy = usr
-
-	if err := DataCtl.AddData(&boiler, true); err != nil {
-		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
-		return nil, errors.New(e)
-	}
-
 	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
 
 	goazure.Info("Updated Boiler:", boiler, info)
@@ -1161,10 +1160,10 @@ func (ctl *BoilerController) BoilerUpdateLocation() (*models.Boiler, error) {
 	goazure.Info("Ready to Updated Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	/*if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		return nil, errors.New(e)
-	}
+	}*/
 
 	var info BoilerInfo
 	var boiler models.Boiler
@@ -1217,10 +1216,10 @@ func (ctl *BoilerController) BoilerUpdateMaintain() (*models.Boiler, error) {
 	goazure.Info("Ready to Updated Boiler Maintain!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	/*if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		return nil, errors.New(e)
-	}
+	}*/
 
 	var info BoilerInfo
 	var boiler models.Boiler
@@ -1387,8 +1386,10 @@ func (ctl *BoilerController) BoilerBind() {
 	if setId <= 0 {
 		var combines []*models.BoilerTerminalCombined
 		if  num, err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
-			Filter("Terminal__Uid", bind.TerminalId).Filter("Boiler__Uid", bind.BoilerId).OrderBy("TerminalSetId").All(&combines); err != nil {
-				goazure.Warn("Get Exist Combined Error:", err, num)
+			Filter("Boiler__Uid", bind.BoilerId).
+			OrderBy("TerminalSetId").
+			All(&combines); err != nil {
+			goazure.Warn("Get Exist Combined Error:", err, num)
 		}
 
 		for i := int32(1); i <= 8; i++ {
@@ -1681,18 +1682,16 @@ func (ctl *BoilerController) InitBoilerDefaults() {
 	DataCtl.GenerateDefaultData(reflect.TypeOf(bf), boilerDefautlPath, "fuel", reflect.TypeOf(bft))
 }
 
-func boilerWithUid(uid string) *models.Boiler {
-	if len(uid) <= 0 {
-		return nil
-	}
-	boiler := &models.Boiler{}
-	boiler.Uid = uid
-	if err := DataCtl.ReadData(boiler); err != nil {
-		goazure.Error("Read Boiler With Uid Error:", err.Error())
-		return nil
+func (ctl *BoilerController) Boiler(uid string) *models.Boiler {
+	BlrCtl.WaitGroup.Wait()
+
+	for _, b := range MainCtrl.Boilers {
+		if b.Uid == uid {
+			return b
+		}
 	}
 
-	return boiler
+	return nil
 }
 
 func boilerForm(formId int) *models.BoilerTypeForm {

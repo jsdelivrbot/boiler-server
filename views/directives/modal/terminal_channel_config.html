@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h3 class="modal-title" id="modal-title" style="display: inline-block;">通道自定义配置</h3>
-    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modal.code }}</span>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">终端编码{{ $modal.code }}</span>
 </div>
 <style type="text/css">
     div.input-group.form-group,
@@ -170,11 +170,17 @@
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
                                        style="width: 89%;">
-                            <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
+                            <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}][
+                                <small class="font-blue-oleo">{{ $select.selected.Id }}</small>](
+                                <small class="font-blue-oleo">{{ $select.selected.Scale }}</small>
+                                <small class="font-blue-oleo">{{ $select.selected.Unit }}</small>)
+                            </ui-select-match>
                                 <ui-select-choices
                                         repeat="param in $modal.parameters[innerIndex] | filter: $select.search">
-                                    <span ng-bind-html="param.Name | highlight: $select.search"></span>
-                                    <small ng-bind-html="param.Id | highlight: $select.search"></small>
+                                    [<span ng-bind-html="param.Name | highlight: $select.search"></span>][
+                                    <small ng-bind-html="param.Id | highlight: $select.search"></small>](
+                                    <small ng-bind-html="param.Scale | highlight: $select.search"></small>
+                                    <small ng-bind-html="param.Unit | highlight: $select.search"></small>)
                                 </ui-select-choices>
                             </ui-select>
                             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
@@ -247,11 +253,13 @@
                             <ui-select ng-show="innerIndex !== 2 || outerIndex !== 0" ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap">
-                                <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
+                                <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}]
+                                    [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
+                                </ui-select-match>
                                 <ui-select-choices
                                         repeat="param in $modal.parameters[2] | filter: $select.search">
-                                    <span ng-bind-html="param.Name | highlight: $select.search"></span>
-                                    <small ng-bind-html="param.Id | highlight: $select.search"></small>
+                                   [<span ng-bind-html="param.Name | highlight: $select.search"></span>]
+                                    [<small ng-bind-html="param.Id | highlight: $select.search"></small>]
                                 </ui-select-choices>
                             </ui-select>
                             <input type="text"
@@ -328,10 +336,12 @@
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
                                        style="width: 90%;">
-                                <ui-select-match placeholder="{{chan.Name}}">{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
+                                <ui-select-match placeholder="{{chan.Name}}">[{{$select.selected.Name}}]
+                                    [<small class="font-blue-oleo">{{ $select.selected.Id }}</small>]
+                                </ui-select-match>
                                 <ui-select-choices repeat="param in $modal.parameters[4] | filter: $select.search">
-                                    <span ng-bind-html="param.Name | highlight: $select.search"></span>
-                                    <small ng-bind-html="param.Id | highlight: $select.search"></small>
+                                    [<span ng-bind-html="param.Name | highlight: $select.search"></span>]
+                                    [<small ng-bind-html="param.Id | highlight: $select.search"></small>]
                                 </ui-select-choices>
                             </ui-select>
                             <button type="button"

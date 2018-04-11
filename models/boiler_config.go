@@ -3,7 +3,7 @@ package models
 type BoilerConfig struct {
 	MyUidObject
 
-	Boiler			*Boiler		`orm:"rel(fk);index"`
+	Boiler				*Boiler		`orm:"rel(fk);index"`
 
 	IsGenerateData		bool		`orm:"index"`
 }

@@ -202,7 +202,7 @@ L 673.9 -420.5 606.9 -420.5 606.9 -353.5 673.9 -353.5 Z"/>
         <g id="Graphic_shape_27_0_Layer2_0_FILL">
             <path fill="url(#Pattern_4)" stroke="none" d="
 M -24.2 -357.9
-L -24.2 -377.9 -251.2 -377.9 -251.2 -357.9 -24.2 -357.9 Z"/>
+L -24.2 -377.9 -125.2 -377.9 -125.2 -357.9 -24.2 -357.9 Z"/>
         </g>
 
         <g id="Graphic_shape_27_0_Layer1_0_FILL">
@@ -213,8 +213,8 @@ L 700.15 -585.9 633.15 -585.9 633.15 -518.85 700.15 -518.85 Z"/>
 
         <g id="Graphic_shape_27_0_Layer0_0_FILL">
             <path fill="url(#Pattern_6)" stroke="none" d="
-M 797.65 -544.85
-L 797.65 -585.9 697.65 -585.9 697.65 -544.85 797.65 -544.85 Z"/>
+M 750.65 -544.85
+L 750.65 -585.9 697.65 -585.9 697.65 -544.85 750.65 -544.85 Z"/>
         </g>
 
         <g id="Graphic_shape_28_0_Layer0_0_FILL">
@@ -610,532 +610,538 @@ M 1.25 -2.7
 L 1.75 -2.4 2.5 -1.7 2.8 -1.15 2.95 -0.65 3.05 -0.05 2.8 1.15 2.15 2.1 1.25 2.7 0.7 2.85 0.1 2.9 -0.5 2.85 -1 2.7 -2 2.1 -2.6 1.15 -2.75 0.55 -2.8 -0.05 -2.75 -0.65 -2.6 -1.15 -2.3 -1.7 -2 -2.05 -1.55 -2.4 -1 -2.7 -0.5 -2.85 0.1 -2.95 1.25 -2.7 Z"/>
     </defs>
 
-    <g transform="matrix( 1, 0, 0, 1, 446.1,915.4) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_27_0_Layer5_0_FILL"/>
-        </g>
 
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_27_0_Layer4_0_FILL"/>
-        </g>
+    <g transform="matrix( 1.35, 0, 0, 1.35, -350, -150) ">
+        <g transform="matrix( 1, 0, 0, 1, 446.1,915.4) ">
+            <g transform="matrix(  1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_27_0_Layer5_0_FILL"/>
+            </g>
 
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_27_0_Layer3_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_27_0_Layer2_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_27_0_Layer1_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_27_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 397.95,215.4) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_28_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 0.8810577392578125, 0, 0, 1, 404.6,257.1) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_28_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 630.4,231.9) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_29_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 624,215.4) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_30_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 604.15,257.05) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_31_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 610.1,270.1) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_32_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 1, 0, 0, 1, 893,217.4) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer5_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer4_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer3_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer2_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer1_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 0.676, 0, 0, 0.675, 417,328) ">
-        <use xlink:href="#boiler_body"/>
-    </g>
-
-    <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 558.9,206.9) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 471.9,248.95) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 976,208.9) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 1053.05,247.95) ">
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
-
-            <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
-        </g>
-
-        <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-            <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
-        </g>
-    </g>
-
-    <g id="status_container">
-    </g>
-
-    <g id="water_in_container">
-    </g>
-
-    <g id="water_out_container">
-    </g>
-
-    <g id="smoke_container">
-    </g>
-
-    <g id="fuel_container">
-    </g>
-
-    <g id="instant_container">
-    </g>
-
-    <g id="instant_g1_container">
-    </g>
-
-    <g id="instant_g2_container">
-    </g>
-
-    <g id="fire_container">
-    </g>
-
-    <g id="dash_container">
-    </g>
-
-
-    <g transform="matrix( 1, 0, 0, 1, 445.6,915.45) ">
-        <g transform="matrix( 1.0006561279296875, 0, 0, 1, -7.4,15.7) ">
             <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use xlink:href="#Graphic_shape_17_0_Layer0_0_FILL"/>
+                <use xlink:href="#Graphic_shape_27_0_Layer4_0_FILL"/>
+            </g>
 
-                    <use xlink:href="#Graphic_shape_17_0_Layer0_0_1_STROKES"/>
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_27_0_Layer3_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_27_0_Layer2_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_27_0_Layer1_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_27_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 1, 0, 0, 1, 397.95,215.4) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_28_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 0.8810577392578125, 0, 0, 1, 404.6,257.1) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_28_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 1, 0, 0, 1, 630.4,231.9) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_29_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 1, 0, 0, 1, 624,215.4) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_30_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 1, 0, 0, 1, 604.15,257.05) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_31_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 1, 0, 0, 1, 610.1,270.1) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_1)" xlink:href="#Graphic_shape_32_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 1, 0, 0, 1, 893,217.4) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer5_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer4_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer3_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer2_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer1_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use filter="url(#Filter_2)" xlink:href="#Graphic_shape_33_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 0.676, 0, 0, 0.675, 417,328) ">
+            <use xlink:href="#boiler_body"/>
+        </g>
+
+        <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 558.9,206.9) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 471.9,248.95) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 976,208.9) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g transform="matrix( 0.23211669921875, 0.004302978515625, -0.0067596435546875, 0.36383056640625, 1053.05,247.95) ">
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer15_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer14_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer13_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer12_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer11_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer10_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer9_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer8_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer7_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer6_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer5_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer4_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer3_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_FILL"/>
+
+                <use xlink:href="#Graphic_shape_265_0_Layer2_0_1_STROKES"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer1_0_FILL"/>
+            </g>
+
+            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                <use xlink:href="#Graphic_shape_265_0_Layer0_0_FILL"/>
+            </g>
+        </g>
+
+        <g id="status_container">
+        </g>
+
+        <g id="water_in_container">
+        </g>
+
+        <g id="water_out_container">
+        </g>
+
+        <g id="smoke_container">
+        </g>
+
+        <g id="fuel_container">
+        </g>
+
+        <g id="instant_container">
+        </g>
+
+        <g id="instant_g1_container">
+        </g>
+
+        <g id="instant_g2_container">
+        </g>
+
+        <g id="fire_container">
+        </g>
+
+        <g id="dash_container">
+        </g>
+
+
+        <g transform="matrix( 1, 0, 0, 1, 445.6,915.45) ">
+            <g transform="matrix( 1.0006561279296875, 0, 0, 1, -7.4,15.7) ">
+                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use xlink:href="#Graphic_shape_17_0_Layer0_0_FILL"/>
+
+                        <use xlink:href="#Graphic_shape_17_0_Layer0_0_1_STROKES"/>
+                    </g>
+                </g>
+            </g>
+
+            <g id="panel_mc" transform="matrix( 0.26226806640625, 0, 0, 0.2617340087890625, -36.4,-21.5) ">
+                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use xlink:href="#Graphic_shape_14_0_Layer0_0_FILL"/>
+
+                        <use xlink:href="#Graphic_shape_14_0_Layer0_0_1_STROKES"/>
+                    </g>
+                </g>
+            </g>
+
+            <g id="yl" transform="matrix( 1.0006561279296875, 0, 0, 1, 0.65,-0.95) ">
+                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer8_0_FILL"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer7_0_1_STROKES"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer6_0_1_STROKES"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer5_0_1_STROKES"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer4_0_1_STROKES"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer3_0_FILL"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer2_0_1_STROKES"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer1_0_FILL"/>
+                    </g>
+
+                    <g transform="matrix( 1, 0, 0, 1, 0,0) ">
+                        <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer0_0_FILL"/>
+                    </g>
                 </g>
             </g>
         </g>
 
-        <g id="panel_mc" transform="matrix( 0.26226806640625, 0, 0, 0.2617340087890625, -36.4,-21.5) ">
-            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use xlink:href="#Graphic_shape_14_0_Layer0_0_FILL"/>
-
-                    <use xlink:href="#Graphic_shape_14_0_Layer0_0_1_STROKES"/>
-                </g>
-            </g>
-        </g>
-
-        <g id="yl" transform="matrix( 1.0006561279296875, 0, 0, 1, 0.65,-0.95) ">
-            <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer8_0_FILL"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer7_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer6_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer5_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer4_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer3_0_FILL"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer2_0_1_STROKES"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer1_0_FILL"/>
-                </g>
-
-                <g transform="matrix( 1, 0, 0, 1, 0,0) ">
-                    <use filter="url(#Filter_3)" xlink:href="#Graphic_shape_19_0_Layer0_0_FILL"/>
-                </g>
-            </g>
-        </g>
     </g>
+
+
 </svg>

@@ -10,6 +10,7 @@ import (
 	_ "github.com/AzureRelease/boiler-server/models"
 	_ "github.com/AzureRelease/boiler-server/controllers"
 	_ "github.com/AzureRelease/boiler-server/log"
+
 	"time"
 )
 
@@ -33,7 +34,8 @@ func main() {
 	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
 
-	//go controllers.ParamCtrl.InitParameterChannelConfig(600)
+	//go controllers.ParamCtrl.InitParameterChannelConfig()
+	//go controllers.RtmCtl.ImportExistCache()
 
 	//goazure.Warn(fmt.Sprintf("%2x", 17867))
 	//goazure.Warn(fmt.Sprintf("%x", 17867))

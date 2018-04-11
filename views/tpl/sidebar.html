@@ -15,15 +15,33 @@
     .page-sidebar .page-sidebar-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li>a {
         padding: 0px 15px;
     }
+    .page-sidebar .sidebar_con{
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 50px;
+        color: #708096;
+        line-height: 35px;
+    }
+    .page-sidebar.navbar-collapse.in{
+        margin:0px;
+    }
+    @media (min-width: 768px){
+        .navbar-collapse.collapse {
+            overflow: hidden!important;
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
 
 </style>
 
 <!-- BEGIN SIDEBAR -->
 <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-<div class="page-sidebar">
+<div class="page-sidebar collapse navbar-collapse">
     <div class="sidebar_inner">
-        <div class="collapse navbar-collapse">
+        <div class="sidebar_con">
             <ul class="page-sidebar-menu page-header-fixed fixed" data-keep-expanded="true" data-auto-scroll="false" data-slide-speed="200" style="padding-top: 5px;">
                 <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
                 <li class="sidebar-toggler-wrapper hide" style="margin: 12px auto;">
@@ -157,7 +175,7 @@
                 </li>
                 -->
 
-                <li ng-show="currentUser.Role.RoleId <= 10"
+                <li ng-show="currentUser.Role.RoleId <= 11"
                     class="heading">
                     <h3 class="uppercase">信息维护</h3>
                 </li>
@@ -232,21 +250,21 @@
                 </li>
                 -->
 
-                <li ng-show="currentUser.Role.RoleId <= 10"
+                <li ng-show="currentUser.Role.RoleId <= 11"
                     class="start nav-item">
                     <a ui-sref="organization.overview">
                         <i class="fa fa-suitcase"></i>
                         <span class="title">企业信息</span>
                     </a>
                 </li>
-                <li ng-show="currentUser.Role.RoleId <= 10"
+                <li ng-show="currentUser.Role.RoleId <= 11"
                     class="start nav-item">
                     <a ui-sref="boiler.dashboard">
                         <i class="fa fa-industry"></i>
                         <span class="title">锅炉信息</span>
                     </a>
                 </li>
-                <li ng-show="currentUser.Role.RoleId <= 10"
+                <li ng-show="currentUser.Role.RoleId <= 11"
                     class="start nav-item">
                     <a ui-sref="terminal.dashboard">
                         <i class="fa fa-terminal"></i>
@@ -264,7 +282,7 @@
                         <span class="title">告警规则</span>
                     </a>
                 </li>
-                <li ng-show="currentUser.Role.RoleId <= 10"
+                <li ng-show="currentUser.Role.RoleId <= 11"
                     class="start nav-item ">
                     <a ui-sref="parameter.dashboard" class="nav-link ">
                         <i class="fa fa-bar-chart-o"></i>

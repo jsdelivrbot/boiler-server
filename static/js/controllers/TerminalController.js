@@ -38,6 +38,20 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                 angular.forEach(datasource, function (d, key) {
                     d.num = ++num;
                     d.code = d.TerminalCode.toString();
+
+                    d.online = d.IsOnline? "在线" : "离线";
+                    if(d.Boilers){
+                        $http.get('/boiler/state/is_burning/?boiler=' + d.Boilers[0].Uid)
+                            .then(function (res) {
+                                // console.error("Fetch Status Resp:", res.data, d);
+                                d.isBurning = (res.data.value === "true");
+                                d.online = (d.IsOnline||d.isBurning) ? "在线" : "离线";
+                            }, function (err) {
+                                console.error('Fetch Status Err!', err);
+                            });
+                    }
+
+
                     if (d.code.length < 6) {
                         for (var l = d.code.length; l < 6; l++) {
                             d.code = "0" + d.code;
@@ -45,7 +59,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     }
                     d.simNum = d.SimNumber.length > 0 ? d.SimNumber : " - ";
                     d.ip = d.LocalIp.length > 0 ? d.LocalIp : " - ";
-                    d.online = d.IsOnline ? "在线" : "离线";
+
 
                     if (currentData && currentData.Uid === d.Uid) {
                         currentData = d;
@@ -53,6 +67,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                 });
 
                 terminal.datasource = datasource;
+                console.info("Get Terminal List Resp:", terminal.datasource);
 
                 if (callback) {
                     callback();
@@ -631,6 +646,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+    App.startPageLoading({message: '正在加载数据...'});
     $http.post('/channel_config_matrix/', {
         terminal_code: currentData.code
     }).then(function (res) {
@@ -653,6 +669,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 }
             }
         }
+
+        setTimeout(function () {
+            App.stopPageLoading();
+        }, 800);
     });
 
     $modal.categoryChanged = function (category) {
@@ -879,8 +899,11 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
         console.warn("$modal channel update!", configUpload);
 
+        App.startPageLoading({message: '正在加载数据...'});
         $http.post("/channel_config_update/", configUpload)
             .then(function (res) {
+                 App.stopPageLoading();
+
                 swal({
                     title: "通道配置更新成功",
                     type: "success"

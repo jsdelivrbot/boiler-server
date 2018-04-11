@@ -76,7 +76,7 @@
         </td>
         <td> {{ data.code }} </td>
         <td>
-            <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.online }}</span>
+            <span ng-class="['label', {'label-success': data.IsOnline||data.isBurning}, {'label-default': !data.IsOnline && !data.isBurning}]">{{ data.online }}</span>
         </td>
         <td>
             <!--<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">-->
@@ -106,13 +106,13 @@
             <button ng-show="currentUser.Role.RoleId < 10"
                     ng-click="terminal.setting(data)"
                     class="btn edit btn-outline btn-circle btn-sm blue"
-                    style="border-bottom-right-radius: 0px !important; border-top-right-radius: 0px !important;">
+                    >
                 <i class="fa fa-cogs"></i> 配置
             </button>
-            <button ng-show="currentUser.Role.RoleId < 10"
+            <button
                     ng-click="terminal.channel(data)"
                     class="btn edit btn-outline btn-circle btn-sm blue-hoki"
-                    style="border-bottom-left-radius: 0px !important; border-top-left-radius: 0px !important;">
+                    style="margin-left: 8px;">
                 <i class="fa fa-server"></i> 通道
             </button>
             </div>

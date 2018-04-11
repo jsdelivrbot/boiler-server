@@ -6,9 +6,11 @@ import (
 
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureRelease/boiler-server/models"
+	"github.com/AzureRelease/boiler-server/models/logs"
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"net/url"
 	"github.com/AzureRelease/boiler-server/common"
+
 	"github.com/AzureRelease/boiler-server/conf"
 )
 
@@ -61,9 +63,14 @@ func init() {
 
 		new(models.BoilerConfig),
 		new(models.BoilerRuntime),
+		new(models.BoilerRuntimeArchived),
 
 		new(caches.BoilerRuntimeCacheInstant),
-		new(caches.BoilerRuntimeCacheHistory),
+
+		new(caches.BoilerRuntimeCacheDay),
+		new(caches.BoilerRuntimeCacheWeek),
+		new(caches.BoilerRuntimeCacheMonth),
+
 		new(caches.BoilerRuntimeCacheFlow),
 		new(caches.BoilerRuntimeCacheFlowDaily),
 		new(caches.BoilerRuntimeCacheSteamTemperature),
@@ -77,9 +84,12 @@ func init() {
 		new(caches.BoilerRuntimeCacheExcessAir),
 
 		new(caches.BoilerRuntimeHistory),
+		new(caches.BoilerRuntimeHistoryArchived),
 
 		new(caches.BoilerRuntimeCacheStatus),
 		new(caches.BoilerRuntimeCacheStatusRunning),
+
+		new(logs.BoilerRuntimeLog),
 
 		new(models.BoilerCalculateParameter),
 		new(models.BoilerCalculateResult),

@@ -173,7 +173,7 @@ func generateMessageTags() {
 		} else {
 			tagId, _ := strconv.ParseInt(row[0], 10, 32)
 			name := row[1]
-			nameEn := row[2]
+			//nameEn := row[2]
 			column := row[3]
 			length, _ := strconv.ParseInt(row[4], 10, 32)
 			dataType := row[5]
@@ -183,7 +183,7 @@ func generateMessageTags() {
 
 			msgTag.TagId = int32(tagId)
 			msgTag.Name = name
-			msgTag.NameEn = nameEn
+			//msgTag.NameEn = nameEn
 			msgTag.Remark = remark
 			msgTag.Column = column
 			msgTag.DataType = dataType

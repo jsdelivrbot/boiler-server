@@ -114,34 +114,34 @@
                                 <tr>
                                     <th>序号</th>
                                     <th>登录名</th>
-                                    <th>登录密码</th>
-                                    <th>用户名称</th>
+                                    <!--<th>登录密码</th>-->
                                     <th>用户角色</th>
+                                    <th>用户名称</th>
+
                                     <th>所属企业</th>
-                                    <th>用户状态</th>
                                     <th>创建时间</th>
-                                    <!--
+                                    <th>用户状态</th>
+
                                     <th>操作</th>
-                                    -->
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="data in account.datasource">
                                     <td>{{ data.num }}</td>
                                     <td>{{ data.Username }}</td>
-                                    <td>******** </td>
-                                    <td>{{ data.Name }}</td>
+                                    <!--<td>******** </td>-->
                                     <td><span ng-class="['label', {'label-danger': data.Role.RoleId == 0}, {'label-warning': data.Role.RoleId == 1}, {'label-success': data.Role.RoleId == 2 || data.Role.RoleId == 10}, {'label-primary': data.Role.RoleId == 3 || data.Role.RoleId == 4}, {'label-info': data.Role.RoleId == 11}, {'label-default': data.Role.RoleId == 20}]">{{ data.Role.Name }}</span></td>
+
+                                    <td>{{ data.Name }}</td>
                                     <td>{{ data.Organization.Name }}</td>
-                                    <td><span ng-class="['label', {'label-danger': data.Status == 2}, {'label-warning': data.Status == 0}, {'label-info': data.Status == 1}, {'label-success': data.Role.RoleId == -1}]">{{ account.status[data.Status].name }}</span></td>
                                     <td>{{ data.CreatedDate | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
-                                    <!--
+
+                                    <td><span ng-class="['label', {'label-danger': data.Status == 2}, {'label-warning': data.Status == 0}, {'label-info': data.Status == 1}, {'label-success': data.Role.RoleId == -1}]">{{ account.status[data.Status].name }}</span></td>
                                     <td>
                                         <a href="javascript:;" class="btn view btn-outline btn-circle btn-sm blue">
                                             <i class="fa fa-edit"></i> 查看
                                         </a>
                                     </td>
-                                    -->
                                 </tr>
                                 </tbody>
                             </table>
