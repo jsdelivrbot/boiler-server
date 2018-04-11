@@ -58,8 +58,11 @@
                             </td>
 
                             <td>
-                                <a ng-click="template.edit(data)" class="btn view btn-outline btn-circle red delete_btn">
-                                    <i class="fa fa-trash"> 编辑 </i>
+                                <a ng-click="template.edit(data)" class="btn view btn-outline btn-circle blue delete_btn">
+                                    <i class="fa fa-edit"> 编辑 </i>
+                                </a>
+                                <a ng-click="template.delete(data)" class="btn view btn-outline btn-circle red delete_btn">
+                                    <i class="fa fa-trash"> 删除 </i>
                                 </a>
                             </td>
                         </tr>
@@ -73,27 +76,6 @@
     <!-- END MAIN CONTENT -->
 
 
-
-
-
-
-    <script type="text/ng-template" id="editTemplate.html">
-        <div class="modal-header">
-            <h3 class="modal-title">模板编辑</h3>
-        </div>
-        <div class="modal-body">
-            <div>
-                哈哈哈哈哈
-            </div>
-
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" type="button" ng-click="ok()">提交</button>
-            <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
-        </div>
-
-
-    </script>
 
 
 </div>
