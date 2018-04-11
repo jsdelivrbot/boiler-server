@@ -470,7 +470,29 @@ func (ctl *IssuedController) IssuedBoiler() {
 	}
 	fmt.Println("Online:",Online)
 	if Online {
-		SocketBoilerSend(Code,TermSetId,boilerIssued.Value)
+		buf:=SocketBoilerSend(Code,TermSetId,boilerIssued.Value)
+		if buf==nil{
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("发送报文失败"))
+			return
+		} else if bytes.Equal(conf.TermNoRegist,buf) {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
+			return
+		} else if bytes.Equal(conf.TermTimeout,buf) {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
+			return
+		} else if len(buf)>4 {
+			if buf[15]!=16 {
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("终端配置错误"))
+				return
+			}
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
+		}
 	} else {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端未在线!"))
