@@ -52,16 +52,16 @@
                         <tr ng-repeat='data in template.datasource'>
                             <td> {{data.num}} </td>
 
-                            <td> {{ data.name }} </td>
+                            <td> {{ data.Name }} </td>
                             <td>
-                                {{ data.enterprise }} <br>
+                                {{ data.Organization.Name}} <br>
                             </td>
 
                             <td>
                                 <a ng-click="template.edit(data)" class="btn view btn-outline btn-circle blue delete_btn">
                                     <i class="fa fa-edit"> 编辑 </i>
                                 </a>
-                                <a ng-click="template.delete(data)" class="btn view btn-outline btn-circle red delete_btn">
+                                <a ng-click="template.delete(data.Uid)" class="btn view btn-outline btn-circle red delete_btn">
                                     <i class="fa fa-trash"> 删除 </i>
                                 </a>
                             </td>
