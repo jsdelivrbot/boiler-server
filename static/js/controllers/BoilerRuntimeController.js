@@ -408,17 +408,20 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
     ];
     // $scope.restartValue = $scope.restartValues[0];
     $scope.boilerRestart = function(value,ter){
+        App.startPageLoading({message: '正在加载数据...'});
         $http.post("/issued_boiler",{
             boiler_id:bRuntime.boiler.Uid,
             terminal_id:ter.Uid,
             value:parseInt(value)
         }).then(function (res) {
+            App.stopPageLoading();
             swal({
                 title: "成功",
                 text: res.data,
                 type: "success"
             });
         },function (err) {
+            App.stopPageLoading();
             swal({
                 title: "失败",
                 text: err.data ,
