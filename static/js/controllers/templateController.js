@@ -27,8 +27,8 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
             }
         })
     };
-    // template.refreshTemplate();
-    template.datasource=[
+    template.refreshTemplate();
+    /*template.datasource=[
         {
             name:"通用模板一",
             enterprise:"锅炉制造厂"
@@ -40,7 +40,7 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
     ];
     for(var i = 0; i<template.datasource.length; i++){
         template.datasource[i].num = i+1;
-    }
+    }*/
 
 
 
@@ -527,7 +527,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         console.warn("$modal channel update!", configUpload);
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/channel_config_update/", configUpload)
+        $http.post("/template_update", configUpload)
             .then(function (res) {
                 App.stopPageLoading();
 
