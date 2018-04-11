@@ -168,14 +168,12 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 				if num, err := dba.BoilerOrm.Delete(&iSwitch); err != nil {
 					goazure.Error("Delete issued_switch Error", num, err)
 				}
-				fmt.Println("qqqqqqqqqq:")
 			} else {
 				var iAna models.IssuedAnalogue
 				iAna.Channel = &aCnf
 				if num, err := dba.BoilerOrm.Delete(&iAna); err != nil {
 					goazure.Error("Delete issued_analogue Error", num, err)
 				}
-				fmt.Println("wwwwwwwwww:")
 			}
 			ctl.ChannelConfigDelete(&aCnf)
 			continue
@@ -204,13 +202,15 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 			cnf.SwitchStatus = c.SwitchValue
 		}
 
-		if err := DataCtl.AddData(&cnf, true, "Terminal", "ChannelType", "ChannelNumber", "IsDefault"); err != nil {
-			e := fmt.Sprintln("Channel Config Update Error:", err)
-			goazure.Error(e)
-			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte(e))
+		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber!=1 {
+			if err := DataCtl.AddData(&cnf, true, "Terminal", "ChannelType", "ChannelNumber", "IsDefault"); err != nil {
+				e := fmt.Sprintln("Channel Config Update Error:", err)
+				goazure.Error(e)
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte(e))
 
-			continue
+				continue
+			}
 		}
 		//模拟量插入issued_analogue
 		//开关量插入issued_switch
@@ -283,17 +283,11 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 			return
 		}
 	}
-	fmt.Println("ver:",ver)
-	fmt.Println("TerUid",ter.Uid)
 	Byte:=IssuedCtl.IssuedMessage(ter.Uid)
-	fmt.Println("组的Byte:",Byte)
-	fmt.Println(ter.TerminalCode)
 	Code:=strconv.FormatInt(ter.TerminalCode,10)
 	message:=SocketCtrl.c0(Byte,Code,ver)
-	mess:=fmt.Sprintf("%x",string(message))
-	fmt.Println("mess:",mess)
 	messageSql:="insert into issued_message(sn,ver,create_time,update_time,curr_message) values(?,?,now(),now(),?) on duplicate key update ver=?,update_time=now(),curr_message=?"
-	if _,err:=dba.BoilerOrm.Raw(messageSql,ter.TerminalCode,ver,mess,ver,mess).Exec();err!=nil{
+	if _,err:=dba.BoilerOrm.Raw(messageSql,ter.TerminalCode,ver,string(message),ver,string(message)).Exec();err!=nil{
 		goazure.Error("Insert issued_message Error",err)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("组包失败"))

@@ -123,6 +123,8 @@ func init() {
 		new(models.IssuedSwitch),
 		new(models.IssuedSwitchBurn),
 		new(models.IssuedCommunication),
+		new(models.IssuedTemplate),
+		new(models.IssuedChannelConfigTemplate),
 	)
 
 	orm.Debug = false//!conf.IsRelease

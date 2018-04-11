@@ -143,6 +143,26 @@ func init() {
 
 	//获取通信参数
 	goazure.Router("/issued_communication",&controllers.ParameterController{},"post:IssuedCommunication")
+
+	//模板另存为
+	goazure.Router("/issued_template",&controllers.TemplateController{},"post:IssuedTemplate")
+
+	//锅炉重启
+	goazure.Router("/issued_boiler",&controllers.IssuedController{},"post:IssuedBoiler")
+
+	//模板列表
+	goazure.Router("/template_list",&controllers.TemplateController{},"get:TemplateList")
+
+	//获取模板信息
+	goazure.Router("/template_info",&controllers.TemplateController{},"post:TemplateInfo")
+
+	//编辑模板
+	goazure.Router("/template_update",&controllers.TemplateController{},"post:TemplateUpdate")
+
+	//删除模板
+	goazure.Router("/template_delete",&controllers.TemplateController{},"post:TemplateDelete")
+
+
 	//下发测试按钮
 
 

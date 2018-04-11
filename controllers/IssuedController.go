@@ -45,6 +45,12 @@ func IntToByteTwo(Int int32)([]byte) {
 	return r_buf
 }
 
+type BoilerIssued struct {
+	BoilerId string `json:"boiler_id"`
+	TermId string    `json:"terminal_id"`
+	Value   int   `json:"value"`
+}
+
 type AnalogueIssued struct {
 	ChannelType int
 	ChannelNumber int
@@ -245,6 +251,7 @@ func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
 			}
 		}
 	}
+	fmt.Println("开关位的Byte:",Byte)
 	return Byte
 }
 //组状态量
@@ -347,12 +354,31 @@ func (ctl *IssuedController) IssuedVersion(Code string)(int32)  {
 func (ctl *IssuedController) IssuedMessage(Uid string)([]byte) {
 	Byte:=make([]byte,0)
 	Byte = append(Byte,ctl.IssuedAnalogOne(Uid)...)
+	fmt.Println("模拟量1长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedAnalogTwo(Uid)...)
+	fmt.Println("模拟量2长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedSwitchBurn(Uid)...)
+	fmt.Println("开关量点火位长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedSwitch(Uid)...)
+	fmt.Println("开关位长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedRange(Uid)...)
+	fmt.Println("状态量长度:",len(Byte))
 	Byte = append(Byte,ctl.IssuedCommunication(Uid)...)
+	fmt.Println("数据长度:",len(Byte))
 	return Byte
+}
+//根据Code获取报文
+func (ctl *IssuedController)ReqMessage(Code string)(string) {
+	var info Info
+	info.Sn=Code
+	fmt.Println("infoSn",info.Sn)
+	sql:="select curr_message from issued_message where sn=?"
+	if err:=dba.BoilerOrm.Raw(sql,Code).QueryRow(&info);err!=nil{
+		goazure.Error("Query issued_message Error",err)
+		return ""
+	}
+	fmt.Println("下发的报文:",info.CurrMessage)
+	return info.CurrMessage
 }
 
 //下发配置
@@ -364,7 +390,14 @@ func (ctl *IssuedController) IssuedConfig() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-	buf:=SocketCtrl.SocketConfigSend(confIssued.Code)
+	reqBuf:=ctl.ReqMessage(confIssued.Code)
+	if reqBuf=="" {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("还未保存配置"))
+		return
+	}
+	fmt.Println("要下发的buf:",reqBuf)
+	buf:=SocketCtrl.SocketConfigSend(reqBuf)
 	if buf==nil{
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("发送报文失败"))
@@ -410,6 +443,62 @@ func (ctl *IssuedController) IssuedConfig() {
 		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
 	}
 }
+//锅炉重启
+func (ctl *IssuedController) IssuedBoiler() {
+	var boilerIssued BoilerIssued
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &boilerIssued); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	bindSql:="select terminal_code,terminal_set_id from boiler_terminal_combined where boiler_id=? and terminal_id=?"
+	var Code string
+	var TermSetId int32
+	if err:=dba.BoilerOrm.Raw(bindSql,boilerIssued.BoilerId,boilerIssued.TermId).QueryRow(&Code,&TermSetId);err!=nil{
+		goazure.Error("Query terminal_code Error",err)
+	}
+	fmt.Println("Code:",Code)
+	fmt.Println("TermId:",boilerIssued.TermId)
+	fmt.Println("TermSetId:",TermSetId)
+	fmt.Println("value:",boilerIssued.Value)
+	//查询终端是否在线
+	var Online bool
+	OnlineSql:="select is_online from terminal where terminal_code = ?"
+	if err:=dba.BoilerOrm.Raw(OnlineSql,Code).QueryRow(&Online);err!=nil {
+		goazure.Error("Query terminal Error",err)
+	}
+	fmt.Println("Online:",Online)
+	if Online {
+		buf:=SocketBoilerSend(Code,TermSetId,boilerIssued.Value)
+		if buf==nil{
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("发送报文失败"))
+			return
+		} else if bytes.Equal(conf.TermNoRegist,buf) {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
+			return
+		} else if bytes.Equal(conf.TermTimeout,buf) {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
+			return
+		} else if len(buf)>4 {
+			if buf[13]!=16 {
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("终端配置错误"))
+				return
+			}
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
+		}
+	} else {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端未在线!"))
+		return
+	}
+}
 
 //重启
 func (ctl *IssuedController) TerminalRestart() {
@@ -443,7 +532,7 @@ func (ctl *IssuedController) TerminalRestart() {
 		ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
 		return
 	} else if len(buf)>4 {
-		if buf[15]!=16 {
+		if buf[13]!=16 {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端配置错误"))
 		return

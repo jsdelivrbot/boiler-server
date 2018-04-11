@@ -13,6 +13,7 @@ import (
 	"net"
 	"github.com/AzureRelease/boiler-server/dba"
 	"time"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type SocketController struct {
@@ -20,6 +21,25 @@ type SocketController struct {
 }
 
 var SocketCtrl *SocketController = &SocketController{}
+
+func cf(code string,termSetId int32,value int)([]byte) {
+	var info string
+	if value == 1{
+		info = conf.BoilerShut
+	} else if value == 2 {
+		info = conf.BoilerStart
+	} else if value == 3 {
+		info = conf.BoilerReset
+	}
+	words_1:="\xac\xeb\x00\x0b\x00\x00\xcf"+code
+	buf := []byte(words_1)
+	buf=append(buf,IntToByteOne(termSetId)...)
+	words_2:=info+"\x00\x00\xaf\xed"
+	buf=append(buf,words_2...)
+	copy(buf[15:17],CRC16(buf[4:15]))
+	return buf
+}
+
 func c9(Code string)([]byte) {
 	words_1:="\xac\xeb\x00\x09\x00\x00\xc9"+Code+"\x00\x00\xaf\xed"
 	buf :=[]byte(words_1)
@@ -30,13 +50,25 @@ func c9(Code string)([]byte) {
 func (ctl *SocketController)c0(b []byte,Code string,ver int32)([]byte) {
 	words_1:="\xac\xeb\x01\x62\x00\x00\xc0"+Code
 	buf:=append([]byte(words_1),IntToByte(ver)...)
-	fmt.Println(buf)
 	buf=append(buf,b...)
-	fmt.Println(buf)
 	words_2:="\x00\x00\xaf\xed"
 	buf=append(buf,[]byte(words_2)...)
 	copy(buf[358:360],CRC16(buf[4:358]))
+	fmt.Println("组成的buf:",buf)
+	fmt.Println("buf len:",len(buf))
 	return buf
+}
+
+func SendBoiler(conn net.Conn,code string,termSetId int32,value int) {
+	buf := cf(code,termSetId,value)
+	n, err := conn.Write(buf)
+	if err != nil {
+		goazure.Error("%s%s","Write error:", err)
+	} else {
+		goazure.Info(fmt.Sprintf("Write %d bytes, content is %x\n", n, string(buf[:n])))
+	}
+	//conn.Write(buffer)
+	fmt.Println("send over")
 }
 
 func Send(conn net.Conn,code string) {
@@ -65,32 +97,8 @@ type Info struct {
 	Sn string
 	CurrMessage string
 }
-func (ctl *SocketController)Message(Code string)(string) {
-	var info Info
-	info.Sn=Code
-	fmt.Println("infoSn",info.Sn)
-	sql:="select curr_message from issued_message where sn=?"
-	if err:=dba.BoilerOrm.Raw(sql,Code).QueryRow(&info);err!=nil{
-		goazure.Error("Query curr_message Error",err)
-	}
-	fmt.Println("下发的报文:",info.CurrMessage)
-	return info.CurrMessage
-}
-
-func SendConfig(conn net.Conn,Code string) {
-		b:=SocketCtrl.Message(Code)
-		buf:=[]byte(b)
-		n,err:=conn.Write(buf)
-		if err!=nil {
-			goazure.Error("%s%s","Write error:", err)
-		} else {
-			goazure.Info(fmt.Sprintf("Write %d bytes, content is %x\n", n, string(buf[:n])))
-		}
-	fmt.Println("send over")
-}
-
-//下发配置
-func (ctl *SocketController)SocketConfigSend(Code string)([]byte) {
+//锅炉重启等报文
+func SocketBoilerSend(code string,termSetId int32,value int)([]byte) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
@@ -103,7 +111,40 @@ func (ctl *SocketController)SocketConfigSend(Code string)([]byte) {
 		return nil
 	}
 	goazure.Info("connect success")
-	SendConfig(conn,Code)
+	SendBoiler(conn,code,termSetId,value)
+	buf:=Receive(conn)
+	conn.Close()
+	return buf
+}
+
+
+func SendConfig(reqBuf string,conn net.Conn) {
+		buf:=[]byte(reqBuf)
+		fmt.Println("buf：",buf)
+		n,err:=conn.Write(buf)
+		if err!=nil {
+			goazure.Error("%s%s","Write error:", err)
+		} else {
+			goazure.Info(fmt.Sprintf("Write %d bytes, content is %x\n", n, string(buf[:n])))
+		}
+	fmt.Println("send over")
+}
+
+//下发配置
+func (ctl *SocketController)SocketConfigSend(reqBuf string)([]byte) {
+	server := "47.100.0.27:18887"
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		return nil
+	}
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		return nil
+	}
+	goazure.Info("connect success")
+	SendConfig(reqBuf,conn)
 	buf:=Receive(conn)
 	conn.Close()
 	return buf
@@ -318,6 +359,7 @@ func (ctl *SocketController) SocketClientMessageSend(code string, isOn bool, per
 	Recive(conn)
 	conn.Close()
 }
+
 
 func CRC(data []byte)(int,error){
 	var crc int = 65535
