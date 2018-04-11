@@ -105,7 +105,7 @@
                             <th>额定蒸发量</th>
                             <td>
                                 <span class="unit">t/h</span>
-                                <span>{{ info.currentData.EvaporatingCapacity }}</span>
+                                <span ng-hide="info.currentData.Medium.Id===2">{{ info.currentData.EvaporatingCapacity }}</span>
                             </td>
 
                             <th>锅炉型态</th>
