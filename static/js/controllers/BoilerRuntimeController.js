@@ -391,7 +391,41 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
     }
 
 
-
+    //---------锅炉重启------------
+    $scope.terRes =[
+        {
+            value:2,
+            name:"启动锅炉"
+        },
+        {
+            value:1,
+            name:"关闭锅炉"
+        },
+        {
+            value:1,
+            name:"重置锅炉"
+        }
+    ];
+    // $scope.restartValue = $scope.restartValues[0];
+    $scope.boilerRestart = function(value,ter){
+        $http.post("/issued_boiler",{
+            boiler_id:bRuntime.boiler.Uid,
+            terminal_id:ter.Uid,
+            value:parseInt(value)
+        }).then(function (res) {
+            swal({
+                title: "成功",
+                text: res.data,
+                type: "success"
+            });
+        },function (err) {
+            swal({
+                title: "失败",
+                text: err.data ,
+                type: "error"
+            });
+        });
+    }
 
 });
 

@@ -21,6 +21,23 @@
 
         </div>
         <div class="">
+            <div class="input-group">
+                <select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
+                        class="form-control" style="width: 60%">
+                    <option value="" disabled>请选择终端</option>
+                </select>
+                <select ng-model="restartValue" ng-change="boilerRestart(restartValue,terminalRestart)"
+                        ng-disabled="!terminalRestart"
+                        class="form-control btn blue" style="width: 40%">
+                    <option value="" disabled>请选择操作</option>
+                    <option value="2">启动锅炉</option>
+                    <option value="1">关闭锅炉</option>
+                    <option value="3">重置锅炉</option>
+                </select>
+
+
+            </div>
+
             <h6 class="font-grey-salsa" style="padding-bottom: 6px;">
                 采样时间: {{ runtime.instants[0].date | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
             </h6>
