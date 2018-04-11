@@ -527,7 +527,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         console.warn("$modal channel update!", configUpload);
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/channel_config_update/", configUpload)
+        $http.post("/template_update", configUpload)
             .then(function (res) {
                 App.stopPageLoading();
 
