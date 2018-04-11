@@ -31,10 +31,10 @@ func cf(code string,termSetId int32,value int)([]byte) {
 	} else if value == 3 {
 		info = conf.BoilerReset
 	}
-	words_1:="\xac\xeb\x00\x0b\x00\x00\xcf"+info+code
+	words_1:="\xac\xeb\x00\x0b\x00\x00\xcf"+code
 	buf := []byte(words_1)
 	buf=append(buf,IntToByteOne(termSetId)...)
-	words_2:="\x00\x00\xaf\xed"
+	words_2:=info+"\x00\x00\xaf\xed"
 	buf=append(buf,words_2...)
 	copy(buf[15:17],CRC16(buf[4:15]))
 	return buf
