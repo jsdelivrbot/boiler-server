@@ -464,7 +464,7 @@ func (ctl *IssuedController) IssuedBoiler() {
 	fmt.Println("value:",boilerIssued.Value)
 	//查询终端是否在线
 	var Online bool
-	OnlineSql:="select online from terminal where terminal_code = ?"
+	OnlineSql:="select is_online from terminal where terminal_code = ?"
 	if err:=dba.BoilerOrm.Raw(OnlineSql,Code).QueryRow(&Online);err!=nil {
 		goazure.Error("Query terminal Error",err)
 	}
