@@ -143,6 +143,13 @@ func init() {
 
 	//获取通信参数
 	goazure.Router("/issued_communication",&controllers.ParameterController{},"post:IssuedCommunication")
+
+	//模板另存为
+	goazure.Router("/issued_template",&controllers.TemplateController{},"post:IssuedTemplate")
+
+	//锅炉重启
+	goazure.Router("/issued_boiler",&controllers.IssuedController{},"post:IssuedBoiler")
+
 	//下发测试按钮
 
 

@@ -45,6 +45,12 @@ func IntToByteTwo(Int int32)([]byte) {
 	return r_buf
 }
 
+type BoilerIssued struct {
+	BoilerId string `json:"boiler_id"`
+	TermId string    `json:"terminal_id"`
+	Value   int   `json:"value"`
+}
+
 type AnalogueIssued struct {
 	ChannelType int
 	ChannelNumber int
@@ -435,6 +441,40 @@ func (ctl *IssuedController) IssuedConfig() {
 	} else {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
+	}
+}
+//锅炉重启
+func (ctl *IssuedController) IssuedBoiler() {
+	var boilerIssued BoilerIssued
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &boilerIssued); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	bindSql:="select terminal_code,terminal_set_id from boiler_terminal_combined where boiler_id=? and terminal_id=?"
+	var Code string
+	var TermSetId int32
+	if err:=dba.BoilerOrm.Raw(bindSql,boilerIssued.BoilerId,boilerIssued.TermId).QueryRow(&Code,&TermSetId);err!=nil{
+		goazure.Error("Query terminal_code Error",err)
+	}
+	fmt.Println("Code:",Code)
+	fmt.Println("TermId:",boilerIssued.TermId)
+	fmt.Println("TermSetId:",TermSetId)
+	fmt.Println("value:",boilerIssued.Value)
+	//查询终端是否在线
+	var Online bool
+	OnlineSql:="select online from terminal where terminal_code = ?"
+	if err:=dba.BoilerOrm.Raw(OnlineSql,Code).QueryRow(&Online);err!=nil {
+		goazure.Error("Query terminal Error",err)
+	}
+	fmt.Println("Online:",Online)
+	if Online {
+		SocketBoilerSend(Code,TermSetId,boilerIssued.Value)
+	} else {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端未在线!"))
+		return
 	}
 }
 

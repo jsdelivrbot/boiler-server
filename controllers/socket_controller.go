@@ -13,6 +13,7 @@ import (
 	"net"
 	"github.com/AzureRelease/boiler-server/dba"
 	"time"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type SocketController struct {
@@ -20,6 +21,25 @@ type SocketController struct {
 }
 
 var SocketCtrl *SocketController = &SocketController{}
+
+func cf(code string,termSetId int32,value int)([]byte) {
+	var info string
+	if value == 1{
+		info = conf.BoilerShut
+	} else if value == 2 {
+		info = conf.BoilerStart
+	} else if value == 3 {
+		info = conf.BoilerReset
+	}
+	words_1:="\xac\xeb\x00\x0b\x00\x00\xcf"+info+code
+	buf := []byte(words_1)
+	buf=append(buf,IntToByteOne(termSetId)...)
+	words_2:="\x00\x00\xaf\xed"
+	buf=append(buf,words_2...)
+	copy(buf[15:17],CRC16(buf[4:15]))
+	return buf
+}
+
 func c9(Code string)([]byte) {
 	words_1:="\xac\xeb\x00\x09\x00\x00\xc9"+Code+"\x00\x00\xaf\xed"
 	buf :=[]byte(words_1)
@@ -37,6 +57,18 @@ func (ctl *SocketController)c0(b []byte,Code string,ver int32)([]byte) {
 	fmt.Println("组成的buf:",buf)
 	fmt.Println("buf len:",len(buf))
 	return buf
+}
+
+func SendBoiler(conn net.Conn,code string,termSetId int32,value int) {
+	buf := cf(code,termSetId,value)
+	n, err := conn.Write(buf)
+	if err != nil {
+		goazure.Error("%s%s","Write error:", err)
+	} else {
+		goazure.Info(fmt.Sprintf("Write %d bytes, content is %x\n", n, string(buf[:n])))
+	}
+	//conn.Write(buffer)
+	fmt.Println("send over")
 }
 
 func Send(conn net.Conn,code string) {
@@ -64,6 +96,25 @@ func Receive(conn net.Conn) ([]byte) {
 type Info struct {
 	Sn string
 	CurrMessage string
+}
+//锅炉重启等报文
+func SocketBoilerSend(code string,termSetId int32,value int)([]byte) {
+	server := "47.100.0.27:18887"
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		return nil
+	}
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		return nil
+	}
+	goazure.Info("connect success")
+	SendBoiler(conn,code,termSetId,value)
+	buf:=Receive(conn)
+	conn.Close()
+	return buf
 }
 
 
@@ -308,6 +359,7 @@ func (ctl *SocketController) SocketClientMessageSend(code string, isOn bool, per
 	Recive(conn)
 	conn.Close()
 }
+
 
 func CRC(data []byte)(int,error){
 	var crc int = 65535
