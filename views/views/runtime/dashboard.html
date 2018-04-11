@@ -23,17 +23,23 @@
         <div class="">
             <div class="input-group">
                 <select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
-                        class="form-control" style="width: 60%">
+                        class="form-control" style="width: 50%">
                     <option value="" disabled>请选择终端</option>
                 </select>
-                <select ng-model="restartValue" ng-change="boilerRestart(restartValue,terminalRestart)"
-                        ng-disabled="!terminalRestart"
-                        class="form-control btn blue" style="width: 40%">
+                <select ng-model="restartValue"
+                        class="form-control" style="width: 50%">
                     <option value="" disabled>请选择操作</option>
                     <option value="2">启动锅炉</option>
                     <option value="1">关闭锅炉</option>
                     <option value="3">重置锅炉</option>
                 </select>
+                <span class="input-group-btn">
+                    <button ng-click="boilerRestart(restartValue,terminalRestart)"
+                            ng-disabled="!terminalRestart"
+                            class="btn blue" type="button">
+                        确定
+                    </button>
+                  </span>
 
 
             </div>
