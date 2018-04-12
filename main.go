@@ -14,7 +14,7 @@ import (
 	//"time"
 )
 
-var wechatServerEnabled = true
+var wechatServerEnabled = false
 
 func main() {
 	//go controllers.BlrCtl.InitBoilerDefaults()
@@ -30,6 +30,8 @@ func main() {
 	//屏蔽错误页详细信息
 	goazure.ErrorController(&controllers.ErrorController{})
 
+	//ReloadHistory("ca9c11b1-2029-4daf-8200-ab377c0e81ca")
+
 	//controllers.OrgCtrl.InitOrganizationDefaults()
 	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
@@ -37,6 +39,9 @@ func main() {
 	//go controllers.ParamCtrl.InitParameterChannelConfig()
 	//go controllers.RtmCtl.ImportExistCache()
 
+	//t := time.Now()
+	//rounded := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+	//go controllers.RtmCtl.ReloadHistoryWithArchived(rounded, time.Now().Add(time.Minute * 2))
 	//goazure.Warn(fmt.Sprintf("%2x", 17867))
 	//goazure.Warn(fmt.Sprintf("%x", 17867))
 
@@ -70,8 +75,10 @@ func generateRandomData(isOn bool) {
 	go controllers.RtmCtl.GenerateBoilerStatus(isOn)
 	go controllers.RtmCtl.GenerateBoilerRuntime(isOn)
 
-	//go controllers.RtmCtl.UpdateRuntimeHistory(time.Time{}, time.Time{})
-	//controllers.RtmCtl.UpdateRuntimeHistory(time.Now().Add(time.Hour * time.Duration(-hours)), time.Time{})
+
+	// go controllers.RtmCtl.UpdateRuntimeHistory(time.Time{}, time.Time{})
+	// controllers.RtmCtl.UpdateRuntimeHistory(time.Now().Add(time.Hour * time.Duration(-hours)), time.Time{})
+
 }
 
 func trimBoilerData() {
