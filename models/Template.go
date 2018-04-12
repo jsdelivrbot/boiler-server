@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type IssuedTemplate struct {
 	Uid string `orm:"pk"`
@@ -25,4 +27,26 @@ type IssuedChannelConfigTemplate struct {
 	Byte  *IssuedByte             `orm:"rel(fk)"`
 	BitAddress int
 	Modbus int
+	Ranges       []*IssuedChannelConfigRangeTemplate   `orm:"reverse(many)"`
+}
+type IssuedChannelConfigRangeTemplate struct {
+	Uid string 	`orm:"pk"`
+	Name   string
+	CreateTime time.Time        `orm:"type(datetime);auto_now;index"`
+	ChannelConfig  *IssuedChannelConfigTemplate   `orm:"rel(fk)"`
+	Min   int
+	Max   int
+	Value int
+}
+
+type IssuedCommunicationTemplate struct {
+	Uid string `orm:"pk"`
+	Template    *IssuedTemplate        `orm:"rel(fk)"`
+	BaudRate    *IssuedBaudRate			`orm:"rel(fk)"`
+	DataBit     *IssuedDataBit			`orm:"rel(fk)"`
+	StopBit     *IssuedStopBit			`orm:"rel(fk)"`
+	CheckBit    *IssuedParityBit		`orm:"rel(fk)"`
+	CorrespondType  *IssuedCorrespondType 	`orm:"rel(fk)"`
+	SubAddress   *IssuedSlaveAddress		`orm:"rel(fk)"`
+	HeartBeat   *IssuedHeartbeatPacket		`orm:"rel(fk)"`
 }

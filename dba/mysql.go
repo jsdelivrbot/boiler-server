@@ -125,6 +125,8 @@ func init() {
 		new(models.IssuedCommunication),
 		new(models.IssuedTemplate),
 		new(models.IssuedChannelConfigTemplate),
+		new(models.IssuedChannelConfigRangeTemplate),
+		new(models.IssuedCommunicationTemplate),
 	)
 
 	orm.Debug = false//!conf.IsRelease
