@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1320 800"  xml:space="preserve">
+
+<defs>
+	<linearGradient id="SVGID_1_" x1="0%" y1="0%" x2="0%" y2="100%">
+			<stop  offset="0" style="stop-color:#FF7676"/>
+			<stop  offset="0.0141" style="stop-color:#FF6D6D"/>
+			<stop  offset="0.0374" style="stop-color:#FF5353"/>
+			<stop  offset="0.067" style="stop-color:#FF2A2A"/>
+			<stop  offset="0.0931" style="stop-color:#FF0000"/>
+			<stop  offset="0.4412" style="stop-color:#FF0000"/>
+			<stop  offset="0.4662" style="stop-color:#FF0909"/>
+			<stop  offset="0.5076" style="stop-color:#FF2323"/>
+			<stop  offset="0.5245" style="stop-color:#FF2F2F"/>
+			<stop  offset="0.565" style="stop-color:#FF5050"/>
+			<stop  offset="0.6029" style="stop-color:#FF7373"/>
+			<stop  offset="0.6173" style="stop-color:#F87A7C"/>
+			<stop  offset="0.6411" style="stop-color:#E68C96"/>
+			<stop  offset="0.6715" style="stop-color:#C7AABF"/>
+			<stop  offset="0.7069" style="stop-color:#9ED3F8"/>
+			<stop  offset="0.7108" style="stop-color:#99D8FF"/>
+			<stop  offset="0.7941" style="stop-color:#2AAEFF"/>
+		</linearGradient>
+</defs>
+
+<g id="main" transform="matrix( 1.5, 0, 0, 1.5, -350,-100) ">
+	<g id="bottom"> 
+		<g>
+			<polygon fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" points="944.729,516.334 940.222,415.435 891.271,417.666 
+				891.756,428.5 479.5,428.5 486.5,525.5 499.25,525.5 499,515.375 874.668,518.25 875.001,525.5 896.001,525.5 896.5,520.167 
+				896.547,518.444 904.66,517.169 			"/>
+			<rect x="517" y="454" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" width="156" height="58"/>
+			<rect x="679" y="454" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" width="156" height="58"/>
+			<path fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" d="M628.5,525.5h-12v-11c0,0,4.323-3,6-3s6,3,6,3V525.5z"/>
+			<path fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" d="M757.5,526.5h-12v-11c0,0,4.323-3,6-3s6,3,6,3V526.5z"/>
+			<path fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" d="M859.5,526.5h-12v-11c0,0,4.323-3,6-3s6,3,6,3V526.5z"/>
+			
+				<rect x="942.5" y="411.5" transform="matrix(0.9988 -0.0482 0.0482 0.9988 -21.207 46.1628)" fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" width="9" height="103"/>
+			
+				<rect x="951.541" y="414.597" transform="matrix(0.9988 -0.0482 0.0482 0.9988 -21.2526 46.5779)" fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" width="5.993" height="98.155"/>
+		</g>
+		<g>
+			<rect x="882.5" y="491.5" stroke="#000000" stroke-miterlimit="10" width="11" height="6"/>
+			<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M879.5,511v7c0,0.5,0.813,0.5,1.313,0.5H894
+				c0.75,0,1.344-0.346,1.5-0.938V505c0,0,0-3.081,0.938-2.5l3,2.25l1.517-1.887l-4.517-3.238c-1.125-0.938-3.625-1.104-3.938,1.063
+				l-0.016,10.859l-2.078,0.161l-0.011-14.208H883.5v7.563C883.5,505.063,880.022,509.288,879.5,511z"/>
+		</g>
+		<polygon id="blue-pipe_1_" fill="#00B7DF" points="979,528 979,524 937.5,524 901.333,502.583 899.167,505.379 936.5,528 		"/>
+	</g>
+	<g id="red-part">
+		<polygon fill="#FF0000" stroke="#000000" stroke-miterlimit="10" points="880.5,120.5 874.5,111.5 471.5,111.5 471.5,164.5 
+			874.5,164.5 880.5,155.5 889.5,155.5 889.5,120.5 		"/>
+		<rect x="889.5" y="96.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="8" height="84"/>
+		<polygon fill="#FF0000" stroke="#000000" stroke-miterlimit="10" points="911.5,143.5 911.5,129.5 918.5,136.5 		"/>
+		<g id="grid">
+			<rect x="472.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="24" height="113"/>
+			<rect x="836.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="24" height="113"/>
+			<rect x="496.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="530.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="564.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="598.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="632.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="666.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="700.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="734.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="768.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+			<rect x="802.5" y="164.5" fill="#FF0000" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>
+		</g>
+	</g>
+	<g>
+		<path fill="#3FA9F5" d="M486.5,181.75c34.5-7,75-1.75,110-1.75c44.5,0,89,0,133,0c13,0,25.5-0.75,38,1.75
+			c10.5,2,23,0.375,33,3.375c14,3.5,13,24.438,12,35.938c-1.5,20.5-17.5,23.969-35,27.469c-23.5,4.5-44.5-0.016-68-3.516
+			c-26-4-52.5-4.008-78.5-3.508c-37.5,0.5-74.5,1.996-112,1.996c-8,0-16.5-0.502-24-3.002c-10.5-3.5-9.5-11.501-9.5-21.501
+			c0-12.5,0.5-24.875,0.5-36.875"/>
+	</g>
+	<g>		
+		<rect x="472.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="39" height="113"/>		
+		<rect x="511.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="545.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="579.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="613.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="647.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="681.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="715.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="749.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="783.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="34" height="113"/>		
+		<rect x="817.5" y="277.5" fill="url(#SVGID_1_)" stroke="#000000" stroke-miterlimit="10" width="43" height="113"/>
+	</g>
+	<g id="blue-part">
+		<polygon fill="#0AB9DB" stroke="#000000" stroke-miterlimit="10" points="881.5,399.5 875.5,390.5 471.5,390.5 471.5,443.5 
+			875.5,443.5 881.5,434.5 889.5,434.5 889.5,399.5 		"/>
+		<rect x="889.5" y="375.5" fill="#0AB9DB" stroke="#000000" stroke-miterlimit="10" width="8" height="84"/>
+	</g>
+	<g id="pipe">
+		<rect id="yellow" x="485.5" y="188.5" fill="#FFFF00" stroke="#000000" stroke-miterlimit="10" width="313" height="42"/>
+		<path id="green-pipe" fill="#A5DD00" d="M769,475V217.836c0.147-4.127,0.5-10.836-9-12.502L759,205H422v7h101
+			c7.5,0.999,7,6.416,7,6.416V469c0.625,8.438,3.001,13,11,13h427v-7H769z M537,469V217.666c0,0-0.25-4.75-3.25-5.666H757
+			c6,0.25,5,6.169,5,6.169V475H541C536.833,474.667,537.552,470.996,537,469z"/>
+		<polygon fill="#A5DD00" points="968,470 968,487 998.667,478.5 		"/>
+		<path id="black-line" d="M486,241.25c0,0.966-0.784,1.75-1.75,1.75h-0.5c-0.966,0-1.75-0.784-1.75-1.75v-64.5
+			c0-0.966,0.784-1.75,1.75-1.75h0.5c0.966,0,1.75,0.784,1.75,1.75V241.25z"/>
+	</g>
+	<g>
+		<rect x="464.5" y="180.5" fill="none" stroke="#000000" stroke-miterlimit="10" width="6" height="45"/>
+		<rect x="463.5" y="225.5" fill="none" stroke="#000000" stroke-miterlimit="10" width="9" height="30"/>
+		<line fill="none" stroke="#000000" stroke-miterlimit="10" x1="463" y1="235.5" x2="472" y2="235.5"/>
+		<line fill="none" stroke="#000000" stroke-miterlimit="10" x1="463" y1="246.5" x2="472" y2="246.5"/>
+		<rect x="380" y="180" width="92" height="1"/>
+		<rect x="434" y="225" width="39" height="1"/>
+	</g>
+	<g id="fan">
+		<circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="369.667" cy="247" r="67.667"/>
+		<circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="369" cy="247" r="54"/>
+		<g id="fan_inner">
+			<path d="M368.724,246.667l-18.714-35.652l-0.172,0.211c-2.169-3.531-6.056-5.895-10.504-5.895
+				c-6.812,0-12.333,5.522-12.333,12.333c0,5.352,3.415,9.894,8.18,11.601L368.724,246.667z"/>
+			<path d="M369.194,246.861l35.652-18.714l-0.211-0.172c3.531-2.169,5.895-6.056,5.895-10.504c0-6.812-5.522-12.334-12.333-12.334
+				c-5.352,0-9.894,3.415-11.601,8.18L369.194,246.861z"/>
+			<path d="M369,247.331l18.714,35.652l0.172-0.211c2.169,3.531,6.056,5.895,10.504,5.895c6.812,0,12.334-5.522,12.334-12.333
+				c0-5.352-3.415-9.894-8.18-11.601L369,247.331z"/>
+			<path d="M368.53,247.138l-35.652,18.714l0.211,0.172c-3.531,2.169-5.895,6.056-5.895,10.504c0,6.812,5.522,12.334,12.333,12.334
+				c5.352,0,9.894-3.415,11.601-8.18L368.53,247.138z"/>
+		</g>
+	</g>
+	<polygon fill="#00B7DF" stroke="#000000" stroke-miterlimit="10" points="918.5,405 918.5,417 912.333,411.343 	"/>
+	<polygon fill="#A5DD00" stroke="#000000" stroke-miterlimit="10" points="1012.5,471 1012.5,484 1019.5,477.5 	"/>
+
+	<g>
+-		<text x="920" y="130" fill="#000000" font-size="24">供水</text>
+-		<text x="920" y="400" fill="#000000" font-size="24">回水</text>
+-		<text x="965" y="465" fill="#000000" font-size="24">排烟</text>
+-	</g>
+
+	<g id="dash_container">
+
+	</g>
+	<g id="fire_container">
+
+	</g>
+	<g id="dash_smoke_container">
+
+	</g>
+	
+</g>
+
+</svg>

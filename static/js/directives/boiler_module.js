@@ -119,6 +119,13 @@ boilerAdmin.directive('boilerModule', function () {
             bModule.moduleId = BOILE_MODULE_HEAT_WATER_SYSTEM;
         }
 
+        if (bModule.boiler.Form.Id === 1004) {
+                bModule.moduleId = BOILE_MODULE_LV;
+            }
+        if (bModule.boiler.Form.Id === 1005) {
+            bModule.moduleId = BOILE_MODULE_IRON;
+        }
+
         switch (bModule.moduleId) {
             case BOILE_MODULE_COAL_DOUBLE:
                 svgName = "/img/boiler_coal_double.svg";
@@ -137,6 +144,12 @@ boilerAdmin.directive('boilerModule', function () {
                 break;
             case BOILE_MODULE_HEAT_WATER_SYSTEM:
                 svgName = "/img/electricity.svg";
+                break;
+            case BOILE_MODULE_LV:
+                svgName = "/img/zhulv.svg";
+                break;
+            case BOILE_MODULE_IRON:
+                svgName = "/img/zhutie.svg";
                 break;
             default:
                 svgName = "/img/boiler_coal_double.svg";
@@ -902,6 +915,15 @@ boilerAdmin.directive('boilerModule', function () {
             case BOILE_MODULE_HEAT_WATER_SYSTEM:
                 renderElectricDashes("#dash_container");
                 break;
+            case BOILE_MODULE_LV:
+                renderLvFire("#fire_container");
+                renderLvDashes("#dash_container");
+                renderLvSmokeDashes("#dash_smoke_container");
+                break;
+            case BOILE_MODULE_IRON:
+                renderIronFire("#fire_container");
+                renderIronDashes("#dash_container");
+                break;
             default:
                 renderCoalDashes("#dash_container");
                 break;
@@ -1345,6 +1367,258 @@ boilerAdmin.directive('boilerModule', function () {
         }, sec);
     };
 
+    //铸铝
+    var renderLvDashes = function (id) {
+        var waterSize = 6;
+        var size = 8;
+        var sec = 4096;
+
+        var color = "#fff";
+
+        var dashModule = bModule.svg.select(id);
+        if (!dashModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var dashWaterIn = function () {
+            //d3.active(this).enter()
+
+            dashModule
+                .append("circle").attr("cx", 455).attr("cy", 138).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 880)
+                .remove();
+
+            dashModule
+                .append("circle").attr("cx", 880).attr("cy", 420).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 455)
+                .remove();
+
+
+        };
+
+        var dashWaterOut = function () {
+            dashModule.append("circle").attr("cx", 895).attr("cy", 500).attr("r", waterSize / 3).style("fill", color)
+                .transition().duration(sec / 2.8).ease(d3.easeLinear).attr("cx", 932).attr("cy", 525)
+                .transition().duration(sec / 2.8).ease(d3.easeLinear).attr("cx", 980)
+                .remove();
+
+        };
+
+
+        dashModule
+            .transition().on("start", function repeat() {
+            dashModule
+                .transition().delay(360).on("start", function () {
+                dashWaterIn();
+                dashWaterOut();
+                repeat();
+            });
+        });
+    };
+
+    var renderLvSmokeDashes = function (id) {
+        var size = 8;
+        var sec = 4096;
+
+        var dashSmokeModule = bModule.svg.select(id);
+        if (!dashSmokeModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var dashSmoke = function () {
+            dashSmokeModule
+                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
+                .transition().duration(sec / 1.0).ease(d3.easeLinear).attr("cx", 766)
+                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
+                .transition().duration(sec / 2.5).ease(d3.easeLinear).attr("cx", 955)
+                .remove();
+
+            dashSmokeModule
+                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
+                .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 533)
+                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 955)
+                .remove();
+
+        };
+
+        dashSmokeModule
+            .transition().on("start", function repeat() {
+            dashSmokeModule
+                .transition().delay(260).on("start", function () {
+                dashSmoke();
+                repeat();
+            });
+        });
+    };
+
+
+
+    var renderLvFire = function (id) {
+        var fireG = bModule.svg.select(id);
+        if (!fireG) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var svgName = "../img/module/boiler_gas_fire2.svg";
+
+        var baseX = 500;
+        var baseY = 190;
+
+        var fire = fireG.append("svg:image")
+            .attr("xlink:href", svgName)
+            .attr("width", 180)
+            .attr("height", 90)
+            .attr("x", baseX)
+            .attr("y", baseY);
+
+        var sec = 600;
+
+        var burn = function () {
+            fire.transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 270).attr("height", 135).attr("y", baseY - 15)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 180).attr("height", 90).attr("y", baseY);
+        };
+
+        d3.interval(function () {
+            burn();
+        }, sec);
+    };
+
+
+
+    //铸铁
+    var renderIronDashes = function (id) {
+        var waterSize = 6;
+        var size = 8;
+        var sec = 4096;
+
+        var color = "#fff";
+
+        var dashModule = bModule.svg.select(id);
+        if (!dashModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var dashWaterIn = function () {
+            //d3.active(this).enter()
+
+            dashModule
+                .append("circle").attr("cx", 890).attr("cy", 290).attr("r", size / 1.2).style("fill", "#ed6b75")
+                .transition().duration(sec / 0.8).ease(d3.easeLinear).attr("cx", 112)
+                .remove();
+
+            dashModule
+                .append("circle").attr("cx", 268).attr("cy", 610).attr("r", size / 2).style("fill", color)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 390)
+                .remove();
+
+            dashModule
+                .append("circle").attr("cx", 938).attr("cy", 350).attr("r", size / 1.2).style("fill", "#ed6b75")
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 60)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 350)
+                .remove();
+
+        };
+
+        var dashWaterOut = function () {
+            dashModule.append("circle").attr("cx", 895).attr("cy", 500).attr("r", waterSize / 3).style("fill", color)
+                .transition().duration(sec / 2.8).ease(d3.easeLinear).attr("cx", 932).attr("cy", 525)
+                .transition().duration(sec / 2.8).ease(d3.easeLinear).attr("cx", 980)
+                .remove();
+
+        };
+
+
+        dashModule
+            .transition().on("start", function repeat() {
+            dashModule
+                .transition().delay(360).on("start", function () {
+                dashWaterIn();
+//              dashWaterOut();
+                repeat();
+            });
+        });
+    };
+
+    var renderIronSmokeDashes = function (id) {
+        var size = 8;
+        var sec = 4096;
+
+        var dashSmokeModule = bModule.svg.select(id);
+        if (!dashSmokeModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var dashSmoke = function () {
+            dashSmokeModule
+                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
+                .transition().duration(sec / 1.0).ease(d3.easeLinear).attr("cx", 766)
+                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
+                .transition().duration(sec / 2.5).ease(d3.easeLinear).attr("cx", 955)
+                .remove();
+
+            dashSmokeModule
+                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
+                .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 533)
+                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 955)
+                .remove();
+
+        };
+
+        dashSmokeModule
+            .transition().on("start", function repeat() {
+            dashSmokeModule
+                .transition().delay(260).on("start", function () {
+                dashSmoke();
+                repeat();
+            });
+        });
+    };
+
+
+
+    var renderIronFire = function (id) {
+        var fireG = bModule.svg.select(id);
+        if (!fireG) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var svgName = "../img/module/boiler_water_fire_2.svg";
+
+        var baseX = 580;
+        var baseY = 350;
+
+        var fire = fireG.append("svg:image")
+            .attr("xlink:href", svgName)
+            .attr("width", 360)
+            .attr("height", 180)
+            .attr("x", baseX)
+            .attr("y", baseY);
+
+        var sec = 600;
+
+        var burn = function () {
+            fire.transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 480).attr("height", 280).attr("y", baseY - 15).attr("x", baseX - 140)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 360).attr("height", 180).attr("y", baseY).attr("x", baseX);
+        };
+
+        d3.interval(function () {
+            burn();
+        }, sec);
+    };
+
+
+
+
+
+
     bModule.updateStatusLabels = function () {
         if (!bModule.boiler) {
             if (!$rootScope.boiler) {
@@ -1428,3 +1702,5 @@ const BOILE_MODULE_GAS = 3;
 const BOILE_MODULE_WATER = 4;
 const BOILE_MODULE_COAL_WATER = 6;
 const BOILE_MODULE_HEAT_WATER_SYSTEM = 11;
+const BOILE_MODULE_LV = 12;
+const BOILE_MODULE_IRON = 13;
