@@ -1895,7 +1895,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', 
 });
 
 //批量导入配置
-angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance) {
+angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance,$http) {
     $scope.items = [
         {
             start:null,
@@ -1903,20 +1903,13 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             template:null
         }
     ];
-    $scope.templates = [
-        {
-            id:1,
-            name:"通用模板一"
-        },
-        {
-            id:2,
-            name:"通用模板二"
-        },
-        {
-            id:3,
-            name:"通用模板三"
-        }
-    ];
+    $http.get("/template_list").then(function (res) {
+        $scope.templates = res.data;
+        console.log($scope.templates);
+    });
+
+
+
     // $scope.selectedTemplate = $scope.template[0];
     $scope.addGroupConfig = function (){
         $scope.items.push({
@@ -1927,7 +1920,28 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
 
 
     $scope.ok = function () {
-        $uibModalInstance.close($scope.selected.item);
+        for(var i =0; i<$scope.items.length; i++){
+            var template = $scope.items[i].template.Uid;
+            $scope.items[i].template = template;
+            // if($scope.items[i].start.length!==6||){
+            //
+            // }
+        }
+        $http.post("/template_group_config",{groupConfig:$scope.items}).then(function (res) {
+            swal({
+                title: "批量配置成功",
+                text: res.data,
+                type: "success"
+            });
+        },function (err) {
+            swal({
+                title: "批量配置失败",
+                text: err.data,
+                type: "warning"
+            });
+        });
+        console.log($scope.items);
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
