@@ -163,11 +163,11 @@
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-addon">起始终端编号</span>
-                        <input type="text" class="form-control" ng-model="item.start" placeholder="680001">
+                        <input type="text" class="form-control" ng-model="item.start" placeholder="680001" maxlength="6" minlength="6">
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">结束终端编号</span>
-                        <input type="text" class="form-control" ng-model="item.end" placeholder="680001">
+                        <input type="text" class="form-control" ng-model="item.end" placeholder="680001" maxlength="6" minlength="6">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -175,13 +175,12 @@
                     <div class="input-group">
                         <span class="input-group-addon">通道模板</span>
                         <ui-select ng-model="item.template" theme="bootstrap">
-                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-match>{{$select.selected.Name}}</ui-select-match>
                             <ui-select-choices repeat="tem in templates | filter: $select.search">
-                                <span ng-bind-html="tem.name"></span>
+                                <span ng-bind-html="tem.Name"></span>
                             </ui-select-choices>
                         </ui-select>
-                        <!--<select ng-model="item.template" ng-options="x.name for x in templates" class="form-control">
-                        </select>-->
+
                     </div>
                 </div>
             </li>
