@@ -14,7 +14,7 @@ import (
 	//"time"
 )
 
-var wechatServerEnabled = false
+var wechatServerEnabled = true
 
 func main() {
 	//go controllers.BlrCtl.InitBoilerDefaults()
@@ -29,8 +29,6 @@ func main() {
 
 	//屏蔽错误页详细信息
 	goazure.ErrorController(&controllers.ErrorController{})
-
-	//ReloadHistory("ca9c11b1-2029-4daf-8200-ab377c0e81ca")
 
 	//controllers.OrgCtrl.InitOrganizationDefaults()
 	//go initDefaultData()
@@ -74,10 +72,6 @@ func initDefaultData() {
 func generateRandomData(isOn bool) {
 	go controllers.RtmCtl.GenerateBoilerStatus(isOn)
 	go controllers.RtmCtl.GenerateBoilerRuntime(isOn)
-
-
-	// go controllers.RtmCtl.UpdateRuntimeHistory(time.Time{}, time.Time{})
-	// controllers.RtmCtl.UpdateRuntimeHistory(time.Now().Add(time.Hour * time.Duration(-hours)), time.Time{})
 
 }
 
