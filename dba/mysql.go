@@ -8,10 +8,11 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/models/logs"
 	"github.com/AzureRelease/boiler-server/models/caches"
-	"net/url"
+	//"net/url"
 	"github.com/AzureRelease/boiler-server/common"
 
-	"github.com/AzureRelease/boiler-server/conf"
+	//"github.com/AzureRelease/boiler-server/conf"
+	//"github.com/AzureRelease/boiler-server/conf"
 )
 
 var MyORM 		orm.Ormer
@@ -20,15 +21,12 @@ var BoilerOrm 	orm.Ormer
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
-	var myConnection string
-
-	if conf.IsRelease {
-		myConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
-	} else {
-		myConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
-	}
+	//var myConnection string
+	var myConnection string = "root:hold2017@tcp(47.100.0.27:3306)/boiler?charset=utf8" //&loc=" + url.QueryEscape("PRC")
 
 	orm.RegisterDataBase("default", "mysql", myConnection)
+
+	//orm.RegisterDataBase("default", "mysql", myConnection)
 
 	orm.RegisterModel(
 		new(models.Application),

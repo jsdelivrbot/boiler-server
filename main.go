@@ -10,6 +10,7 @@ import (
 	_ "github.com/AzureRelease/boiler-server/models"
 	_ "github.com/AzureRelease/boiler-server/controllers"
 	_ "github.com/AzureRelease/boiler-server/log"
+
 	//"time"
 )
 
@@ -74,8 +75,10 @@ func generateRandomData(isOn bool) {
 	go controllers.RtmCtl.GenerateBoilerStatus(isOn)
 	go controllers.RtmCtl.GenerateBoilerRuntime(isOn)
 
+
 	// go controllers.RtmCtl.UpdateRuntimeHistory(time.Time{}, time.Time{})
 	// controllers.RtmCtl.UpdateRuntimeHistory(time.Now().Add(time.Hour * time.Duration(-hours)), time.Time{})
+
 }
 
 func trimBoilerData() {
