@@ -141,15 +141,29 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	var rule 	models.RuntimeAlarmRule
 
 	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
+	if boiler == nil {
+		return nil, errors.New("boiler can not be nil")
+	}
 
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
-	condFm := orm.NewCondition().Or("BoilerForm__Id", boiler.Form.Id).Or("BoilerForm__Id", 0)
-	condMed := orm.NewCondition().Or("BoilerMedium__Id", boiler.Medium.Id).Or("BoilerMedium__Id", 0)
-	condFt := orm.NewCondition().Or("BoilerFuelType__Id", boiler.Fuel.Type.Id).Or("BoilerFuelType__Id", 0)
+	cond := orm.NewCondition()
+	if boiler.Form != nil {
+		condFm := orm.NewCondition().Or("BoilerForm__Id", boiler.Form.Id).Or("BoilerForm__Id", 0)
+		cond = cond.AndCond(condFm)
+	}
+	if boiler.Medium != nil {
+		condMed := orm.NewCondition().Or("BoilerMedium__Id", boiler.Medium.Id).Or("BoilerMedium__Id", 0)
+		cond = cond.AndCond(condMed)
+	}
+	if boiler.Fuel != nil && boiler.Fuel.Type != nil {
+		condFt := orm.NewCondition().Or("BoilerFuelType__Id", boiler.Fuel.Type.Id).Or("BoilerFuelType__Id", 0)
+		cond = cond.AndCond(condFt)
+	}
 	condEvaDummy := orm.NewCondition().And("BoilerCapacityMin", 0).And("BoilerCapacityMax", 0)
 	condEvaValid := orm.NewCondition().And("BoilerCapacityMin__lte", boiler.EvaporatingCapacity).And("BoilerCapacityMax__gte", boiler.EvaporatingCapacity)
 	condEva := orm.NewCondition().OrCond(condEvaDummy).OrCond(condEvaValid)
-	cond := orm.NewCondition().AndCond(condFm).AndCond(condMed).AndCond(condFt).AndCond(condEva)
+	cond = cond.AndCond(condEva)
+
 	qr = qr.SetCond(cond)
 	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false)
 	if err := qr.One(&rule); err != nil {
@@ -436,6 +450,9 @@ func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time, end
 
 		if !isMatched {
 			boiler := BlrCtl.Boiler(arch.Boiler.Uid)
+			if boiler == nil {
+				continue
+			}
 
 			history = &caches.BoilerRuntimeHistory{}
 			history.Boiler = boiler
