@@ -366,8 +366,17 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
 
 
 
+
     $modal.categoryChanged = function (category) {
         $modal.category = category;
+        if($modal.category === 16){
+            $modal.initAnalog1();
+            $modal.initAnalog2();
+            $modal.initSwitch1();
+            $modal.initSwitch2();
+            $modal.initSwitch3();
+            $modal.initRange();
+        }
     };
 
     //运行参数列表导入
@@ -803,7 +812,6 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
 
 
         var cParam = {
-            terminal_code:$modal.code,
             baudRate : $modal.BaudRate?$modal.BaudRate.Id:0,
             dataBit : $modal.dataBit?$modal.dataBit.Id:0,
             stopBit : $modal.stopBit?$modal.stopBit.Id:0,
@@ -827,13 +835,14 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         console.warn("$modal channel update!", configUpload);
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/template_update", {TemplateUpdate:{chan:configUpload,param:cParam,name:$modal.currentData.Name}})
+        $http.post("/template_update", {TemplateUpdate:{uid:currentData.Uid,chan:configUpload,param:cParam,name:$modal.currentData.Name}})
             .then(function (res) {
                 App.stopPageLoading();
                 swal({
                     title: "模板配置更新成功",
                     type: "success"
                 }).then(function () {
+                    template.refreshTemplate();
                     $uibModalInstance.close('success');
                     currentData = null;
                 });
@@ -1483,7 +1492,7 @@ angular.module('BoilerAdmin').controller('ModalNewTemplateCtrl', function ($root
 
 
         var cParam = {
-            terminal_code:$modal.code,
+            // terminal_code:$modal.code,
             baudRate : $modal.BaudRate?$modal.BaudRate.Id:0,
             dataBit : $modal.dataBit?$modal.dataBit.Id:0,
             stopBit : $modal.stopBit?$modal.stopBit.Id:0,
