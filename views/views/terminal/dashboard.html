@@ -157,17 +157,20 @@
     <div class="modal-header">
         <h3 class="modal-title">终端批量配置</h3>
     </div>
+    <form name="groupConfig">
     <div class="modal-body">
         <ul style="list-style: none; padding: 10px 20px; padding-bottom: 0;">
             <li ng-repeat="item in items" class="row" style="margin-bottom:20px; ">
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-addon">起始终端编号</span>
-                        <input type="text" class="form-control" ng-model="item.start" placeholder="680001" maxlength="6" minlength="6">
+                        <input type="text" class="form-control" name="start"
+                               ng-model="item.start" placeholder="680001" maxlength="6" minlength="6" required>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">结束终端编号</span>
-                        <input type="text" class="form-control" ng-model="item.end" placeholder="680001" maxlength="6" minlength="6">
+                        <input type="text" class="form-control" name="end"
+                               ng-model="item.end" placeholder="680001" maxlength="6" minlength="6" required>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -198,7 +201,9 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ok()">提交</button>
+        <button class="btn btn-primary" type="button" ng-click="ok()"
+                ng-disabled="groupConfig.start.$invalid|| groupConfig.end.$invalid">提交</button>
         <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
     </div>
+    </form>
 </script>
