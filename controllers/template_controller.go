@@ -872,7 +872,13 @@ func (ctl *TemplateController) TemplateUpdate() {
 		goazure.Error("insert issued_template Error", err)
 		return
 	}
-
+	tempSql:="update issued_template set name=?,update_time=now() where uid=? and is_deleted=false"
+	if _,err :=dba.BoilerOrm.Raw(tempSql,template.TemplateUpdate.Name,template.TemplateUpdate.Uid).Exec();err!=nil{
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("数据库异常!"))
+		goazure.Error("insert issued_template Error", err)
+		return
+	}
 }
 
 //删除模板
