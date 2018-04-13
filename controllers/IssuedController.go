@@ -350,7 +350,7 @@ func (ctl *IssuedController) IssuedVersion(Code string)(int32)  {
 	}
 	return version
 }
-
+//组装现有配置的报文
 func (ctl *IssuedController) IssuedMessage(Uid string)([]byte) {
 	Byte:=make([]byte,0)
 	Byte = append(Byte,ctl.IssuedAnalogOne(Uid)...)
@@ -367,6 +367,7 @@ func (ctl *IssuedController) IssuedMessage(Uid string)([]byte) {
 	fmt.Println("数据长度:",len(Byte))
 	return Byte
 }
+
 //根据Code获取报文
 func (ctl *IssuedController)ReqMessage(Code string)(string) {
 	var info Info

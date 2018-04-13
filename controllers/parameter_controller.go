@@ -202,13 +202,14 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 			cnf.SwitchStatus = c.SwitchValue
 		}
 
-		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber!=1 {
+		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber==1 {
+			continue
+		} else {
 			if err := DataCtl.AddData(&cnf, true, "Terminal", "ChannelType", "ChannelNumber", "IsDefault"); err != nil {
 				e := fmt.Sprintln("Channel Config Update Error:", err)
 				goazure.Error(e)
 				ctl.Ctx.Output.SetStatus(400)
 				ctl.Ctx.Output.Body([]byte(e))
-
 				continue
 			}
 		}
@@ -453,6 +454,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				goazure.Error("Parse Time Error:", err)
 			} else {
 				//goazure.Info("Parse Time:", t, "||", tm)
+				fmt.Println("BoilerRuntime表的CreateDate:",tm)
 				rtm.CreatedDate = tm
 			}
 

@@ -18,11 +18,11 @@ type IssuedChannelConfigTemplate struct {
 	CreateTime time.Time        `orm:"type(datetime);auto_now;index"`
 	Parameter *RuntimeParameter  `orm:"rel(fk)"`
 	Template  *IssuedTemplate    `orm:"rel(fk)"`
-	ChannelType int
-	ChannelNumber int
-	Status int
-	SequenceNumber int
-	SwitchStatus int
+	ChannelType int32
+	ChannelNumber int32
+	Status int32
+	SequenceNumber int32
+	SwitchStatus int32
 	Func  *IssuedFunctionCode    `orm:"rel(fk)"`
 	Byte  *IssuedByte             `orm:"rel(fk)"`
 	BitAddress int
@@ -34,9 +34,9 @@ type IssuedChannelConfigRangeTemplate struct {
 	Name   string
 	CreateTime time.Time        `orm:"type(datetime);auto_now;index"`
 	ChannelConfig  *IssuedChannelConfigTemplate   `orm:"rel(fk)"`
-	Min   int
-	Max   int
-	Value int
+	Min   int64
+	Max   int64
+	Value int64
 }
 
 type IssuedCommunicationTemplate struct {
