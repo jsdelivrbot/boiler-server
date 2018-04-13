@@ -163,7 +163,7 @@ func init() {
 	goazure.Router("/template_analog_one",&controllers.TemplateController{},"post:TemplateAnalogOne")
 	//获取模拟量二
 	goazure.Router("/template_analog_two",&controllers.TemplateController{},"post:TemplateAnalogTwo")
-	//获取模拟量一
+	//获取开关量一
 	goazure.Router("/template_switch_one",&controllers.TemplateController{},"post:TemplateSwitchOne")
 	//获取开关量二
 	goazure.Router("/template_switch_two",&controllers.TemplateController{},"post:TemplateSwitchTwo")
@@ -173,6 +173,8 @@ func init() {
 	goazure.Router("/template_range",&controllers.TemplateController{},"post:TemplateRange")
 	//获取通信参数
 	goazure.Router("/template_communication",&controllers.TemplateController{},"post:TemplateCommunication")
+	//模板批量配置
+	goazure.Router("/template_group_config",&controllers.TemplateController{},"post:TemplateGroupConfig")
 
 
 
