@@ -1935,6 +1935,7 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
                 text: res.data,
                 type: "success"
             });
+            terminal.refreshDataTables();
             $uibModalInstance.close();
         },function (err) {
             App.stopPageLoading();
