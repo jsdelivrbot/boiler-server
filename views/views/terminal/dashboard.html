@@ -113,7 +113,7 @@
             </span>
         </td>
         <td>
-            通用模板一
+            {{data.IssuedTermTempStatus.Template.Name||"默认配置"}}
         </td>
         <td style="min-width: 238px;">
             <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.Terminal.code);">
@@ -128,8 +128,7 @@
             </button>
             <button ng-show="currentUser.Role.RoleId < 10"
                     ng-click="terminal.setting(data.Terminal)"
-                    class="btn edit btn-outline btn-circle btn-sm blue"
-                    >
+                    class="btn edit btn-outline btn-circle btn-sm blue">
                 <i class="fa fa-cogs"></i> 终端关联
             </button>
             <button
