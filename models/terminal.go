@@ -8,6 +8,7 @@ type TerminalIssued struct {
 	TermUpdateTime time.Time
 	PlatVer    int32
 	PlatUpdateTime time.Time
+	IssuedTermTempStatus  IssuedTermTempStatus
 }
 
 type Terminal struct {
