@@ -428,7 +428,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 			if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
 				goazure.Error("insert runtime parameter channel config Error",err)
 			}
-			analoguesql := "REPLACE into issued_analogue(channel_id,function_id,byte_id,modbus) values(?,?,?,?)"
+			analoguesql := "insert into issued_analogue(channel_id,function_id,byte_id,modbus) values(?,?,?,?)"
 			if _, err := dba.BoilerOrm.Raw(analoguesql, cnf.Uid, c.Func.Id, c.Byte.Id, c.Modbus).Exec(); err != nil {
 				goazure.Error("Insert issued_analogue Error", err)
 			}
@@ -497,16 +497,16 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 				cnf.SwitchStatus = c.SwitchStatus
 			}
-			if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
-				goazure.Error("Insert runtime parameter channel config range Error",err)
-			}
-			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber == 1 {
-				switchburnsql := "REPLACE into issued_switch_burn(terminal_id,function_id,modbus,bit_address) values(?,?,?,?)"
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber == 1{
+				switchburnsql := "insert into issued_switch_burn(terminal_id,function_id,modbus,bit_address) values(?,?,?,?)"
 				if _, err := dba.BoilerOrm.Raw(switchburnsql, t.Terminal.Uid, c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
 					goazure.Error("Insert issued_switch_burn Error", err)
 				}
 			} else {
-				switchsql := "REPLACE into issued_switch(channel_id,function_id,modbus,bit_address) values(?,?,?,?)"
+				if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
+					goazure.Error("Insert runtime parameter channel config range Error",err)
+				}
+				switchsql := "insert into issued_switch(channel_id,function_id,modbus,bit_address) values(?,?,?,?)"
 				if _, err := dba.BoilerOrm.Raw(switchsql, cnf.Uid, c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
 					goazure.Error("Insert issued_switch Error", err)
 				}
