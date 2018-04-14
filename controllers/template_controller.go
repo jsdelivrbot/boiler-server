@@ -556,6 +556,13 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("组包失败"))
 		}
+		//插入配置的报文信息
+		tempStatusSql:="insert into issued_term_temp_status(sn,create_time,update_time,template_id) values(?,now(),now(),?) on duplicate key update update_time=now(),template_id=?"
+		if _,err:=dba.BoilerOrm.Raw(tempStatusSql,code,t.TemplateUid,t.TemplateUid).Exec();err!=nil{
+			goazure.Error("Insert issued_term_temp_status Error",err)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("存入失败"))
+		}
 	}
 }
 
@@ -879,6 +886,10 @@ func (ctl *TemplateController) TemplateUpdate() {
 		goazure.Error("insert issued_template Error", err)
 		return
 	}
+	//删除终端模板配置的状态
+	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").Filter("Template__Uid",template.TemplateUpdate.Uid).Delete();err!=nil{
+		goazure.Error("Delete IssuedCommunicationTemplate Error", err)
+	}
 }
 
 //删除模板
@@ -909,9 +920,13 @@ func (ctl *TemplateController) TemplateDelete() {
 			}
 	}
 	if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").Filter("Template__Uid", template.Uid).Delete(); err != nil {
-		goazure.Error("Query IssuedChannelConfigTemplate Error", err)
+		goazure.Error("Delete IssuedChannelConfigTemplate Error", err)
 	}
 	if _,err := dba.BoilerOrm.QueryTable("issued_communication_template").Filter("Template__Uid",template.Uid).Delete();err!=nil{
-		goazure.Error("Query IssuedCommunicationTemplate Error", err)
+		goazure.Error("Delete IssuedCommunicationTemplate Error", err)
+	}
+	//删除终端模板配置的状态
+	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").Filter("Template__Uid",template.Uid).Delete();err!=nil{
+		goazure.Error("Delete IssuedCommunicationTemplate Error", err)
 	}
 }

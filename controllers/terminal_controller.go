@@ -94,6 +94,13 @@ func (ctl *TerminalController) TerminalIssuedList() {
 		goazure.Error("Select issued_message Error")
 	}
 	fmt.Println("versionIssued:",platVi)
+
+	//查询模板配置状态
+	var tempStatus []models.IssuedTermTempStatus
+	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").RelatedSel("Template").All(&tempStatus);err!=nil{
+		goazure.Error("Select issued_term_temp_status Error")
+	}
+	fmt.Println("tempStatus:",tempStatus)
     //有绑定的将绑定的锅炉加进去
 	for t, ter := range terminals {
 		fmt.Println("ttt:",t)
@@ -124,6 +131,16 @@ func (ctl *TerminalController) TerminalIssuedList() {
 			if i == ter.TerminalCode {
 				termIssued[t].PlatVer = pv.Ver
 				termIssued[t].PlatUpdateTime = pv.UpdateTime
+			}
+		}
+		//添加终端模板状态
+		for _,ts := range tempStatus {
+			i,err:=strconv.ParseInt(ts.Sn,10,64)
+			if err!=nil{
+				goazure.Error("ParseInt Error")
+			}
+			if i == ter.TerminalCode {
+				termIssued[t].IssuedTermTempStatus=ts
 			}
 		}
 	}

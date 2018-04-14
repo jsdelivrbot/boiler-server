@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+type IssuedTermTempStatus struct {
+	Sn string   `orm:"pk"`
+	CreateTime time.Time    `orm:"type(datetime);auto_now;index"`
+	UpdateTime time.Time    `orm:"type(datetime);auto_now;index"`
+	Template  *IssuedTemplate   `orm:"rel(fk)"`
+}
+
 type IssuedTemplate struct {
 	Uid string `orm:"pk"`
 	Name string
