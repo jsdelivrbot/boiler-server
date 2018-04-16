@@ -442,16 +442,55 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
     };
 
     //恢复默认
-   /* $scope.matrixReset = function () {
-        for (var i = 0; i < $modal.dataMatrix.length; i++) {
+    $scope.matrixReset = function () {
+        /*for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
                 $modal.dataMatrix[i][j] = null;
-                if($modal.chanMatrix[i][j].IsDefault!=true){
-                    $modal.chanMatrix[i][j].Name="默认(未配置)"
-                }
+            }
+        }*/
+
+        var data1 = function (data) {
+            for (var i=0; i<12; i++){
+                data[i]={
+                    BitAddress: 0,
+                    Byte: null,
+                    ChannelNumber: 0,
+                    ChannelType: 0,
+                    Func: null,
+                    Modbus: null,
+                    Parameter: null,
+                    Ranges: null,
+                    SequenceNumber: 0,
+                    Status: 0,
+                    SwitchStatus: 0,
+                    Template: null
+                };
+            }
+        };
+        var data2 = function (data) {
+            for (var i=0; i<16; i++){
+                data[i]={
+                    BitAddress: null,
+                    Byte: null,
+                    Func: null,
+                    Modbus: null,
+                    Parameter: null,
+                    Ranges: null,
+                    SequenceNumber: 0,
+                    Status: 0,
+                    SwitchStatus: 0
+                };
             }
         }
-    };*/
+
+        data1($modal.analogData1);
+        data1($modal.analogData2);
+        data2($modal.switchData1);
+        data2($modal.switchData2);
+        data2($modal.switchData3);
+        data1($modal.rangData);
+
+    };
 
     $modal.initCurrent = function () {
         if (currentData) {
