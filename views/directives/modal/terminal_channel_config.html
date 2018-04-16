@@ -477,7 +477,7 @@
                             </ui-select>
                             <input type="text"
                                    ng-show="innerIndex === 2 && (outerIndex === 0||outerIndex === 1)"
-                                   ng-model="chan.Name"
+                                   ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter.Name"
                                    ng-disabled="true"
                                    class="form-control ng-pristine ng-valid ng-touched has-success"
                                    placeholder="{{ chan_row[2].Name }}" style="width: 86.4%; border: none;">
