@@ -1059,8 +1059,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $scope.matrixReset = function () {
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
-                $modal.dataMatrix[i][j] = null;
-                $modal.chanMatrix[i][j].noStatus=true;
+                if((i===0||i===1)&&j===2){
+                    $modal.chanMatrix[i][j].Analogue = null;
+                    $modal.chanMatrix[i][j].Switch = null;
+                }else {
+                    $modal.dataMatrix[i][j] = null;
+                    $modal.chanMatrix[i][j].Analogue = null;
+                    $modal.chanMatrix[i][j].Switch = null;
+                    $modal.chanMatrix[i][j].noStatus=true;
+                }
+
             }
         }
     };
