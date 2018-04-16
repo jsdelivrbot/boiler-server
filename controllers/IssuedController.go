@@ -50,33 +50,6 @@ type BoilerIssued struct {
 	TermId string    `json:"terminal_id"`
 	Value   int   `json:"value"`
 }
-
-type AnalogueIssued struct {
-	ChannelType int
-	ChannelNumber int
-	Func    int
-	Byte    int
-	Modbus  int
-}
-
-type SwitchIssued struct {
-	ChannelType int
-	ChannelNumber int
-	Func int
-	Modbus int
-	BitAddress int
-}
-
-type CommunicationIssued struct {
-	BaudRate   int
-	DataBit    int
-	StopBit    int
-	CheckBit   int
-	CorrespondType      int
-	SubAddress      int
-	HeartBeat    int
-}
-
 type VersionIssued struct {
 	Sn         string
 	Ver         int32
@@ -84,19 +57,20 @@ type VersionIssued struct {
 }
 //第一个模拟通道
 func (ctl *IssuedController) IssuedAnalogOne(Uid string)([]byte) {
-	var temp =1
+	var temp int32 =1
+	var end int32 =12
 	Byte:=make([]byte,0)
-	var anaOne []AnalogueIssued
-	sql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ias.modbus " +
-		"from runtime_parameter_channel_config r,issued_analogue_switch ias,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ias.channel_id and r.channel_type=1 and ias.function_id=ifc.id and ias.byte_id=ib.id" +
-		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(sql,Uid).QueryRows(&anaOne);err!=nil {
-		goazure.Error("Query issued_analogue Error",err)
+	var anaOne []models.IssuedAnalogueSwitch
+	if num,err:=dba.BoilerOrm.QueryTable("issued_analogue_switch").
+	RelatedSel("Function").RelatedSel("Byte").RelatedSel("Channel").
+	Filter("Channel__Terminal__Uid",Uid).Filter("Channel__ChannelType",models.CHANNEL_TYPE_TEMPERATURE).
+	OrderBy("Channel__ChannelNumber").All(&anaOne);err!=nil{
+		goazure.Error("Query issued_analogue_switch Error",err)
 	} else {
 		//组模拟通道1
-		L:=len(anaOne)
+		L:=int(num)
 		if L ==0 {
-			for c := 0; c < 12; c++ {
+			for c := temp - 1; c < end; c++ {
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteTwo(0)...)
@@ -104,24 +78,24 @@ func (ctl *IssuedController) IssuedAnalogOne(Uid string)([]byte) {
 		} else {
 			for i:=0;i<L;i++{
 				value:=anaOne[i]
-				if temp == value.ChannelNumber {
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
-					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+				if temp == value.Channel.ChannelNumber {
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 				} else {
-					for c := 0; c < (value.ChannelNumber - temp); c++ {
+					for c := 0; c < int(value.Channel.ChannelNumber - temp); c++ {
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteTwo(0)...)
 					}
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
-					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
-					temp=value.ChannelNumber
+					temp=value.Channel.ChannelNumber
 				}
 				if i==L-1 {
-					if temp !=12 {
-						for c := 0; c < (12 - temp); c++ {
+					if temp != end {
+						for c := 0; c < int(end - temp); c++ {
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte = append(Byte, IntToByteTwo(0)...)
@@ -132,23 +106,25 @@ func (ctl *IssuedController) IssuedAnalogOne(Uid string)([]byte) {
 			}
 		}
 	}
+	fmt.Println("模拟量一的Byte:",Byte)
 	return Byte
 }
 //第二个模拟通道
 func (ctl *IssuedController) IssuedAnalogTwo(Uid string)([]byte) {
-	var temp =1
+	var temp int32 =1
+	var end int32 =12
 	Byte:=make([]byte,0)
-	var anaTwo []AnalogueIssued
-	anasql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ias.modbus " +
-		"from runtime_parameter_channel_config r,issued_analogue_switch ias,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ias.channel_id and r.channel_type=2 and ias.function_id=ifc.id and ias.byte_id=ib.id" +
-		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(anasql,Uid).QueryRows(&anaTwo);err!=nil {
-		goazure.Error("Query issued_analogue Error",err)
+	var anaTwo []models.IssuedAnalogueSwitch
+	if num,err:=dba.BoilerOrm.QueryTable("issued_analogue_switch").
+		RelatedSel("Function").RelatedSel("Byte").RelatedSel("Channel").
+		Filter("Channel__Terminal__Uid",Uid).Filter("Channel__ChannelType",models.CHANNEL_TYPE_ANALOG).
+		OrderBy("Channel__ChannelNumber").All(&anaTwo);err!=nil{
+		goazure.Error("Query issued_analogue_switch Error",err)
 	} else {
 		//组模拟通道2
-		L:=len(anaTwo)
+		L:=int(num)
 		if L ==0 {
-			for c := 0; c < 12; c++ {
+			for c := temp -1; c < end; c++ {
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteTwo(0)...)
@@ -156,24 +132,24 @@ func (ctl *IssuedController) IssuedAnalogTwo(Uid string)([]byte) {
 		} else {
 			for i:=0;i<L;i++{
 				value:=anaTwo[i]
-				if temp == value.ChannelNumber {
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
-					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+				if temp == value.Channel.ChannelNumber {
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 				} else {
-					for c := 0; c < (value.ChannelNumber - temp); c++ {
+					for c := 0; c < int(value.Channel.ChannelNumber - temp); c++ {
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteTwo(0)...)
 					}
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
-					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
-					temp=value.ChannelNumber
+					temp=value.Channel.ChannelNumber
 				}
 				if i==L-1 {
-					if temp !=12 {
-						for c := 0; c < (12 - temp); c++ {
+					if temp !=end {
+						for c := 0; c < int(end - temp); c++ {
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte = append(Byte, IntToByteTwo(0)...)
@@ -186,20 +162,26 @@ func (ctl *IssuedController) IssuedAnalogTwo(Uid string)([]byte) {
 	}
 	return Byte
 }
-//组开关量点火位
+//组开关量默认位
 func (ctl *IssuedController) IssuedSwitchBurn(Uid string)([]byte) {
 	Byte:=make([]byte,0)
-	var swi   []SwitchIssued
-	switchBurnSql:="select ifc.value as func,isd.modbus,isd.bit_address from issued_switch_default isd,issued_function_code ifc where isd.terminal_id=? and isd.function_id=ifc.id order by isd.channel_number"
-	if err:=dba.BoilerOrm.Raw(switchBurnSql,Uid).QueryRow(&swi);err!=nil {
-		Byte = append(Byte, IntToByteOne(0)...)
-		Byte = append(Byte, IntToByteTwo(0)...)
-		Byte = append(Byte, IntToByteOne(0)...)
-	}else {
-		for _,c := range swi {
-			Byte = append(Byte, IntToByteOne(int32(c.Func))...)
-			Byte = append(Byte, IntToByteTwo(int32(c.Modbus))...)
-			Byte = append(Byte, IntToByteOne(int32(c.BitAddress))...)
+	var swi   []models.IssuedSwitchDefault
+	if num,err:=dba.BoilerOrm.QueryTable("issued_switch_default").RelatedSel("Function").Filter("Terminal__Uid",Uid).OrderBy("ChannelNumber").All(&swi);err!=nil{
+		goazure.Error("Query issued_switch_default",err)
+	} else {
+		if num == 0 {
+			Byte = append(Byte, IntToByteOne(0)...)
+			Byte = append(Byte, IntToByteTwo(0)...)
+			Byte = append(Byte, IntToByteOne(0)...)
+			Byte = append(Byte, IntToByteOne(0)...)
+			Byte = append(Byte, IntToByteTwo(0)...)
+			Byte = append(Byte, IntToByteOne(0)...)
+		} else {
+			for _,c := range swi {
+				Byte = append(Byte, IntToByteOne(int32(c.Function.Id))...)
+				Byte = append(Byte, IntToByteTwo(int32(c.Modbus))...)
+				Byte = append(Byte, IntToByteOne(int32(c.BitAddress))...)
+			}
 		}
 	}
 	return Byte
@@ -207,17 +189,19 @@ func (ctl *IssuedController) IssuedSwitchBurn(Uid string)([]byte) {
 //组剩余开关量
 func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
 	Byte:=make([]byte,0)
-	var temp =3
-	var switchs []SwitchIssued
-	switchsql:="select r.channel_type,r.channel_number,ifc.value as func,iswitch.modbus,iswitch.bit_address "+
-		"from runtime_parameter_channel_config r,issued_analogue_switch iswitch, issued_function_code ifc where r.terminal_id=? and r.uid=iswitch.channel_id and iswitch.function_id=ifc.id and r.channel_type=3 "+
-		" ORDER BY r.channel_number;"
-	if _,err:=dba.BoilerOrm.Raw(switchsql,Uid).QueryRows(&switchs);err!=nil {
-		goazure.Error("Query issued_switch Error",err)
+	var temp int32 =3
+	var end int32 =48
+	var switchs []models.IssuedAnalogueSwitch
+	if num,err:=dba.BoilerOrm.QueryTable("issued_analogue_switch").
+	RelatedSel("Function").RelatedSel("Channel").
+	Filter("Channel__ChannelType",models.CHANNEL_TYPE_SWITCH).
+	Filter("Channel__Terminal__Uid",Uid).
+	OrderBy("Channel__ChannelNumber").All(&switchs);err!=nil{
+		goazure.Error("Query issued_analogue_switch Error",err)
 	} else {
-		L:=len(switchs)
+		L:= int(num)
 		if L ==0 {
-			for c := 0; c < 46; c++ {
+			for c := temp -1; c < end; c++ {
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteTwo(0)...)
 				Byte = append(Byte, IntToByteOne(0)...)
@@ -225,24 +209,24 @@ func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
 		} else {
 			for i:=0;i<L;i++{
 				value:=switchs[i]
-				if temp == value.ChannelNumber {
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+				if temp == value.Channel.ChannelNumber {
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 					Byte = append(Byte, IntToByteOne(int32(value.BitAddress))...)
 				} else {
-					for c := 0; c < (value.ChannelNumber - temp); c++ {
+					for c := 0; c < int(value.Channel.ChannelNumber - temp); c++ {
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteTwo(0)...)
 						Byte = append(Byte, IntToByteOne(0)...)
 					}
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 					Byte = append(Byte, IntToByteOne(int32(value.BitAddress))...)
-					temp=value.ChannelNumber
+					temp=value.Channel.ChannelNumber
 				}
 				if i==L-1 {
-					if temp !=48 {
-						for c := 0; c < (48 - temp); c++ {
+					if temp !=end {
+						for c := 0; c < int(end - temp); c++ {
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte= append(Byte, IntToByteTwo(0)...)
 							Byte = append(Byte, IntToByteOne(0)...)
@@ -259,19 +243,18 @@ func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
 //组状态量
 func (ctl *IssuedController) IssuedRange(Uid string)([]byte) {
 	Byte:=make([]byte,0)
-	var temp =1
-	var anaThree []AnalogueIssued
-	statussql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ias.modbus " +
-		"from runtime_parameter_channel_config r,issued_analogue_switch ias,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ias.channel_id and r.channel_type=5 and ias.function_id=ifc.id and ias.byte_id=ib.id" +
-		" ORDER BY r.channel_number; "
-	if _,err:=dba.BoilerOrm.Raw(statussql,Uid).QueryRows(&anaThree);err!=nil {
-		goazure.Error("Query issued_analogue Error",err)
-	} else {
-		//组状态量
-		temp=1
-		L:=len(anaThree)
+	var temp int32 =1
+	var end int32 =12
+	var anaThree []models.IssuedAnalogueSwitch
+	if num,err:=dba.BoilerOrm.QueryTable("issued_analogue_switch").
+		RelatedSel("Function").RelatedSel("Byte").RelatedSel("Channel").
+		Filter("Channel__Terminal__Uid",Uid).Filter("Channel__ChannelType",models.CHANNEL_TYPE_RANGE).
+		OrderBy("Channel__ChannelNumber").All(&anaThree);err!=nil{
+		goazure.Error("Query issued_analogue_switch Error",err)
+	}else {
+		L:=int(num)
 		if L ==0 {
-			for c := 0; c < 12; c++ {
+			for c := temp - 1; c < end; c++ {
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteTwo(0)...)
@@ -279,24 +262,24 @@ func (ctl *IssuedController) IssuedRange(Uid string)([]byte) {
 		} else {
 			for i:=0;i<L;i++{
 				value:=anaThree[i]
-				if temp == value.ChannelNumber {
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
-					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+				if temp == value.Channel.ChannelNumber {
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
 				} else {
-					for c := 0; c < (value.ChannelNumber - temp); c++ {
+					for c := 0; c < int(value.Channel.ChannelNumber - temp); c++ {
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteOne(0)...)
 						Byte = append(Byte, IntToByteTwo(0)...)
 					}
-					Byte = append(Byte, IntToByteOne(int32(value.Func))...)
-					Byte = append(Byte, IntToByteOne(int32(value.Byte))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Function.Id))...)
+					Byte = append(Byte, IntToByteOne(int32(value.Byte.Id))...)
 					Byte = append(Byte, IntToByteTwo(int32(value.Modbus))...)
-					temp=value.ChannelNumber
+					temp=value.Channel.ChannelNumber
 				}
 				if i==L-1 {
-					if temp !=12 {
-						for c := 0; c < (12 - temp); c++ {
+					if temp !=end {
+						for c := 0; c < int(end - temp); c++ {
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte = append(Byte, IntToByteOne(0)...)
 							Byte = append(Byte, IntToByteTwo(0)...)
@@ -312,11 +295,11 @@ func (ctl *IssuedController) IssuedRange(Uid string)([]byte) {
 //组装通信参数
 func (ctl *IssuedController) IssuedCommunication(Uid string)([]byte) {
 	Byte:=make([]byte,0)
-	var communication CommunicationIssued
-	communicationsql:="select ibr.value as baud_rate , idb.value as data_bit, isb.value as stop_bit, ipb.value as check_bit, ict.value as correspond_type,isa.value as sub_address,ihp.value as heart_beat "+
-		"from issued_communication ic,issued_baud_rate as ibr,issued_data_bit as idb,issued_stop_bit as isb,issued_parity_bit as ipb,issued_correspond_type as ict,issued_slave_address as isa,issued_heartbeat_packet as ihp " +
-		"where ic.baud_rate_id=ibr.id and ic.data_bit_id=idb.id and ic.stop_bit_id=isb.id and ic.check_bit_id=ipb.id and ic.correspond_type_id=ict.id and ic.sub_address_id=isa.id and ic.heart_beat_id=ihp.id and ic.terminal_id=?"
-	if err:=dba.BoilerOrm.Raw(communicationsql,Uid).QueryRow(&communication);err!=nil{
+	var communication models.IssuedCommunication
+	if err:=dba.BoilerOrm.QueryTable("issued_communication").RelatedSel("BaudRate").
+	RelatedSel("DataBit").RelatedSel("StopBit").RelatedSel("CheckBit").
+	RelatedSel("CorrespondType").RelatedSel("SubAddress").RelatedSel("HeartBeat").Filter("Terminal__Uid",Uid).One(&communication);err!=nil{
+		goazure.Error("Query issued_communication",err)
 		Byte = append(Byte,IntToByteOne(0)...)
 		Byte = append(Byte,IntToByteOne(0)...)
 		Byte = append(Byte,IntToByteOne(0)...)
@@ -325,13 +308,13 @@ func (ctl *IssuedController) IssuedCommunication(Uid string)([]byte) {
 		Byte = append(Byte,IntToByteOne(0)...)
 		Byte = append(Byte,IntToByteOne(0)...)
 	} else {
-		Byte = append(Byte,IntToByteOne(int32(communication.BaudRate))...)
-		Byte = append(Byte,IntToByteOne(int32(communication.DataBit))...)
-		Byte = append(Byte,IntToByteOne(int32(communication.StopBit))...)
-		Byte = append(Byte,IntToByteOne(int32(communication.CheckBit))...)
-		Byte = append(Byte,IntToByteOne(int32(communication.CorrespondType))...)
-		Byte = append(Byte,IntToByteOne(int32(communication.SubAddress))...)
-		Byte = append(Byte,IntToByteOne(int32(communication.HeartBeat))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.BaudRate.Id))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.DataBit.Id))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.StopBit.Id))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.CheckBit.Id))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.CorrespondType.Id))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.SubAddress.Id))...)
+		Byte = append(Byte,IntToByteOne(int32(communication.HeartBeat.Id))...)
 	}
 	return Byte
 }

@@ -103,7 +103,6 @@ func (ctl *TerminalController) TerminalIssuedList() {
 	fmt.Println("tempStatus:",tempStatus)
     //有绑定的将绑定的锅炉加进去
 	for t, ter := range terminals {
-		fmt.Println("ttt:",t)
 		termIssued[t].Terminal=ter
 		for _, cb := range combines {
 			if ter.Uid == cb.Terminal.Uid {

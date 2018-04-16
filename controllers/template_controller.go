@@ -367,11 +367,6 @@ func (ctl *TemplateController) TemplateChannelConfigDelete(cnf *models.RuntimePa
 			goazure.Error("Delete issued analogue Error:", err, num)
 			return err
 		}
-	} else {
-			if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", uid).Delete(); err != nil {
-				goazure.Error("Delete issued switch Error:", err, num)
-				return err
-			}
 	}
 	if num, err := dba.BoilerOrm.Delete(cnf); err != nil {
 		goazure.Error("Delete Channel Config Error:", err, num)
@@ -392,12 +387,16 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 		for _, a := range aCnf {
 			ctl.TemplateChannelConfigDelete(&a, t.Terminal.Uid)
 		}
+		if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", t.Terminal.Uid).Delete(); err != nil {
+			goazure.Error("Delete issued switch Error:", err, num)
+		}
 		var cnf models.RuntimeParameterChannelConfig
 		var configTemp []models.IssuedChannelConfigTemplate
-		var configSwitchTemp []models.IssuedChannelConfigTemplate
-		if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").RelatedSel("Byte").Filter("Template", t.TemplateUid).
-			Filter("ChannelType__in", models.CHANNEL_TYPE_TEMPERATURE, models.CHANNEL_TYPE_ANALOG, models.CHANNEL_TYPE_RANGE).All(&configTemp); err != nil {
-			goazure.Error("Query issued channel config template Error", err)
+		var confSwitchTemps []models.IssuedChannelConfigTemplate
+		if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").RelatedSel("Byte").
+		Filter("Template", t.TemplateUid).Filter("ChannelType__in",models.CHANNEL_TYPE_TEMPERATURE,models.CHANNEL_TYPE_ANALOG,models.CHANNEL_TYPE_RANGE).
+				OrderBy("ChannelType").All(&configTemp); err != nil {
+				goazure.Error("Query issued channel config template Error", err)
 		}
 		for _, c := range configTemp {
 			cnf.Terminal = &t.Terminal
@@ -417,14 +416,23 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 			cnf.Name = cnf.Parameter.Name
 			cnf.Length = cnf.Parameter.Length
 			cnf.Uid=uuid.New()
-			fmt.Println("cnf：",cnf.Terminal)
-			if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
-				goazure.Error("insert runtime parameter channel config Error",err)
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
+				if c.SwitchStatus == 0 {
+					c.SwitchStatus = 1
+				}
+				cnf.SwitchStatus = c.SwitchStatus
 			}
-			analoguesql := "insert into issued_analogue(channel_id,function_id,byte_id,modbus) values(?,?,?,?)"
-			if _, err := dba.BoilerOrm.Raw(analoguesql, cnf.Uid, c.Func.Id, c.Byte.Id, c.Modbus).Exec(); err != nil {
-				goazure.Error("Insert issued_analogue Error", err)
-			}
+			fmt.Println("channelType:",cnf.ChannelType)
+			fmt.Println("channelNumber:",cnf.ChannelNumber)
+
+				if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
+					goazure.Error("insert runtime parameter channel config Error",err)
+				}
+				analoguesql := "insert into issued_analogue_switch(channel_id,create_time,function_id,byte_id,modbus,bit_address) values(?,now(),?,?,?,?)"
+				if _, err := dba.BoilerOrm.Raw(analoguesql, cnf.Uid, c.Func.Id, c.Byte.Id, c.Modbus,c.BitAddress).Exec(); err != nil {
+					goazure.Error("Insert issued_analogue Error", err)
+				}
+
 			if cnf.ChannelType == models.CHANNEL_TYPE_RANGE {
 				var configRangeTemp []models.IssuedChannelConfigRangeTemplate
 				if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_range_template").Filter("ChannelConfig", c.Uid).OrderBy("Value").All(&configRangeTemp); err != nil {
@@ -461,12 +469,13 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 			}
 		}
-		//添加开关量
-		if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").Filter("Template", t.TemplateUid).
-			Filter("ChannelType__in", models.CHANNEL_TYPE_SWITCH).All(&configSwitchTemp); err != nil {
+
+		if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").
+			Filter("Template", t.TemplateUid).Filter("ChannelType",models.CHANNEL_TYPE_SWITCH).
+			OrderBy("ChannelNumber").All(&confSwitchTemps); err != nil {
 			goazure.Error("Query issued channel config template Error", err)
 		}
-		for _, c := range configSwitchTemp {
+		for _, c := range confSwitchTemps {
 			cnf.Terminal = &t.Terminal
 			cnf.ChannelType = c.ChannelType
 			cnf.ChannelNumber = c.ChannelNumber
@@ -490,21 +499,25 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 				cnf.SwitchStatus = c.SwitchStatus
 			}
-			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber == 1{
-				switchburnsql := "insert into issued_switch_burn(terminal_id,function_id,modbus,bit_address) values(?,?,?,?)"
-				if _, err := dba.BoilerOrm.Raw(switchburnsql, t.Terminal.Uid, c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
-					goazure.Error("Insert issued_switch_burn Error", err)
+			fmt.Println("channelType:",cnf.ChannelType)
+			fmt.Println("channelNumber:",cnf.ChannelNumber)
+			if cnf.ChannelType==models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber ==2) {
+				switchburnsql := "insert into issued_switch_default(uid,terminal_id,create_time,channel_type,channel_number,function_id,modbus,bit_address) values(uuid(),?,now(),?,?,?,?,?)"
+				if _, err := dba.BoilerOrm.Raw(switchburnsql, t.Terminal.Uid, c.ChannelType,c.ChannelNumber,c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
+					goazure.Error("Insert issued_switch_default Error", err)
 				}
 			} else {
 				if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
-					goazure.Error("Insert runtime parameter channel config range Error",err)
+					goazure.Error("insert runtime parameter channel config Error",err)
 				}
-				switchsql := "insert into issued_switch(channel_id,function_id,modbus,bit_address) values(?,?,?,?)"
-				if _, err := dba.BoilerOrm.Raw(switchsql, cnf.Uid, c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
-					goazure.Error("Insert issued_switch Error", err)
+				analoguesql := "insert into issued_analogue_switch(channel_id,create_time,function_id,byte_id,modbus,bit_address) values(?,now(),?,?,?,?)"
+				if _, err := dba.BoilerOrm.Raw(analoguesql, cnf.Uid, c.Func.Id, c.Byte.Id, c.Modbus,c.BitAddress).Exec(); err != nil {
+					goazure.Error("Insert issued_analogue Error", err)
 				}
 			}
 		}
+
+
 		var commTemp models.IssuedCommunicationTemplate
 		if err:=dba.BoilerOrm.QueryTable("issued_communication_template").Filter("Template__Uid",t.TemplateUid).One(&commTemp);err!=nil{
 			goazure.Error("Query issued_communication_template Error",err)
