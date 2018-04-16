@@ -919,10 +919,12 @@ boilerAdmin.directive('boilerModule', function () {
                 renderLvFire("#fire_container");
                 renderLvDashes("#dash_container");
                 renderLvSmokeDashes("#dash_smoke_container");
+                renderLvFan("#fan");
                 break;
             case BOILE_MODULE_IRON:
                 renderIronFire("#fire_container");
                 renderIronDashes("#dash_container");
+                renderIronFan("#fan");
                 break;
             default:
                 renderCoalDashes("#dash_container");
@@ -1454,6 +1456,23 @@ boilerAdmin.directive('boilerModule', function () {
         });
     };
 
+    var renderLvFan = function (id) {
+        var fan = bModule.svg.select(id);
+        var fan_inner = fan.select("#fan_inner");
+
+        var sec = 600;
+
+        var fanmove = function () {
+            fan_inner.remove();
+            fan.append("svg:image").attr("xlink:href", "../img/fan.gif")
+                .attr("x", 320)
+                .attr("y", 200);
+
+        };
+
+        fanmove();
+
+    };
 
 
     var renderLvFire = function (id) {
@@ -1579,6 +1598,24 @@ boilerAdmin.directive('boilerModule', function () {
                 repeat();
             });
         });
+    };
+
+    var renderIronFan = function (id) {
+        var fan = bModule.svg.select(id);
+        var fan_inner = fan.select("#fan_inner");
+
+        var sec = 600;
+
+        var fanmove = function () {
+            fan_inner.remove();
+            fan.append("svg:image").attr("xlink:href", "../img/fan.gif")
+                .attr("x", 1040)
+                .attr("y", 435);
+
+        };
+
+        fanmove();
+
     };
 
 
