@@ -248,10 +248,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Function"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]||!$modal.dataMatrix[outerIndex][0].Parameter"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].Analogue.Function.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -261,10 +261,10 @@
                         </ui-select>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Byte"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Byte"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][0]||!$modal.dataMatrix[outerIndex][0].Parameter"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].Analogue.Byte.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -274,7 +274,7 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][0].Analogue.Modbus" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][0]||!$modal.dataMatrix[outerIndex][0].Parameter"
                                uib-tooltip-template="'modbusTips.html'"
                                 class="form-control" >
@@ -360,10 +360,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Function"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]||!$modal.dataMatrix[outerIndex][1].Parameter"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].Analogue.Function.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -373,10 +373,10 @@
                         </ui-select>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Byte"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Byte"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][1]||!$modal.dataMatrix[outerIndex][1].Parameter"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].Analogue.Byte.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -386,7 +386,7 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][1].Analogue.Modbus" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][1]||!$modal.dataMatrix[outerIndex][1].Parameter"
                                uib-tooltip-template="'modbusTips.html'" class="form-control">
                     </td>
@@ -497,11 +497,11 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][2].Switch.Function"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter"
-                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][2].Switch.Function,outerIndex,2)"
+                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][2].AnalogueSwitch.Function,outerIndex,2)"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][2].Switch.Function.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -511,12 +511,12 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].Switch.Modbus" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter"
                                uib-tooltip-template="'modbusTips2.html'" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].Switch.BitAddress" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][2].AnalogueSwitch.BitAddress" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][2]||!$modal.dataMatrix[outerIndex][2].Parameter"
                                uib-tooltip-template="'bitAddressTips.html'" class="form-control">
                     </td>
@@ -604,11 +604,11 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][3].Switch.Function"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Function"
                                    theme="bootstrap"  ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter"
-                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][3].Switch.Function,outerIndex,3)"
+                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][3].AnalogueSwitch.Function,outerIndex,3)"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][3].Switch.Function.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -618,12 +618,12 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].Switch.Modbus" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter"
                                uib-tooltip-template="'modbusTips2.html'" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].Switch.BitAddress" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][3].AnalogueSwitch.BitAddress" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][3]||!$modal.dataMatrix[outerIndex][3].Parameter"
                                uib-tooltip-template="'bitAddressTips.html'" class="form-control">
                     </td>
@@ -711,11 +711,11 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][4].Switch.Function"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter"
-                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][4].Switch.Function,outerIndex,4)"
+                                   ng-change="fCodeChange($modal.chanMatrix[outerIndex][4].AnalogueSwitch.Function,outerIndex,4)"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][4].Switch.Function.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -725,12 +725,12 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].Switch.Modbus" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter"
                                uib-tooltip-template="'modbusTips2.html'" class="form-control">
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].Switch.BitAddress" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][4].AnalogueSwitch.BitAddress" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][4]||!$modal.dataMatrix[outerIndex][4].Parameter"
                                uib-tooltip-template="'bitAddressTips.html'" class="form-control">
                     </td>
@@ -808,10 +808,10 @@
                         </div>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Function"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Function"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]||!$modal.dataMatrix[outerIndex][5].Parameter"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].Analogue.Function.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Function.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -821,10 +821,10 @@
                         </ui-select>
                     </td>
                     <td>
-                        <ui-select ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Byte"
+                        <ui-select ng-model="$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Byte"
                                    theme="bootstrap" ng-disabled="!$modal.dataMatrix[outerIndex][5]||!$modal.dataMatrix[outerIndex][5].Parameter"
                                    style="width: 100%;">
-                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].Analogue.Byte.Name||'默认(未配置)'}}">
+                            <ui-select-match placeholder="{{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Byte.Name||'默认(未配置)'}}">
                                 {{$select.selected.Name}}
                             </ui-select-match>
                             <ui-select-choices
@@ -834,7 +834,7 @@
                         </ui-select>
                     </td>
                     <td>
-                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][5].Analogue.Modbus" placeholder="默认（未配置）"
+                        <input type="text" ng-model="$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Modbus" placeholder="默认（未配置）"
                                ng-disabled="!$modal.dataMatrix[outerIndex][5]||!$modal.dataMatrix[outerIndex][5].Parameter"
                                uib-tooltip-template="'modbusTips.html'" class="form-control">
                     </td>
@@ -1035,13 +1035,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][0].Analogue.Function.Name}}
+                        {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][0].Analogue.Byte.Name}}
+                        {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Byte.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][0].Analogue.Modbus}}
+                        {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Modbus}}
                     </td>
                 </tr>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && !chan_row[1].noStatus">
@@ -1060,13 +1060,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][1].Analogue.Function.Name}}
+                        {{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][1].Analogue.Byte.Name}}
+                        {{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Byte.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][1].Analogue.Modbus}}
+                        {{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Modbus}}
                     </td>
                 </tr>
                 </tbody>
@@ -1096,13 +1096,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][2].Switch.Function.Name}}
+                        {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][2].Switch.Modbus}}
+                        {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Modbus}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][2].Switch.BitAddress}}
+                        {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.BitAddress}}
                     </td>
                 </tr>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[3].noStatus">
@@ -1124,13 +1124,13 @@
 
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][3].Switch.Function.Name}}
+                        {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][3].Switch.Modbus}}
+                        {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Modbus}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][3].Switch.BitAddress}}
+                        {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.BitAddress}}
                     </td>
                 </tr>
                 <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[4].noStatus">
@@ -1147,13 +1147,13 @@
                         </div>
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][4].Switch.Function.Name}}
+                        {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][4].Switch.Modbus}}
+                        {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Modbus}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][4].Switch.BitAddress}}
+                        {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.BitAddress}}
                     </td>
                 </tr>
                 </tbody>
@@ -1185,13 +1185,13 @@
 
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][5].Analogue.Function.Name}}
+                        {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Function.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][5].Analogue.Byte.Name}}
+                        {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Byte.Name}}
                     </td>
                     <td>
-                        {{$modal.chanMatrix[outerIndex][5].Analogue.Modbus}}
+                        {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Modbus}}
                     </td>
                 </tr>
                 </tbody>

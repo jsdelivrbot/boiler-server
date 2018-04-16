@@ -132,7 +132,7 @@
                 <i class="fa fa-cogs"></i> 终端关联
             </button>
             <button
-                    ng-click="terminal.channel(data.Terminal)"
+                    ng-click="terminal.channel(data.Terminal,data.IssuedTermTempStatus)"
                     class="btn edit btn-outline btn-circle btn-sm blue-hoki"
                     style="margin-left: 8px;">
                 <i class="fa fa-server"></i> 通道配置
@@ -172,7 +172,7 @@
                                ng-model="item.end" placeholder="680001" maxlength="6" minlength="6" required>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <b class="" style="font-size: 18px; font-weight: bold; color: #0b94ea;">配置为</b>
                     <div class="input-group">
                         <span class="input-group-addon">通道模板</span>
@@ -184,6 +184,12 @@
                         </ui-select>
 
                     </div>
+                </div>
+                <div class="col-md-1" style="margin-top: 30px;">
+                    <a ng-click="removeGroupConfig($index);" title="删除"
+                       class="form-control addon btn btn-outline btn-circle red" style="width: 22px; height: 22px; margin: 0 0 6px 6px; padding: 0px;">
+                        <i class="fa fa-minus" style="font-size: 12px;"></i>
+                    </a>
                 </div>
             </li>
         </ul>

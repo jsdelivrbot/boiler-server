@@ -5,7 +5,7 @@
     <div class="modal-body">
         <ul style="list-style: none; padding: 10px 20px; padding-bottom: 0;">
             <li ng-repeat="item in items" class="row" style="margin-bottom:20px; ">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="input-group">
                         <span class="input-group-addon">终端编号</span>
                         <input type="text" ng-model="item.id" class="form-control" placeholder="680001">
@@ -16,14 +16,19 @@
                     <div class="input-group col-md-10" >
                         <span class="input-group-addon">通道模板</span>
                         <ui-select ng-model="item.template" theme="bootstrap">
-                            <ui-select-match placeholder="{{item.template.name||'未配置'}}">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-match placeholder="{{item.template.Name||'未配置'}}">{{$select.selected.Name}}</ui-select-match>
                             <ui-select-choices repeat="tem in templates | filter: $select.search">
-                                <span ng-bind-html="tem.name"></span>
+                                <span ng-bind-html="tem.Name"></span>
                             </ui-select-choices>
                         </ui-select>
-                        <!--<select ng-model="item.template" ng-options="x.name for x in templates" class="form-control">
-                        </select>-->
+
                     </div>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px;">
+                    <a ng-click="removeQuickConfig($index);" title="删除"
+                       class="form-control addon btn btn-outline btn-circle red" style="width: 22px; height: 22px; margin: 0 0 6px 6px; padding: 0px;">
+                        <i class="fa fa-minus" style="font-size: 12px;"></i>
+                    </a>
                 </div>
             </li>
         </ul>
