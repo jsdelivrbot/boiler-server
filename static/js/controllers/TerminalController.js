@@ -954,7 +954,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                 }
 
-                if ((i !== 0 ||j !== 2 ) &&  (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) ) {
+                if (((i !== 0 && i !== 1)||j !== 2 ) &&  (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) ) {
                     $modal.dataMatrix[i][j] = null;
                     $modal.chanMatrix[i][j].noStatus=true;
                 } else {
@@ -1059,7 +1059,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $scope.matrixReset = function () {
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
-                $modal.dataMatrix[i][j] = null;
+                if((i===0||i===1)&&j===2){
+                    $modal.chanMatrix[i][j].Analogue = null;
+                    $modal.chanMatrix[i][j].Switch = null;
+                }else {
+                    $modal.dataMatrix[i][j] = null;
+                    $modal.chanMatrix[i][j].Analogue = null;
+                    $modal.chanMatrix[i][j].Switch = null;
+                    $modal.chanMatrix[i][j].noStatus=true;
+                }
+
             }
         }
     };
@@ -1164,6 +1173,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                         dataRanges = $modal.dataMatrix[i][j] ? $modal.dataMatrix[i][j].Ranges : [] ;
                     }
 
+                    if(dataParamId===0){
+                        continue;
+                    }
 
                     //功能码
                     var fcodeName = 0;
