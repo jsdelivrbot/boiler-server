@@ -239,8 +239,9 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         });
     };
 
-    terminal.channel = function (data) {
+    terminal.channel = function (data,temp) {
         currentData = data;
+        currentData.template = temp.Template;
         editing = true;
         terminal.channelOpen('lg');
         // for (var i = 0; i < maintain.datasource.length; i++) {
@@ -876,12 +877,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         var items = [
             {
                 id: $modal.currentData.code,
-                template: {
-                    id:1,
-                    name:"通用模板一"
-                }
+                template: $modal.currentData.template
             }
         ];
+        console.log($modal.currentData);
         var modalInstance = $uibModal.open({
             templateUrl: '/directives/modal/terminal_channel_quick_set.html',
             controller: 'ModalQuickSetCtrl',
@@ -934,15 +933,16 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                 }
 
-                if($modal.chanMatrix[i][j].Analogue.Modbus===0){
-                    $modal.chanMatrix[i][j].Analogue.Modbus = null;
-                }
-                if($modal.chanMatrix[i][j].Switch.Modbus===0){
-                    $modal.chanMatrix[i][j].Switch.Modbus = null;
-                }
-                if($modal.chanMatrix[i][j].Switch.BitAddress===0){
-                    $modal.chanMatrix[i][j].Switch.BitAddress = null;
-                }
+
+
+                    if($modal.chanMatrix[i][j].AnalogueSwitch.Modbus===0){
+                        $modal.chanMatrix[i][j].AnalogueSwitch.Modbus = null;
+                    }
+                    if($modal.chanMatrix[i][j].AnalogueSwitch.BitAddress===0){
+                        $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress = null;
+                    }
+
+
 
 
 
@@ -1028,8 +1028,8 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             $modal.dataMatrix[outerIndex][innerIndex].SwitchStatus = 0;
             $modal.dataMatrix[outerIndex][innerIndex].Ranges = null;
 
-            $modal.chanMatrix[outerIndex][innerIndex].Analogue = null;
-            $modal.chanMatrix[outerIndex][innerIndex].Switch = null;
+            $modal.chanMatrix[outerIndex][innerIndex].AnalogueSwitch = null;
+            // $modal.chanMatrix[outerIndex][innerIndex].Switch = null;
             $modal.chanMatrix[outerIndex][innerIndex].noStatus=true;
             // if($modal.chanMatrix[outerIndex][innerIndex].IsDefault!==true){
             //     $modal.chanMatrix[outerIndex][innerIndex].Name="默认(未配置)"
@@ -1060,12 +1060,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         for (var i = 0; i < $modal.dataMatrix.length; i++) {
             for (var j = 0; j < $modal.dataMatrix[i].length; j++) {
                 if((i===0||i===1)&&j===2){
-                    $modal.chanMatrix[i][j].Analogue = null;
-                    $modal.chanMatrix[i][j].Switch = null;
+                    $modal.chanMatrix[i][j].AnalogueSwitch = null;
                 }else {
                     $modal.dataMatrix[i][j] = null;
-                    $modal.chanMatrix[i][j].Analogue = null;
-                    $modal.chanMatrix[i][j].Switch = null;
+                    $modal.chanMatrix[i][j].AnalogueSwitch = null;
                     $modal.chanMatrix[i][j].noStatus=true;
                 }
 
@@ -1092,9 +1090,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
     $scope.fCodeChange =function (fcode,i,j) {
         console.log(fcode);
-        if(fcode.Id ===1||fcode.Id ===2){
-            $modal.chanMatrix[i][j].Switch.BitAddress = 1;
+        if(j>=2&&j<5){
+            if(fcode.Id ===1||fcode.Id ===2){
+                $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress = 1;
+            }
         }
+
     };
 
     $scope.setStatus = function(outerIndex, innerIndex, status, sn) {
@@ -1186,15 +1187,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     //高低字节
                     var termByte = 0;
                     if(j===0 || j===1 || j===5){
-                        fcodeName = $modal.chanMatrix[i][j].Analogue && $modal.chanMatrix[i][j].Analogue.Function ? $modal.chanMatrix[i][j].Analogue.Function.Id:0;
-                        modbus = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Modbus ? $modal.chanMatrix[i][j].Analogue.Modbus:0;
-                        termByte = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Byte?$modal.chanMatrix[i][j].Analogue.Byte.Id:0 ;
+                        fcodeName = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Function ? $modal.chanMatrix[i][j].AnalogueSwitch.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Modbus ? $modal.chanMatrix[i][j].AnalogueSwitch.Modbus:0;
+                        termByte = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Byte?$modal.chanMatrix[i][j].AnalogueSwitch.Byte.Id:0 ;
                     }
 
                     if(j>=2 && j<5){
-                        fcodeName = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Function?$modal.chanMatrix[i][j].Switch.Function.Id:0;
-                        modbus = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Modbus? $modal.chanMatrix[i][j].Switch.Modbus:0;
-                        bitAddress = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.BitAddress? $modal.chanMatrix[i][j].Switch.BitAddress:0;
+                        fcodeName = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Function?$modal.chanMatrix[i][j].AnalogueSwitch.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Modbus? $modal.chanMatrix[i][j].AnalogueSwitch.Modbus:0;
+                        bitAddress = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress? $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress:0;
                     }
 
                     if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
@@ -1930,8 +1931,20 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             template:null});
     };
 
+    $scope.removeGroupConfig = function (index) {
+        $scope.items.splice(index,1);
+    };
 
     $scope.ok = function () {
+        if($scope.items.length<=0){
+            swal({
+                title: "没有配置数据",
+                // text: err.data,
+                type: "warning"
+            });
+            return false;
+        }
+
         for(var i =0; i<$scope.items.length; i++){
             var template = $scope.items[i].template.Uid;
             $scope.items[i].template = template;
@@ -1939,6 +1952,9 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             //
             // }
         }
+
+
+
         App.startPageLoading({message: '正在加载数据...'});
         $http.post("/template_group_config",{groupConfig:$scope.items}).then(function (res) {
             App.stopPageLoading();
@@ -1966,7 +1982,7 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
 });
 
 //快速设置
-angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, $uibModalInstance, items1) {
+angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, $uibModalInstance,$http, items1) {
     /*var items = [
         {
             id:$modal.currentData.code,
@@ -1975,27 +1991,20 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
     ];*/
     $scope.items = items1;
 
-    $scope.templates = [
-        {
-            id:1,
-            name:"通用模板一"
-        },
-        {
-            id:2,
-            name:"通用模板二"
-        },
-        {
-            id:3,
-            name:"通用模板三"
-        }
-    ];
-    // $scope.selectedTemplate = $scope.template[0];
+    $http.get("/template_list").then(function (res) {
+        $scope.templates = res.data;
+        // console.log($scope.templates);
+    });
+
     $scope.addQuickSet = function (){
         $scope.items.push({
             id: null,
             template:null});
     };
 
+    $scope.removeQuickConfig = function (index) {
+        $scope.items.splice(index,1);
+    };
 
     $scope.ok = function () {
         $uibModalInstance.close($scope.selected.item);

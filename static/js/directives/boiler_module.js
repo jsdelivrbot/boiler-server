@@ -918,10 +918,12 @@ boilerAdmin.directive('boilerModule', function () {
                 renderLvFire("#fire_container");
                 renderLvDashes("#dash_container");
                 renderLvSmokeDashes("#dash_smoke_container");
+                renderLvFan("#fan");
                 break;
             case BOILE_MODULE_IRON:
                 renderIronFire("#fire_container");
                 renderIronDashes("#dash_container");
+                renderIronFan("#fan");
                 break;
             default:
                 renderCoalDashes("#dash_container");
@@ -1454,6 +1456,24 @@ boilerAdmin.directive('boilerModule', function () {
         });
     };
 
+    var renderLvFan = function (id) {
+        var fan = bModule.svg.select(id);
+        var fan_inner = fan.select("#fan_inner");
+
+        var sec = 600;
+
+        var fanmove = function () {
+            fan_inner.remove();
+            fan.append("svg:image").attr("xlink:href", "../img/fan.gif")
+                .attr("x", 320)
+                .attr("y", 200);
+
+        };
+
+        fanmove();
+
+    };
+
     var renderLvFire = function (id) {
         var fireG = bModule.svg.select(id);
         if (!fireG) {
@@ -1540,41 +1560,22 @@ boilerAdmin.directive('boilerModule', function () {
         });
     };
 
-    var renderIronSmokeDashes = function (id) {
-        var size = 8;
-        var sec = 4096;
+    var renderIronFan = function (id) {
+        var fan = bModule.svg.select(id);
+        var fan_inner = fan.select("#fan_inner");
 
-        var dashSmokeModule = bModule.svg.select(id);
-        if (!dashSmokeModule) {
-            console.warn("There IS NO " + id + "!");
-            return;
-        }
+        var sec = 600;
 
-        var dashSmoke = function () {
-            dashSmokeModule
-                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
-                .transition().duration(sec / 1.0).ease(d3.easeLinear).attr("cx", 766)
-                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
-                .transition().duration(sec / 2.5).ease(d3.easeLinear).attr("cx", 955)
-                .remove();
-
-            dashSmokeModule
-                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
-                .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 533)
-                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
-                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 955)
-                .remove();
+        var fanmove = function () {
+            fan_inner.remove();
+            fan.append("svg:image").attr("xlink:href", "../img/fan.gif")
+                .attr("x", 1040)
+                .attr("y", 435);
 
         };
 
-        dashSmokeModule
-            .transition().on("start", function repeat() {
-            dashSmokeModule
-                .transition().delay(260).on("start", function () {
-                dashSmoke();
-                repeat();
-            });
-        });
+        fanmove();
+
     };
 
 
