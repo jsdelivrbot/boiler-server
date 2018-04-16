@@ -87,8 +87,8 @@ func (ctl *IssuedController) IssuedAnalogOne(Uid string)([]byte) {
 	var temp =1
 	Byte:=make([]byte,0)
 	var anaOne []AnalogueIssued
-	sql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
-		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=1 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
+	sql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ias.modbus " +
+		"from runtime_parameter_channel_config r,issued_analogue_switch ias,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ias.channel_id and r.channel_type=1 and ias.function_id=ifc.id and ias.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
 	if _,err:=dba.BoilerOrm.Raw(sql,Uid).QueryRows(&anaOne);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
@@ -139,8 +139,8 @@ func (ctl *IssuedController) IssuedAnalogTwo(Uid string)([]byte) {
 	var temp =1
 	Byte:=make([]byte,0)
 	var anaTwo []AnalogueIssued
-	anasql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
-		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=2 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
+	anasql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ias.modbus " +
+		"from runtime_parameter_channel_config r,issued_analogue_switch ias,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ias.channel_id and r.channel_type=2 and ias.function_id=ifc.id and ias.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
 	if _,err:=dba.BoilerOrm.Raw(anasql,Uid).QueryRows(&anaTwo);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)
@@ -189,33 +189,35 @@ func (ctl *IssuedController) IssuedAnalogTwo(Uid string)([]byte) {
 //组开关量点火位
 func (ctl *IssuedController) IssuedSwitchBurn(Uid string)([]byte) {
 	Byte:=make([]byte,0)
-	var swi   SwitchIssued
-	switchBurnSql:="select ifc.value as func,isb.modbus,isb.bit_address from issued_switch_burn isb,issued_function_code ifc where terminal_id=? and isb.function_id=ifc.id"
+	var swi   []SwitchIssued
+	switchBurnSql:="select ifc.value as func,isd.modbus,isd.bit_address from issued_switch_default isd,issued_function_code ifc where isd.terminal_id=? and isd.function_id=ifc.id order by isd.channel_number"
 	if err:=dba.BoilerOrm.Raw(switchBurnSql,Uid).QueryRow(&swi);err!=nil {
 		Byte = append(Byte, IntToByteOne(0)...)
 		Byte = append(Byte, IntToByteTwo(0)...)
 		Byte = append(Byte, IntToByteOne(0)...)
 	}else {
-		Byte = append(Byte, IntToByteOne(int32(swi.Func))...)
-		Byte = append(Byte, IntToByteTwo(int32(swi.Modbus))...)
-		Byte = append(Byte, IntToByteOne(int32(swi.BitAddress))...)
+		for _,c := range swi {
+			Byte = append(Byte, IntToByteOne(int32(c.Func))...)
+			Byte = append(Byte, IntToByteTwo(int32(c.Modbus))...)
+			Byte = append(Byte, IntToByteOne(int32(c.BitAddress))...)
+		}
 	}
 	return Byte
 }
 //组剩余开关量
 func (ctl *IssuedController) IssuedSwitch(Uid string)([]byte) {
 	Byte:=make([]byte,0)
-	var temp =2
+	var temp =3
 	var switchs []SwitchIssued
 	switchsql:="select r.channel_type,r.channel_number,ifc.value as func,iswitch.modbus,iswitch.bit_address "+
-		"from runtime_parameter_channel_config r,issued_switch iswitch, issued_function_code ifc where r.terminal_id=? and r.uid=iswitch.channel_id and iswitch.function_id=ifc.id and r.channel_type=3 "+
+		"from runtime_parameter_channel_config r,issued_analogue_switch iswitch, issued_function_code ifc where r.terminal_id=? and r.uid=iswitch.channel_id and iswitch.function_id=ifc.id and r.channel_type=3 "+
 		" ORDER BY r.channel_number;"
 	if _,err:=dba.BoilerOrm.Raw(switchsql,Uid).QueryRows(&switchs);err!=nil {
 		goazure.Error("Query issued_switch Error",err)
 	} else {
 		L:=len(switchs)
 		if L ==0 {
-			for c := 0; c < 47; c++ {
+			for c := 0; c < 46; c++ {
 				Byte = append(Byte, IntToByteOne(0)...)
 				Byte = append(Byte, IntToByteTwo(0)...)
 				Byte = append(Byte, IntToByteOne(0)...)
@@ -259,8 +261,8 @@ func (ctl *IssuedController) IssuedRange(Uid string)([]byte) {
 	Byte:=make([]byte,0)
 	var temp =1
 	var anaThree []AnalogueIssued
-	statussql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ia.modbus " +
-		"from runtime_parameter_channel_config r,issued_analogue ia,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ia.channel_id and r.channel_type=5 and ia.function_id=ifc.id and ia.byte_id=ib.id" +
+	statussql:="select r.channel_type,r.channel_number, ib.value as byte,ifc.value as func,ias.modbus " +
+		"from runtime_parameter_channel_config r,issued_analogue_switch ias,issued_byte ib, issued_function_code ifc where r.terminal_id=? and r.uid=ias.channel_id and r.channel_type=5 and ias.function_id=ifc.id and ias.byte_id=ib.id" +
 		" ORDER BY r.channel_number; "
 	if _,err:=dba.BoilerOrm.Raw(statussql,Uid).QueryRows(&anaThree);err!=nil {
 		goazure.Error("Query issued_analogue Error",err)

@@ -362,23 +362,16 @@ func (ctl *TemplateController) TemplateChannelConfigDelete(cnf *models.RuntimePa
 			goazure.Error("Delete Ranges Error:", err, num)
 		}
 	}
-	if cnf.ChannelType == models.CHANNEL_TYPE_TEMPERATURE || cnf.ChannelType == models.CHANNEL_TYPE_ANALOG || cnf.ChannelType == models.CHANNEL_TYPE_RANGE {
-		if num, err := dba.BoilerOrm.QueryTable("issued_analogue").Filter("Channel", cnf.Uid).Delete(); err != nil {
+	if !(cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber == 2)){
+		if num, err := dba.BoilerOrm.QueryTable("issued_analogue_switch").Filter("Channel", cnf.Uid).Delete(); err != nil {
 			goazure.Error("Delete issued analogue Error:", err, num)
 			return err
 		}
-	} else if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
-		if cnf.ChannelNumber == 1 {
-			if num, err := dba.BoilerOrm.QueryTable("issued_switch_burn").Filter("Terminal", uid).Delete(); err != nil {
+	} else {
+			if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", uid).Delete(); err != nil {
 				goazure.Error("Delete issued switch Error:", err, num)
 				return err
 			}
-		} else {
-			if num, err := dba.BoilerOrm.QueryTable("issued_switch").Filter("Channel", cnf.Uid).Delete(); err != nil {
-				goazure.Error("Delete issued switch Error:", err, num)
-				return err
-			}
-		}
 	}
 	if num, err := dba.BoilerOrm.Delete(cnf); err != nil {
 		goazure.Error("Delete Channel Config Error:", err, num)
