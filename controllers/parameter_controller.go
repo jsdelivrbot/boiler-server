@@ -20,14 +20,15 @@ import (
 	"encoding/json"
 	"sort"
 	"errors"
+	"github.com/pborman/uuid"
 )
 
 type ParameterController struct {
 	MainController
 
-	ReloadLimit				int64
+	ReloadLimit int64
 
-	Parameters 				[]*models.RuntimeParameter
+	Parameters []*models.RuntimeParameter
 }
 
 var ParamCtrl *ParameterController = &ParameterController{}
@@ -40,63 +41,64 @@ func init() {
 
 //新增数据类型
 type Channel struct {
-	Channel []ChannelIssued  `json:"channel"`
-	Param   Param            `json:"param"`
+	Channel []ChannelIssued `json:"channel"`
+	Param   Param           `json:"param"`
 }
 
 //新增param
 type Param struct {
-	TerminalCode   string    `json:"terminal_code"`   //终端编码
-	BaudRateId       int       `json:"baudRate"`        //波特率
-	DataBitId        int       `json:"dataBit"`         //数据位
-	StopBitId        int       `json:"stopBit"`         //停止位
-	CheckDigitId     int        `json:"checkDigit"`     //校检位
-	CommunInterfaceId int       `json:"communInterface"`   //通信接口地址
-	SubAddressId      int        `json:"slaveAddress"`       //从机地址
-	HeartBitId       int         `json:"heartbeat"`         //心跳包频率
+	TerminalCode      string `json:"terminal_code"`   //终端编码
+	BaudRateId        int    `json:"baudRate"`        //波特率
+	DataBitId         int    `json:"dataBit"`         //数据位
+	StopBitId         int    `json:"stopBit"`         //停止位
+	CheckDigitId      int    `json:"checkDigit"`      //校检位
+	CommunInterfaceId int    `json:"communInterface"` //通信接口地址
+	SubAddressId      int    `json:"slaveAddress"`    //从机地址
+	HeartBitId        int    `json:"heartbeat"`       //心跳包频率
 }
+
 //新增的通道下发
 type ChannelIssued struct {
-	TerminalCode	string		`json:"terminal_code"`
-	ParameterId		int			`json:"parameter_id"`
+	TerminalCode string `json:"terminal_code"`
+	ParameterId  int    `json:"parameter_id"`
 
-	ChannelType		int			`json:"channel_type"`
-	ChannelNumber	int			`json:"channel_number"`
-	FcodeId       int          `json:"fcodeName"`  //功能码
-	BitAddress      int          `json:"bitAddress"`  //位地址
-	TermByteId        int          `json:"termByte"`    //高低字节
-	Modbus          int          `json:"modbus"`      //modbus
-	Status			int32		`json:"status"`
-	SequenceNumber	int32		`json:"sequence_number"`
+	ChannelType    int32   `json:"channel_type"`
+	ChannelNumber  int32   `json:"channel_number"`
+	FcodeId        int   `json:"fcodeName"`  //功能码
+	BitAddress     int   `json:"bitAddress"` //位地址
+	TermByteId     int   `json:"termByte"`   //高低字节
+	Modbus         int   `json:"modbus"`     //modbus
+	Status         int32 `json:"status"`
+	SequenceNumber int32 `json:"sequence_number"`
 
-	SwitchValue		int32		`json:"switch_status"`
+	SwitchValue int32 `json:"switch_status"`
 
-	Scale			float32		`json:"scale"`
+	Scale float32 `json:"scale"`
 
-	Ranges			[]bRange 	`json:"ranges"`
+	Ranges []bRange `json:"ranges"`
 
-	IsDeleted		bool		`json:"is_deleted"`
+	IsDeleted bool `json:"is_deleted"`
 }
 
 //传递前台通信参数
-func (ctl *ParameterController)IssuedCommunication() {
+func (ctl *ParameterController) IssuedCommunication() {
 	var issuedCommunication models.IssuedCommunication
 	var param Param
-	if err:=json.Unmarshal(ctl.Ctx.Input.RequestBody,&param);err!=nil {
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &param); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-	if err:=dba.BoilerOrm.QueryTable("issued_communication").RelatedSel("BaudRate").RelatedSel("DataBit").RelatedSel("StopBit").RelatedSel("CheckBit").RelatedSel("CorrespondType").
-	RelatedSel("SubAddress").RelatedSel("HeartBeat").Filter("Terminal__TerminalCode",param.TerminalCode).One(&issuedCommunication);err!=nil {
-		goazure.Error("Query issued_communication Error",err)
+	if err := dba.BoilerOrm.QueryTable("issued_communication").RelatedSel("BaudRate").RelatedSel("DataBit").RelatedSel("StopBit").RelatedSel("CheckBit").RelatedSel("CorrespondType").
+		RelatedSel("SubAddress").RelatedSel("HeartBeat").Filter("Terminal__TerminalCode", param.TerminalCode).One(&issuedCommunication); err != nil {
+		goazure.Error("Query issued_communication Error", err)
 	}
 	ctl.Data["json"] = issuedCommunication
 	ctl.ServeJSON()
 }
 
-func (ctl *ParameterController)ChannelIssuedUpdate() {
+func (ctl *ParameterController) ChannelIssuedUpdate() {
 	var chanIssu Channel
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &chanIssu); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -104,192 +106,127 @@ func (ctl *ParameterController)ChannelIssuedUpdate() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-	fmt.Println("aaaaaaaaaaaaaaaaaaaa:", chanIssu)
-
-	//插入表通信参数
 	var ter models.Terminal
 	code, _ := strconv.ParseInt(chanIssu.Param.TerminalCode, 10, 32)
 	if err := dba.BoilerOrm.QueryTable("Terminal").Filter("TerminalCode", code).Filter("IsDeleted", false).One(&ter); err != nil {
 		goazure.Error("Get Channel's Terminal Error:", err)
 	}
-	sql := "replace into issued_communication(terminal_id,baud_rate_id,data_bit_id,stop_bit_id,check_bit_id,correspond_type_id,sub_address_id,heart_beat_id) values(?,?,?,?,?,?,?,?)"
-	if _, er := dba.BoilerOrm.Raw(sql, ter.Uid, chanIssu.Param.BaudRateId, chanIssu.Param.DataBitId, chanIssu.Param.StopBitId, chanIssu.Param.CheckDigitId, chanIssu.Param.CommunInterfaceId, chanIssu.Param.SubAddressId, chanIssu.Param.HeartBitId).Exec(); er != nil {
-		goazure.Error("Insert issued_communication Error", er)
+	var aCnf []models.RuntimeParameterChannelConfig
+	if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
+		Filter("Terminal__Uid", ter.Uid).Filter("IsDefault", false).
+		All(&aCnf); err != nil {
+		goazure.Error("Get ChannelConfig To Delete Error:", err)
 	}
-	for i, c := range chanIssu.Channel {
-		goazure.Warn("[", i, "]ChannelIssuedUpdate: ", c)
-		var cnf models.RuntimeParameterChannelConfig
-		var ter models.Terminal
-		code, _ := strconv.ParseInt(c.TerminalCode, 10, 32)
-		if err := dba.BoilerOrm.QueryTable("Terminal").Filter("TerminalCode", code).Filter("IsDeleted", false).One(&ter); err != nil {
-			goazure.Error("Get Channel's Terminal Error:", err)
+	for _, a := range aCnf {
+		TempCtrl.TemplateChannelConfigDelete(&a, ter.Uid)
+	}
+	var cnf models.RuntimeParameterChannelConfig
+	for _, c := range chanIssu.Channel {
+		for _, p := range ParamCtrl.Parameters {
+			if p.Id == int64(c.ParameterId) {
+				cnf.Parameter = p
+			}
 		}
-		cnf.Terminal = &ter
-		cnf.ChannelType = int32(c.ChannelType)
-		cnf.ChannelNumber = int32(c.ChannelNumber)
-		cnf.IsDefault = false
-
-		//TODO: Default Signed & Threshold
-		cnf.Signed = true
-		cnf.NegativeThreshold = 32768
-
-		//判断是否开关位，开关位，存到新的表
-		if c.ChannelNumber == 1 && c.ChannelType == 3 {
-			var sBurn models.IssuedSwitchBurn
-			sBurn.Terminal = &ter
-			if c.FcodeId == 0 && c.BitAddress == 0 && c.Modbus == 0 {
-				if err := dba.BoilerOrm.QueryTable("issued_switch_burn").Filter("Terminal__Uid", ter.Uid).One(&sBurn); err != nil {
-					goazure.Error(" IssuedSwitchBurn To Delete Error:", err)
-				} else {
-					dba.BoilerOrm.Delete(&sBurn)
-				}
+			cnf.Terminal = &ter
+			cnf.ChannelType = c.ChannelType
+			cnf.ChannelNumber = c.ChannelNumber
+			cnf.IsDefault = false
+			//TODO: Default Signed & Threshold
+			cnf.Signed = true
+			cnf.NegativeThreshold = 32768
+			cnf.Status = c.Status
+			if cnf.Status == models.CHANNEL_STATUS_SHOW {
+				cnf.SequenceNumber = c.SequenceNumber
 			} else {
-				switchburnsql := "REPLACE into issued_switch_burn(terminal_id,function_id,modbus,bit_address) values(?,?,?,?)"
-				if _, err := dba.BoilerOrm.Raw(switchburnsql, ter.Uid, c.FcodeId, c.Modbus, c.BitAddress).Exec(); err != nil {
+				cnf.SequenceNumber = -1
+			}
+			cnf.Name = cnf.Parameter.Name
+			cnf.Length = cnf.Parameter.Length
+			cnf.Uid = uuid.New()
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
+				if c.SwitchValue == 0 {
+					c.SwitchValue = 1
+				}
+				cnf.SwitchStatus = c.SwitchValue
+			}
+			fmt.Println("cnf：", cnf.Terminal)
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber == 2){
+				switchburnsql := "insert into issued_switch_burn(uid,terminal_id,create_time,channel_type,channel_number,function_id,modbus,bit_address) values(uuid(),?,,now(),?,?,?,?,?)"
+				if _, err := dba.BoilerOrm.Raw(switchburnsql, ter.Uid,c.ChannelType,c.ChannelNumber,c.FcodeId, c.Modbus, c.BitAddress).Exec(); err != nil {
 					goazure.Error("Insert issued_switch_burn Error", err)
 				}
-			}
-		}
-
-		if c.ParameterId <= 0 {
-			var aCnf models.RuntimeParameterChannelConfig
-			if err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
-				Filter("Terminal__Uid", ter.Uid).Filter("ChannelType", c.ChannelType).Filter("ChannelNumber", c.ChannelNumber).Filter("IsDefault", false).
-				One(&aCnf); err != nil {
-				goazure.Error("Get ChannelConfig To Delete Error:", err)
-				fmt.Println("ppppppppppppppppppppppp")
-				continue
-			}
-			//如果是状态跟模拟量删除表issued_analogue
-			//如果是开关量删除表issued_switch
-			if c.ChannelType == models.CHANNEL_TYPE_SWITCH {
-				var iSwitch models.IssuedSwitch
-				iSwitch.Channel = &aCnf
-				if num, err := dba.BoilerOrm.Delete(&iSwitch); err != nil {
-					goazure.Error("Delete issued_switch Error", num, err)
-				}
 			} else {
-				var iAna models.IssuedAnalogue
-				iAna.Channel = &aCnf
-				if num, err := dba.BoilerOrm.Delete(&iAna); err != nil {
-					goazure.Error("Delete issued_analogue Error", num, err)
+				if _, err := dba.BoilerOrm.Insert(&cnf); err != nil {
+					goazure.Error("insert runtime parameter channel config Error", err)
+				}
+				analoguesql := "insert into issued_analogue_switch(channel_id,create_time,function_id,byte_id,modbus,bit_address) values(?,now(),?,?,?,?)"
+				if _, err := dba.BoilerOrm.Raw(analoguesql, cnf.Uid, c.FcodeId, c.TermByteId, c.Modbus,c.BitAddress).Exec(); err != nil {
+					goazure.Error("Insert issued_analogue Error", err)
 				}
 			}
-			ctl.ChannelConfigDelete(&aCnf)
-			continue
-		} else {
-			for _, p := range ParamCtrl.Parameters {
-				if p.Id == int64(c.ParameterId) {
-					cnf.Parameter = p
-				}
-			}
-		}
 
-		cnf.Status = c.Status
-		if cnf.Status == models.CHANNEL_STATUS_SHOW {
-			cnf.SequenceNumber = c.SequenceNumber
-		} else {
-			cnf.SequenceNumber = -1
-		}
-
-		cnf.Name = cnf.Parameter.Name
-		cnf.Length = cnf.Parameter.Length
-
-		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
-			if c.SwitchValue == 0 {
-				c.SwitchValue = 1
-			}
-			cnf.SwitchStatus = c.SwitchValue
-		}
-
-		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber==1 {
-			continue
-		} else {
-			if err := DataCtl.AddData(&cnf, true, "Terminal", "ChannelType", "ChannelNumber", "IsDefault"); err != nil {
-				e := fmt.Sprintln("Channel Config Update Error:", err)
-				goazure.Error(e)
-				ctl.Ctx.Output.SetStatus(400)
-				ctl.Ctx.Output.Body([]byte(e))
-				continue
-			}
-		}
-		//模拟量插入issued_analogue
-		//开关量插入issued_switch
-		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && cnf.ChannelNumber!=1 {
-			switchsql:="REPLACE into issued_switch(channel_id,function_id,modbus,bit_address) values(?,?,?,?)"
-			if _,err:=dba.BoilerOrm.Raw(switchsql,cnf.Uid,c.FcodeId,c.Modbus,c.BitAddress).Exec();err!=nil{
-				goazure.Error("Insert issued_switch Error",err)
-			}
-		} else {
-			analoguesql:="REPLACE into issued_analogue(channel_id,function_id,byte_id,modbus) values(?,?,?,?)"
-			if _,err:=dba.BoilerOrm.Raw(analoguesql,cnf.Uid,c.FcodeId,c.TermByteId,c.Modbus).Exec();err!=nil{
-				goazure.Error("Insert issued_analogue Error",err)
-			}
-		}
-
-		if cnf.Parameter.Category.Id == models.RUNTIME_PARAMETER_CATEGORY_RANGE {
-			if 	num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config_range").
-				Filter("ChannelConfig__Uid", cnf.Uid).Delete(); err != nil {
-				goazure.Error("Delete Old Ranges Error:", err, num)
-			}
-
-			var aRanges []*models.RuntimeParameterChannelConfigRange
-			sort.Sort(ByRMin(c.Ranges))
-			for i, r := range c.Ranges {
-				//goazure.Info(i, "| range:", r)
-				var rg models.RuntimeParameterChannelConfigRange
-				if r.Max < r.Min {
-					e := fmt.Sprintln("状态值范围设定有误！")
-					goazure.Error(e)
-					ctl.Ctx.Output.SetStatus(400)
-					ctl.Ctx.Output.Body([]byte(e))
-					return
-				}
-				for _, ar := range aRanges {
-					if ar.Max >= r.Min {
-						e := fmt.Sprintln("状态值范围设定有误，请不要设定重复的范围区间！")
+			if cnf.ChannelType == models.CHANNEL_TYPE_RANGE {
+				var aRanges []*models.RuntimeParameterChannelConfigRange
+				sort.Sort(ByRMin(c.Ranges))
+				for i, r := range c.Ranges {
+					var rg models.RuntimeParameterChannelConfigRange
+					if r.Max < r.Min {
+						e := fmt.Sprintln("状态值范围设定有误！")
 						goazure.Error(e)
 						ctl.Ctx.Output.SetStatus(400)
 						ctl.Ctx.Output.Body([]byte(e))
 						return
 					}
-				}
-				rg.ChannelConfig = &cnf
-				rg.Min = r.Min
-				rg.Max = r.Max
-				rg.Name = r.Name
-				rg.Value = int64(i)
-
-				if err := DataCtl.AddData(&rg, true); err != nil {
-					goazure.Error("Added ChannelConfig Range Error", rg, err)
+					for _, ar := range aRanges {
+						if ar.Max >= r.Min {
+							e := fmt.Sprintln("状态值范围设定有误，请不要设定重复的范围区间！")
+							goazure.Error(e)
+							ctl.Ctx.Output.SetStatus(400)
+							ctl.Ctx.Output.Body([]byte(e))
+							return
+						}
+					}
+					rg.ChannelConfig = &cnf
+					rg.Min = r.Min
+					rg.Max = r.Max
+					rg.Name = r.Name
+					rg.Value = int64(i)
+					if err := DataCtl.AddData(&rg, true); err != nil {
+						goazure.Error("Added ChannelConfig Range Error", rg, err)
+					}
 				}
 			}
 		}
+	//插入表通信参数
+	sql := "replace into issued_communication(terminal_id,baud_rate_id,data_bit_id,stop_bit_id,check_bit_id,correspond_type_id,sub_address_id,heart_beat_id) values(?,?,?,?,?,?,?,?)"
+	if _, er := dba.BoilerOrm.Raw(sql, ter.Uid, chanIssu.Param.BaudRateId, chanIssu.Param.DataBitId, chanIssu.Param.StopBitId, chanIssu.Param.CheckDigitId, chanIssu.Param.CommunInterfaceId, chanIssu.Param.SubAddressId, chanIssu.Param.HeartBitId).Exec(); er != nil {
+		goazure.Error("Insert issued_communication Error", er)
 	}
+	fmt.Println("插入通信参数结束")
 	var param []orm.Params
 	var ver int32
-	verSql:="select ver from issued_message where sn=?"
-	if num,err:=dba.BoilerOrm.Raw(verSql,ter.TerminalCode).Values(&param);err!=nil || num==0 {
-		goazure.Error("Query issued_message Error",err)
+	verSql := "select ver from issued_message where sn=?"
+	if num, err := dba.BoilerOrm.Raw(verSql, ter.TerminalCode).Values(&param); err != nil || num == 0 {
+		goazure.Error("Query issued_message Error", err)
 		ver = 1
 	} else {
-		a:=fmt.Sprintf("%s",param[0]["ver"])
-		v,err:=strconv.Atoi(a)
-		ver=int32(v) + 1
-		if ver >=32769 {
+		a := fmt.Sprintf("%s", param[0]["ver"])
+		v, err := strconv.Atoi(a)
+		ver = int32(v) + 1
+		if ver >= 32769 {
 			ver = 1
 		}
-		if err!=nil {
+		if err != nil {
 			goazure.Error("ParseInt Error")
 			return
 		}
 	}
-	Byte:=IssuedCtl.IssuedMessage(ter.Uid)
-	Code:=strconv.FormatInt(ter.TerminalCode,10)
-	message:=SocketCtrl.c0(Byte,Code,ver)
-	messageSql:="insert into issued_message(sn,ver,create_time,update_time,curr_message) values(?,?,now(),now(),?) on duplicate key update ver=?,update_time=now(),curr_message=?"
-	if _,err:=dba.BoilerOrm.Raw(messageSql,ter.TerminalCode,ver,string(message),ver,string(message)).Exec();err!=nil{
-		goazure.Error("Insert issued_message Error",err)
+	Byte := IssuedCtl.IssuedMessage(ter.Uid)
+	Code := strconv.FormatInt(ter.TerminalCode, 10)
+	message := SocketCtrl.c0(Byte, Code, ver)
+	messageSql := "insert into issued_message(sn,ver,create_time,update_time,curr_message) values(?,?,now(),now(),?) on duplicate key update ver=?,update_time=now(),curr_message=?"
+	if _, err := dba.BoilerOrm.Raw(messageSql, ter.TerminalCode, ver, string(message), ver, string(message)).Exec(); err != nil {
+		goazure.Error("Insert issued_message Error", err)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("组包失败"))
 	}
@@ -300,7 +237,7 @@ func (ctl *ParameterController) RefreshParameters() {
 
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
-	if 	num, err := qs.RelatedSel("Category").
+	if num, err := qs.RelatedSel("Category").
 		Filter("IsDeleted", false).OrderBy("Id").
 		All(&params); err != nil || num == 0 {
 		goazure.Error("Get RuntimeParameterList Error:", num, err)
@@ -308,7 +245,7 @@ func (ctl *ParameterController) RefreshParameters() {
 
 	for i, v := range params {
 		if num, err := dba.BoilerOrm.LoadRelated(v, "BoilerMediums"); err != nil && num == 0 {
-			goazure.Error("[",i,"]", v, num, err)
+			goazure.Error("[", i, "]", v, num, err)
 		}
 
 		for _, b := range v.BoilerMediums {
@@ -355,12 +292,12 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 
 		//TODO: Temporary
 		//var boiler	models.Boiler
-		var combined	models.BoilerTerminalCombined
+		var combined models.BoilerTerminalCombined
 
 		co, _ := strconv.ParseInt(code, 10, 32)
 		st, _ := strconv.ParseInt(set, 10, 32)
 
-		if  err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
+		if err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
 			RelatedSel("Boiler").RelatedSel("Terminal").
 			Filter("TerminalCode", co).Filter("TerminalSetId", st).OrderBy("TerminalSetId").
 			One(&combined); err != nil {
@@ -369,8 +306,8 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 
 		rawReloadDisabled :=
 			"UPDATE	`boiler_m163` " +
-			"SET	`need_reload` = FALSE " +
-			"WHERE	`uid` = " + "'" + d["uid"].(string) + "';"
+				"SET	`need_reload` = FALSE " +
+				"WHERE	`uid` = " + "'" + d["uid"].(string) + "';"
 
 		disIds = append(disIds, d["uid"].(string))
 
@@ -414,7 +351,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 					value = int64(float32(value) * cnf.Scale)
 				}
 			case models.RUNTIME_PARAMETER_CATEGORY_SWITCH:
-				idx := (cnf.ChannelNumber - 1) % 16 + 1
+				idx := (cnf.ChannelNumber-1)%16 + 1
 				var d int64 = 1
 				for i := int32(1); i < idx; i++ {
 					d *= 2
@@ -426,7 +363,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			case models.RUNTIME_PARAMETER_CATEGORY_CALCULATE:
 				fallthrough
 			case models.RUNTIME_PARAMETER_CATEGORY_RANGE:
-				var v 	int64 = -1
+				var v int64 = -1
 				var rmk string = ""
 				for _, rg := range cnf.Ranges {
 					if value >= rg.Min && value <= rg.Max {
@@ -454,7 +391,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				goazure.Error("Parse Time Error:", err)
 			} else {
 				//goazure.Info("Parse Time:", t, "||", tm)
-				fmt.Println("BoilerRuntime表的CreateDate:",tm)
+				fmt.Println("BoilerRuntime表的CreateDate:", tm)
 				rtm.CreatedDate = tm
 			}
 
@@ -471,7 +408,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			}
 		}
 
-		if 	combined.Boiler != nil &&
+		if combined.Boiler != nil &&
 			len(combined.Boiler.Uid) > 0 {
 
 			bConfs := ctl.ChannelConfigList(code)
@@ -500,19 +437,21 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 	var data []orm.Params
 
 	limit := ParamCtrl.ReloadLimit
-	if limit <= 0 { limit = 600 }
+	if limit <= 0 {
+		limit = 600
+	}
 
 	//raw := "SELECT * FROM `boiler_m163` WHERE `TS` > '2017-11-10 00:00:00' ORDER BY `TS` DESC LIMIT 1000;"
 
 	raw :=
 		"SELECT	`rtm`.* " +
-		"FROM	`boiler_m163` AS `rtm`, `boiler_terminal_combined` AS `boiler` "  +
+			"FROM	`boiler_m163` AS `rtm`, `boiler_terminal_combined` AS `boiler` " +
 		//"WHERE	`boiler`.`terminal_code` = CAST(`rtm`.`Boiler_term_id` AS SIGNED) " +
 		//"AND 	`boiler`.`terminal_set_id` = CAST(`rtm`.`Boiler_boiler_id` AS SIGNED) " +
 
-		"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
-		"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
-		"  AND	`rtm`.`need_reload` = TRUE "
+			"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
+			"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
+			"  AND	`rtm`.`need_reload` = TRUE "
 
 	if limit <= 600 {
 		raw = raw + "ORDER BY `rtm`.`TS` DESC "
@@ -532,9 +471,9 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 
 func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.RuntimeParameterChannelConfig {
 	goazure.Warning("ChannelConfigList:", code)
-	var dfConfs 	[]*models.RuntimeParameterChannelConfig
-	var bConfs 		[]*models.RuntimeParameterChannelConfig
-	var co			int64
+	var dfConfs []*models.RuntimeParameterChannelConfig
+	var bConfs []*models.RuntimeParameterChannelConfig
+	var co int64
 	//将code转成int类型
 	switch reflect.ValueOf(code).Kind() {
 	case reflect.String:
@@ -603,7 +542,7 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 			//goazure.Warning("ChannelNumber:", c.ChannelNumber, dc.ChannelNumber)
 			//goazure.Warning("Parameter.Id:", c.Parameter.Id, dc.Parameter.Id)
 			//判断是否配置了默认通道或者默认通道的位置是否被配置了，是的话，将id加入matchIds里
-			if (c.ChannelType 	== dc.ChannelType &&
+			if (c.ChannelType == dc.ChannelType &&
 				c.ChannelNumber == dc.ChannelNumber) ||
 				c.Parameter.Id == dc.Parameter.Id {
 
@@ -613,7 +552,7 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 				break
 			}
 		}
-        //通道类型没有配置默认通道，将默认通道加进去。已经配置了或者默认通道的端口被其他的配置了
+		//通道类型没有配置默认通道，将默认通道加进去。已经配置了或者默认通道的端口被其他的配置了
 		if !isMatched && !hasIdMatched(matchIds, dc.Parameter.Id) {
 			bConfs = append(bConfs, dc)
 
@@ -656,8 +595,8 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 	//	}
 	//}
 
-	var confs		[]*models.RuntimeParameterChannelConfig
-	var showConfs, hideConfs, normalConfs, defaultConfs 	[]*models.RuntimeParameterChannelConfig
+	var confs []*models.RuntimeParameterChannelConfig
+	var showConfs, hideConfs, normalConfs, defaultConfs []*models.RuntimeParameterChannelConfig
 	//循环配置的通道
 	for _, c := range bConfs {
 		//配置了默认通道
@@ -702,10 +641,11 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 	return confs
 }
 
-type CnfBySeq 		[]*models.RuntimeParameterChannelConfig
-func (a CnfBySeq) Len() int 			{ return len(a) }
-func (a CnfBySeq) Swap(i, j int)		{ a[i], a[j] = a[j], a[i]}
-func (a CnfBySeq) Less(i, j int) bool	{
+type CnfBySeq []*models.RuntimeParameterChannelConfig
+
+func (a CnfBySeq) Len() int      { return len(a) }
+func (a CnfBySeq) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a CnfBySeq) Less(i, j int) bool {
 	if a[i].Status == a[j].Status && a[i].Status == models.CHANNEL_STATUS_SHOW && a[i].SequenceNumber != a[j].SequenceNumber {
 		return a[i].SequenceNumber < a[j].SequenceNumber
 	} else {
@@ -715,9 +655,9 @@ func (a CnfBySeq) Less(i, j int) bool	{
 
 func (ctl *ParameterController) ParamQueueWithBoiler(boiler *models.Boiler) []int {
 	var paramQueue,
-		rangeQueue,
-		switchQueue []int
-	var bConfs		[]*models.RuntimeParameterChannelConfig
+	rangeQueue,
+	switchQueue []int
+	var bConfs []*models.RuntimeParameterChannelConfig
 	for _, cb := range boiler.TerminalsCombined {
 		bConfs = append(bConfs, ctl.ChannelConfigList(strconv.FormatInt(cb.TerminalCode, 10))...)
 	}
@@ -772,18 +712,17 @@ func (ctl *ParameterController) ParamQueueWithBoiler(boiler *models.Boiler) []in
 	return paramQueue
 }
 
-
 func (ctl *ParameterController) BoilerHasChannelCustom() bool {
 	var tid string
-		if ctl.Input()["terminal"] == nil || len(ctl.Input()["terminal"]) == 0 {
-			e := fmt.Sprintln("there is no boiler!")
-			goazure.Error(e)
-			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte(e))
-			return false
-		}
+	if ctl.Input()["terminal"] == nil || len(ctl.Input()["terminal"]) == 0 {
+		e := fmt.Sprintln("there is no boiler!")
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return false
+	}
 
-		tid = ctl.Input()["terminal"][0]
+	tid = ctl.Input()["terminal"][0]
 
 	hasCustom := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 		Filter("Terminal__Uid", tid).
@@ -792,7 +731,7 @@ func (ctl *ParameterController) BoilerHasChannelCustom() bool {
 	goazure.Warning("Boiler Has Custom Channel Config:", tid, hasCustom)
 
 	type bJson struct {
-		HasCustom	bool
+		HasCustom bool
 	}
 
 	var js bJson
@@ -804,35 +743,34 @@ func (ctl *ParameterController) BoilerHasChannelCustom() bool {
 	return hasCustom
 }
 
-
-
 type ChannelConfig struct {
-	TerminalCode	string		`json:"terminal_code"`
-	ParameterId		int			`json:"parameter_id"`
+	TerminalCode string `json:"terminal_code"`
+	ParameterId  int    `json:"parameter_id"`
 
-	ChannelType		int			`json:"channel_type"`
-	ChannelNumber	int			`json:"channel_number"`
-	
-	Status			int32		`json:"status"`
-	SequenceNumber	int32		`json:"sequence_number"`
+	ChannelType   int `json:"channel_type"`
+	ChannelNumber int `json:"channel_number"`
 
-	SwitchValue		int32		`json:"switch_status"`
-	
-	Scale			float32		`json:"scale"`
+	Status         int32 `json:"status"`
+	SequenceNumber int32 `json:"sequence_number"`
 
-	Ranges			[]bRange 	`json:"ranges"`
-	
-	IsDeleted		bool		`json:"is_deleted"`
+	SwitchValue int32 `json:"switch_status"`
+
+	Scale float32 `json:"scale"`
+
+	Ranges []bRange `json:"ranges"`
+
+	IsDeleted bool `json:"is_deleted"`
 }
 
 type bRange struct {
-	Name		string		`json:"name"`
-	Min			int64		`json:"min"`
-	Max			int64		`json:"max"`
-	Value		int64		`json:"value"`
+	Name  string `json:"name"`
+	Min   int64  `json:"min"`
+	Max   int64  `json:"max"`
+	Value int64  `json:"value"`
 }
 
 type ByRMin []bRange
+
 func (a ByRMin) Len() int           { return len(a) }
 func (a ByRMin) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByRMin) Less(i, j int) bool { return a[i].Min < a[j].Min }
@@ -847,55 +785,63 @@ func (ctl *ParameterController) ChannelConfigMatrix() {
 	}
 
 	bConfs := ctl.ChannelConfigList(c.TerminalCode)
-
+	fmt.Println("bConfs:",bConfs)
 	matrix := make([][]models.RuntimeParameterChannelConfigIssued, 16)
 	for i := range matrix {
 		matrix[i] = make([]models.RuntimeParameterChannelConfigIssued, 6)
 	}
-	 cnfIss := models.RuntimeParameterChannelConfigIssued{}
+	cnfIss := models.RuntimeParameterChannelConfigIssued{}
 	for _, cnf := range bConfs {
-		 analogIssued :=models.IssuedAnalogue{}
-		 switchIssued :=models.IssuedSwitch{}
-		cnfIss.RuntimeParameterChannelConfig=cnf
-			if err:=dba.BoilerOrm.QueryTable("issued_switch").RelatedSel("Function").Filter("channel_id",&cnf.Uid).One(&switchIssued);err!=nil{
-				goazure.Error("Query issued_switch Error:",err)
+		analogSwitchIssued := models.IssuedAnalogueSwitch{}
+		cnfIss.RuntimeParameterChannelConfig = cnf
+		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
+			if err := dba.BoilerOrm.QueryTable("issued_analogue_switch").RelatedSel("Function").Filter("channel_id", &cnf.Uid).One(&analogSwitchIssued); err != nil {
+				goazure.Error("Query issued_switch Error:", err)
 			}
-			if err:=dba.BoilerOrm.QueryTable("issued_analogue").RelatedSel("Function").RelatedSel("Byte").Filter("channel_id",&cnf.Uid).One(&analogIssued);err!=nil{
-				goazure.Error("Query issued_analogue Error:",err)
+		} else {
+			if err := dba.BoilerOrm.QueryTable("issued_analogue_switch").RelatedSel("Function").RelatedSel("Byte").Filter("channel_id", &cnf.Uid).One(&analogSwitchIssued); err != nil {
+				goazure.Error("Query issued_analogue Error:", err)
 			}
-			cnfIss.Analogue=analogIssued
-			cnfIss.Switch=switchIssued
+		}
+		cnfIss.AnalogueSwitch = analogSwitchIssued
 		switch cnf.ChannelType {
 		case models.CHANNEL_TYPE_TEMPERATURE:
 			fallthrough
 			//模拟量
 		case models.CHANNEL_TYPE_ANALOG:
-			matrix[cnf.ChannelNumber - 1][cnf.ChannelType - 1] = cnfIss
+			matrix[cnf.ChannelNumber-1][cnf.ChannelType-1] = cnfIss
 			//开关量
 		case models.CHANNEL_TYPE_SWITCH:
 			num := (cnf.ChannelNumber - 1) % 16
-			ty := (cnf.ChannelNumber - 1) / 16 + models.CHANNEL_TYPE_SWITCH - 1
+			ty := (cnf.ChannelNumber-1)/16 + models.CHANNEL_TYPE_SWITCH - 1
 			matrix[num][ty] = cnfIss
 			//计算量
 		case models.CHANNEL_TYPE_CALCULATE:
-			matrix[cnf.ChannelNumber - 1][cnf.ChannelType + 1] = cnfIss
+			matrix[cnf.ChannelNumber-1][cnf.ChannelType+1] = cnfIss
 			//状态量
 		case models.CHANNEL_TYPE_RANGE:
-			matrix[cnf.ChannelNumber - 1][cnf.ChannelType] = cnfIss
+			matrix[cnf.ChannelNumber-1][cnf.ChannelType] = cnfIss
 		default:
 
 		}
 	}
-	issuedSwitchBurn :=models.IssuedSwitchBurn{}
-	if err:=dba.BoilerOrm.QueryTable("issued_switch_burn").RelatedSel("Function").Filter("Terminal__TerminalCode",c.TerminalCode).One(&issuedSwitchBurn);err!=nil{
-		goazure.Error("Query issued_switch_burn Error",err)
+	issuedSwitchDefault := []models.IssuedSwitchDefault{}
+	if _,err := dba.BoilerOrm.QueryTable("issued_switch_default").RelatedSel("Function").Filter("Terminal__TerminalCode", c.TerminalCode).All(&issuedSwitchDefault); err != nil {
+		goazure.Error("Query issued_switch_burn Error", err)
 	} else {
-		matrix[0][2].Switch.Function=issuedSwitchBurn.Function
-		matrix[0][2].Switch.Modbus=issuedSwitchBurn.Modbus
-		matrix[0][2].Switch.BitAddress=issuedSwitchBurn.BitAddress
+		for _,c := range issuedSwitchDefault {
+			if c.ChannelNumber == 1{
+				matrix[0][2].AnalogueSwitch.Function = c.Function
+				matrix[0][2].AnalogueSwitch.Modbus = c.Modbus
+				matrix[0][2].AnalogueSwitch.BitAddress = c.BitAddress
+			} else if c.ChannelNumber == 2 {
+				matrix[1][2].AnalogueSwitch.Function = c.Function
+				matrix[1][2].AnalogueSwitch.Modbus = c.Modbus
+				matrix[1][2].AnalogueSwitch.BitAddress = c.BitAddress
+			}
+		}
 	}
 	goazure.Info("ChannelConfig Matrix:", matrix)
-
 	ctl.Data["json"] = matrix
 	ctl.ServeJSON()
 }
@@ -910,7 +856,7 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 	}
 
 	for i, c := range aCnfs {
-		goazure.Warn("[", i ,"]ChannelConfigUpdate: ", c)
+		goazure.Warn("[", i, "]ChannelConfigUpdate: ", c)
 		var cnf models.RuntimeParameterChannelConfig
 		var ter models.Terminal
 		code, _ := strconv.ParseInt(c.TerminalCode, 10, 32)
@@ -928,7 +874,7 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 
 		if c.ParameterId <= 0 {
 			var aCnf models.RuntimeParameterChannelConfig
-			if	err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
+			if err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 				Filter("Terminal__Uid", ter.Uid).Filter("ChannelType", c.ChannelType).Filter("ChannelNumber", c.ChannelNumber).Filter("IsDefault", false).
 				One(&aCnf); err != nil {
 				goazure.Error("Get ChannelConfig To Delete Error:", err)
@@ -956,7 +902,9 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 		cnf.Length = cnf.Parameter.Length
 
 		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
-			if c.SwitchValue == 0 { c.SwitchValue = 1}
+			if c.SwitchValue == 0 {
+				c.SwitchValue = 1
+			}
 			cnf.SwitchStatus = c.SwitchValue
 		}
 
@@ -970,9 +918,9 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 		}
 
 		if cnf.Parameter.Category.Id == models.RUNTIME_PARAMETER_CATEGORY_RANGE {
-			if 	num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config_range").
+			if num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config_range").
 				Filter("ChannelConfig__Uid", cnf.Uid).Delete(); err != nil {
-					goazure.Error("Delete Old Ranges Error:", err, num)
+				goazure.Error("Delete Old Ranges Error:", err, num)
 			}
 
 			var aRanges []*models.RuntimeParameterChannelConfigRange
@@ -1014,7 +962,7 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 
 func (ctl *ParameterController) ChannelConfigDelete(cnf *models.RuntimeParameterChannelConfig) error {
 	if cnf.ChannelType == models.CHANNEL_TYPE_RANGE {
-		if 	num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config_range").
+		if num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config_range").
 			Filter("ChannelConfig__Uid", cnf.Uid).
 			Delete(); err != nil {
 			goazure.Error("Delete Ranges Error:", err, num)
@@ -1029,10 +977,9 @@ func (ctl *ParameterController) ChannelConfigDelete(cnf *models.RuntimeParameter
 	return nil
 }
 
-
 func (ctl *ParameterController) RuntimeParameterUpdate() {
-	var p 		models.RuntimeParameter
-	var param 	models.RuntimeParameter
+	var p models.RuntimeParameter
+	var param models.RuntimeParameter
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &p); err != nil {
 		e := fmt.Sprintln("Unmarshal Parameter JSON Error", err)
@@ -1080,7 +1027,7 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 func (ctl *ParameterController) RuntimeParameterDelete() {
 	var p models.RuntimeParameter
 
-	if 	err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &p); err != nil {
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &p); err != nil {
 		e := fmt.Sprintln("Unmarshal Parameter JSON Error", err)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -1089,7 +1036,7 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 	}
 
 	var cnfs []*models.RuntimeParameterChannelConfig
-	if 	num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").Filter("Parameter__Id", p.Id).All(&cnfs); err != nil {
+	if num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").Filter("Parameter__Id", p.Id).All(&cnfs); err != nil {
 		goazure.Warn("Get ChannelConfig For This Parameter Error:", err, num)
 	}
 
@@ -1099,7 +1046,7 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 
 	goazure.Warn("Delete Parameter:", p)
 
-	if 	err := DataCtl.DeleteData(&p); err != nil {
+	if err := DataCtl.DeleteData(&p); err != nil {
 		e := fmt.Sprintln("Delete Parameter Error", err)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -1111,11 +1058,10 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 	go ParamCtrl.RefreshParameters()
 }
 
-
 func runtimeParameter(pid int) *models.RuntimeParameter {
 	param := models.RuntimeParameter{}
 
-	if  err := dba.BoilerOrm.QueryTable("runtime_parameter").
+	if err := dba.BoilerOrm.QueryTable("runtime_parameter").
 		RelatedSel("Category").
 		Filter("Id", pid).Filter("IsDeleted", false).
 		One(&param); err != nil {
@@ -1128,7 +1074,7 @@ func runtimeParameter(pid int) *models.RuntimeParameter {
 
 func runtimeParameterCategory(cateId int64) *models.RuntimeParameterCategory {
 	var category models.RuntimeParameterCategory
-	if	err := dba.BoilerOrm.QueryTable("runtime_parameter_category").
+	if err := dba.BoilerOrm.QueryTable("runtime_parameter_category").
 		Filter("Id", cateId).Filter("IsDeleted", false).
 		One(&category); err != nil {
 		e := fmt.Sprintln("Read ParameterCategory Error", err, cateId)
@@ -1234,7 +1180,7 @@ func generateDefaultChannelConfig() error {
 						}
 					}
 
-					goazure.Info("Field(", fieldNames[j],":", da.FieldByName(fieldNames[j]).Kind(),"): ", field, value)
+					goazure.Info("Field(", fieldNames[j], ":", da.FieldByName(fieldNames[j]).Kind(), "): ", field, value)
 					da.FieldByName(fieldNames[j]).Set(reflect.ValueOf(value))
 				}
 

@@ -1,5 +1,6 @@
 package models
 
+import "time"
 
 type IssuedByte struct{
 	Id int `orm:"pk"`
@@ -47,22 +48,21 @@ type IssuedStopBit struct {
 	Value int
 }
 
-type IssuedAnalogue struct {
+type IssuedAnalogueSwitch struct {
 	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
+	CreateTime time.Time                     `orm:"type(datetime);auto_now;index"`
 	Function   *IssuedFunctionCode               `orm:"rel(fk)"`
 	Byte       *IssuedByte                     `orm:"rel(fk)"`
 	Modbus   int
-}
-
-type IssuedSwitch struct {
-	Channel  *RuntimeParameterChannelConfig     `orm:"pk;rel(fk)"`
-	Function   *IssuedFunctionCode             `orm:"rel(fk)"`
-	Modbus    int
 	BitAddress  int
 }
 
-type IssuedSwitchBurn struct {
-	Terminal      *Terminal         `orm:"pk;rel(fk)"`
+type IssuedSwitchDefault struct {
+	Uid        string 				`orm:"pk"`
+	Terminal      *Terminal         `orm:"rel(fk)"`
+	CreateTime    time.Time             `orm:"type(datetime);auto_now;index"`
+	ChannelType   int
+	ChannelNumber int
 	Function      *IssuedFunctionCode      `orm:"rel(fk)"`
 	Modbus        int
 	BitAddress    int

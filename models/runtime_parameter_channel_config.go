@@ -6,8 +6,7 @@ import (
 
 type RuntimeParameterChannelConfigIssued struct {
 	RuntimeParameterChannelConfig *RuntimeParameterChannelConfig
-	Analogue     IssuedAnalogue
-	Switch       IssuedSwitch
+	AnalogueSwitch     IssuedAnalogueSwitch
 }
 
 type RuntimeParameterChannelConfig struct {
