@@ -418,6 +418,10 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
             data.Status = -1;
             data.SwitchStatus = 0;
             data.Ranges = null;
+            data.Func = null;
+            data.Byte = null;
+            data.Modbus = null;
+            data.BitAddress = null;
         } else {
            /* if ($modal.dataMatrix[outerIndex][innerIndex].oParamId !== $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id) {
                 $modal.dataMatrix[outerIndex][innerIndex].Ranges = [];
