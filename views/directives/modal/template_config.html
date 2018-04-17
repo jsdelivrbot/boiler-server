@@ -456,7 +456,7 @@
                                     <li role="menuitem"><a href ng-click="setStatus3(outerIndex, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
                                 </ul>
                             </div>
-                            <ui-select ng-show="outerIndex !== 0" ng-model="data.Parameter"
+                            <ui-select ng-show="outerIndex !== 0 && outerIndex !== 1" ng-model="data.Parameter"
                                        ng-change="$modal.dataChanged(data);"
                                        theme="bootstrap">
                                 <ui-select-match placeholder="{{data.Parameter.Name||'默认（未配置）'}}">[{{$select.selected.Name}}]
@@ -469,12 +469,12 @@
                                 </ui-select-choices>
                             </ui-select>
                             <input type="text"
-                                   ng-show="outerIndex === 0"
+                                   ng-show="outerIndex === 0 || outerIndex === 1 "
                                    ng-model="data.Parameter.Name"
                                    ng-disabled="true"
                                    class="form-control ng-pristine ng-valid ng-touched has-success"
                                    placeholder="{{ data.Parameter.Name||'默认（未配置）' }}" style="width: 86.4%; border: none;">
-                            <div uib-dropdown ng-show="outerIndex !== 0" class="dropdown-group">
+                            <div uib-dropdown ng-show="outerIndex !== 0 && outerIndex !== 1" class="dropdown-group">
                                 <button type="button" uib-dropdown-toggle
                                         ng-disabled="!data.Parameter || data.Parameter.Id <= 0"
                                         ng-class="['btn', 'btn-cell', {'blue': data.SwitchStatus === 1}, {'yellow-lemon': data.SwitchStatus === 2}]">
@@ -1251,9 +1251,9 @@
 </div>
 
 <div class="modal-footer">
-    <!--<button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData"-->
-            <!--ng-click="matrixReset()" style="float: left">恢复默认-->
-    <!--</button>-->
+    <button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData"
+            ng-click="matrixReset()" style="float: left">恢复默认
+    </button>
 
 
     <button type="button" class="btn btn-primary"
