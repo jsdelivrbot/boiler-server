@@ -35,14 +35,14 @@ angular.module('BoilerAdmin').controller('BoilerDeveloperController', function($
 
 
         $http.post("/issued_boiler_status",{
-            uid: p['boiler'],
+            uid: p['boiler']
         }).then(function (res) {
-            
+            bDeveloper.isRemoteControl = res.data.status;
         },function (err) {
 
         });
 
-        bDeveloper.isRemoteControl = false;
+
 
 
     };
