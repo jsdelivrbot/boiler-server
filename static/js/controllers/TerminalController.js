@@ -310,7 +310,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
 
     //配置状态
     terminal.statusView = function (uid) {
-        $state.go("terminal.status",{uid:uid});
+        $state.go("terminal.status");
     };
 
 
@@ -2116,7 +2116,6 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
     $scope.startDate = new Date();
     $scope.endDate = new Date();
 
-    $scope.dataRange = 'today';
 
 
     $scope.popup1 = {
@@ -2136,11 +2135,36 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
 
 
     $scope.setDataRange = function (range) {
-        $scope.dataRange = range;
-        if(range==="today"){
-            $scope.startDate = new Date();
-            $scope.endDate = new Date();
+        var startDate = new Date();
+        var endDate = new Date();
+        switch (range) {
+            case 'today':
+                startDate.setHours(0);
+                startDate.setMinutes(0);
+                break;
+
+            case 'week':
+                startDate.setDate(startDate.getDate() - 7);
+                startDate.setHours(0);
+                startDate.setMinutes(0);
+                break;
+
+            case 'month':
+                startDate.setDate(1);
+                startDate.setHours(0);
+                startDate.setMinutes(0);
+                break;
+
+            default:
+                break;
         }
+        $scope.dataRange = range;
+        $scope.startDate = startDate;
+        $scope.endDate = endDate;
+
+        $scope.dataRange = range;
+
+        // $scope.refreshDataTables();
     }
 
 });

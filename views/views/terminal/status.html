@@ -29,21 +29,37 @@
                 </button></span>
                     </div>
                 </div>
-                <div class="col-md-1">
+                <!--<div class="col-md-1">
                     <button ng-click="dateChanged()" class="btn btn-primary">
                         确定
                     </button>
-                </div>
+                </div>-->
             </div>
 
             <div class="col-md-6 col-sm-12">
-                <div class="col-md-12 col-sm-12">
+                <div class=" pull-right">
                     <button type="button" id="history_range_today"
                             data-style="expand-right" data-spinner-color="#333"
-                            class="btn ladda-button pull-right"
+                            class="btn ladda-button"
                             ng-class="[{'btn-info': dataRange === 'today'}, {'btn-default': dataRange !== 'today'}]"
                             ng-click="setDataRange('today')">
                         <span class="ladda-label">今天</span>
+                    </button>
+
+                    <button type="button" id="history_range_week"
+                            data-style="expand-right" data-spinner-color="#333"
+                            class="btn ladda-button"
+                            ng-class="[{'btn-info': dataRange === 'week'}, { 'btn-default': dataRange !== 'week'}]"
+                            ng-click="setDataRange('week')">
+                        <span class="ladda-label">本周</span>
+                    </button>
+
+                    <button type="button" id="history_range_month"
+                            data-style="expand-right" data-spinner-color="#333"
+                            class="btn ladda-button"
+                            ng-class="[{'btn-info': dataRange === 'month'}, {'btn-default': dataRange !== 'month'}]"
+                            ng-click="setDataRange('month')">
+                        <span class="ladda-label">本月</span>
                     </button>
 
                 </div>

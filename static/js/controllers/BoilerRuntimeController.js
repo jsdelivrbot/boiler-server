@@ -411,7 +411,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         $http.post("/issued_boiler_status",{
             uid: p['boiler']
         }).then(function (res) {
-            $scope.isRemoteControl = res.data.status;
+            $scope.isRemoteControl = res.data;
         },function (err) {
 
         });
