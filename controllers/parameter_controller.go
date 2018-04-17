@@ -120,6 +120,9 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 	for _, a := range aCnf {
 		TempCtrl.TemplateChannelConfigDelete(&a, ter.Uid)
 	}
+	if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", ter.Uid).Delete(); err != nil {
+		goazure.Error("Delete issued switch Error:", err, num)
+	}
 	var cnf models.RuntimeParameterChannelConfig
 	for _, c := range chanIssu.Channel {
 		for _, p := range ParamCtrl.Parameters {
@@ -149,11 +152,10 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 				}
 				cnf.SwitchStatus = c.SwitchValue
 			}
-			fmt.Println("cnf：", cnf.Terminal)
 			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber == 2){
-				switchburnsql := "insert into issued_switch_burn(uid,terminal_id,create_time,channel_type,channel_number,function_id,modbus,bit_address) values(uuid(),?,,now(),?,?,?,?,?)"
+				switchburnsql := "insert into issued_switch_default(uid,terminal_id,create_time,channel_type,channel_number,function_id,modbus,bit_address) values(uuid(),?,now(),?,?,?,?,?)"
 				if _, err := dba.BoilerOrm.Raw(switchburnsql, ter.Uid,c.ChannelType,c.ChannelNumber,c.FcodeId, c.Modbus, c.BitAddress).Exec(); err != nil {
-					goazure.Error("Insert issued_switch_burn Error", err)
+					goazure.Error("Insert issued_switch_default Error", err)
 				}
 			} else {
 				if _, err := dba.BoilerOrm.Insert(&cnf); err != nil {
@@ -229,6 +231,10 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 		goazure.Error("Insert issued_message Error", err)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("组包失败"))
+	}
+	//删除终端模板配置的状态
+	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").Filter("Sn",ter.TerminalCode).Delete();err!=nil{
+		goazure.Error("Delete IssuedCommunicationTemplate Error", err)
 	}
 }
 
@@ -794,13 +800,15 @@ func (ctl *ParameterController) ChannelConfigMatrix() {
 	for _, cnf := range bConfs {
 		analogSwitchIssued := models.IssuedAnalogueSwitch{}
 		cnfIss.RuntimeParameterChannelConfig = cnf
-		if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
-			if err := dba.BoilerOrm.QueryTable("issued_analogue_switch").RelatedSel("Function").Filter("channel_id", &cnf.Uid).One(&analogSwitchIssued); err != nil {
-				goazure.Error("Query issued_switch Error:", err)
-			}
-		} else {
-			if err := dba.BoilerOrm.QueryTable("issued_analogue_switch").RelatedSel("Function").RelatedSel("Byte").Filter("channel_id", &cnf.Uid).One(&analogSwitchIssued); err != nil {
-				goazure.Error("Query issued_analogue Error:", err)
+		if cnf.IsDefault == false {
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH  {
+				if err := dba.BoilerOrm.QueryTable("issued_analogue_switch").RelatedSel("Function").Filter("channel_id", &cnf.Uid).One(&analogSwitchIssued); err != nil {
+					goazure.Error("Query issued_switch Error:", err)
+				}
+			} else  {
+				if err := dba.BoilerOrm.QueryTable("issued_analogue_switch").RelatedSel("Function").RelatedSel("Byte").Filter("channel_id", &cnf.Uid).One(&analogSwitchIssued); err != nil {
+					goazure.Error("Query issued_analogue Error:", err)
+				}
 			}
 		}
 		cnfIss.AnalogueSwitch = analogSwitchIssued
