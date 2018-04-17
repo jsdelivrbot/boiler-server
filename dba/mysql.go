@@ -126,6 +126,9 @@ func init() {
 		new(models.IssuedChannelConfigRangeTemplate),
 		new(models.IssuedCommunicationTemplate),
 		new(models.IssuedTermTempStatus),
+		new(models.IssuedErrorCode),
+		new(models.IssuedPlcAlarm),
+		new(models.IssuedBoilerStatus),
 	)
 
 	orm.Debug = false//!conf.IsRelease

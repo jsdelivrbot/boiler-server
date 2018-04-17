@@ -78,3 +78,24 @@ type IssuedCommunication struct {
 	SubAddress  *IssuedSlaveAddress        `orm:"rel(fk)"`
 	HeartBeat   *IssuedHeartbeatPacket        `orm:"rel(fk)"`
 }
+
+type IssuedErrorCode struct {
+	Id int `orm:"pk"`
+	Remark  string
+	Value string
+}
+
+type IssuedPlcAlarm struct {
+	Uid string `orm:"pk"`
+	Sn string
+	CreateTime time.Time         `orm:"type(datetime);auto_now;index"`
+	Ver int
+	ChannelNumber int
+	Err   *IssuedErrorCode      `orm:"rel(fk)"`
+}
+type IssuedBoilerStatus struct {
+	Boiler *Boiler 		`orm:"pk;rel(fk)"`
+	CreateTime time.Time 	`orm:"type(datetime);auto_now;index"`
+	UpdateTime time.Time	`orm:"type(datetime);auto_now;index"`
+	Status bool
+}

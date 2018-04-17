@@ -149,7 +149,10 @@ func init() {
 
 	//锅炉重启
 	goazure.Router("/issued_boiler",&controllers.IssuedController{},"post:IssuedBoiler")
-
+	//锅炉重启是否开启
+	goazure.Router("/issued_boiler_status",&controllers.IssuedController{},"post:IssuedBoilerStatus")
+	//锅炉重启修改
+	goazure.Router("/issued_boiler_update",&controllers.IssuedController{},"post:IssuedBoilerUpdate")
 	//模板列表
 	goazure.Router("/template_list",&controllers.TemplateController{},"get:TemplateList")
 
@@ -178,6 +181,7 @@ func init() {
 
 
 
+
 	//下发测试按钮
 
 
@@ -199,6 +203,7 @@ func init() {
 }
 
 func initWeixinRoutes() {
+	goazure.Router("/issued_boiler_mini",&controllers.IssuedController{},"post:IssuedBoilerMini")
 	goazure.Router("/user_login_weixin/", &controllers.UserThirdController{}, "get:UserLoginWeixinWeb")
 	goazure.Router("/user_login_weixin/callback/?:code:state", &controllers.UserThirdController{}, "get:UserLoginWeixinWebCallback")
 	goazure.Router("/user_login_bind_third/", &controllers.UserThirdController{}, "post:UserLoginBindThird")
