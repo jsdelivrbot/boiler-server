@@ -145,7 +145,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     terminal.viewMesData = function (data) {
         $state.go("terminal.message");
         terminal.msgData.code = data;
-    }
+    };
 
     //消息调试
     terminal.getOriginMessages = function () {
@@ -302,11 +302,18 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         }, function () {
 
         });
-    }
+    };
 
     terminal.toggleAnimation = function () {
         terminal.animationsEnabled = !terminal.animationsEnabled;
     };
+
+    //配置状态
+    terminal.statusView = function (uid) {
+        $state.go("terminal.status",{uid:uid});
+    };
+
+
 
     //表格横向滚动事件
     $scope.tableScroll = function(){
@@ -2019,13 +2026,21 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
 angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $http, $uibModalInstance,cParam,configUpload,org) {
 
     console.log("cParam:",cParam,"configUpload:",configUpload,"org:",org);
-    if(org==null){
+    /*if(org==null){
         org={
             Uid:null
         }
-    }
+    }*/
     $scope.templateName = "";
     $scope.ok = function () {
+        if(org==null){
+            swal({
+                title: "终端没有所属企业",
+                text: "请在 终端关联 中设置所属企业" ,
+                type: "error"
+            });
+            return;
+        }
         if(!$scope.templateName){
             swal({
                 title: "模板未命名",
@@ -2062,6 +2077,54 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
         $uibModalInstance.dismiss('cancel');
     };
 });
+
+
+//配置状态
+angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http,$stateParams) {
+    console.log($stateParams.uid);
+
+    $scope.statusList = [
+        {
+            num:1,
+            date:"2018-04-17 15:20:00",
+            status: "11111111"
+        },
+        {
+            num:2,
+            date:"2018-04-17 15:20:00",
+            status: "33333333"
+        },
+        {
+            num:3,
+            date:"2018-04-17 15:21:00",
+            status: "44444444"
+        }
+    ];
+    $scope.totalItems = $scope.statusList.length;
+    $scope.currentPage = 1;
+    $scope.pageNum = Math.ceil($scope.totalItems/20);
+
+    //日期设置
+    $scope.today = new Date();
+    $scope.format = "yyyy-MM-dd";
+    $scope.altInputFormats = ['yyyy-M!-d!'];
+
+    $scope.popup1 = {
+        opened: false
+    };
+    $scope.open1 = function () {
+        $scope.popup1.opened = true;
+    };
+
+    $scope.popup2 = {
+        opened: false
+    };
+    $scope.open2 = function () {
+        $scope.popup2.opened = true;
+    };
+
+});
+
 
 
 

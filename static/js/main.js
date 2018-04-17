@@ -9,7 +9,7 @@ var boilerAdmin = angular.module("BoilerAdmin", [
     "oc.lazyLoad",
     "ngSanitize",
     "ngCookies",
-
+    "customFilter",
     "angularMoment",
     "ui.select",
     "datatables",
@@ -805,6 +805,12 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/message?:terminal",
             templateUrl: "views/terminal/message.html" + clientkey,
             data: {pageTitle: '终端消息调试'}
+        })
+
+        .state("terminal.status", {
+            url: "/status",
+            params:{"uid":null},
+            templateUrl: "views/terminal/status.html" + clientkey,
         })
 
         /*============= TERMINAL END =============*/

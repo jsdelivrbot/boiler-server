@@ -392,7 +392,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
 
     //---------锅炉重启------------
-    $scope.terRes =[
+    /*$scope.terRes =[
         {
             value:2,
             name:"启动锅炉"
@@ -405,8 +405,18 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             value:1,
             name:"重置锅炉"
         }
-    ];
-    // $scope.restartValue = $scope.restartValues[0];
+    ];*/
+    bRuntime.initControl = function () {
+        var p = $location.search();
+        $http.post("/issued_boiler_status",{
+            uid: p['boiler']
+        }).then(function (res) {
+            $scope.isRemoteControl = false;
+        },function (err) {
+
+        });
+    };
+
     $scope.boilerRestart = function(value,ter){
         App.startPageLoading({message: '正在加载数据...'});
         $http.post("/issued_boiler",{

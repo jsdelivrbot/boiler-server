@@ -20,8 +20,8 @@
         <div ng-controller="statusModule" id="status_1" style="height: 50px;">
 
         </div>
-        <div class="">
-            <div class="input-group">
+        <div class="" ng-init="runtime.initControl()">
+            <div class="input-group" ng-if="isRemoteControl">
                 <select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
                         class="form-control" style="width: 50%">
                     <option value="" disabled>请选择终端</option>
