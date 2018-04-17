@@ -37,7 +37,7 @@ angular.module('BoilerAdmin').controller('BoilerDeveloperController', function($
         $http.post("/issued_boiler_status",{
             uid: p['boiler']
         }).then(function (res) {
-            bDeveloper.isRemoteControl = res.data.status;
+            bDeveloper.isRemoteControl = res.data;
         },function (err) {
 
         });

@@ -512,17 +512,29 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
         if(fcode.Id ===1||fcode.Id ===2){
             $modal.switchData1[i].BitAddress = 1;
         }
+        if(fcode.Id ===99){
+            $modal.switchData1[i].Modbus = 0;
+            $modal.switchData1[i].BitAddress = 0;
+        }
     };
     $scope.fCodeChange2 =function (fcode,i) {
         // console.log(fcode);
         if(fcode.Id ===1||fcode.Id ===2){
             $modal.switchData2[i].BitAddress = 1;
         }
+        if(fcode.Id ===99){
+            $modal.switchData2[i].Modbus = 0;
+            $modal.switchData2[i].BitAddress = 0;
+        }
     };
     $scope.fCodeChange3 =function (fcode,i) {
         // console.log(fcode);
         if(fcode.Id ===1||fcode.Id ===2){
             $modal.switchData3[i].BitAddress = 1;
+        }
+        if(fcode.Id ===99){
+            $modal.switchData3[i].Modbus = 0;
+            $modal.switchData3[i].BitAddress = 0;
         }
     };
 
@@ -744,7 +756,7 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
                     }
 
                     if(i>=2 && i<5){
-                        if(fcodeName===0||modbus===0||bitAddress===0){
+                        if(fcodeName!==99 && (fcodeName===0||modbus===0||bitAddress===0)){
                             swal({
                                 title: "通道配置更新失败",
                                 text:"配置信息不全"+ i + j,

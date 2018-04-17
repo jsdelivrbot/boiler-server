@@ -310,7 +310,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
 
     //配置状态
     terminal.statusView = function (uid) {
-        $state.go("terminal.status",{uid:uid});
+        $state.go("terminal.status");
     };
 
 
@@ -1101,7 +1101,12 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
             if(fcode.Id ===1||fcode.Id ===2){
                 $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress = 1;
             }
+            if(fcode.Id ===99){
+                $modal.chanMatrix[i][j].AnalogueSwitch.Modbus = 0;
+                $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress = 0;
+            }
         }
+
 
     };
 
@@ -1271,7 +1276,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             }
 
                             if(j>=2 && j<5){
-                                if(fcodeName===0||modbus===0||bitAddress===0){
+                                if(fcodeName!==99 && (fcodeName===0||modbus===0||bitAddress===0)){
                                     swal({
                                         title: "通道配置更新失败",
                                         text:"配置信息不全"+ i + j,
@@ -1578,7 +1583,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             }
 
                             if(j>=2 && j<5){
-                                if(fcodeName===0||modbus===0||bitAddress===0){
+                                if(fcodeName!==99 && (fcodeName===0||modbus===0||bitAddress===0)){
                                     swal({
                                         title: "通道配置更新失败",
                                         text:"配置信息不全"+ i + j,
@@ -1587,6 +1592,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     App.stopPageLoading();
                                     return false;
                                 }
+
                                 if(fcodeName===1){
                                     if(modbus<1||modbus>=10000){
                                         swal({
@@ -2105,9 +2111,12 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
     $scope.pageNum = Math.ceil($scope.totalItems/20);
 
     //日期设置
-    $scope.today = new Date();
     $scope.format = "yyyy-MM-dd";
     $scope.altInputFormats = ['yyyy-M!-d!'];
+    $scope.startDate = new Date();
+    $scope.endDate = new Date();
+
+
 
     $scope.popup1 = {
         opened: false
@@ -2122,6 +2131,41 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
     $scope.open2 = function () {
         $scope.popup2.opened = true;
     };
+
+
+
+    $scope.setDataRange = function (range) {
+        var startDate = new Date();
+        var endDate = new Date();
+        switch (range) {
+            case 'today':
+                startDate.setHours(0);
+                startDate.setMinutes(0);
+                break;
+
+            case 'week':
+                startDate.setDate(startDate.getDate() - 7);
+                startDate.setHours(0);
+                startDate.setMinutes(0);
+                break;
+
+            case 'month':
+                startDate.setDate(1);
+                startDate.setHours(0);
+                startDate.setMinutes(0);
+                break;
+
+            default:
+                break;
+        }
+        $scope.dataRange = range;
+        $scope.startDate = startDate;
+        $scope.endDate = endDate;
+
+        $scope.dataRange = range;
+
+        // $scope.refreshDataTables();
+    }
 
 });
 
