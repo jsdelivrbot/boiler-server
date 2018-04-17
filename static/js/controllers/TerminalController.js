@@ -1495,15 +1495,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     //高低字节
                     var termByte = 0;
                     if(j===0 || j===1 || j===5){
-                        fcodeName = $modal.chanMatrix[i][j].Analogue && $modal.chanMatrix[i][j].Analogue.Function ? $modal.chanMatrix[i][j].Analogue.Function.Id:0;
-                        modbus = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Modbus ? $modal.chanMatrix[i][j].Analogue.Modbus:0;
-                        termByte = $modal.chanMatrix[i][j].Analogue&&$modal.chanMatrix[i][j].Analogue.Byte?$modal.chanMatrix[i][j].Analogue.Byte.Id:0 ;
+                        fcodeName = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Function ? $modal.chanMatrix[i][j].AnalogueSwitch.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Modbus ? $modal.chanMatrix[i][j].AnalogueSwitch.Modbus:0;
+                        termByte = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Byte?$modal.chanMatrix[i][j].AnalogueSwitch.Byte.Id:0 ;
                     }
 
                     if(j>=2 && j<5){
-                        fcodeName = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Function?$modal.chanMatrix[i][j].Switch.Function.Id:0;
-                        modbus = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.Modbus? $modal.chanMatrix[i][j].Switch.Modbus:0;
-                        bitAddress = $modal.chanMatrix[i][j].Switch && $modal.chanMatrix[i][j].Switch.BitAddress? $modal.chanMatrix[i][j].Switch.BitAddress:0;
+                        fcodeName = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Function?$modal.chanMatrix[i][j].AnalogueSwitch.Function.Id:0;
+                        modbus = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.Modbus? $modal.chanMatrix[i][j].AnalogueSwitch.Modbus:0;
+                        bitAddress = $modal.chanMatrix[i][j].AnalogueSwitch && $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress? $modal.chanMatrix[i][j].AnalogueSwitch.BitAddress:0;
                     }
 
                     if (dataParamId !== chanParamId || dataStatus !== chanStatus || chanSwitch !== dataSwitch || chanRanges !== dataRanges) {
@@ -2019,6 +2019,11 @@ angular.module('BoilerAdmin').controller('ModalQuickSetCtrl', function ($scope, 
 angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function ($scope, $http, $uibModalInstance,cParam,configUpload,org) {
 
     console.log("cParam:",cParam,"configUpload:",configUpload,"org:",org);
+    if(org==null){
+        org={
+            Uid:null
+        }
+    }
     $scope.templateName = "";
     $scope.ok = function () {
         if(!$scope.templateName){
