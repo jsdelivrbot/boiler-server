@@ -772,7 +772,7 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         /*============= TERMINAL BEGIN =============*/
         .state('terminal', {
-            url: "/terminal",
+            url: "/terminal?:terminal",
             templateUrl: "views/terminal/main.html" + clientkey,
             data: {pageTitle: '终端管理'},
             controller: "TerminalController",
