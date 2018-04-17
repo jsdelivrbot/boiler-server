@@ -310,7 +310,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
 
     //配置状态
     terminal.statusView = function (uid) {
-        $state.go("terminal.status");
+        $state.go("terminal.status",{terminal:uid});
     };
 
 
@@ -2087,25 +2087,21 @@ angular.module('BoilerAdmin').controller('ModalTerminalTemplateCtrl', function (
 
 //配置状态
 angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http,$stateParams) {
-    console.log($stateParams.uid);
+    console.log($stateParams.terminal);
+    $scope.statusList = [];
+    $scope.refreshData = function () {
+        $http.post("/terminal_status",{
+            terminal: $stateParams.terminal,
+            startDate: $scope.startDate,
+            endDate: $scope.endDate,
+        }).then(function (res) {
+            $scope.statusList = res.data;
+        },function (err) {
 
-    $scope.statusList = [
-        {
-            num:1,
-            date:"2018-04-17 15:20:00",
-            status: "11111111"
-        },
-        {
-            num:2,
-            date:"2018-04-17 15:20:00",
-            status: "33333333"
-        },
-        {
-            num:3,
-            date:"2018-04-17 15:21:00",
-            status: "44444444"
-        }
-    ];
+        })
+    };
+
+
     $scope.totalItems = $scope.statusList.length;
     $scope.currentPage = 1;
     $scope.pageNum = Math.ceil($scope.totalItems/20);
@@ -2164,8 +2160,18 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
 
         $scope.dataRange = range;
 
-        // $scope.refreshDataTables();
-    }
+        $scope.refreshData();
+    };
+
+    $scope.dateChanged = function () {
+        console.warn("dateChanged:", $scope.startDate, "-", $scope.endDate);
+        if ($scope.startDate < $scope.endDate) {
+            $scope.refreshData();
+        } else {
+            $scope.statusList = [];
+        }
+    };
+
 
 });
 
