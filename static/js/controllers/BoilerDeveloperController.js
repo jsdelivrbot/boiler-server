@@ -32,6 +32,19 @@ angular.module('BoilerAdmin').controller('BoilerDeveloperController', function($
         }, function (err) {
             //alert('Fetch Err!' + err.status + " | " + err.data);
         });
+
+
+        $http.post("/issued_boiler_status",{
+            uid: p['boiler']
+        }).then(function (res) {
+            bDeveloper.isRemoteControl = res.data.status;
+        },function (err) {
+
+        });
+
+
+
+
     };
 
     bDeveloper.setConfig = function (config) {
@@ -100,6 +113,19 @@ angular.module('BoilerAdmin').controller('BoilerDeveloperController', function($
             //alert('Fetch Err!' + err.status + " | " + err.data);
         });
     }
+
+    bDeveloper.setControl = function () {
+        console.log(bDeveloper.isRemoteControl);
+        $http.post("/issued_boiler_update",{
+            uid: p['boiler'],
+            value:bDeveloper.isRemoteControl
+        }).then(function (res) {
+            
+        },function (err) {
+            
+        })
+    }
+
 });
 
 var bDeveloper;
