@@ -25,7 +25,10 @@ type ConfIssued struct {
 	Uid string  `json:"uid"`
 	Code string  `json:"code"`
 }
-
+type BoilerStatus struct {
+	Uid string `json:"uid"`
+	Value bool  `json:"value"`
+}
 func IntToByteOne(Int int32)([]byte){
 	b_buf := bytes.NewBuffer([]byte{})
 	err := binary.Write(b_buf, binary.BigEndian, Int)
@@ -43,6 +46,11 @@ func IntToByteTwo(Int int32)([]byte) {
 	}
 	r_buf := []byte{b_buf.Bytes()[2],b_buf.Bytes()[3]}
 	return r_buf
+}
+type BoilerIssuedMini struct {
+	BoilerId string `json:"boiler_id"`
+	Code  string    `json:"terminal_code"`
+	Value int  `json:"value"`
 }
 
 type BoilerIssued struct {
@@ -429,6 +437,87 @@ func (ctl *IssuedController) IssuedConfig() {
 		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
 	}
 }
+
+//获取锅炉重启状态
+func (ctl *IssuedController)IssuedBoilerStatus() {
+	var bStatus BoilerStatus
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &bStatus); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	var param []orm.Params
+	var status bool
+	if num,err:=dba.BoilerOrm.QueryTable("issued_boiler_status").Filter("Boiler__Uid",bStatus.Uid).Values(&param,"Status");err!=nil || num ==0 {
+		goazure.Warning("Read Boiler Burning Status Error!", err, num)
+		status=false
+	} else {
+		status = param[0]["Status"].(bool)
+	}
+	ctl.Data["json"] = status
+	ctl.ServeJSON()
+}
+//修改锅炉重启
+func (ctl *IssuedController)IssuedBoilerUpdate() {
+	var bStatus BoilerStatus
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &bStatus); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	sql:="insert into issued_boiler_status(boiler_id,create_time,update_time,status) values(?,now(),now(),?) on duplicate key update update_time=now(),status=?"
+	if _,err:=dba.BoilerOrm.Raw(sql,bStatus.Uid,bStatus.Value,bStatus.Value).Exec();err!=nil{
+		goazure.Error("Insert issued_boiler_status Error",err)
+	}
+}
+
+//小程序锅炉重启
+func (ctl *IssuedController) IssuedBoilerMini() {
+	var bMini BoilerIssuedMini
+	var combined models.BoilerTerminalCombined
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &bMini); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	if err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Terminal").Filter("Boiler__Uid",bMini.BoilerId).
+	Filter("TerminalCode",bMini.Code).One(&combined);err!=nil{
+		goazure.Error("Query Boiler Terminal Combined Error",err)
+	}
+	if combined.Terminal.IsOnline {
+		buf:=SocketBoilerSend(bMini.Code,combined.TerminalSetId,bMini.Value)
+		if buf==nil{
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("发送报文失败"))
+			return
+		} else if bytes.Equal(conf.TermNoRegist,buf) {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
+			return
+		} else if bytes.Equal(conf.TermTimeout,buf) {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
+			return
+		} else if len(buf)>4 {
+			if buf[13]!=16 {
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("终端配置错误"))
+				return
+			}
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
+		}
+	} else {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端未在线!"))
+		return
+	}
+}
+
 //锅炉重启
 func (ctl *IssuedController) IssuedBoiler() {
 	var boilerIssued BoilerIssued
@@ -486,7 +575,7 @@ func (ctl *IssuedController) IssuedBoiler() {
 	}
 }
 
-//重启
+//终端重启
 func (ctl *IssuedController) TerminalRestart() {
 	var code Code
 	var terminal models.Terminal
