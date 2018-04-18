@@ -47,7 +47,7 @@ func init() {
 	goazure.Router("/organization_delete/", &controllers.OrganizationController{}, "post:OrganizationDelete")
 
 	goazure.Router("/boiler_count/", &controllers.BoilerController{}, "get:BoilerCount")
-	goazure.Router("/boiler_list/", &controllers.BoilerController{}, "get:BoilerList")
+	goazure.Router("/boiler_list/", &controllers.BoilerController{}, "get:BoilerListWeixin")
 	goazure.Router("/boiler_update/", &controllers.BoilerController{}, "post:BoilerUpdate")
 	goazure.Router("/boiler_delete/", &controllers.BoilerController{}, "post:BoilerDelete")
 	goazure.Router("/boiler_bind/", &controllers.BoilerController{}, "post:BoilerBind")
