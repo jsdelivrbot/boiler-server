@@ -36,15 +36,6 @@ type TermErrCode struct {
 	Sn           string     `json:"sn"`
 }
 
-type TermErrList struct {
-	Sn string
-	CreateTime time.Time
-	Ver int
-	Err   *models.IssuedErrorCode
-	ChannelNumber int
-	Channel  models.RuntimeParameterChannelConfig
-}
-
 func IntToByteOne(Int int32)([]byte){
 	b_buf := bytes.NewBuffer([]byte{})
 	err := binary.Write(b_buf, binary.BigEndian, Int)
@@ -464,48 +455,11 @@ func (ctl *IssuedController) TerminalErrorList() {
 		goazure.Error("Unmarshal Terminal Error", err)
 		return
 	}
-	fmt.Println("startTime:",termErr.StartDate)
-	fmt.Println("endTime:",termErr.EndDate)
 	if _,err:=dba.BoilerOrm.QueryTable("issued_plc_alarm").RelatedSel("Err").Filter("Sn",termErr.Sn).
 	Filter("CreateTime__gte",termErr.StartDate).Filter("CreateTime__lte",termErr.EndDate).OrderBy("-CreateTime").All(&errAlarm);err!=nil{
 		goazure.Error("Query Issued Plc Alarm Error",err)
 	}
-	errList:=make([]TermErrList,len(errAlarm))
-	for i,c := range errAlarm {
-		var t int
-		var n int
-		var channel models.RuntimeParameterChannelConfig
-		if  1 <= c.ChannelNumber && c.ChannelNumber <= 24{
-			t=int(c.ChannelNumber/12)+1
-			n=c.ChannelNumber%12
-		} else if 25 <= c.ChannelNumber && c.ChannelNumber <=72 {
-			t=3
-			n=(c.ChannelNumber-24)%16
-		} else if 73 <= c.ChannelNumber && c.ChannelNumber <=84 {
-			t=5
-			n=(c.ChannelNumber-72)%12
-		} else {
-			errList[i].Sn=c.Sn
-			errList[i].Ver=c.Ver
-			errList[i].CreateTime=c.CreateTime
-			errList[i].ChannelNumber=c.ChannelNumber
-			errList[i].Err=c.Err
-
-			continue
-		}
- 		if err:=dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
-		Filter("Terminal__TerminalCode",c.Sn).Filter("ChannelType",t).Filter("ChannelNumber",n).One(&channel);err!=nil{
-			goazure.Error("Query Runtime Parameter Channel Config Error",err)
-		}
-		fmt.Println("channel:",channel)
-		errList[i].Sn=c.Sn
-		errList[i].Ver=c.Ver
-		errList[i].CreateTime=c.CreateTime
-		errList[i].ChannelNumber=c.ChannelNumber
-		errList[i].Err=c.Err
-		errList[i].Channel=channel
-	}
-	ctl.Data["json"] = errList
+	ctl.Data["json"] = errAlarm
 	ctl.ServeJSON()
 }
 
