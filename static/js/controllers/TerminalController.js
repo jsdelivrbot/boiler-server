@@ -309,8 +309,8 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     };
 
     //配置状态
-    terminal.statusView = function (uid) {
-        $state.go("terminal.status",{terminal:uid});
+    terminal.statusView = function (code) {
+        $state.go("terminal.status",{terminal:code});
     };
 
 
@@ -2090,8 +2090,8 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
     console.log($stateParams.terminal);
     $scope.statusList = [];
     $scope.refreshData = function () {
-        $http.post("/terminal_status",{
-            terminal: $stateParams.terminal,
+        $http.post("/terminal_error_list",{
+            sn: $stateParams.terminal,
             startDate: $scope.startDate,
             endDate: $scope.endDate,
         }).then(function (res) {
