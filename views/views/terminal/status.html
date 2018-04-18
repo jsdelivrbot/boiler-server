@@ -31,11 +31,7 @@
                 </button></span>
                     </div>
                 </div>
-                <!--<div class="col-md-1">
-                    <button ng-click="dateChanged()" class="btn btn-primary">
-                        确定
-                    </button>
-                </div>-->
+
             </div>
 
             <div class="col-md-6 col-sm-12">
@@ -79,7 +75,13 @@
                 <tr>
                     <th width="5%"></th>
                     <th width="15%"> 采样时间</th>
+                    <th>
+                        通道
+                    </th>
 
+                    <th>
+                        版本信息
+                    </th>
                     <th>
                         错误信息
                     </th>
@@ -88,7 +90,7 @@
 
                 <tbody ng-show="!statusList.length" style="text-align: center">
                 <tr>
-                    <td colspan="3">
+                    <td colspan="5">
                         没有找到有效的历史数据
                     </td>
                 </tr>
@@ -96,10 +98,18 @@
                 <tbody ng-show="statusList" style="text-align: center">
                 <tr ng-repeat="d in statusList | range:currentPage:20">
                     <td> {{ d.num }}</td>
-                    <td> {{ d.date | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
+                    <td> {{ d.CreateTime | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
 
                     <td>
-                        {{ d.status }}
+                        {{ d.ChannelNumber}}
+                        {{ d.name }}
+                    </td>
+
+                    <td>
+                        {{ d.Ver }}
+                    </td>
+                    <td>
+                        {{ d.Err.Value }}
                     </td>
                 </tr>
                 </tbody>
@@ -107,15 +117,15 @@
         </div>
         <div class="row" style="font-size: 14px;">
             <div class="col-md-3 col-sm-3">
-                <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite">第 {{currentPage }} 页 共 {{pageNum}} 页
+                <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite"> 共 {{totalItems}} 条 &nbsp; 第 {{currentPage }} 页 共 {{pageNum}} 页
                 </div>
             </div>
             <div class="col-md-9 col-sm-9">
                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
 
                     <ul uib-pagination boundary-links="true" total-items="totalItems" boundary-link-numbers="true"
-                        ng-model="currentPage" items-per-page="pageSize"
-                        max-size="maxSize" num-pages="totalPage"
+                        ng-model="currentPage" items-per-page="20"
+                        max-size="5" num-pages="totalPage"
                         previous-text="&lt;" next-text="&gt;" first-text="&laquo;" last-text="&raquo;">
                     </ul>
                 </div>

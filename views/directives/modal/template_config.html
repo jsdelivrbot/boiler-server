@@ -491,7 +491,7 @@
                     </td>
                     <td>
                         <ui-select ng-model="data.Func"
-                                   theme="bootstrap" ng-disabled="!data||!data.Parameter"
+                                   theme="bootstrap" ng-disabled="outerIndex === 1||!data||!data.Parameter"
                                    ng-change="fCodeChange1(data.Func,outerIndex,1)"
                                    style="width: 100%;">
                             <ui-select-match placeholder="{{data.Func.Name||'默认(未配置)'}}">
@@ -505,12 +505,12 @@
                     </td>
                     <td>
                         <input type="text" ng-model="data.Modbus" placeholder="默认（未配置）"
-                               ng-disabled="!data||!data.Parameter"
+                               ng-disabled="outerIndex === 1||!data||!data.Parameter"
                                uib-tooltip-template="'modbusTips2.html'" class="form-control">
                     </td>
                     <td>
                         <input type="text" ng-model="data.BitAddress" placeholder="默认（未配置）"
-                               ng-disabled="!data||!data.Parameter"
+                               ng-disabled="outerIndex === 1||!data||!data.Parameter"
                                uib-tooltip-template="'bitAddressTips.html'" class="form-control">
                     </td>
                 </tr>
@@ -618,7 +618,7 @@
             </table>
             <!--SWITCH B TABLE END-->
 
-            <!--SWITCH B TABLE BEGIN-->
+            <!--SWITCH C TABLE BEGIN-->
             <table ng-if="$modal.category === 13" ng-init="$modal.initSwitch3();"
                    class="table table-striped table-hover table-checkable order-column table-boiler">
                 <thead>
@@ -717,7 +717,7 @@
                 </tr>
                 </tbody>
             </table>
-            <!--SWITCH B TABLE END-->
+            <!--SWITCH C TABLE END-->
 
             <!--RANGE TABLE BEGIN-->
             <table ng-if="$modal.category === 14" ng-init="$modal.initRange();"

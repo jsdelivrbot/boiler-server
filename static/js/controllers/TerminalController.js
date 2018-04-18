@@ -2096,15 +2096,58 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
             endDate: $scope.endDate,
         }).then(function (res) {
             $scope.statusList = res.data;
+            for(var i=0; i<$scope.statusList.length; i++){
+                $scope.statusList[i].num = i+1;
+                if($scope.statusList[i].ChannelNumber>0 && $scope.statusList[i].ChannelNumber<=12 ){
+                    $scope.statusList[i].name = "模拟通道A 通道" + ($scope.statusList[i].ChannelNumber);
+                }
+                if($scope.statusList[i].ChannelNumber>12 && $scope.statusList[i].ChannelNumber<=24 ){
+                    $scope.statusList[i].name = "模拟通道B 通道" + ($scope.statusList[i].ChannelNumber-12);
+                }
+                if($scope.statusList[i].ChannelNumber>24 && $scope.statusList[i].ChannelNumber<=40 ){
+                    $scope.statusList[i].name = "开关通道1 通道" + ($scope.statusList[i].ChannelNumber-24);
+                }
+                if($scope.statusList[i].ChannelNumber>40 && $scope.statusList[i].ChannelNumber<=56 ){
+                    $scope.statusList[i].name = "开关通道2 通道" + ($scope.statusList[i].ChannelNumber-40);
+                }
+                if($scope.statusList[i].ChannelNumber>56 && $scope.statusList[i].ChannelNumber<=72 ){
+                    $scope.statusList[i].name = "开关通道3 通道" + ($scope.statusList[i].ChannelNumber-56);
+                }
+                if($scope.statusList[i].ChannelNumber>72 && $scope.statusList[i].ChannelNumber<=84 ){
+                    $scope.statusList[i].name = "状态通道 通道" + ($scope.statusList[i].ChannelNumber-72);
+                }
+                if($scope.statusList[i].ChannelNumber===85){
+                    $scope.statusList[i].name = "波特率";
+                }
+                if($scope.statusList[i].ChannelNumber===86){
+                    $scope.statusList[i].name = "数据位";
+                }
+                if($scope.statusList[i].ChannelNumber===87){
+                    $scope.statusList[i].name = "停止位";
+                }
+                if($scope.statusList[i].ChannelNumber===88){
+                    $scope.statusList[i].name = "校验位";
+                }
+                if($scope.statusList[i].ChannelNumber===89){
+                    $scope.statusList[i].name = "通讯接口类型";
+                }
+                if($scope.statusList[i].ChannelNumber===90){
+                    $scope.statusList[i].name = "从机地址";
+                }
+                if($scope.statusList[i].ChannelNumber===91){
+                    $scope.statusList[i].name = "心跳包频率";
+                }
+            }
+            $scope.totalItems = $scope.statusList.length;
+            $scope.currentPage = 1;
+            $scope.pageNum = Math.ceil($scope.totalItems/20);
         },function (err) {
 
         })
     };
 
 
-    $scope.totalItems = $scope.statusList.length;
-    $scope.currentPage = 1;
-    $scope.pageNum = Math.ceil($scope.totalItems/20);
+
 
     //日期设置
     $scope.format = "yyyy-MM-dd";
