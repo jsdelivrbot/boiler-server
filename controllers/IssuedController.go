@@ -29,6 +29,12 @@ type BoilerStatus struct {
 	Uid string `json:"uid"`
 	Value bool  `json:"value"`
 }
+
+type TermErrCode struct {
+	StartDate    time.Time  `json:"startDate"`
+	EndDate      time.Time  `json:"endDate"`
+	Sn           string     `json:"sn"`
+}
 func IntToByteOne(Int int32)([]byte){
 	b_buf := bytes.NewBuffer([]byte{})
 	err := binary.Write(b_buf, binary.BigEndian, Int)
@@ -63,6 +69,7 @@ type VersionIssued struct {
 	Ver         int32
 	UpdateTime  time.Time
 }
+
 //第一个模拟通道
 func (ctl *IssuedController) IssuedAnalogOne(Uid string)([]byte) {
 	var temp int32 =1
@@ -436,6 +443,25 @@ func (ctl *IssuedController) IssuedConfig() {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
 	}
+}
+
+func (ctl *IssuedController) TerminalErrorList() {
+	var termErr TermErrCode
+	var errAlarm []models.IssuedPlcAlarm
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &termErr); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	fmt.Println("startTime:",termErr.StartDate)
+	fmt.Println("endTime:",termErr.EndDate)
+	if _,err:=dba.BoilerOrm.QueryTable("issued_plc_alarm").RelatedSel("Err").Filter("Sn",termErr.Sn).
+	Filter("CreateTime__gte",termErr.StartDate).Filter("CreateTime__lte",termErr.EndDate).OrderBy("-CreateTime").All(&errAlarm);err!=nil{
+		goazure.Error("Query Issued Plc Alarm Error",err)
+	}
+	ctl.Data["json"] = errAlarm
+	ctl.ServeJSON()
 }
 
 //获取锅炉重启状态

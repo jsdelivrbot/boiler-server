@@ -178,6 +178,8 @@ func init() {
 	goazure.Router("/template_communication",&controllers.TemplateController{},"post:TemplateCommunication")
 	//模板批量配置
 	goazure.Router("/template_group_config",&controllers.TemplateController{},"post:TemplateGroupConfig")
+	//终端错误回显
+	goazure.Router("/terminal_error_list",&controllers.IssuedController{},"post:TerminalErrorList")
 
 
 
