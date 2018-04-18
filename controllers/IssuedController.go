@@ -35,6 +35,16 @@ type TermErrCode struct {
 	EndDate      time.Time  `json:"endDate"`
 	Sn           string     `json:"sn"`
 }
+
+type TermErrList struct {
+	Sn string
+	CreateTime time.Time
+	Ver int
+	Err   *models.IssuedErrorCode
+	ChannelNumber int
+	Channel  models.RuntimeParameterChannelConfig
+}
+
 func IntToByteOne(Int int32)([]byte){
 	b_buf := bytes.NewBuffer([]byte{})
 	err := binary.Write(b_buf, binary.BigEndian, Int)
@@ -444,7 +454,7 @@ func (ctl *IssuedController) IssuedConfig() {
 		ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
 	}
 }
-
+//错误信息回显
 func (ctl *IssuedController) TerminalErrorList() {
 	var termErr TermErrCode
 	var errAlarm []models.IssuedPlcAlarm
@@ -460,7 +470,42 @@ func (ctl *IssuedController) TerminalErrorList() {
 	Filter("CreateTime__gte",termErr.StartDate).Filter("CreateTime__lte",termErr.EndDate).OrderBy("-CreateTime").All(&errAlarm);err!=nil{
 		goazure.Error("Query Issued Plc Alarm Error",err)
 	}
-	ctl.Data["json"] = errAlarm
+	errList:=make([]TermErrList,len(errAlarm))
+	for i,c := range errAlarm {
+		var t int
+		var n int
+		var channel models.RuntimeParameterChannelConfig
+		if  1 <= c.ChannelNumber && c.ChannelNumber <= 24{
+			t=int(c.ChannelNumber/12)+1
+			n=c.ChannelNumber%12
+		} else if 25 <= c.ChannelNumber && c.ChannelNumber <=72 {
+			t=3
+			n=(c.ChannelNumber-24)%16
+		} else if 73 <= c.ChannelNumber && c.ChannelNumber <=84 {
+			t=5
+			n=(c.ChannelNumber-72)%12
+		} else {
+			errList[i].Sn=c.Sn
+			errList[i].Ver=c.Ver
+			errList[i].CreateTime=c.CreateTime
+			errList[i].ChannelNumber=c.ChannelNumber
+			errList[i].Err=c.Err
+
+			continue
+		}
+ 		if err:=dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
+		Filter("Terminal__TerminalCode",c.Sn).Filter("ChannelType",t).Filter("ChannelNumber",n).One(&channel);err!=nil{
+			goazure.Error("Query Runtime Parameter Channel Config Error",err)
+		}
+		fmt.Println("channel:",channel)
+		errList[i].Sn=c.Sn
+		errList[i].Ver=c.Ver
+		errList[i].CreateTime=c.CreateTime
+		errList[i].ChannelNumber=c.ChannelNumber
+		errList[i].Err=c.Err
+		errList[i].Channel=channel
+	}
+	ctl.Data["json"] = errList
 	ctl.ServeJSON()
 }
 
