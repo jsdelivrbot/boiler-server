@@ -10,5 +10,5 @@ var TermTimeout = []byte("Term Response Timeout")
 var BoilerStart string = "\xAA"
 var BoilerShut string = "\x55"
 var BoilerReset string = "\x99"
-var TermOnline string = "100000000"
+var TermOnline string = "1000000000"
 var TermOffline string = "0000000000"
