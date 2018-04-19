@@ -15,6 +15,7 @@ import (
 	"reflect"
 	"errors"
 	"io/ioutil"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type BoilerController struct {
@@ -745,6 +746,42 @@ func (ctl *BoilerController) BoilerConfig(boilerUid string, config string) (inte
 	return value, nil
 }
 //***************************************** CONFIG END
+func (ctl *BoilerController) TermIsOnline(termSn int64) bool {
+	var status bool
+	var termStatus models.BoilerTermStatus
+	if err:=dba.BoilerOrm.QueryTable("boiler_term_status").Filter("Boiler_term_id",termSn).One(&termStatus);err!=nil{
+		goazure.Error("Query Boiler Terminal Combined Error",err)
+		status = false
+		return status
+	}
+	if termStatus.Boiler_term_status == conf.TermOnline {
+		status = true
+	} else if termStatus.Boiler_term_status == conf.TermOffline {
+		status = false
+	}
+	return status
+}
+func (ctl *BoilerController) IsOnline(boilerUid string) bool {
+	var status bool
+	var termStatus models.BoilerTermStatus
+	var termCombined models.BoilerTerminalCombined
+	if err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Boiler__Uid",boilerUid).Filter("TerminalSetId",1).One(&termCombined);err!=nil{
+		goazure.Error("Query Boiler Terminal Combined Error",err)
+		status = false
+		return status
+	}
+	if err:=dba.BoilerOrm.QueryTable("boiler_term_status").Filter("Boiler_term_id",termCombined.TerminalCode).One(&termStatus);err!=nil{
+		goazure.Error("Query Boiler Terminal Combined Error",err)
+		status = false
+		return status
+	}
+	if termStatus.Boiler_term_status == conf.TermOnline {
+		status = true
+	} else if termStatus.Boiler_term_status == conf.TermOffline {
+		status = false
+	}
+	return status
+}
 func (ctl *BoilerController) BoilerIsOnline(){
 	if ctl.Input()["boiler"] == nil || len(ctl.Input()["boiler"]) == 0 {
 		e := fmt.Sprintln("there is no boiler!")
@@ -753,18 +790,8 @@ func (ctl *BoilerController) BoilerIsOnline(){
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
-	uid := ctl.Input()["boiler"][0]
-	type IsOnline struct {
-		IsOnline bool `json:"IsOnline"`
-	}
-	var sql="select t.is_online from boiler_terminal_combined as bt,terminal as t"+
-		" where bt.terminal_code=t.terminal_code and bt.boiler_id=?"
-	var status IsOnline
-	err:=dba.BoilerOrm.Raw(sql,uid).QueryRow(&status)
-	if err!=nil {
-		goazure.Warning("Read Boiler online Status Error!",err)
-	}
-	fmt.Println(status)
+	boilerUid := ctl.Input()["boiler"][0]
+	status:=ctl.IsOnline(boilerUid)
 	ctl.Data["json"]=status
 	ctl.ServeJSON()
 }

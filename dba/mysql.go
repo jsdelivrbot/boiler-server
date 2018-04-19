@@ -108,6 +108,7 @@ func init() {
 
 		new(models.Dialogue),
 		new(models.DialogueComment),
+		new(models.BoilerTermStatus),
 			//下发
 		new(models.IssuedFunctionCode),
 		new(models.IssuedByte),

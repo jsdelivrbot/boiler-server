@@ -4,6 +4,7 @@ import "time"
 
 type TerminalIssued struct {
 	Terminal *Terminal
+	IsOnline  bool
 	TermVer    int32
 	TermUpdateTime time.Time
 	PlatVer    int32
