@@ -756,6 +756,9 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
                     }
 
                     if(i>=2 && i<5){
+                        if(i===2 && j===1){
+                            continue;
+                        }
                         if(fcodeName!==99 && (fcodeName===0||modbus===0||bitAddress===0)){
                             swal({
                                 title: "通道配置更新失败",
