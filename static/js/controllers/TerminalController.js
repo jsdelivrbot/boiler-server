@@ -41,16 +41,16 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     t.num = ++num;
                     t.code = t.TerminalCode.toString();
                     t.online = t.IsOnline? "在线" : "离线";
-                    if(t.Boilers){
+                   /* if(t.Boilers){
                         $http.get('/boiler/state/is_burning/?boiler=' + t.Boilers[0].Uid)
                             .then(function (res) {
                                 // console.error("Fetch Status Resp:", res.data, d);
                                 t.isBurning = (res.data.value === "true");
-                                t.online = (t.IsOnline||t.isBurning) ? "在线" : "离线";
+                                // t.online = (t.IsOnline||t.isBurning) ? "在线" : "离线";
                             }, function (err) {
                                 console.error('Fetch Status Err!', err);
                             });
-                    }
+                    }*/
 
                     if(d.TermUpdateTime==="0001-01-01T00:00:00Z"){
                         d.TermUpdateTime = null;
@@ -143,7 +143,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     // };
 
     terminal.viewMesData = function (data) {
-        $state.go("terminal.message");
+        $state.go("terminal.message",{terminal:data});
         terminal.msgData.code = data;
     };
 
