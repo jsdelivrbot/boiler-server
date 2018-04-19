@@ -40,7 +40,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     var t = d.Terminal;
                     t.num = ++num;
                     t.code = t.TerminalCode.toString();
-                    t.online = t.IsOnline? "在线" : "离线";
+                    t.online = d.IsOnline? "在线" : "离线";
                    /* if(t.Boilers){
                         $http.get('/boiler/state/is_burning/?boiler=' + t.Boilers[0].Uid)
                             .then(function (res) {
