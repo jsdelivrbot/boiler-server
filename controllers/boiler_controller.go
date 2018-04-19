@@ -430,6 +430,7 @@ func (ctl *BoilerController) BoilerListWeixin() {
 		"TerminalCode")
 	for _, b := range boilers {
 		b["IsBurning"] = ctl.IsBurning(b["Uid"].(string))
+		b["IsOnline"] = ctl.IsOnline(b["Uid"].(string))
 	}
 	goazure.Info("Returned Rows Num:", num, err)
 
@@ -761,6 +762,7 @@ func (ctl *BoilerController) TermIsOnline(termSn int64) bool {
 	}
 	return status
 }
+
 func (ctl *BoilerController) IsOnline(boilerUid string) bool {
 	var status bool
 	var termStatus models.BoilerTermStatus
@@ -782,6 +784,7 @@ func (ctl *BoilerController) IsOnline(boilerUid string) bool {
 	}
 	return status
 }
+
 func (ctl *BoilerController) BoilerIsOnline(){
 	if ctl.Input()["boiler"] == nil || len(ctl.Input()["boiler"]) == 0 {
 		e := fmt.Sprintln("there is no boiler!")
