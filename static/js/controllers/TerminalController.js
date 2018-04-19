@@ -1276,6 +1276,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             }
 
                             if(j>=2 && j<5){
+                                if(j===2 && i===1){
+                                    continue;
+                                }
                                 if(fcodeName!==99 && (fcodeName===0||modbus===0||bitAddress===0)){
                                     swal({
                                         title: "通道配置更新失败",
@@ -1583,6 +1586,9 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                             }
 
                             if(j>=2 && j<5){
+                                if(j===2 && i===1){
+                                    continue;
+                                }
                                 if(fcodeName!==99 && (fcodeName===0||modbus===0||bitAddress===0)){
                                     swal({
                                         title: "通道配置更新失败",
@@ -1592,6 +1598,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                                     App.stopPageLoading();
                                     return false;
                                 }
+
 
                                 if(fcodeName===1){
                                     if(modbus<1||modbus>=10000){

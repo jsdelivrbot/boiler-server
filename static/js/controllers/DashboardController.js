@@ -51,6 +51,9 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     bMonitor.getBoilers = function () {
         bMonitor.datasource = $rootScope.boilers;
         if (!$rootScope.boilers) {
+            setTimeout(function () {
+                App.stopPageLoading();
+            }, 800);
             return;
         }
         for (var i = 0; i < bMonitor.datasource.length; i++) {
