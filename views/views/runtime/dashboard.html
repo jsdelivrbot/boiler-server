@@ -52,24 +52,10 @@
                  ng-show="(runtime.instants|filter:{category:'13'}).length>0 && (runtime.boiler.isOnline||runtime.boiler.isBurning)">
 
                 <div class="portlet-body">
-                    <!--<table class="table table-hover table-light" style="margin-bottom: 0;">-->
-                        <!--<thead>-->
-                        <!--<tr>-->
-                            <!--<th >测量项目</th>-->
-                            <!--<th>状态值</th>-->
-
-                        <!--</tr>-->
-                        <!--</thead>-->
-                    <!--</table>-->
 
                     <div class="" style="margin-top: 0;">
                         <table class="table table-hover table-light" style="margin-bottom: 10px;">
-                            <!--<thead>
-                            <tr>
-                                <th>测量项目</th>
-                                <th>状态值</th>
-                            </tr>
-                            </thead>-->
+
                             <tbody>
                             <tr ng-repeat="d in runtime.instants|filter:{category:'13'}">
                                 <td> {{d.name}} </td>

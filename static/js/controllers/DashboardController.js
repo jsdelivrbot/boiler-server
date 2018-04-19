@@ -519,8 +519,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
-                boiler.isOnline = res.data.IsOnline;
-
+                boiler.isOnline = res.data;
+                boiler.alarmLevel = boiler.isOnline ? 0 : -1;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
             });
@@ -632,8 +632,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             // };
             //
             // boiler.isBurning = isBurning();
-            boiler.alarmLevel = boiler.isBurning ? 0 : -1;
-            boiler.img = boiler.imgName() + (boiler.isBurning ? '.gif' : '.png');
+            boiler.alarmLevel = (boiler.isBurning && boiler.isOnline) ? 0 : -1;
+            boiler.img = boiler.imgName() + ((boiler.isBurning && boiler.isOnline) ? '.gif' : '.png');
 
             var runtime = [[], []];
 
@@ -641,7 +641,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 var d = res.data[i];
                 var value;
                 var name = d.ParameterName;
-                var alarmLevel = boiler.isBurning ? 0 : -1;
+                var alarmLevel = (boiler.isBurning && boiler.isOnline) ? 0 : -1;
 
                 switch (d.Parameter) {
                     case 1021:
@@ -658,7 +658,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                         break;
                 }
 
-                if (boiler.isBurning) {
+                if (boiler.isBurning && boiler.isOnline) {
                     value = d.Value;
                     alarmLevel = d.AlarmLevel;
 
