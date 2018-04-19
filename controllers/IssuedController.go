@@ -178,26 +178,25 @@ func (ctl *IssuedController) IssuedAnalogTwo(Uid string) ([]byte) {
 }
 
 //组开关量默认位
-func (ctl *IssuedController) IssuedSwitchBurn(Uid string) ([]byte) {
+func (ctl *IssuedController) IssuedSwitchDefault(Uid string) ([]byte) {
 	Byte := make([]byte, 0)
-	var swi []models.IssuedSwitchDefault
-	if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").RelatedSel("Function").Filter("Terminal__Uid", Uid).OrderBy("ChannelNumber").All(&swi); err != nil {
+	var swi models.IssuedSwitchDefault
+	if err := dba.BoilerOrm.QueryTable("issued_switch_default").RelatedSel("Function").Filter("Terminal__Uid", Uid).
+	Filter("ChannelType", models.CHANNEL_TYPE_SWITCH).Filter("ChannelNumber", 1).One(&swi); err != nil {
 		goazure.Error("Query issued_switch_default", err)
+		Byte = append(Byte, IntToByteOne(0)...)
+		Byte = append(Byte, IntToByteTwo(0)...)
+		Byte = append(Byte, IntToByteOne(0)...)
+		Byte = append(Byte, IntToByteOne(0)...)
+		Byte = append(Byte, IntToByteTwo(0)...)
+		Byte = append(Byte, IntToByteOne(0)...)
 	} else {
-		if num == 0 {
-			Byte = append(Byte, IntToByteOne(0)...)
-			Byte = append(Byte, IntToByteTwo(0)...)
-			Byte = append(Byte, IntToByteOne(0)...)
-			Byte = append(Byte, IntToByteOne(0)...)
-			Byte = append(Byte, IntToByteTwo(0)...)
-			Byte = append(Byte, IntToByteOne(0)...)
-		} else {
-			for _, c := range swi {
-				Byte = append(Byte, IntToByteOne(int32(c.Function.Id))...)
-				Byte = append(Byte, IntToByteTwo(int32(c.Modbus))...)
-				Byte = append(Byte, IntToByteOne(int32(c.BitAddress))...)
-			}
-		}
+		Byte = append(Byte, IntToByteOne(int32(swi.Function.Id))...)
+		Byte = append(Byte, IntToByteTwo(int32(swi.Modbus))...)
+		Byte = append(Byte, IntToByteOne(int32(swi.BitAddress))...)
+		Byte = append(Byte, IntToByteOne(0)...)
+		Byte = append(Byte, IntToByteTwo(0)...)
+		Byte = append(Byte, IntToByteOne(0)...)
 	}
 	return Byte
 }
@@ -362,7 +361,7 @@ func (ctl *IssuedController) IssuedMessage(Uid string) ([]byte) {
 	fmt.Println("模拟量1长度:", len(Byte))
 	Byte = append(Byte, ctl.IssuedAnalogTwo(Uid)...)
 	fmt.Println("模拟量2长度:", len(Byte))
-	Byte = append(Byte, ctl.IssuedSwitchBurn(Uid)...)
+	Byte = append(Byte, ctl.IssuedSwitchDefault(Uid)...)
 	fmt.Println("开关量点火位长度:", len(Byte))
 	Byte = append(Byte, ctl.IssuedSwitch(Uid)...)
 	fmt.Println("开关位长度:", len(Byte))
