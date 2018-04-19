@@ -336,24 +336,6 @@ func (ctl *IssuedController) IssuedCommunication(Uid string) ([]byte) {
 	return Byte
 }
 
-//查询终端版本号
-func (ctl *IssuedController) IssuedVersion(Code string) (int32) {
-	var versionIssued VersionIssued
-	var version int32
-	versionSql := "select sn,ver from issued_version where sn=?"
-	if err := dba.BoilerOrm.Raw(versionSql, Code).QueryRow(&versionIssued); err != nil {
-		goazure.Error("Query issued_version Error", err)
-		version = 1
-	} else {
-		fmt.Println("versionIssued:", versionIssued)
-		version = versionIssued.Ver + 1
-		if version >= 32769 {
-			version = 1
-		}
-	}
-	return version
-}
-
 //组装现有配置的报文
 func (ctl *IssuedController) IssuedMessage(Uid string) ([]byte) {
 	Byte := make([]byte, 0)
@@ -418,11 +400,13 @@ func (ctl *IssuedController) IssuedConfig() {
 		switch buf[13] {
 		case 16:
 			newVer := ByteToIntTwo(buf[13:15])
+			fmt.Println("终端返回版本号:",newVer)
 			termCode := fmt.Sprintf("%s", buf[7:13])
 			sql := "insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now()) on duplicate key update ver=?,update_time=now()"
 			if _, err := dba.BoilerOrm.Raw(sql, termCode, newVer, newVer).Exec(); err != nil {
 				goazure.Error("insert issued_version Error", err)
 			}
+			fmt.Println("插入终端版本成功")
 		case 1:
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("CRC校验错误"))

@@ -86,21 +86,18 @@ func (ctl *TerminalController) TerminalIssuedList() {
 	if _,error:=dba.BoilerOrm.Raw(termSql).QueryRows(&termVi);error!=nil{
 		goazure.Error("Select issued_version Error")
 	}
-	fmt.Println("versionIssued:",termVi)
 	//查询平台版本号
 	platSql:="select sn,ver,update_time from issued_message"
 	var platVi []VersionIssued
 	if _,error:=dba.BoilerOrm.Raw(platSql).QueryRows(&platVi);error!=nil{
 		goazure.Error("Select issued_message Error")
 	}
-	fmt.Println("versionIssued:",platVi)
 
 	//查询模板配置状态
 	var tempStatus []models.IssuedTermTempStatus
 	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").RelatedSel("Template").All(&tempStatus);err!=nil{
 		goazure.Error("Select issued_term_temp_status Error")
 	}
-	fmt.Println("tempStatus:",tempStatus)
     //有绑定的将绑定的锅炉加进去
 	for t, ter := range terminals {
 		for _, cb := range combines {
