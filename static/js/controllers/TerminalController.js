@@ -961,6 +961,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
                 }
 
+                if(i===1&&j===2){
+                    $modal.chanMatrix[i][j].AnalogueSwitch.Function={Id: 99, Name: "None", Value: 99}
+                }
+
                 if (((i !== 0 && i !== 1)||j !== 2 ) &&  (!$modal.dataMatrix[i][j].RuntimeParameterChannelConfig || $modal.dataMatrix[i][j].RuntimeParameterChannelConfig.IsDefault) ) {
                     $modal.dataMatrix[i][j] = null;
                     $modal.chanMatrix[i][j].noStatus=true;
