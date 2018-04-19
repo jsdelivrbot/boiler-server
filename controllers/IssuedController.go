@@ -68,6 +68,7 @@ type VersionIssued struct {
 	UpdateTime time.Time
 }
 
+
 //第一个模拟通道
 func (ctl *IssuedController) IssuedAnalogOne(Uid string) ([]byte) {
 	var temp int32 = 1
@@ -119,7 +120,6 @@ func (ctl *IssuedController) IssuedAnalogOne(Uid string) ([]byte) {
 			}
 		}
 	}
-	fmt.Println("模拟量一的Byte:", Byte)
 	return Byte
 }
 
@@ -252,7 +252,6 @@ func (ctl *IssuedController) IssuedSwitch(Uid string) ([]byte) {
 			}
 		}
 	}
-	fmt.Println("开关位的Byte:", Byte)
 	return Byte
 }
 
@@ -364,7 +363,6 @@ func (ctl *IssuedController) ReqMessage(Code string) (string) {
 		goazure.Error("Query issued_message Error", err)
 		return ""
 	}
-	fmt.Println("下发的报文:", info.CurrMessage)
 	return info.CurrMessage
 }
 
@@ -381,6 +379,11 @@ func (ctl *IssuedController) IssuedConfig() {
 	if reqBuf == "" {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("还未保存配置"))
+		return
+	}
+	if len(reqBuf) != 362 {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("报文发生错误"))
 		return
 	}
 	buf := SocketCtrl.SocketConfigSend(reqBuf)

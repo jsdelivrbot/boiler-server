@@ -54,7 +54,6 @@ func (ctl *SocketController)c0(b []byte,Code string,ver int32)([]byte) {
 	words_2:="\x00\x00\xaf\xed"
 	buf=append(buf,[]byte(words_2)...)
 	copy(buf[358:360],CRC16(buf[4:358]))
-	fmt.Println("组成的buf:",buf)
 	fmt.Println("buf len:",len(buf))
 	return buf
 }
@@ -88,9 +87,8 @@ func Receive(conn net.Conn) ([]byte) {
 	if err != nil {
 		goazure.Error("Receive error:", err)
 	} else {
-		goazure.Info(fmt.Sprintf("Receive %d bytes, content is %s\n", n, string(buf[:n])))
+		goazure.Info(fmt.Sprintf("Receive %d bytes, content is %x\n", n, string(buf[:n])))
 	}
-	fmt.Println(buf[:n])
 	return buf[:n]
 }
 type Info struct {
@@ -120,7 +118,6 @@ func SocketBoilerSend(code string,termSetId int32,value int)([]byte) {
 
 func SendConfig(reqBuf string,conn net.Conn) {
 		buf:=[]byte(reqBuf)
-		fmt.Println("buf：",buf)
 		n,err:=conn.Write(buf)
 		if err!=nil {
 			goazure.Error("%s%s","Write error:", err)
