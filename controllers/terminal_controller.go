@@ -103,13 +103,13 @@ func (ctl *TerminalController) TerminalIssuedList() {
 	fmt.Println("tempStatus:",tempStatus)
     //有绑定的将绑定的锅炉加进去
 	for t, ter := range terminals {
-		termIssued[t].Terminal=ter
 		for _, cb := range combines {
 			if ter.Uid == cb.Terminal.Uid {
 				cb.Boiler.TerminalSetId = cb.TerminalSetId
 				ter.Boilers = append(ter.Boilers, cb.Boiler)
 			}
 		}
+		termIssued[t].Terminal=ter
 		//加上终端的版本号
 		for _,tv := range termVi {
 			i,err:=strconv.ParseInt(tv.Sn,10,64)
@@ -132,6 +132,9 @@ func (ctl *TerminalController) TerminalIssuedList() {
 				termIssued[t].PlatUpdateTime = pv.UpdateTime
 			}
 		}
+		//添加终端在线状态
+		status:=BlrCtl.TermIsOnline(ter.TerminalCode)
+		termIssued[t].IsOnline=status
 		//添加终端模板状态
 		for _,ts := range tempStatus {
 			i,err:=strconv.ParseInt(ts.Sn,10,64)

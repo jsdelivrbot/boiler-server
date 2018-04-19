@@ -78,6 +78,13 @@ func (cb *BoilerTerminalCombined) TableUnique() [][]string {
 	}
 }
 
+type BoilerTermStatus struct{
+	Boiler_term_id                 string `orm:"pk"`
+	Boiler_term_ip                 string
+	Boiler_term_pwd                int32
+	Boiler_term_status             string
+}
+
 type BoilerOrganizationLinked struct{
 	Id					int64				`orm:"auto"`
 	Boiler				*Boiler				`orm:"rel(fk);index"`
