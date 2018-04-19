@@ -250,6 +250,9 @@ angular.module('BoilerAdmin').controller('ModalEditTemplateCtrl', function ($roo
                     if($modal.switchData1[i].BitAddress===0){
                         $modal.switchData1[i].BitAddress = null;
                     }
+                    if(i===1){
+                        $modal.switchData1[i].Func={Id: 99, Name: "None", Value: 99}
+                    }
                 }
 
                 // console.log($modal.switchData1);
