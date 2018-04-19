@@ -70,6 +70,9 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             }, function (err) {
                 console.error('Fetch Status Err!', err);
                 boiler.isOnline = false;
+            })
+            .then(function () {
+                $rootScope.isBoilerOnline = boiler.isOnline;
             });
 
         $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
@@ -84,8 +87,6 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 $rootScope.isBoilerBurning = boiler.isBurning;
                 bRuntime.fetchRuntime(bRuntime.boiler);
             });
-
-
 
         $http.get('/boiler/state/has_subscribed/?boiler=' + boiler.Uid + "&uid=" + $rootScope.currentUser.Uid)
             .then(function (res) {
@@ -146,7 +147,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         $http.post('/boiler_runtime_instants/', data).then(function (res) {
             $log.info("instants Resp:", res);
 
-            boiler.alarmLevel = (boiler.isBurning || boiler.isOnline) ? 0 : -1;
+            boiler.alarmLevel = (boiler.isBurning && boiler.isOnline) ? 0 : -1;
             boiler.hasSwitchValue = false;
             boiler.hasRangeValue = false;
 
@@ -171,7 +172,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     d.AlarmLevel = 0;
                 }
 
-                if (boiler.isBurning || boiler.isOnline) {
+                if (boiler.isBurning && boiler.isOnline) {
                     alarmLevel = d.AlarmLevel;
                 }
 
@@ -540,9 +541,9 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
                 {
                     id: 2,
                     name: "运行状态",
-                    text: $scope.boiler.isBurning ? "正在运行" : "未运行",
+                    text:($scope.boiler.isOnline && $scope.boiler.isBurning) ? "正在运行" : "未运行",
                     type: "status",
-                    value: $scope.boiler.isBurning
+                    value: ($scope.boiler.isOnline && $scope.boiler.isBurning)
                 },
                 {
                     id: 3,

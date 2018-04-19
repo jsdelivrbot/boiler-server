@@ -79,7 +79,7 @@
         </td>
         <td> {{ data.Terminal.code }} </td>
         <td>
-            <span ng-class="['label', {'label-success': data.Terminal.IsOnline}, {'label-default': !data.Terminal.IsOnline}]">{{ data.Terminal.online }}</span>
+            <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.Terminal.online }}</span>
         </td>
         <td>
             <!--<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">-->

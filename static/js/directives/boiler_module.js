@@ -61,9 +61,16 @@ boilerAdmin.directive('boilerModule', function () {
         bModule.updateLabels();
     });
 
+    $rootScope.$watch("isBoilerOnline",function () {
+        bModule.isOnline = $rootScope.isBoilerOnline ;
+
+        bModule.renderAnimations();
+        bModule.updateStatusLabels();
+    });
+
     $rootScope.$watch('isBoilerBurning', function () {
         // console.error("$rootScope.$watch('isBoilerBurning')", $rootScope.isBoilerBurning);
-        bModule.isBoilerBurning = $rootScope.isBoilerBurning;
+        bModule.isBoilerBurning = $rootScope.isBoilerBurning ;
 
         bModule.renderAnimations();
         bModule.updateStatusLabels();
@@ -888,7 +895,7 @@ boilerAdmin.directive('boilerModule', function () {
     };
 
     bModule.renderAnimations = function () {
-        if (!bModule.isBoilerBurning) {
+        if (!bModule.isBoilerBurning || !bModule.isOnline) {
             return;
         }
 

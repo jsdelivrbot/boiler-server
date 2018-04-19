@@ -356,18 +356,18 @@
                         <tbody>
                         <tr>
                             <th>终端编码</th>
-                            <th>终端状态</th>
+                            <!--<th>终端状态</th>-->
                             <th>终端名称</th>
                             <th>机组番号</th>
                             <th>操作</th>
                         </tr>
                         <tr ng-repeat="terminal in info.currentData.TerminalsCombined">
                             <td>{{ terminal.tid }}</td>
-                            <td>
-                                <span ng-class="['label', {'label-success': terminal.IsOnline || terminal.isBurning}, {'label-default': !terminal.IsOnline && !terminal.isBurning}]">
-                                    {{ terminal.online }}
-                                </span>
-                            </td>
+                            <!--<td>-->
+                                <!--<span ng-class="['label', {'label-success': terminal.IsOnline || terminal.isBurning}, {'label-default': !terminal.IsOnline && !terminal.isBurning}]">-->
+                                    <!--{{ terminal.online }}-->
+                                <!--</span>-->
+                            <!--</td>-->
                             <td>{{ terminal.Name }}</td>
                             <td>{{ terminal.setId }}</td>
                             <td><a ng-click="info.unbind(terminal) "
