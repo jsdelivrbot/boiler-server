@@ -22,7 +22,11 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
     template.refreshTemplate = function () {
         $http.get("/template_list").then(function (res) {
             var datasource = res.data;
-            template.datasource = $filter("filter")(datasource,$rootScope.currentUser.Organization.Uid)
+            template.datasource = $filter("filter")(datasource,function (data) {
+               if(data.Organization.Uid === $rootScope.currentUser.Organization.Uid){
+                   return true;
+               }
+            });
             for(var i = 0; i<template.datasource.length; i++){
                 template.datasource[i].num = i+1;
             }
