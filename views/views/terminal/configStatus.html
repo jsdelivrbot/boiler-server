@@ -1,0 +1,65 @@
+<div ng-controller="terminalConfigStatus">
+
+    <style>
+        .table th{
+            text-align: center;
+        }
+    </style>
+
+    <div ng-init="">
+
+        <div class="" id="" style="margin-top: 20px;">
+            <table class="table table-striped table-bordered table-hover table-checkable">
+                <thead>
+                <tr>
+                    <th width="5%"></th>
+                    <th width="15%"> 失败终端</th>
+                    <th>
+                        错误信息
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody ng-show="!statusList.length" style="text-align: center">
+                <tr>
+                    <td colspan="5">
+                        没有找到有效的历史数据
+                    </td>
+                </tr>
+                </tbody>
+                <tbody ng-show="statusList" style="text-align: center">
+                <tr ng-repeat="d in statusList | range:currentPage:20">
+                    <td> {{ $index + 1 }}</td>
+
+                    <td>
+                        {{ d.TerminalCode}}
+                    </td>
+
+                    <td>
+                        {{ d.MsgErr }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" style="font-size: 14px;">
+            <div class="col-md-3 col-sm-3">
+                <div class="dataTables_info" style="margin-top: 20px;" role="status" aria-live="polite"> 共 {{totalItems}} 条 &nbsp; 第 {{currentPage }} 页 共 {{pageNum}} 页
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-9">
+                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+
+                    <ul uib-pagination boundary-links="true" total-items="totalItems" boundary-link-numbers="true"
+                        ng-model="currentPage" items-per-page="20"
+                        max-size="5" num-pages="totalPage"
+                        previous-text="&lt;" next-text="&gt;" first-text="&laquo;" last-text="&raquo;">
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
