@@ -42,6 +42,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     t.code = t.TerminalCode.toString();
                     t.online = d.IsOnline? "在线" : "离线";
                     t.IsOnline = d.IsOnline;
+
                    /* if(t.Boilers){
                         $http.get('/boiler/state/is_burning/?boiler=' + t.Boilers[0].Uid)
                             .then(function (res) {
@@ -60,6 +61,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                         d.PlatUpdateTime = null;
                     }
 
+                    d.configStatus = (d.TermVer===d.PlatVer)?"配置成功":"配置失败";
                     if (t.code.length < 6) {
                         for (var l = t.code.length; l < 6; l++) {
                             t.code = "0" + t.code;

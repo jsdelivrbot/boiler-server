@@ -58,11 +58,12 @@
         <th>终端名称</th>
         <th>终端编码</th>
         <th>状态</th>
-        <th>监测锅炉</th>
+        <!--<th>监测锅炉</th>-->
         <!--<th>物联网卡号</th>-->
         <!--<th>消息调试</th>-->
         <th>终端版本</th>
         <th>平台版本</th>
+        <th>配置状态</th>
         <th>模板状态</th>
         <th>操作</th>
     </tr>
@@ -73,24 +74,24 @@
         <td> {{ data.Terminal.num }} </td>
         <td>
             {{ data.Terminal.Name }} <br>
-            <span class="label label-sm label-default">
+            <!--<span class="label label-sm label-default">
             {{ data.Terminal.Organization.Name }}
-            </span>
+            </span>-->
         </td>
         <td> {{ data.Terminal.code }} </td>
         <td>
             <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.Terminal.online }}</span>
         </td>
-        <td>
-            <!--<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">-->
+        <!--<td>
+            &lt;!&ndash;<a ng-repeat="boiler in data.Boilers" ui-sref="boiler_runtime({boiler: boiler.Uid})">&ndash;&gt;
             <a ng-repeat="boiler in data.Terminal.Boilers"
                ui-sref="runtime.info({boiler: boiler.Uid, from: 'terminal'})"
                class="label label-info label-sm"
                style="margin: 4px 4px; display: inline-block; clear: both;">
                 {{ boiler.Name }}
             </a>
-            <!--</a>-->
-        </td>
+            &lt;!&ndash;</a>&ndash;&gt;
+        </td>-->
         <!--<td>-->
             <!--<span ng-class="[{'light-gray': data.SimNumber.length <= 0}]">{{ data.simNum }}</span>-->
         <!--</td>-->
@@ -111,6 +112,9 @@
             <span ng-if="data.PlatUpdateTime" class="label label-default label-sm">
                 {{data.PlatUpdateTime | date:'yyyy-MM-dd' }}
             </span>
+        </td>
+        <td>
+            {{ data.configStatus }}
         </td>
         <td>
             {{data.IssuedTermTempStatus.Template.Name||"默认配置"}}
