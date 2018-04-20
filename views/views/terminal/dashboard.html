@@ -125,27 +125,28 @@
                     <i class="fa fa-eye"></i> 查看
                 </button>
 
-                <button class="btn btn-outline btn-sm green"
+                <button class="btn btn-outline btn-circle btn-sm green"
                         ng-click="terminal.viewMesData(data.Terminal.code);"
-                        style="border-bottom-left-radius:25px; border-top-left-radius: 25px; ">
+                        style="margin-left: 3px;">
                     <i class="fa fa-eye"></i>
                     调试
                 </button>
                 <button ng-show="currentUser.Role.RoleId < 10"
                         ng-click="terminal.setting(data.Terminal)"
-                        class="btn edit btn-outline btn-sm blue">
+                        class="btn edit btn-outline btn-circle btn-sm blue"
+                        style="margin-left: 3px;">
                     <i class="fa fa-cogs"></i> 关联
                 </button>
                 <button
                         ng-click="terminal.channel(data.Terminal,data.IssuedTermTempStatus)"
-                        class="btn edit btn-outline btn-sm blue-hoki"
-                        style="">
+                        class="btn edit btn-outline btn-circle btn-sm blue-hoki"
+                        style="margin-left: 3px;">
                     <i class="fa fa-server"></i> 配置
                 </button>
                 <button
                         ng-click="terminal.statusView(data.Terminal.code);"
-                        class="btn edit btn-outline btn-sm yellow"
-                        style="border-bottom-right-radius:25px; border-top-right-radius: 25px;">
+                        class="btn edit btn-outline btn-circle btn-sm yellow"
+                        style="margin-left: 3px;">
                     <i class="fa fa-random"></i> 状态
                 </button>
 
