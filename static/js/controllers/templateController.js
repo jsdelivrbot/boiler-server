@@ -1,4 +1,4 @@
-angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$scope,$uibModal,$http,settings,DTOptionsBuilder, DTColumnDefBuilder) {
+angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$scope,$uibModal,$http,$filter, settings,DTOptionsBuilder, DTColumnDefBuilder) {
     template = this;
 
     App.initAjax();
@@ -21,7 +21,16 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
     //模板列表刷新
     template.refreshTemplate = function () {
         $http.get("/template_list").then(function (res) {
-            template.datasource = res.data;
+            var datasource = res.data;
+
+            template.datasource = $filter("filter")(datasource,function (data) {
+                if(!$rootScope.currentUser.Organization){
+                    return true;
+                }
+               if(data.Organization.Uid === $rootScope.currentUser.Organization.Uid){
+                   return true;
+               }
+            });
             for(var i = 0; i<template.datasource.length; i++){
                 template.datasource[i].num = i+1;
             }
