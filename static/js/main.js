@@ -809,8 +809,14 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         .state("terminal.status", {
             url: "/status?:terminal",
-            params:{"uid":null},
+            params:{"terminal":null},
             templateUrl: "views/terminal/status.html" + clientkey,
+        })
+
+        .state("terminal.configStatus", {
+            url: "/configStatus",
+            params:{"data":null},
+            templateUrl: "views/terminal/configStatus.html" + clientkey,
         })
 
         /*============= TERMINAL END =============*/

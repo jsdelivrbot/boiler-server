@@ -1933,7 +1933,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelConfigRangeCtrl', 
 });
 
 //批量导入配置
-angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance,$http) {
+angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scope, $uibModalInstance,$http,$state) {
     $scope.items = [
         {
             start:null,
@@ -1985,17 +1985,32 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             App.stopPageLoading();
             swal({
                 title: "批量配置成功",
-                text: res.data,
-                type: "success"
+                // text: res.data,
+                type: "success",
+                showCancelButton: true,
+                confirmButtonText: "查看配置详情",
+                cancelButtonText: '关闭'
+            }).then(function(isConfirm) {
+                if (isConfirm) {
+                    $state.go("terminal.configStatus",{data:res.data});
+                }
             });
             terminal.refreshDataTables();
             $uibModalInstance.close();
         },function (err) {
+            var errdata = err.data
             App.stopPageLoading();
             swal({
                 title: "批量配置失败",
                 text: err.data,
-                type: "warning"
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "查看配置详情",
+                cancelButtonText: '关闭'
+            }).then(function(isConfirm) {
+                if (isConfirm) {
+                    $state.go("terminal.configStatus",{data:err.data});
+                }
             });
         });
 
@@ -2230,6 +2245,40 @@ angular.module('BoilerAdmin').controller("terminalStatus",function ($scope,$http
 
 });
 
+//批量配置状态信息
+angular.module('BoilerAdmin').controller("terminalConfigStatus",function ($scope,$http,$stateParams) {
+    console.log($stateParams.data);
+    $scope.statusList = $stateParams.data;
+    if(!$scope.statusList){
+        $scope.totalItems =0;
+        $scope.pageNum = 1;
+        return;
+    }
+    $scope.totalItems = $scope.statusList.length;
+    $scope.currentPage = 1;
+    $scope.pageNum = Math.ceil($scope.totalItems/20);
+    /*$scope.refreshData = function () {
+        $http.post("/terminal_error_list",{
+            sn: $stateParams.terminal,
+            startDate: $scope.startDate,
+            endDate: $scope.endDate,
+        }).then(function (res) {
+            $scope.statusList = res.data;
+
+            $scope.totalItems = $scope.statusList.length;
+            $scope.currentPage = 1;
+            $scope.pageNum = Math.ceil($scope.totalItems/20);
+        },function (err) {
+
+        })
+    };*/
+
+
+
+
+
+
+});
 
 
 

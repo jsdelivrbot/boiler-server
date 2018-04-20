@@ -115,36 +115,42 @@
         <td>
             {{data.IssuedTermTempStatus.Template.Name||"默认配置"}}
         </td>
-        <td style="min-width: 238px;">
+        <td style="min-width: 270px;">
 
-            <button class="btn btn-outline btn-circle btn-sm green" ng-click="terminal.viewMesData(data.Terminal.code);">
-                <i class="fa fa-eye"></i>
-                消息调试
-            </button>
+
             <div class="btn-group">
-            <button ng-show="currentUser.Role.RoleId >= 10"
-                    ng-click="terminal.view(data.Terminal)"
-                    class="btn edit btn-outline btn-circle btn-sm green">
-                <i class="fa fa-eye"></i> 查看
-            </button>
-            <button ng-show="currentUser.Role.RoleId < 10"
-                    ng-click="terminal.setting(data.Terminal)"
-                    class="btn edit btn-outline btn-circle btn-sm blue">
-                <i class="fa fa-cogs"></i> 终端关联
-            </button>
-            <button
-                    ng-click="terminal.channel(data.Terminal,data.IssuedTermTempStatus)"
-                    class="btn edit btn-outline btn-circle btn-sm blue-hoki"
-                    style="margin-left: 8px;">
-                <i class="fa fa-server"></i> 通道配置
-            </button>
+                <button ng-show="currentUser.Role.RoleId >= 10"
+                        ng-click="terminal.view(data.Terminal)"
+                        class="btn edit btn-outline btn-circle btn-sm green">
+                    <i class="fa fa-eye"></i> 查看
+                </button>
+
+                <button class="btn btn-outline btn-sm green"
+                        ng-click="terminal.viewMesData(data.Terminal.code);"
+                        style="border-bottom-left-radius:25px; border-top-left-radius: 25px; ">
+                    <i class="fa fa-eye"></i>
+                    调试
+                </button>
+                <button ng-show="currentUser.Role.RoleId < 10"
+                        ng-click="terminal.setting(data.Terminal)"
+                        class="btn edit btn-outline btn-sm blue">
+                    <i class="fa fa-cogs"></i> 关联
+                </button>
+                <button
+                        ng-click="terminal.channel(data.Terminal,data.IssuedTermTempStatus)"
+                        class="btn edit btn-outline btn-sm blue-hoki"
+                        style="">
+                    <i class="fa fa-server"></i> 配置
+                </button>
+                <button
+                        ng-click="terminal.statusView(data.Terminal.code);"
+                        class="btn edit btn-outline btn-sm yellow"
+                        style="border-bottom-right-radius:25px; border-top-right-radius: 25px;">
+                    <i class="fa fa-random"></i> 状态
+                </button>
+
             </div>
-            <button
-                    ng-click="terminal.statusView(data.Terminal.code);"
-                    class="btn edit btn-outline btn-circle btn-sm yellow"
-                    style="margin-left: 8px;">
-                <i class="fa fa-random"></i> 状态信息
-            </button>
+
 
             <!--
             <a ng-show="currentUser.Role.RoleId < 10"
