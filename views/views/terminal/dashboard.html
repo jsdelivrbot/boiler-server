@@ -114,7 +114,9 @@
             </span>
         </td>
         <td>
-            {{ data.configStatus }}
+            <span ng-class="{'label-success': data.configStatus==='配置成功', 'label-default':data.configStatus==='配置失败' }" class="label label-sm">
+                {{ data.configStatus }}
+            </span>
         </td>
         <td>
             {{data.IssuedTermTempStatus.Template.Name||"默认配置"}}
