@@ -9,6 +9,8 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"strconv"
 	"github.com/AzureTech/goazure/orm"
+	"bytes"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type TemplateController struct {
@@ -51,7 +53,7 @@ type Template struct {
 }
 
 type TemplateConfig struct {
-	Terminal    models.Terminal
+	Terminals    []models.Terminal
 	TemplateUid string
 }
 type GroupConfig struct {
@@ -62,13 +64,16 @@ type GroupConfig struct {
 type TemplateGroupConfig struct {
 	GroupConfig  []GroupConfig  `json:"groupConfig"`
 }
-
+type TempReturnErr struct {
+	TerminalCode string
+	MsgErr string
+}
 func (ctl *TemplateController) TemplateGroupConfig() {
 	usr:=ctl.GetCurrentUser()
-	tempConfigs:=make([]TemplateConfig,0)
-	var terminal models.Terminal
+	var terminals []models.Terminal
 	var tempConfig TemplateConfig
 	var tempGroupConfig TemplateGroupConfig
+	var tempErr []TempReturnErr
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &tempGroupConfig); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
@@ -88,23 +93,22 @@ func (ctl *TemplateController) TemplateGroupConfig() {
 			ctl.Ctx.Output.Body([]byte("终端编号输入错误!"))
 			goazure.Error("Format Int Error",err)
 		}
-		for i:=0;i<=end-start;i++{
-			code:=start+i
-			qs := dba.BoilerOrm.QueryTable("terminal")
-			if usr.IsOrganizationUser() {
-				qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
-			}
-			if err := qs.Filter("IsDeleted", false).Filter("TerminalCode",code).OrderBy("-UpdatedDate").One(&terminal);err!=nil{
-				goazure.Error("Query terminal Error",err)
-			} else {
-				tempConfig.Terminal=terminal
-				tempConfig.TemplateUid=c.Template
-				tempConfigs=append(tempConfigs,tempConfig)
-			}
+		qs := dba.BoilerOrm.QueryTable("terminal")
+		if usr.IsOrganizationUser() {
+			qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
 		}
+		if _,err := qs.Filter("IsDeleted", false).Filter("TerminalCode__gte",start).Filter("TerminalCode__lte",end).OrderBy("-UpdatedDate").All(&terminals);err!=nil{
+			goazure.Error("Query terminal Error",err)
+		}
+		tempConfig.Terminals = terminals
+		tempConfig.TemplateUid = c.Template
+		fmt.Println("需要更新的终端:",tempConfig.Terminals)
+		fmt.Println("更新的模板：",tempConfig.TemplateUid)
+		rErr:=ctl.IssuedTemplateToCurr(tempConfig)
+		tempErr = append(tempErr,rErr...)
 	}
-	fmt.Println("tempConfigs:",tempConfigs)
-	ctl.IssuedTemplateToCurr(tempConfigs)
+	ctl.Data["json"]=tempErr
+	ctl.ServeJSON()
 }
 
 //组装模板的模拟量一报文
@@ -376,30 +380,43 @@ func (ctl *TemplateController) TemplateChannelConfigDelete(cnf *models.RuntimePa
 	return nil
 }
 
-func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
-	for _, t := range temp {
+func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempReturnErr) {
+	Byte:=ctl.IssuedTemplateMessage(temp.TemplateUid)
+	var configTemp []models.IssuedChannelConfigTemplate
+	var confSwitchTemps []models.IssuedChannelConfigTemplate
+	var commTemp models.IssuedCommunicationTemplate
+	var rErr []TempReturnErr
+	if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").RelatedSel("Byte").
+		Filter("Template", temp.TemplateUid).Filter("ChannelType__in",models.CHANNEL_TYPE_TEMPERATURE,models.CHANNEL_TYPE_ANALOG,models.CHANNEL_TYPE_RANGE).
+		OrderBy("ChannelType").All(&configTemp); err != nil {
+		goazure.Error("Query issued channel config template Error", err)
+	}
+	if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").
+		Filter("Template", temp.TemplateUid).Filter("ChannelType",models.CHANNEL_TYPE_SWITCH).
+		OrderBy("ChannelNumber").All(&confSwitchTemps); err != nil {
+		goazure.Error("Query issued channel config template Error", err)
+	}
+	if err:=dba.BoilerOrm.QueryTable("issued_communication_template").Filter("Template__Uid",temp.TemplateUid).One(&commTemp);err!=nil{
+		goazure.Error("Query issued_communication_template Error",err)
+	}
+	for _, t := range temp.Terminals {
+		var tErr TempReturnErr
 		var aCnf []models.RuntimeParameterChannelConfig
 		if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
-			Filter("Terminal__Uid", t.Terminal.Uid).Filter("IsDefault", false).
+			Filter("Terminal__Uid", t.Uid).Filter("IsDefault", false).
 			All(&aCnf); err != nil {
 			goazure.Error("Get ChannelConfig To Delete Error:", err)
 		}
 		for _, a := range aCnf {
-			ctl.TemplateChannelConfigDelete(&a, t.Terminal.Uid)
+			ctl.TemplateChannelConfigDelete(&a, t.Uid)
 		}
-		if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", t.Terminal.Uid).Delete(); err != nil {
+		if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", t.Uid).Delete(); err != nil {
 			goazure.Error("Delete issued switch Error:", err, num)
 		}
+		//**删除结束**
 		var cnf models.RuntimeParameterChannelConfig
-		var configTemp []models.IssuedChannelConfigTemplate
-		var confSwitchTemps []models.IssuedChannelConfigTemplate
-		if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").RelatedSel("Byte").
-		Filter("Template", t.TemplateUid).Filter("ChannelType__in",models.CHANNEL_TYPE_TEMPERATURE,models.CHANNEL_TYPE_ANALOG,models.CHANNEL_TYPE_RANGE).
-				OrderBy("ChannelType").All(&configTemp); err != nil {
-				goazure.Error("Query issued channel config template Error", err)
-		}
 		for _, c := range configTemp {
-			cnf.Terminal = &t.Terminal
+			cnf.Terminal = &t
 			cnf.ChannelType = c.ChannelType
 			cnf.ChannelNumber = c.ChannelNumber
 			cnf.IsDefault = false
@@ -422,9 +439,6 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 				cnf.SwitchStatus = c.SwitchStatus
 			}
-			fmt.Println("channelType:",cnf.ChannelType)
-			fmt.Println("channelNumber:",cnf.ChannelNumber)
-
 				if _,err:=dba.BoilerOrm.Insert(&cnf);err!=nil{
 					goazure.Error("insert runtime parameter channel config Error",err)
 				}
@@ -446,7 +460,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 						goazure.Error(e)
 						ctl.Ctx.Output.SetStatus(400)
 						ctl.Ctx.Output.Body([]byte(e))
-						return
+						return nil
 					}
 					for _, ar := range aRanges {
 						if ar.Max >= r.Min {
@@ -454,7 +468,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 							goazure.Error(e)
 							ctl.Ctx.Output.SetStatus(400)
 							ctl.Ctx.Output.Body([]byte(e))
-							return
+							return nil
 						}
 					}
 					rg.ChannelConfig = &cnf
@@ -469,14 +483,8 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 			}
 		}
-
-		if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").
-			Filter("Template", t.TemplateUid).Filter("ChannelType",models.CHANNEL_TYPE_SWITCH).
-			OrderBy("ChannelNumber").All(&confSwitchTemps); err != nil {
-			goazure.Error("Query issued channel config template Error", err)
-		}
 		for _, c := range confSwitchTemps {
-			cnf.Terminal = &t.Terminal
+			cnf.Terminal = &t
 			cnf.ChannelType = c.ChannelType
 			cnf.ChannelNumber = c.ChannelNumber
 			cnf.IsDefault = false
@@ -499,11 +507,9 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 				cnf.SwitchStatus = c.SwitchStatus
 			}
-			fmt.Println("channelType:",cnf.ChannelType)
-			fmt.Println("channelNumber:",cnf.ChannelNumber)
 			if cnf.ChannelType==models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber ==2) {
 				switchburnsql := "insert into issued_switch_default(uid,terminal_id,create_time,channel_type,channel_number,function_id,modbus,bit_address) values(uuid(),?,now(),?,?,?,?,?)"
-				if _, err := dba.BoilerOrm.Raw(switchburnsql, t.Terminal.Uid, c.ChannelType,c.ChannelNumber,c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
+				if _, err := dba.BoilerOrm.Raw(switchburnsql, t.Uid, c.ChannelType,c.ChannelNumber,c.Func.Id, c.Modbus, c.BitAddress).Exec(); err != nil {
 					goazure.Error("Insert issued_switch_default Error", err)
 				}
 			} else {
@@ -516,25 +522,19 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 				}
 			}
 		}
-
-
-		var commTemp models.IssuedCommunicationTemplate
-		if err:=dba.BoilerOrm.QueryTable("issued_communication_template").Filter("Template__Uid",t.TemplateUid).One(&commTemp);err!=nil{
-			goazure.Error("Query issued_communication_template Error",err)
-		}
-		fmt.Println("commTemp:",commTemp)
+		//插入通信参数
 		commSql:="replace into issued_communication(terminal_id,baud_rate_id,data_bit_id,stop_bit_id,check_bit_id,correspond_type_id,sub_address_id,heart_beat_id) values(?,?,?,?,?,?,?,?)"
-		if _, er := dba.BoilerOrm.Raw(commSql, t.Terminal.Uid, commTemp.BaudRate.Id, commTemp.DataBit.Id, commTemp.StopBit.Id, commTemp.CheckBit.Id, commTemp.CorrespondType.Id, commTemp.SubAddress.Id, commTemp.HeartBeat.Id).Exec(); er != nil {
+		if _, er := dba.BoilerOrm.Raw(commSql, t.Uid, commTemp.BaudRate.Id, commTemp.DataBit.Id, commTemp.StopBit.Id, commTemp.CheckBit.Id, commTemp.CorrespondType.Id, commTemp.SubAddress.Id, commTemp.HeartBeat.Id).Exec(); er != nil {
 			goazure.Error("Insert issued_communication Error", er)
 		}
 		fmt.Println("插入通信参数结束")
 		//插入报文
 		var param []orm.Params
 		var ver int32
-		fmt.Println("code:",t.Terminal.TerminalCode)
-		code:=strconv.FormatInt(t.Terminal.TerminalCode,10)
+		fmt.Println("code:",t.TerminalCode)
+		code:=strconv.FormatInt(t.TerminalCode,10)
 		verSql:="select ver from issued_message where sn=?"
-		if num,err:=dba.BoilerOrm.Raw(verSql,t.Terminal.TerminalCode).Values(&param);err!=nil || num==0 {
+		if num,err:=dba.BoilerOrm.Raw(verSql,t.TerminalCode).Values(&param);err!=nil || num==0 {
 			goazure.Error("Query issued_message Error",err)
 			ver = 1
 		} else {
@@ -546,30 +546,78 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp []TemplateConfig) {
 			}
 			if err!=nil {
 				goazure.Error("ParseInt Error")
-				return
+				return nil
 			}
 		}
-		fmt.Println("ver:",ver)
-		Byte:=ctl.IssuedTemplateMessage(t.TemplateUid)
-		fmt.Println("Byte:",Byte)
-		fmt.Println("ByteLen:",len(Byte))
 		message:=SocketCtrl.c0(Byte,code,ver)
-		fmt.Println("message:",message)
-		fmt.Println("messageLen:",len(message))
 		messageSql:="insert into issued_message(sn,ver,create_time,update_time,curr_message) values(?,?,now(),now(),?) on duplicate key update ver=?,update_time=now(),curr_message=?"
 		if _,err:=dba.BoilerOrm.Raw(messageSql,code,ver,string(message),ver,string(message)).Exec();err!=nil{
 			goazure.Error("Insert issued_message Error",err)
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("组包失败"))
 		}
-		//插入配置的报文信息
+		//插入配置的模板信息
 		tempStatusSql:="insert into issued_term_temp_status(sn,create_time,update_time,template_id) values(?,now(),now(),?) on duplicate key update update_time=now(),template_id=?"
-		if _,err:=dba.BoilerOrm.Raw(tempStatusSql,code,t.TemplateUid,t.TemplateUid).Exec();err!=nil{
+		if _,err:=dba.BoilerOrm.Raw(tempStatusSql,code,temp.TemplateUid,temp.TemplateUid).Exec();err!=nil{
 			goazure.Error("Insert issued_term_temp_status Error",err)
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("存入失败"))
 		}
+		reqBuf :=IssuedCtl.ReqMessage(code)
+		if reqBuf == "" {
+			tErr.TerminalCode= code
+			tErr.MsgErr="还未保存配置"
+		}
+		if len(reqBuf) != 362 {
+			tErr.TerminalCode= code
+			tErr.MsgErr="报文发生错误"
+		}
+		buf := SocketCtrl.SocketConfigSend(reqBuf)
+		if buf == nil {
+			tErr.TerminalCode= code
+			tErr.MsgErr="发送报文失败"
+		} else if bytes.Equal(conf.TermNoRegist, buf) {
+			tErr.TerminalCode= code
+			tErr.MsgErr="终端还未连接平台"
+		} else if bytes.Equal(conf.TermTimeout, buf) {
+			tErr.TerminalCode= code
+			tErr.MsgErr="终端返回信息超时"
+		} else if len(buf) > 4 {
+			switch buf[15] {
+			case 16:
+				newVer := ByteToIntTwo(buf[13:15])
+				fmt.Println("终端返回版本号:",newVer)
+				termCode := fmt.Sprintf("%s", buf[7:13])
+				sql := "insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now()) on duplicate key update ver=?,update_time=now()"
+				if _, err := dba.BoilerOrm.Raw(sql, termCode, newVer, newVer).Exec(); err != nil {
+					goazure.Error("insert issued_version Error", err)
+				}
+				fmt.Println("插入终端版本成功")
+			case 1:
+				tErr.TerminalCode= code
+				tErr.MsgErr="CRC校验错误"
+			case 2:
+				tErr.TerminalCode= code
+				tErr.MsgErr="SN不一致"
+			case 3:
+				tErr.TerminalCode= code
+				tErr.MsgErr="配置错误"
+			case 4:
+				tErr.TerminalCode= code
+				tErr.MsgErr="PLC未连接"
+			default:
+				tErr.TerminalCode= code
+				tErr.MsgErr="终端配置错误"
+			}
+		} else {
+			tErr.TerminalCode= code
+			tErr.MsgErr="返回报文信息错误"
+		}
+		if tErr.TerminalCode != ""{
+			rErr=append(rErr,tErr)
+		}
 	}
+	return rErr
 }
 
 func (ctl *TemplateController) IssuedTemplate() {
