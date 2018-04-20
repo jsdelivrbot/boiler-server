@@ -1983,7 +1983,7 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
 
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/template_group_config",{groupConfig:$scope.items}).then(function (res) {
+        $http.post("/template_group_config",{groupConfig:$scope.items},{timeout:300000}).then(function (res) {
             App.stopPageLoading();
             if(!res.data){
                 swal({
