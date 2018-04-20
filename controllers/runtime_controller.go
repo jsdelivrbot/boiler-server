@@ -767,7 +767,7 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 	var scope string
 	//goazure.Error("Instants Param:", ctl.Input())
 	if ctl.Input()["scope"] != nil && len(ctl.Input()["scope"]) > 0 {
-		scop45e = ctl.Input()["scope"][0]
+		scope = ctl.Input()["scope"][0]
 	}
 
 	var b bBoiler
