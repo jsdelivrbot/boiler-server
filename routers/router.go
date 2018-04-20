@@ -181,9 +181,6 @@ func init() {
 	//终端错误回显
 	goazure.Router("/terminal_error_list",&controllers.IssuedController{},"post:TerminalErrorList")
 
-
-
-
 	//下发测试按钮
 
 
