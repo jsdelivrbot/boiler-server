@@ -512,7 +512,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
                 boiler.isBurning = (res.data.value === "true");
-                boiler.alarmLevel = boiler.isBurning ? 0 : -1;
+                // boiler.alarmLevel = boiler.isBurning ? 0 : -1;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
             });
@@ -520,7 +520,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
                 boiler.isOnline = res.data;
-                boiler.alarmLevel = boiler.isOnline ? 0 : -1;
+                // boiler.alarmLevel = boiler.isOnline ? 0 : -1;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
             });
