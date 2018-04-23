@@ -20,29 +20,7 @@
         <div ng-controller="statusModule" id="status_1" style="height: 50px;">
 
         </div>
-        <div class="" ng-init="runtime.initControl()">
-            <div class="input-group" ng-if="isRemoteControl">
-                <select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
-                        class="form-control" style="width: 50%">
-                    <option value="" disabled>请选择终端</option>
-                </select>
-                <select ng-model="restartValue"
-                        class="form-control" style="width: 50%">
-                    <option value="" disabled>请选择操作</option>
-                    <option value="2">启动锅炉</option>
-                    <option value="1">关闭锅炉</option>
-                    <option value="3">重置锅炉</option>
-                </select>
-                <span class="input-group-btn">
-                    <button ng-click="boilerRestart(restartValue,terminalRestart)"
-                            ng-disabled="!terminalRestart"
-                            class="btn blue" type="button">
-                        确定
-                    </button>
-                  </span>
-
-
-            </div>
+        <div class="">
 
             <h6 class="font-grey-salsa" style="padding-bottom: 6px;">
                 采样时间: {{ runtime.instants[0].date | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
@@ -133,6 +111,36 @@
         </div>
     </div>
     <div class="col-md-6" style="padding: 0; ">
+        <div class="" ng-init="runtime.initControl()" style="width:250px; margin: auto;">
+            <div class="btn-group" ng-if="isRemoteControl">
+
+                <button type="button" class="btn blue" ng-click="boilerRestart(2)">启动锅炉</button>
+                <button type="button" class="btn green" ng-click="boilerRestart(1)">关闭锅炉</button>
+                <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)">重置锅炉</button>
+
+                <!--<select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
+                        class="form-control" style="width: 50%">
+                    <option value="" disabled>请选择终端</option>
+                </select>
+                <select ng-model="restartValue"
+                        class="form-control" style="width: 50%">
+                    <option value="" disabled>请选择操作</option>
+                    <option value="2">启动锅炉</option>
+                    <option value="1">关闭锅炉</option>
+                    <option value="3">重置锅炉</option>
+                </select>
+                <span class="input-group-btn">
+                    <button ng-click="boilerRestart(restartValue,terminalRestart)"
+                            ng-disabled="!terminalRestart"
+                            class="btn blue" type="button">
+                        确定
+                    </button>
+                  </span>-->
+
+
+            </div>
+        </div>
+
         <boiler-module></boiler-module>
         <div class="" >
             <div ng-show="runtime.boiler.hasSwitchValue && runtime.boiler.isOnline"
