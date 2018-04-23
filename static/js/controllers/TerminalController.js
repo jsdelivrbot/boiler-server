@@ -1983,20 +1983,29 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
 
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/template_group_config",{groupConfig:$scope.items}).then(function (res) {
+        $http.post("/template_group_config",{groupConfig:$scope.items},{timeout:300000}).then(function (res) {
             App.stopPageLoading();
-            swal({
-                title: "批量配置成功",
-                // text: res.data,
-                type: "success",
-                showCancelButton: true,
-                confirmButtonText: "查看配置详情",
-                cancelButtonText: '关闭'
-            }).then(function(isConfirm) {
-                if (isConfirm) {
-                    $state.go("terminal.configStatus",{data:res.data});
-                }
-            });
+            if(!res.data){
+                swal({
+                    title: "批量配置成功",
+                    text: res.data,
+                    type: "success"
+                })
+            }else {
+                swal({
+                    title: "批量配置失败",
+                    // text: res.data,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "查看配置详情",
+                    cancelButtonText: '关闭'
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        $state.go("terminal.configStatus",{data:res.data});
+                    }
+                });
+            }
+
             terminal.refreshDataTables();
             $uibModalInstance.close();
         },function (err) {
