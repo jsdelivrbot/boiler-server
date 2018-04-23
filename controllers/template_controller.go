@@ -9,8 +9,6 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"strconv"
 	"github.com/AzureTech/goazure/orm"
-	"bytes"
-	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type TemplateController struct {
@@ -18,7 +16,7 @@ type TemplateController struct {
 }
 
 var TempCtrl *TemplateController = &TemplateController{}
-
+var batchCode = make(chan string,100)
 type Chan struct {
 	ParameterId		int			`json:"parameter_id"`
 	ChannelType		int			`json:"channel_type"`
@@ -73,42 +71,44 @@ func (ctl *TemplateController) TemplateGroupConfig() {
 	var terminals []models.Terminal
 	var tempConfig TemplateConfig
 	var tempGroupConfig TemplateGroupConfig
-	var tempErr []TempReturnErr
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &tempGroupConfig); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
 		fmt.Println("Unmarshal Comment Error", err)
 		return
+	} else {
+		ctl.Ctx.Output.SetStatus(200)
+		ctl.Ctx.Output.Body([]byte("正在配置中..."))
 	}
-	for _,c := range tempGroupConfig.GroupConfig {
-		start,err:=strconv.Atoi(c.Start)
-		if err!=nil {
-			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("终端编号输入错误!"))
-			goazure.Error("Format Int Error",err)
+	go func () {
+		for _,c := range tempGroupConfig.GroupConfig {
+			start,err:=strconv.Atoi(c.Start)
+			if err!=nil {
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("终端编号输入错误!"))
+				goazure.Error("Format Int Error",err)
+			}
+			end,error := strconv.Atoi(c.End)
+			if error!=nil {
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("终端编号输入错误!"))
+				goazure.Error("Format Int Error",err)
+			}
+			qs := dba.BoilerOrm.QueryTable("terminal")
+			if usr.IsOrganizationUser() {
+				qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
+			}
+			if _,err := qs.Filter("IsDeleted", false).Filter("TerminalCode__gte",start).Filter("TerminalCode__lte",end).OrderBy("-UpdatedDate").All(&terminals);err!=nil{
+				goazure.Error("Query terminal Error",err)
+			}
+			tempConfig.Terminals = terminals
+			tempConfig.TemplateUid = c.Template
+			fmt.Println("需要更新的终端:",tempConfig.Terminals)
+			fmt.Println("更新的模板：",tempConfig.TemplateUid)
+			ctl.IssuedTemplateToCurr(tempConfig)
 		}
-		end,error := strconv.Atoi(c.End)
-		if error!=nil {
-			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("终端编号输入错误!"))
-			goazure.Error("Format Int Error",err)
-		}
-		qs := dba.BoilerOrm.QueryTable("terminal")
-		if usr.IsOrganizationUser() {
-			qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
-		}
-		if _,err := qs.Filter("IsDeleted", false).Filter("TerminalCode__gte",start).Filter("TerminalCode__lte",end).OrderBy("-UpdatedDate").All(&terminals);err!=nil{
-			goazure.Error("Query terminal Error",err)
-		}
-		tempConfig.Terminals = terminals
-		tempConfig.TemplateUid = c.Template
-		fmt.Println("需要更新的终端:",tempConfig.Terminals)
-		fmt.Println("更新的模板：",tempConfig.TemplateUid)
-		rErr:=ctl.IssuedTemplateToCurr(tempConfig)
-		tempErr = append(tempErr,rErr...)
-	}
-	ctl.Data["json"]=tempErr
-	ctl.ServeJSON()
+	}()
+
 }
 
 //组装模板的模拟量一报文
@@ -380,12 +380,11 @@ func (ctl *TemplateController) TemplateChannelConfigDelete(cnf *models.RuntimePa
 	return nil
 }
 
-func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempReturnErr) {
+func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 	Byte:=ctl.IssuedTemplateMessage(temp.TemplateUid)
 	var configTemp []models.IssuedChannelConfigTemplate
 	var confSwitchTemps []models.IssuedChannelConfigTemplate
 	var commTemp models.IssuedCommunicationTemplate
-	var rErr []TempReturnErr
 	if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").RelatedSel("Byte").
 		Filter("Template", temp.TemplateUid).Filter("ChannelType__in",models.CHANNEL_TYPE_TEMPERATURE,models.CHANNEL_TYPE_ANALOG,models.CHANNEL_TYPE_RANGE).
 		OrderBy("ChannelType").All(&configTemp); err != nil {
@@ -400,7 +399,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempR
 		goazure.Error("Query issued_communication_template Error",err)
 	}
 	for _, t := range temp.Terminals {
-		var tErr TempReturnErr
+		fmt.Println("aaaaaaaaaaaaaaa:",t.TerminalCode)
 		var aCnf []models.RuntimeParameterChannelConfig
 		if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 			Filter("Terminal__Uid", t.Uid).Filter("IsDefault", false).
@@ -460,7 +459,6 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempR
 						goazure.Error(e)
 						ctl.Ctx.Output.SetStatus(400)
 						ctl.Ctx.Output.Body([]byte(e))
-						return nil
 					}
 					for _, ar := range aRanges {
 						if ar.Max >= r.Min {
@@ -468,7 +466,6 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempR
 							goazure.Error(e)
 							ctl.Ctx.Output.SetStatus(400)
 							ctl.Ctx.Output.Body([]byte(e))
-							return nil
 						}
 					}
 					rg.ChannelConfig = &cnf
@@ -546,7 +543,6 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempR
 			}
 			if err!=nil {
 				goazure.Error("ParseInt Error")
-				return nil
 			}
 		}
 		message:=SocketCtrl.c0(Byte,code,ver)
@@ -563,8 +559,16 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempR
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte("存入失败"))
 		}
-		reqBuf :=IssuedCtl.ReqMessage(code)
+		/*reqBuf :=IssuedCtl.ReqMessage(code)
 		if reqBuf == "" {
+			return
+		}
+		if len(reqBuf) != 362 {
+			return
+		}
+		SocketCtrl.SocketBatchConfigSend(reqBuf)*/
+		batchCode <- code
+		/*if reqBuf == "" {
 			tErr.TerminalCode= code
 			tErr.MsgErr="还未保存配置"
 		}
@@ -615,9 +619,8 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig)([]TempR
 		}
 		if tErr.TerminalCode != ""{
 			rErr=append(rErr,tErr)
-		}
+		}*/
 	}
-	return rErr
 }
 
 func (ctl *TemplateController) IssuedTemplate() {
@@ -983,4 +986,20 @@ func (ctl *TemplateController) TemplateDelete() {
 	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").Filter("Template__Uid",template.Uid).Delete();err!=nil{
 		goazure.Error("Delete IssuedCommunicationTemplate Error", err)
 	}
+}
+
+func (ctl *TemplateController) TemplateBatchIssued() {
+	batch := func() {
+		for bc := range batchCode {
+			reqBuf :=IssuedCtl.ReqMessage(bc)
+			if reqBuf == "" {
+				return
+			}
+			if len(reqBuf) != 362 {
+				return
+			}
+			 SocketCtrl.SocketBatchConfigSend(reqBuf)
+		}
+	}
+	go batch()
 }

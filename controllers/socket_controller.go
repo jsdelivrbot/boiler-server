@@ -147,6 +147,22 @@ func (ctl *SocketController)SocketConfigSend(reqBuf string)([]byte) {
 	return buf
 }
 
+//批量下发
+func (ctl *SocketController) SocketBatchConfigSend(reqBuf string) {
+	server := "47.100.0.27:18887"
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+	}
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+	}
+	goazure.Info("connect success")
+	SendConfig(reqBuf,conn)
+	conn.Close()
+}
+
 //重启
 func (ctl *SocketController)SocketTerminalRestart(code string)([]byte) {
 	server := "47.100.0.27:18887"
