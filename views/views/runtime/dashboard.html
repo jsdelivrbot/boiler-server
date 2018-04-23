@@ -111,12 +111,12 @@
         </div>
     </div>
     <div class="col-md-6" style="padding: 0; ">
-        <div class="" ng-init="runtime.initControl()" style="width:250px; margin: auto;">
-            <div class="btn-group" ng-if="isRemoteControl">
+        <div class="" ng-init="runtime.initControl()" style="margin-left: 50px;" ng-if="isRemoteControl">
+            <div class="btn-group pull-left">
 
                 <button type="button" class="btn blue" ng-click="boilerRestart(2)">启动锅炉</button>
                 <button type="button" class="btn green" ng-click="boilerRestart(1)">关闭锅炉</button>
-                <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)">重置锅炉</button>
+                <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)">重启锅炉</button>
 
                 <!--<select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
                         class="form-control" style="width: 50%">
@@ -138,6 +138,11 @@
                   </span>-->
 
 
+            </div>
+            <div class="pull-right" style="margin-right: 20px;">
+                <button type="button" class="btn btn-default" ng-click="dataConfig();">
+                    参数设置
+                </button>
             </div>
         </div>
 

@@ -862,6 +862,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                 $modal.dataBit  = $modal.communParams.DataBit;
 
                 //心跳包频率
+                if(!$modal.communParams.HeartBeat){
+                    $modal.communParams.HeartBeat =
+                        {Id: 3, Name: "45", Value: 3};
+                }
                 $modal.heartbeat = $modal.communParams.HeartBeat;
 
                 //校验位
@@ -916,7 +920,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
 
 
 
-    $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    $modal.priorities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
 
     App.startPageLoading({message: '正在加载数据...'});
     $http.post('/channel_config_matrix/', {
@@ -953,7 +957,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
                     }
 
 
+                if(j===0){
 
+
+                }
 
 
                 if (!$modal.chanMatrix[i][j].RuntimeParameterChannelConfig) {
@@ -1972,18 +1979,22 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             return false;
         }
 
+        var items = [];
         for(var i =0; i<$scope.items.length; i++){
-            var template = $scope.items[i].template.Uid;
-            $scope.items[i].template = template;
-            // if($scope.items[i].start.length!==6||){
-            //
-            // }
+            items[i] = {
+                start:$scope.items[i].start,
+                end:$scope.items[i].end,
+                template:$scope.items[i].template.Uid
+            };
         }
 
 
 
         App.startPageLoading({message: '正在加载数据...'});
-        $http.post("/template_group_config",{groupConfig:$scope.items},{timeout:300000}).then(function (res) {
+        $http.post("/template_group_config",{
+            groupConfig:items
+        },{timeout:300000})
+            .then(function (res) {
             App.stopPageLoading();
             swal({
                 title: res.data,
