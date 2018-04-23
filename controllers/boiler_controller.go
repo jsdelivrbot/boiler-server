@@ -830,6 +830,7 @@ func (ctl *BoilerController) IsBurning(boilerUid string) bool {
 	q = q.Filter("Boiler__Uid", boilerUid).Filter("Parameter__Id", 1107)//.Filter("UpdatedDate__gt", time.Now().Add(time.Minute * -30))
 	if num, err := q.Filter("IsDeleted", false).Values(&status, "Value"); err != nil || num == 0 {
 		goazure.Warning("Read Boiler Burning Status Error!", err, num)
+		fmt.Println("boiler_uid:",boilerUid)
 		return false
 	}
 	goazure.Info("Boiler[", "|", status, "]", boilerUid)

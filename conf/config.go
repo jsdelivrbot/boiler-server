@@ -12,3 +12,4 @@ var BoilerShut string = "\x55"
 var BoilerReset string = "\x99"
 var TermOnline string = "1000000000"
 var TermOffline string = "0000000000"
+var BatchFlag bool = true

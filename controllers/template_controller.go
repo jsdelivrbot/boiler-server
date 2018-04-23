@@ -9,6 +9,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"strconv"
 	"github.com/AzureTech/goazure/orm"
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 type TemplateController struct {
@@ -77,10 +78,17 @@ func (ctl *TemplateController) TemplateGroupConfig() {
 		fmt.Println("Unmarshal Comment Error", err)
 		return
 	} else {
-		ctl.Ctx.Output.SetStatus(200)
-		ctl.Ctx.Output.Body([]byte("正在配置中..."))
+		if conf.BatchFlag {
+			ctl.Ctx.Output.SetStatus(200)
+			ctl.Ctx.Output.Body([]byte("正在配置中..."))
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("服务器忙，还在处理上次批量下发！"))
+			return
+		}
 	}
 	go func () {
+		conf.BatchFlag = false
 		for _,c := range tempGroupConfig.GroupConfig {
 			start,err:=strconv.Atoi(c.Start)
 			if err!=nil {
@@ -107,6 +115,7 @@ func (ctl *TemplateController) TemplateGroupConfig() {
 			fmt.Println("更新的模板：",tempConfig.TemplateUid)
 			ctl.IssuedTemplateToCurr(tempConfig)
 		}
+		conf.BatchFlag =true
 	}()
 
 }

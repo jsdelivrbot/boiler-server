@@ -397,6 +397,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				goazure.Error("Parse Time Error:", err)
 			} else {
 				//goazure.Info("Parse Time:", t, "||", tm)
+				fmt.Println("m163 ts:",t)
 				fmt.Println("BoilerRuntime表的CreateDate:", tm)
 				rtm.CreatedDate = tm
 			}
@@ -419,6 +420,8 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 
 			bConfs := ctl.ChannelConfigList(code)
 			for _, cnf := range bConfs {
+				fmt.Println("处理的code:",code)
+				fmt.Println("处理的通道cnf:",cnf.ChannelType,cnf.ChannelNumber)
 				runtimeReload(cnf)
 			}
 		}
@@ -1223,6 +1226,7 @@ func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {
+			fmt.Println("处理ChannelDataReload:",t)
 			ParamCtrl.ChannelDataReload(t)
 		}
 	}
