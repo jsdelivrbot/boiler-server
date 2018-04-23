@@ -419,7 +419,8 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         });
     };
 
-    $scope.boilerRestart = function(value,ter){
+    $scope.boilerRestart = function(value){
+        var ter = bRuntime.boiler.TerminalsCombined[0];
         console.log(ter);
         App.startPageLoading({message: '正在加载数据...'});
         $http.post("/issued_boiler",{
