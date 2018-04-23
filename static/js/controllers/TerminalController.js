@@ -1985,7 +1985,12 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
         App.startPageLoading({message: '正在加载数据...'});
         $http.post("/template_group_config",{groupConfig:$scope.items},{timeout:300000}).then(function (res) {
             App.stopPageLoading();
-            if(!res.data){
+            swal({
+                title: res.data,
+                // text: ,
+                type: "success"
+            });
+            /*if(!res.data){
                 swal({
                     title: "批量配置成功",
                     text: res.data,
@@ -1994,7 +1999,7 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             }else {
                 swal({
                     title: "批量配置失败",
-                    // text: res.data,
+                    text: res.data,
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonText: "查看配置详情",
@@ -2004,25 +2009,21 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
                         $state.go("terminal.configStatus",{data:res.data});
                     }
                 });
-            }
+            }*/
 
             terminal.refreshDataTables();
             $uibModalInstance.close();
         },function (err) {
-            var errdata = err.data
             App.stopPageLoading();
             swal({
                 title: "批量配置失败",
                 text: err.data,
                 type: "warning",
-                showCancelButton: true,
-                confirmButtonText: "查看配置详情",
-                cancelButtonText: '关闭'
-            }).then(function(isConfirm) {
-                if (isConfirm) {
-                    $state.go("terminal.configStatus",{data:err.data});
-                }
+                // showCancelButton: true,
+                // confirmButtonText: "查看配置详情",
+                // cancelButtonText: '关闭'
             });
+
         });
 
     };
