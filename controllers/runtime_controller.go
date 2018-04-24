@@ -174,11 +174,11 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	var alarmDesc string
 	var alarmLevel int32 = models.RUNTIME_ALARM_LEVEL_UNDEFINED
 	if rule.Warning > rule.Normal && val.(float64) > float64(rule.Warning) {
-		alarmDesc = "过高"
+		alarmDesc = rule.Description
 		alarmLevel = rule.Priority
 	}
 	if rule.Warning < rule.Normal && val.(float64) < float64(rule.Warning) {
-		alarmDesc = "过低"
+		alarmDesc = rule.Description
 		alarmLevel = rule.Priority
 	}
 
