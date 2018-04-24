@@ -538,6 +538,8 @@ func (ctl *IssuedController) IssuedBoiler() {
 
 //终端重启
 func (ctl *IssuedController) TerminalRestart() {
+	ip:=ctl.Ctx.Request.RemoteAddr
+	fmt.Println("ip:",ip)
 	var code Code
 	var terminal models.Terminal
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &code); err != nil {
