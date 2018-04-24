@@ -1,4 +1,4 @@
-<div ng-show="currentUser.Role.RoleId =< 11" class="">
+<div ng-show="currentUser.Role.RoleId <= 11" class="">
     <div class="row">
         <div class="col-md-6">
             <!--<div class="btn-group">-->
@@ -93,6 +93,7 @@
         <th ng-show="param.category !== 11 && param.category !== 13">计量单位</th>
         <th ng-show="param.category !== 11 && param.category !== 13">长度</th>
         <th>使用锅炉</th>
+        <th>所属企业</th>
         <th ng-show="currentUser.Role.RoleId < 10">备注</th>
         <th ng-show="currentUser.Role.RoleId < 10">操作</th>
     </tr>
@@ -117,6 +118,7 @@
                 {{ medium.Name }}
             </span>
         </td>
+        <td> </td>
         <td ng-show="currentUser.Role.RoleId < 10">{{ data.Remark }}</td>
         <td ng-show="currentUser.Role.RoleId < 10">
             <a ng-show="data.ParamId < 100"

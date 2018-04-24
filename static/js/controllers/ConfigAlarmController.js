@@ -249,7 +249,7 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
             warningValue: parseFloat($modal.warningValue),
             delay: parseInt($modal.delay),
             priority: $modal.priority,
-
+            organization: $modal.org.Uid,
             description: $modal.description
         }).then(function (res) {
             // Ladda.create(document.getElementById('boiler_ok')).stop();
