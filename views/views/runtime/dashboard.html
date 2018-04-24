@@ -110,14 +110,12 @@
             <!-- END SAMPLE TABLE PORTLET-->
         </div>
     </div>
-    <div class="col-md-6" style="padding: 0; ">
-        <div class="" ng-init="runtime.initControl()" style="margin-left: 50px;" ng-if="isRemoteControl">
+    <div class="col-md-6" style="padding: 0;" ng-init="runtime.initControl();">
+        <div class="" style="margin-left: 50px;" ng-if="isRemoteControl">
             <div class="btn-group pull-left">
-
                 <button type="button" class="btn blue" ng-click="boilerRestart(2)">启动锅炉</button>
                 <button type="button" class="btn green" ng-click="boilerRestart(1)">关闭锅炉</button>
                 <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)">重启锅炉</button>
-
                 <!--<select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
                         class="form-control" style="width: 50%">
                     <option value="" disabled>请选择终端</option>
@@ -136,7 +134,6 @@
                         确定
                     </button>
                   </span>-->
-
 
             </div>
             <div class="pull-right" style="margin-right: 20px;">
