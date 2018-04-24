@@ -12,6 +12,8 @@ import (
 	"encoding/binary"
 	"bytes"
 	"time"
+	"strings"
+	"strconv"
 )
 
 type IssuedController struct {
@@ -55,6 +57,41 @@ func IntToByteTwo(Int int32) ([]byte) {
 	}
 	r_buf := []byte{b_buf.Bytes()[2], b_buf.Bytes()[3]}
 	return r_buf
+}
+
+func (ctl *IssuedController) IssuedGetIp(ip string)(string) {
+	netInfo := strings.Split(ip,":")
+	return netInfo[0]
+}
+
+//往数据库插入操作记录
+func (ctl *IssuedController) IssuedContentLogs(username string,ip string,sn string,operation string, remark string) {
+	sql:="insert into issued_operation_logs(uid,username,ip_address,create_time,sn,operation,remark) values(uuid(),?,?,now(),?,?,?)"
+	if _,err:=dba.BoilerOrm.Raw(sql,username,ip,sn,operation,remark).Exec();err!=nil{
+		goazure.Error("Insert Issued Operation Logs Error",err)
+	}
+}
+
+//版本控制
+func (ctl *IssuedController) IssuedVerController(sn string)(bool) {
+	var param []orm.Params
+	sql := "select Boiler_data_fmt_ver from boiler_m163 where Boiler_term_id =? order by TS desc limit 1"
+	if num,err:=dba.BoilerOrm.Raw(sql,sn).Values(&param);err!=nil || num==0{
+		goazure.Error("Query Boiler m163 Error",err)
+		return false
+	}
+	fmt.Println("param:",param)
+	ver := param[0]["Boiler_data_fmt_ver"].(string)
+	verInt,err := strconv.Atoi(ver)
+	if err!=nil {
+		goazure.Error("Parse Int Error",err)
+		return false
+	}
+	if verInt >= 30 {
+		return true
+	} else {
+		return false
+	}
 }
 
 type BoilerIssued struct {
@@ -366,8 +403,23 @@ func (ctl *IssuedController) ReqMessage(Code string) (string) {
 	return info.CurrMessage
 }
 
+func (ctl *IssuedController) IssuedPlatTermVer(sn string)(string) {
+	var param []orm.Params
+	var ver string
+	verSql := "select ver from issued_message where sn=?"
+	if num, err := dba.BoilerOrm.Raw(verSql, sn).Values(&param); err != nil || num == 0 {
+		goazure.Error("Query issued_message Error", err)
+		ver = "0"
+	} else {
+		ver = fmt.Sprintf("%s", param[0]["ver"])
+	}
+	return ver
+}
+
 //下发配置
 func (ctl *IssuedController) IssuedConfig() {
+	usr:=ctl.GetCurrentUser()
+	ip:=ctl.IssuedGetIp(ctl.Ctx.Request.RemoteAddr)
 	var confIssued ConfIssued
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &confIssued); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
@@ -375,7 +427,18 @@ func (ctl *IssuedController) IssuedConfig() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
+	if temp:=ctl.IssuedVerController(confIssued.Code);!temp{
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端版本号低，不支持改功能!"))
+		return
+	}
 	reqBuf := ctl.ReqMessage(confIssued.Code)
+	ver:=ctl.IssuedPlatTermVer(confIssued.Code)
+	if conf.ContentLogsFlag {
+		ctl.IssuedContentLogs(usr.Username,ip,confIssued.Code,conf.TermConfig,ver+":"+fmt.Sprintf("%x",reqBuf))
+	} else {
+		ctl.IssuedContentLogs(usr.Username,ip,confIssued.Code,conf.TermConfig,ver)
+	}
 	if reqBuf == "" {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("还未保存配置"))
@@ -513,6 +576,8 @@ func (ctl *IssuedController) IssuedBoilerMini() {
 
 //锅炉重启
 func (ctl *IssuedController) IssuedBoiler() {
+	usr:= ctl.GetCurrentUser()
+	ip:= ctl.IssuedGetIp(ctl.Ctx.Request.RemoteAddr)
 	var boilerIssued BoilerIssued
 	var combined models.BoilerTerminalCombined
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &boilerIssued); err != nil {
@@ -521,12 +586,26 @@ func (ctl *IssuedController) IssuedBoiler() {
 		goazure.Error("Unmarshal Terminal Error", err)
 		return
 	}
+	if temp:=ctl.IssuedVerController(boilerIssued.Code);!temp{
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端版本号低，不支持改功能!"))
+		return
+	}
 	if err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Terminal").Filter("Boiler__Uid", boilerIssued.BoilerId).
 		Filter("Terminal__TerminalCode", boilerIssued.Code).One(&combined); err != nil {
 		goazure.Error("Query Boiler Terminal Combined Error", err)
 	}
 	IsOnline := BlrCtl.IsOnline(boilerIssued.BoilerId)
 	if IsOnline {
+		var remark string
+		if boilerIssued.Value == 1{
+			remark = "关闭锅炉"
+		} else if boilerIssued.Value == 2 {
+			remark = "启动锅炉"
+		} else if boilerIssued.Value == 3 {
+			remark = "重置锅炉"
+		}
+		ctl.IssuedContentLogs(usr.Username,ip,boilerIssued.Code,conf.BoilerController,remark)
 		buf := SocketBoilerSend(boilerIssued.Code, combined.TerminalSetId, boilerIssued.Value)
 		ctl.TermReturnInfo(buf)
 	} else {
@@ -538,8 +617,8 @@ func (ctl *IssuedController) IssuedBoiler() {
 
 //终端重启
 func (ctl *IssuedController) TerminalRestart() {
-	ip:=ctl.Ctx.Request.RemoteAddr
-	fmt.Println("ip:",ip)
+	usr := ctl.GetCurrentUser()
+	ip:=ctl.IssuedGetIp(ctl.Ctx.Request.RemoteAddr)
 	var code Code
 	var terminal models.Terminal
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &code); err != nil {
@@ -556,6 +635,12 @@ func (ctl *IssuedController) TerminalRestart() {
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
+	if temp:=ctl.IssuedVerController(fmt.Sprintf("%d", terminal.TerminalCode));!temp{
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端版本号低，不支持改功能!"))
+		return
+	}
+	ctl.IssuedContentLogs(usr.Username,ip,fmt.Sprintf("%d", terminal.TerminalCode),conf.TermRestart,"")
 	buf := SocketCtrl.SocketTerminalRestart(fmt.Sprintf("%d", terminal.TerminalCode))
 	ctl.TermReturnInfo(buf)
 }
@@ -659,7 +744,6 @@ func (ctl *IssuedController) UpgradeConfiguration() {
 			goazure.Error("Insert appBinSatus Error:", err)
 		}
 	}
-
 }
 
 //列出bin文件

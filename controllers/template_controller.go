@@ -390,6 +390,8 @@ func (ctl *TemplateController) TemplateChannelConfigDelete(cnf *models.RuntimePa
 }
 
 func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
+	usr:=ctl.GetCurrentUser()
+	ip:= IssuedCtl.IssuedGetIp(ctl.Ctx.Request.RemoteAddr)
 	Byte:=ctl.IssuedTemplateMessage(temp.TemplateUid)
 	var configTemp []models.IssuedChannelConfigTemplate
 	var confSwitchTemps []models.IssuedChannelConfigTemplate
@@ -408,7 +410,6 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 		goazure.Error("Query issued_communication_template Error",err)
 	}
 	for _, t := range temp.Terminals {
-		fmt.Println("aaaaaaaaaaaaaaa:",t.TerminalCode)
 		var aCnf []models.RuntimeParameterChannelConfig
 		if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 			Filter("Terminal__Uid", t.Uid).Filter("IsDefault", false).
@@ -579,54 +580,62 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 		go func(){
 				reqBuf :=IssuedCtl.ReqMessage(code)
 				if reqBuf == "" {
+					goazure.Error("报文为空")
 					return
 				}
 				if len(reqBuf) != 362 {
+					goazure.Error("报文长度错误")
 					return
 				}
+			if temp:=IssuedCtl.IssuedVerController(code);!temp{
+				goazure.Error(code+"终端版本号低，不支持改功能!")
+				return
+			}
+			if conf.ContentLogsFlag {
+				IssuedCtl.IssuedContentLogs(usr.Username,ip,code,conf.TermConfig,temp.TemplateUid+":"+fmt.Sprintf("%x",reqBuf))
+			} else {
+				IssuedCtl.IssuedContentLogs(usr.Username,ip,code,conf.TermConfig,temp.TemplateUid)
+			}
 				buf:=SocketCtrl.SocketConfigSend(reqBuf)
 			if buf == nil {
-				ctl.Ctx.Output.SetStatus(400)
-				ctl.Ctx.Output.Body([]byte("发送报文失败"))
+				goazure.Error("发送报文失败")
 				return
 			} else if bytes.Equal(conf.TermNoRegist, buf) {
 				ctl.Ctx.Output.SetStatus(400)
 				ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
 				return
 			} else if bytes.Equal(conf.TermTimeout, buf) {
-				ctl.Ctx.Output.SetStatus(400)
-				ctl.Ctx.Output.Body([]byte("终端返回信息超时"))
+				goazure.Error("终端返回信息超时")
 				return
 			} else if len(buf) > 4 {
 				switch buf[15] {
 				case 16:
 					newVer := ByteToIntTwo(buf[13:15])
-					fmt.Println("终端返回版本号:",newVer)
 					termCode := fmt.Sprintf("%s", buf[7:13])
 					sql := "insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now()) on duplicate key update ver=?,update_time=now()"
 					if _, err := dba.BoilerOrm.Raw(sql, termCode, newVer, newVer).Exec(); err != nil {
 						goazure.Error("insert issued_version Error", err)
 					}
-					fmt.Println("插入终端版本成功")
+					fmt.Println(termCode+"终端插入终端版本成功")
 				case 1:
-					ctl.Ctx.Output.SetStatus(400)
-					ctl.Ctx.Output.Body([]byte("CRC校验错误"))
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端CRC校验错误")
 				case 2:
-					ctl.Ctx.Output.SetStatus(400)
-					ctl.Ctx.Output.Body([]byte("SN不一致"))
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端SN不一致")
 				case 3:
-					ctl.Ctx.Output.SetStatus(400)
-					ctl.Ctx.Output.Body([]byte("配置错误"))
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端配置错误")
 				case 4:
-					ctl.Ctx.Output.SetStatus(400)
-					ctl.Ctx.Output.Body([]byte("PLC未连接"))
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端PLC未连接")
 				default:
-					ctl.Ctx.Output.SetStatus(400)
-					ctl.Ctx.Output.Body([]byte("终端配置错误"))
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端配置错误")
 				}
 			} else {
-				ctl.Ctx.Output.SetStatus(400)
-				ctl.Ctx.Output.Body([]byte("返回报文信息错误"))
+				termCode := fmt.Sprintf("%s", buf[7:13])
+				goazure.Error(termCode+"终端返回报文信息错误")
 			}
 		}()
 	}
