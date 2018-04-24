@@ -188,7 +188,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 
 	qa := dba.BoilerOrm.QueryTable("boiler_alarm").
 		Filter("TriggerRule__Uid", rule.Uid).Filter("Boiler__Uid", rtm.Boiler.Uid).
-		Filter("EndDate__lte", rtm.CreatedDate.Add(time.Hour * 4)).Filter("EndDate__gte", rtm.CreatedDate.Add(time.Hour * -4)).
+		Filter("EndDate__lte", rtm.CreatedDate.Add(time.Hour * 1)).Filter("EndDate__gte", rtm.CreatedDate.Add(time.Hour * -1)).
 		Filter("IsDeleted", false)
 	if err := qa.One(&alarm); err != nil {
 		alarm.Uid = uuid.New()
