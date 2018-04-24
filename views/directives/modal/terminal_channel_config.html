@@ -209,7 +209,7 @@
                             <button type="button" uib-dropdown-toggle
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
                                     ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"
-                                    style="width: 11%;">
+                                    style="width: 14%;">
                                 <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
                                 <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
                                 <span class="sr-only">通道状态</span>
@@ -217,7 +217,7 @@
                             <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
-                                       style="width: 89%;">
+                                       style="width: 86%;">
                             <ui-select-match placeholder="{{chan_row[0].Name}}">[{{$select.selected.Name}}][
                                 <small class="font-blue-oleo">{{ $select.selected.Id }}</small>](
                                 <small class="font-blue-oleo">{{ $select.selected.Scale }}</small>
@@ -235,7 +235,12 @@
                                 <li class="dropdown-submenu">
                                     <a href><i class="fa fa-eye"></i> 位置</a>
                                     <ul class="dropdown-menu" style="min-width: 44px;">
-                                        <li ng-repeat="priority in $modal.priorities">
+                                        <li ng-repeat="priority in $modal.priorities" ng-if="$index<12">
+                                            <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                        </li>
+                                    </ul>
+                                    <ul class="dropdown-menu" style="margin-left: 48px; min-width: 44px;">
+                                        <li ng-repeat="priority in $modal.priorities" ng-if="$index>=12">
                                             <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
                                         </li>
                                     </ul>
@@ -321,7 +326,7 @@
                             <button type="button" uib-dropdown-toggle
                                     ng-disabled="!$modal.dataMatrix[outerIndex][innerIndex].Parameter || $modal.dataMatrix[outerIndex][innerIndex].Parameter.Id <= 0 || $modal.dataMatrix[outerIndex][innerIndex].Status === -1"
                                     ng-class="['btn', 'btn-cell', {'default': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'green': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'red': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"
-                                    style="width: 11%;">
+                                    style="width: 14%;">
                                 <i ng-class="['fa', {'fa-ellipsis-h': $modal.dataMatrix[outerIndex][innerIndex].Status === 0}, {'fa-eye': $modal.dataMatrix[outerIndex][innerIndex].Status === 1}, {'fa-eye-slash': $modal.dataMatrix[outerIndex][innerIndex].Status === 2}]"></i>
                                 <span ng-show="$modal.dataMatrix[outerIndex][innerIndex].Status === 1">{{ $modal.dataMatrix[outerIndex][innerIndex].SequenceNumber }}</span>
                                 <span class="sr-only">通道状态</span>
@@ -329,7 +334,7 @@
                             <ui-select ng-model="$modal.dataMatrix[outerIndex][innerIndex].Parameter"
                                        ng-change="$modal.matrixChanged(outerIndex, innerIndex);"
                                        theme="bootstrap"
-                                       style="width: 89%;">
+                                       style="width: 86%;">
                                 <ui-select-match placeholder="{{chan_row[1].Name}}">[{{$select.selected.Name}}][
                                     <small class="font-blue-oleo">{{ $select.selected.Id }}</small>](
                                     <small class="font-blue-oleo">{{ $select.selected.Scale }}</small>
@@ -347,7 +352,12 @@
                                 <li class="dropdown-submenu">
                                     <a href><i class="fa fa-eye"></i> 位置</a>
                                     <ul class="dropdown-menu" style="min-width: 44px;">
-                                        <li ng-repeat="priority in $modal.priorities">
+                                        <li ng-repeat="priority in $modal.priorities" ng-if="$index<12">
+                                            <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                        </li>
+                                    </ul>
+                                    <ul class="dropdown-menu" style="margin-left: 48px; min-width: 44px;">
+                                        <li ng-repeat="priority in $modal.priorities" ng-if="$index>=12">
                                             <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
                                         </li>
                                     </ul>
@@ -452,7 +462,12 @@
                                     <li class="dropdown-submenu">
                                         <a href><i class="fa fa-eye"></i> 关注</a>
                                         <ul class="dropdown-menu" style="min-width: 44px;">
-                                            <li ng-repeat="priority in $modal.priorities">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index<12">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                        <ul class="dropdown-menu" style="margin-left: 48px; min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index>=12">
                                                 <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
                                             </li>
                                         </ul>
@@ -559,7 +574,12 @@
                                     <li class="dropdown-submenu">
                                         <a href><i class="fa fa-eye"></i> 关注</a>
                                         <ul class="dropdown-menu" style="min-width: 44px;">
-                                            <li ng-repeat="priority in $modal.priorities">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index<12">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                        <ul class="dropdown-menu" style="margin-left: 48px; min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index>=12">
                                                 <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
                                             </li>
                                         </ul>
@@ -666,7 +686,12 @@
                                     <li class="dropdown-submenu">
                                         <a href><i class="fa fa-eye"></i> 关注</a>
                                         <ul class="dropdown-menu" style="min-width: 44px;">
-                                            <li ng-repeat="priority in $modal.priorities">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index<12">
+                                                <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
+                                            </li>
+                                        </ul>
+                                        <ul class="dropdown-menu" style="margin-left: 48px; min-width: 44px;">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index>=12">
                                                 <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
                                             </li>
                                         </ul>
@@ -774,10 +799,11 @@
                                     <li class="dropdown-submenu">
                                         <a href><i class="fa fa-eye"></i> 关注</a>
                                         <ul class="dropdown-menu" style="min-width: 44px;">
-                                            <li ng-repeat="priority in $modal.priorities">
+                                            <li ng-repeat="priority in $modal.priorities" ng-if="$index<12">
                                                 <a href ng-click="setStatus(outerIndex, innerIndex, 1, priority)"> {{ priority }}</a>
                                             </li>
                                         </ul>
+
                                     </li>
                                     <li role="menuitem"><a href ng-click="setStatus(outerIndex, innerIndex, 2)"><i class="fa fa-eye-slash"></i> 隐藏</a></li>
                                     <!--<li role="menuitem"><a href="#">Something else here</a></li>-->
@@ -972,7 +998,7 @@
                             </select>
                         </td>
                     </tr>-->
-                    <tr>
+                    <tr ng-show="currentUser.Role.RoleId <= 2">
                         <td width="30%" class="chanel_label">
                             心跳包频率
                         </td>
@@ -1261,7 +1287,7 @@
                         <!--{{$modal.BaudRate}}-->
                     <!--</td>-->
                 <!--</tr>-->
-                <tr>
+                <tr ng-show="currentUser.Role.RoleId <= 2">
                     <td colspan="2" class="chanel_label">
                         心跳包频率
                     </td>
