@@ -444,6 +444,32 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         });
     }
 
+
+
+//    ---------参数设置---------
+
+    $scope.dataConfig = function () {
+        var modalInstance = $uibModal.open({
+            templateUrl: '/directives/modal/runtime_config.html',
+            controller: 'runtimeConfigCtrl',
+            // backdrop: "static",
+            size: "",
+            windowClass: 'zindex_sub',
+            // resolve: {
+            //     items1: function () {
+            //         return $scope.items;
+            //     }
+            // }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+
 });
 
 var bRuntime;
@@ -815,4 +841,24 @@ angular.module('BoilerAdmin').controller("statusModule", function($scope,$rootSc
 
 
 
+});
+
+
+//参数设置
+angular.module('BoilerAdmin').controller('runtimeConfigCtrl', function ($scope, $uibModalInstance) {
+
+    $scope.items = {
+        steamPress : "0.00",
+        controlPress :"0.00",
+        smokeTemperature:"0.0",
+        pipeTemperature:"0.0"
+    };
+
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
 });
