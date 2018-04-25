@@ -181,7 +181,7 @@ func init() {
 	//终端错误回显
 	goazure.Router("/terminal_error_list",&controllers.IssuedController{},"post:TerminalErrorList")
 	//运行参数列表
-	goazure.Router("/runtime_parameter_issued_list",&controllers.ParameterController{},"get:runtimeParameterIssuedList")
+	goazure.Router("/runtime_parameter_issued_list",&controllers.ParameterController{},"get:RuntimeParameterIssuedList")
 
 	//下发测试按钮
 
