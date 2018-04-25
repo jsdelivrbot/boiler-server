@@ -31,8 +31,8 @@ func init() {
 
 	go BlrCtl.RefreshGlobalBoilerList()
 
-	initConfig()
-	initCalculateParameter()
+	//initConfig()
+	//initCalculateParameter()
 }
 
 func initConfig() {
@@ -755,9 +755,9 @@ func (ctl *BoilerController) TermIsOnline(termSn int64) bool {
 		status = false
 		return status
 	}
-	if termStatus.Boiler_term_status == conf.TermOnline {
+	if termStatus.BoilerTermStatus == conf.TermOnline {
 		status = true
-	} else if termStatus.Boiler_term_status == conf.TermOffline {
+	} else if termStatus.BoilerTermStatus == conf.TermOffline {
 		status = false
 	}
 	return status
@@ -777,9 +777,9 @@ func (ctl *BoilerController) IsOnline(boilerUid string) bool {
 		status = false
 		return status
 	}
-	if termStatus.Boiler_term_status == conf.TermOnline {
+	if termStatus.BoilerTermStatus == conf.TermOnline {
 		status = true
-	} else if termStatus.Boiler_term_status == conf.TermOffline {
+	} else if termStatus.BoilerTermStatus == conf.TermOffline {
 		status = false
 	}
 	return status

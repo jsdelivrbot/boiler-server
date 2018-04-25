@@ -11,7 +11,6 @@ import (
 	"github.com/AzureRelease/boiler-server/common"
 
 	"github.com/AzureRelease/boiler-server/conf"
-	"net/url"
 )
 
 var MyORM 		orm.Ormer
@@ -20,15 +19,7 @@ var BoilerOrm 	orm.Ormer
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
-	var myConnection string
-
-	if conf.IsRelease {
-		myConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
-	} else {
-		myConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
-	}
-
-	orm.RegisterDataBase("default", "mysql", myConnection)
+	orm.RegisterDataBase("default", "mysql", conf.DbConnection)
 
 	orm.RegisterModel(
 		new(models.IssuedBinUpload),
@@ -120,8 +111,7 @@ func init() {
 
 		new(models.Dialogue),
 		new(models.DialogueComment),
-		new(models.BoilerTermStatus),
-			//下发
+
 		new(models.IssuedFunctionCode),
 		new(models.IssuedByte),
 		new(models.IssuedBaudRate),
@@ -142,6 +132,8 @@ func init() {
 		new(models.IssuedErrorCode),
 		new(models.IssuedPlcAlarm),
 		new(models.IssuedBoilerStatus),
+
+		new(models.BoilerTermStatus),
 	)
 
 	orm.Debug = false//!conf.IsRelease

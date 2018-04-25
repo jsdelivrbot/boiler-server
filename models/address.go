@@ -5,6 +5,6 @@ type Address struct {
 
 	MyAddress
 
-	Boilers			[]*Boiler		`orm:"reverse(many)"`
-	Organizations		[]*Organization		`orm:"reverse(many)"`
+	Boilers			[]*Boiler			`orm:"reverse(many)"`
+	Organizations	[]*Organization		`orm:"reverse(many)"`
 }
