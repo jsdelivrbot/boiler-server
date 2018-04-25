@@ -39,18 +39,19 @@ angular.module('BoilerAdmin').controller('ConfigAlarmController', function($root
                 var num = 0;
                 angular.forEach(datasource, function (d, key) {
                     d.num = ++num;
+                    var alarm = d.Alarm;
                     var priorityTexts = ["低", "中", "高"];
-                    d.priortyText = priorityTexts[d.Priority];
-                    d.formName = d.BoilerForm ? d.BoilerForm.Name : " - ";
-                    d.mediumName = d.BoilerMedium ? d.BoilerMedium.Name.substring(0, d.BoilerMedium.Name.length - 2) : " - ";
-                    d.fuelName = d.BoilerFuelType ? d.BoilerFuelType.Name : " - ";
-                    d.warning = d.Warning > d.Normal ? " ＞ " + d.Warning : " ＜ " + d.Warning;
+                    alarm.priortyText = priorityTexts[alarm.Priority];
+                    alarm.formName = alarm.BoilerForm ? alarm.BoilerForm.Name : " - ";
+                    alarm.mediumName = alarm.BoilerMedium ? alarm.BoilerMedium.Name.substring(0, alarm.BoilerMedium.Name.length - 2) : " - ";
+                    alarm.fuelName = alarm.BoilerFuelType ? alarm.BoilerFuelType.Name : " - ";
+                    alarm.warning = alarm.Warning > alarm.Normal ? " ＞ " + alarm.Warning : " ＜ " + alarm.Warning;
                     //d.danger = d.Danger > 0 ? d.Danger : " - ";
-                    d.capacity = " 不限 ";
-                    if (d.BoilerCapacityMax > d.BoilerCapacityMin) {
-                        d.capacity = d.BoilerCapacityMin + " - " + d.BoilerCapacityMax;
-                    } else if (d.BoilerCapacityMin > 0) {
-                        d.capacity = d.BoilerCapacityMin;
+                    alarm.capacity = " 不限 ";
+                    if (alarm.BoilerCapacityMax > alarm.BoilerCapacityMin) {
+                        alarm.capacity = alarm.BoilerCapacityMin + " - " + alarm.BoilerCapacityMax;
+                    } else if (alarm.BoilerCapacityMin > 0) {
+                        alarm.capacity = alarm.BoilerCapacityMin;
                     }
                 });
 
@@ -163,20 +164,21 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
         $modal.editing = true;
         $modal.title = "编辑告警规则";
 
-        $modal.paramId = currentData.Parameter.Id;
-        $modal.boilerFormId = currentData.BoilerForm.Id;
-        $modal.boilerMediumId = currentData.BoilerMedium.Id;
-        $modal.boilerFuelTypeId = currentData.BoilerFuelType.Id;
-        $modal.boilerCapacityMin = currentData.BoilerCapacityMin;
-        $modal.boilerCapacityMax = currentData.BoilerCapacityMax;
+        $modal.paramId = currentData.Alarm.Parameter.Id;
+        $modal.boilerFormId = currentData.Alarm.BoilerForm.Id;
+        $modal.boilerMediumId = currentData.Alarm.BoilerMedium.Id;
+        $modal.boilerFuelTypeId = currentData.Alarm.BoilerFuelType.Id;
+        $modal.boilerCapacityMin = currentData.Alarm.BoilerCapacityMin;
+        $modal.boilerCapacityMax = currentData.Alarm.BoilerCapacityMax;
 
-        $modal.normalValue = currentData.Normal;
-        $modal.warningValue = currentData.Warning;
+        $modal.normalValue = currentData.Alarm.Normal;
+        $modal.warningValue = currentData.Alarm.Warning;
 
-        $modal.delay = currentData.Delay;
-        $modal.priority = currentData.Priority;
+        $modal.delay = currentData.Alarm.Delay;
+        $modal.priority = currentData.Alarm.Priority;
 
-        $modal.description = currentData.Description;
+        $modal.org = currentData.Organization;
+        $modal.description = currentData.Alarm.Description;
     }
 
     /*
@@ -196,10 +198,10 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
     $modal.delete = function () {
         var uid = null;
         if (currentData) {
-            uid = currentData.Uid;
+            uid = currentData.Alarm.Uid;
         }
         swal({
-            title: "确认删除该参数？\n" + currentData.Name,
+            title: "确认删除该参数？\n" + currentData.Alarm.Name,
             text: "注意：删除后将无法恢复。",
             type: "warning",
             showCancelButton: true,
@@ -234,7 +236,7 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
         // Ladda.create(document.getElementById('boiler_ok')).start();
         var uid = null;
         if (currentData) {
-            uid = currentData.Uid;
+            uid = currentData.Alarm.Uid;
         }
         $http.post("/alarm_rule_update/", {
             uid: uid,

@@ -118,7 +118,7 @@
                 {{ medium.Name }}
             </span>
         </td>
-        <td> {{ data.O }} </td>
+        <td> {{ data.Organization.Name}} </td>
         <td ng-show="currentUser.Role.RoleId < 10">{{ data.Parameter.Remark }}</td>
         <td ng-show="currentUser.Role.RoleId < 10">
             <a ng-show="data.Parameter.ParamId < 100"

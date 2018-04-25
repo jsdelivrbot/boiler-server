@@ -42,19 +42,28 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
         bParameter.category = category;
 
         var datasource = [];
-        for (var i = 0; i < $rootScope.parameters.length; i++) {
-            var param = $rootScope.parameters[i];
+        $http.get("/runtime_parameter_issued_list").then(function (res) {
+            var parameters = res.data;
+            for (var i = 0; i < parameters.length; i++) {
+                var param = parameters[i];
 
-            if (param.Parameter.Category.Id === category) {
-                datasource.push(param);
+                if (param.Parameter.Category.Id === category) {
+                    datasource.push(param);
+                }
+
+                bParameter.datasource = datasource;
             }
 
-            bParameter.datasource = datasource;
-        }
+            setTimeout(function () {
+                App.stopPageLoading();
+            }, 1500);
+        },function (err) {
+            setTimeout(function () {
+                App.stopPageLoading();
+            }, 1500);
+        });
 
-        setTimeout(function () {
-            App.stopPageLoading();
-        }, 1500);
+
     };
 
     bParameter.dtOptions = DTOptionsBuilder.newOptions()
