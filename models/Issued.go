@@ -99,3 +99,17 @@ type IssuedBoilerStatus struct {
 	UpdateTime time.Time	`orm:"type(datetime);auto_now;index"`
 	Status bool
 }
+type IssuedAlarmOrganization struct {
+	Alarm *RuntimeAlarmRule `orm:"pk;rel(fk)"`
+	CreateTime time.Time    `orm:"type(datetime);auto_now;index"`
+	UpdateTime time.Time    `orm:"type(datetime);auto_now;index"`
+	IsDeleted   bool		`orm:"index"`
+	Organization *Organization `orm:"rel(fk)"`
+}
+type IssuedParameterOrganization struct {
+	Parameter *RuntimeParameter `orm:"pk;rel(fk)"`
+	CreateTime time.Time `orm:"type(datetime);auto_now;index"`
+	UpdateTime time.Time    `orm:"type(datetime);auto_now;index"`
+	IsDeleted   bool		`orm:"index"`
+	Organization *Organization `orm:"rel(fk)"`
+}

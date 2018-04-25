@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h3 class="modal-title" id="modal-title" style="display: inline-block;">{{ $modal.title }}</h3>
-    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modal.data.Id }}</span>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modal.data.Parameter.Parameter.Id }}</span>
 </div>
 <style type="text/css">
     div.input-group.form-group,
@@ -52,9 +52,9 @@
             <div class="form-group col-md-6">
                 <div class="input-group">
                     <span class="input-group-addon">参数名称</span>
-                    <input type="text" ng-model="$modal.data.Name"
+                    <input type="text" ng-model="$modal.data.Parameter.Name"
                            maxlength="16" name="paramName"
-                           ng-disabled="!$modal.editing || $modal.data.Category.Id === 0"
+                           ng-disabled="!$modal.editing || $modal.data.Parameter.Category.Id === 0"
                            class="form-control ng-pristine ng-valid ng-touched has-success"
                            placeholder="请输入参数名称" required>
                 </div>
@@ -62,7 +62,7 @@
             <div class="form-group col-md-6">
                 <div class="input-group">
                     <span class="input-group-addon">参数分类</span>
-                    <select ng-model="$modal.data.Category.Id"
+                    <select ng-model="$modal.data.Parameter.Category.Id"
                             ng-options="cate.Id as cate.Name for cate in $modal.categoryList"
                             ng-change="$modal.categoryChanged();"
                             ng-disabled="!$modal.editing || !$modal.isNew"
@@ -71,14 +71,14 @@
                 </div>
             </div>
         </div>
-        <hr ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
+        <hr ng-show="$modal.data.Parameter.Category.Id === 10 || $modal.data.Parameter.Category.Id === 12">
         <div class="row"
-             ng-show="$modal.data.Category.Id === 10 || $modal.data.Category.Id === 12">
+             ng-show="$modal.data.Parameter.Category.Id === 10 || $modal.data.Parameter.Category.Id === 12">
             <div class="form-group col-md-6">
                 <div class="input-group">
                     <span class="input-group-addon">换算比例</span>
                     <input type="number"
-                           ng-model="$modal.data.Scale" name="paramScale"
+                           ng-model="$modal.data.Parameter.Scale" name="paramScale"
                            ng-disabled="!$modal.editing"
                            class="form-control ng-pristine ng-valid ng-touched has-success"
                            placeholder="参数值 = 报文值 × 换算比例" required>
@@ -88,18 +88,19 @@
                 <div class="input-group">
                     <span class="input-group-addon">参数单位</span>
                     <input type="text"
-                           ng-model="$modal.data.Unit"
+                           ng-model="$modal.data.Parameter.Unit"
                            ng-disabled="!$modal.editing"
                            class="form-control ng-pristine ng-valid ng-touched has-success"
                            placeholder="（可选）参数的计量单位">
                 </div>
             </div>
         </div>
+        <hr>
         <div class="row">
             <div class="form-group col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon">所属企业</span>
-                    <ui-select ng-model="$modal.data.organization"
+                    <ui-select ng-model="$modal.data.Organization"
                                theme="bootstrap">
                         <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.Name}}</ui-select-match>
                         <ui-select-choices group-by="'type'" repeat="org in organizations | filter: $select.search">
@@ -113,7 +114,7 @@
         <div class="row">
             <div class="form-group col-md-12">
                 <label><i class="icon-note"></i> 备注： </label>
-                <textarea ng-model="$modal.data.Remark"
+                <textarea ng-model="$modal.data.Parameter.Remark"
                           class="form-control ng-pristine ng-valid ng-touched has-success"
                           placeholder="在这里输入备注内容">
             </textarea>
@@ -127,8 +128,8 @@
                 ng-click="$modal.delete()">删除</button>
         <button type="button" class="btn ladda-button"
                 ng-show="$modal.editing"
-                ng-disabled="$modal.data.Category.Id <= 0 || parameterForm.paramName.$error.required || parameterForm.paramScale.$error.required"
-                ng-class="[{'btn-primary': $modal.data.Category.Id > 0}, {'grey': $modal.data.Category.Id <= 0}]"
+                ng-disabled="$modal.data.Parameter.Category.Id <= 0 || parameterForm.paramName.$error.required || parameterForm.paramScale.$error.required || !$modal.data.Organization"
+                ng-class="[{'btn-primary': $modal.data.Parameter.Category.Id > 0}, {'grey': $modal.data.Parameter.Category.Id <= 0}]"
                 data-style="zoom-out"
                 id="boiler_ok" ng-click="$modal.commit()"><span class="ladda-label">提交</span></button>
         <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
