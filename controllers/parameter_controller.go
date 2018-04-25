@@ -236,11 +236,11 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 	if _,err:=dba.BoilerOrm.QueryTable("issued_term_temp_status").Filter("Sn",ter.TerminalCode).Delete();err!=nil{
 		goazure.Error("Delete IssuedCommunicationTemplate Error", err)
 	}
+
 }
 
 func (ctl *ParameterController) RefreshParameters() {
 	ParamCtrl.bWaitGroup.Add(1)
-
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
 	if num, err := qs.RelatedSel("Category").
@@ -279,8 +279,34 @@ func (ctl *ParameterController) GetRuntimeParameter(typeId int32) (*models.Runti
 func (ctl *ParameterController) RuntimeParameterList() {
 	goazure.Warning("Ready to Get RuntimeParameterList")
 	ParamCtrl.bWaitGroup.Wait()
-
 	ctl.Data["json"] = ParamCtrl.Parameters
+	ctl.ServeJSON()
+}
+
+func (ctl *ParameterController) RuntimeParameterIssuedList() {
+	goazure.Warning("Ready to Get RuntimeParameterList")
+	//ParamCtrl.bWaitGroup.Wait()
+	usr:= ctl.GetCurrentUser()
+	var issuedParams []*models.IssuedParameterOrganization
+	qs := dba.BoilerOrm.QueryTable("issued_parameter_organization")
+	qs = qs.RelatedSel("Parameter").RelatedSel("Organization").RelatedSel("Parameter__Category")
+	if usr.IsOrganizationUser() {
+		qs.Filter("Organization__Uid",usr.Organization.Uid)
+		//qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
+	}
+	if num,err:=qs.Filter("IsDeleted",false).All(&issuedParams);err!=nil || num == 0 {
+		goazure.Error("Get RuntimeParameterList Error:", num, err)
+	}
+	for i, v := range issuedParams {
+		if num, err := dba.BoilerOrm.LoadRelated(v.Parameter, "BoilerMediums"); err != nil && num == 0 {
+			goazure.Error("[", i, "]", v, num, err)
+		}
+
+		for _, b := range v.Parameter.BoilerMediums {
+			b.Name = strings.TrimSuffix(b.Name, "锅炉")
+		}
+	}
+	ctl.Data["json"] = issuedParams
 	ctl.ServeJSON()
 }
 
@@ -989,10 +1015,10 @@ func (ctl *ParameterController) ChannelConfigDelete(cnf *models.RuntimeParameter
 }
 
 func (ctl *ParameterController) RuntimeParameterUpdate() {
-	var p models.RuntimeParameter
+	//var p models.RuntimeParameter
 	var param models.RuntimeParameter
-
-	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &p); err != nil {
+	var issuedParam models.IssuedParameterOrganization
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &issuedParam); err != nil {
 		e := fmt.Sprintln("Unmarshal Parameter JSON Error", err)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -1000,27 +1026,27 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		return
 	}
 
-	goazure.Warn("Parameter:", p)
+	//goazure.Warn("Parameter:", p)
 
-	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", p.Id).One(&param); err != nil {
+	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", issuedParam.Parameter.Id).One(&param); err != nil {
 		e := fmt.Sprintln("Read Parameter Error", err)
 		goazure.Warn(e)
 
-		param = p
-		param.Length = p.Length
-		param.Fix = p.Fix
+		param = *issuedParam.Parameter
+		param.Length = issuedParam.Parameter.Length
+		param.Fix = issuedParam.Parameter.Fix
 
-		param.Category = runtimeParameterCategory(p.Category.Id)
+		param.Category = runtimeParameterCategory(issuedParam.Parameter.Category.Id)
 
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
 		param.CreatedBy = ctl.GetCurrentUser()
 	}
 
-	param.Name = p.Name
-	param.Scale = p.Scale
-	param.Unit = p.Unit
-	param.Remark = p.Remark
+	param.Name = issuedParam.Parameter.Name
+	param.Scale = issuedParam.Parameter.Scale
+	param.Unit = issuedParam.Parameter.Unit
+	param.Remark = issuedParam.Parameter.Remark
 
 	param.UpdatedBy = ctl.GetCurrentUser()
 	param.IsDeleted = false
@@ -1030,6 +1056,10 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte(e))
+	}
+	sql:="insert into issued_parameter_organization(parameter_id,create_time,update_time,organization_id) values(?,now(),now(),?) on duplicate key update set update_time=now(), organization_id=?"
+	if _,err:=dba.BoilerOrm.Raw(sql,issuedParam.Parameter.Id,issuedParam.Organization.Uid,issuedParam.Organization.Uid).Exec();err!=nil{
+		goazure.Error("Insert issued_parameter_organization Error",err)
 	}
 
 	go ParamCtrl.RefreshParameters()
