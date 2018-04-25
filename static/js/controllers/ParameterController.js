@@ -45,7 +45,7 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
         for (var i = 0; i < $rootScope.parameters.length; i++) {
             var param = $rootScope.parameters[i];
 
-            if (param.Category.Id === category) {
+            if (param.Parameter.Category.Id === category) {
                 datasource.push(param);
             }
 
