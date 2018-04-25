@@ -8,16 +8,16 @@
             <!--</div>-->
         </div>
         <div class="col-md-6">
-            <div class="tabbable-line pull-right">
+            <div class="tabbable-line pull-right" ng-init="param.refreshDataTables();">
                 <ul class="nav nav-tabs">
                     <li ng-class="{'active': param.category === 10}">
-                        <a ng-click="param.refreshDataTables(10);">
+                        <a ng-click="param.changeCategory(10);">
                             <i class="icon-graph"></i>
                             模拟量
                         </a>
                     </li>
                     <li ng-class="{'active': param.category === 11}">
-                        <a ng-click="param.refreshDataTables(11);">
+                        <a ng-click="param.changeCategory(11);">
                             <i class="fa fa-sliders"></i>
                             开关量
                         </a>
@@ -29,7 +29,7 @@
                         <!--</a>-->
                     <!--</li>-->
                     <li ng-class="{'active': param.category === 13}">
-                        <a ng-click="param.refreshDataTables(13);">
+                        <a ng-click="param.changeCategory(13);">
                             <i class="fa fa-pie-chart"></i>
                             状态量
                         </a>

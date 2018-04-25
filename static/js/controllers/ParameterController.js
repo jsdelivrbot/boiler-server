@@ -29,22 +29,21 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
     var isNew = false;
     var editing = false;
 
-    $rootScope.$watch('parameters', function () {
-        // $log.warn("$rootScope.$watch.boilers: ", $rootScope.boilers);
-        if (!$rootScope.parameters || typeof $rootScope.parameters !== 'object') {
-            return;
-        }
+    // $rootScope.$watch('parameters', function () {
+    //     // $log.warn("$rootScope.$watch.boilers: ", $rootScope.boilers);
+    //     if (!$rootScope.parameters || typeof $rootScope.parameters !== 'object') {
+    //         return;
+    //     }
+    //
+    //     bParameter.refreshDataTables(bParameter.category);
+    // });
 
-        bParameter.refreshDataTables(bParameter.category);
-    });
+    bParameter.refreshDataTables = function () {
+        // bParameter.category = category;
 
-    bParameter.refreshDataTables = function (category) {
-        bParameter.category = category;
-
-        var datasource = [];
         $http.get("/runtime_parameter_issued_list").then(function (res) {
-            var parameters = res.data;
-            for (var i = 0; i < parameters.length; i++) {
+            bParameter.parameters = res.data;
+            /*for (var i = 0; i < parameters.length; i++) {
                 var param = parameters[i];
 
                 if (param.Parameter.Category.Id === category) {
@@ -52,8 +51,8 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
                 }
 
                 bParameter.datasource = datasource;
-            }
-
+            }*/
+            bParameter.changeCategory(bParameter.category);
             setTimeout(function () {
                 App.stopPageLoading();
             }, 1500);
@@ -63,8 +62,24 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
             }, 1500);
         });
 
-
     };
+    // bParameter.refreshDataTables(bParameter.category);
+
+    bParameter.changeCategory = function (category) {
+        bParameter.category = category;
+        var datasource = [];
+        for (var i = 0; i < bParameter.parameters.length; i++) {
+            var param = bParameter.parameters[i];
+
+            if (param.Parameter.Category.Id === category) {
+                datasource.push(param);
+            }
+
+            bParameter.datasource = datasource;
+        }
+    };
+
+
 
     bParameter.dtOptions = DTOptionsBuilder.newOptions()
         .withPaginationType('full_numbers');
@@ -251,8 +266,8 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
                     type: "success"
                 }).then(function () {
                     $uibModalInstance.close('success');
+                    parameter.refreshDataTables(PARAMETER_CATEGORY_ANALOG);
                     $rootScope.getParameterList();
-                    // parameter.refreshDataTables(PARAMETER_CATEGORY_ANALOG);
                 });
             }, function (err) {
                 swal({
@@ -284,6 +299,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
                     type: "success"
                 }).then(function () {
                     $uibModalInstance.close('success');
+                    parameter.refreshDataTables(PARAMETER_CATEGORY_ANALOG);
                     $rootScope.getParameterList();
                 });
             }, function (err) {
