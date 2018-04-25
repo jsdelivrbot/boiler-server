@@ -80,6 +80,19 @@ type ChannelIssued struct {
 	IsDeleted bool `json:"is_deleted"`
 }
 
+type bRuntimeParameter struct {
+	Id      int64   `json:"id"`
+	CategoryId int64 `json:"category_id"`
+	OrganizationId string `json:"organization_id"`
+	Fix    int32  `json:"fix"`
+	Length  int32   `json:"length"`
+	Name   string  `json:"name"`
+	ParamId  int32   `json:"param_id"`
+	Scale   float32  `json:scale`
+	Unit   string  `json:"unit"`
+	Remark  string  `json:"remark"`
+}
+
 //传递前台通信参数
 func (ctl *ParameterController) IssuedCommunication() {
 	var issuedCommunication models.IssuedCommunication
@@ -1017,8 +1030,8 @@ func (ctl *ParameterController) ChannelConfigDelete(cnf *models.RuntimeParameter
 func (ctl *ParameterController) RuntimeParameterUpdate() {
 	//var p models.RuntimeParameter
 	var param models.RuntimeParameter
-	var issuedParam models.IssuedParameterOrganization
-	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &issuedParam); err != nil {
+	var bParam bRuntimeParameter
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &bParam); err != nil {
 		e := fmt.Sprintln("Unmarshal Parameter JSON Error", err)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -1028,25 +1041,25 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 
 	//goazure.Warn("Parameter:", p)
 
-	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", issuedParam.Parameter.Id).One(&param); err != nil {
+	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", bParam.Id).One(&param); err != nil {
 		e := fmt.Sprintln("Read Parameter Error", err)
 		goazure.Warn(e)
+		param.Id= bParam.Id
+		param.ParamId = bParam.ParamId
+		param.Length = bParam.Length
+		param.Fix = bParam.Fix
 
-		param = *issuedParam.Parameter
-		param.Length = issuedParam.Parameter.Length
-		param.Fix = issuedParam.Parameter.Fix
-
-		param.Category = runtimeParameterCategory(issuedParam.Parameter.Category.Id)
+		param.Category = runtimeParameterCategory(bParam.CategoryId)
 
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
 		param.CreatedBy = ctl.GetCurrentUser()
 	}
 
-	param.Name = issuedParam.Parameter.Name
-	param.Scale = issuedParam.Parameter.Scale
-	param.Unit = issuedParam.Parameter.Unit
-	param.Remark = issuedParam.Parameter.Remark
+	param.Name = bParam.Name
+	param.Scale = bParam.Scale
+	param.Unit = bParam.Unit
+	param.Remark = bParam.Remark
 
 	param.UpdatedBy = ctl.GetCurrentUser()
 	param.IsDeleted = false
@@ -1058,7 +1071,7 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		ctl.Ctx.Output.Body([]byte(e))
 	}
 	sql:="insert into issued_parameter_organization(parameter_id,create_time,update_time,organization_id) values(?,now(),now(),?) on duplicate key update set update_time=now(), organization_id=?"
-	if _,err:=dba.BoilerOrm.Raw(sql,issuedParam.Parameter.Id,issuedParam.Organization.Uid,issuedParam.Organization.Uid).Exec();err!=nil{
+	if _,err:=dba.BoilerOrm.Raw(sql,bParam.Id,bParam.OrganizationId,bParam.OrganizationId).Exec();err!=nil{
 		goazure.Error("Insert issued_parameter_organization Error",err)
 	}
 
@@ -1095,7 +1108,10 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 
 		return
 	}
-
+	sql:="update issued_parameter_organization set is_deleted=true where parameter_id=?"
+	if _,err:=dba.BoilerOrm.Raw(sql,p.Id).Exec();err!=nil{
+		goazure.Error("Update issued_parameter_organization Error",err)
+	}
 	go ParamCtrl.RefreshParameters()
 }
 
