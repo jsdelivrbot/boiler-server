@@ -1488,28 +1488,29 @@ boilerAdmin.directive('boilerModule', function () {
             return;
         }
 
-        var svgName = "../img/module/boiler_gas_fire.svg";
+        var svgName = "../img/module/boiler_gas_fire2.svg";
 
-        var baseX = 550;
-        var baseY = 180;
+        var baseX = 500;
+        var baseY = 190;
 
         var fire = fireG.append("svg:image")
             .attr("xlink:href", svgName)
-            .attr("width", 120)
-            .attr("height", 60)
+            .attr("width", 180)
+            .attr("height", 90)
             .attr("x", baseX)
             .attr("y", baseY);
 
         var sec = 600;
 
         var burn = function () {
-            fire.transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 180).attr("height", 90).attr("y", baseY - 15)
-                .transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 120).attr("height", 60).attr("y", baseY);
+            fire.transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 270).attr("height", 135).attr("y", baseY - 15)
+                .transition().duration(sec / 2).ease(d3.easeLinear).attr("width", 180).attr("height", 90).attr("y", baseY);
         };
 
         d3.interval(function () {
             burn();
         }, sec);
+
     };
 
 //铸铁
