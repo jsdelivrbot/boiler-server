@@ -10,7 +10,6 @@ import (
 	_ "github.com/AzureRelease/boiler-server/models"
 	_ "github.com/AzureRelease/boiler-server/controllers"
 	_ "github.com/AzureRelease/boiler-server/log"
-	"time"
 )
 
 var wechatServerEnabled = true
@@ -33,8 +32,12 @@ func main() {
 	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
 
-	//go controllers.ParamCtrl.InitParameterChannelConfig(600)
+	//go controllers.ParamCtrl.InitParameterChannelConfig()
+	//go controllers.RtmCtl.ImportExistCache()
 
+	//t := time.Now()
+	//rounded := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+	//go controllers.RtmCtl.ReloadHistoryWithArchived(rounded, time.Now().Add(time.Minute * 2))
 	//goazure.Warn(fmt.Sprintf("%2x", 17867))
 	//goazure.Warn(fmt.Sprintf("%x", 17867))
 
@@ -67,8 +70,6 @@ func generateRandomData(isOn bool) {
 	go controllers.RtmCtl.GenerateBoilerStatus(isOn)
 	go controllers.RtmCtl.GenerateBoilerRuntime(isOn)
 
-	go controllers.RtmCtl.UpdateRuntimeHistory(time.Time{}, time.Time{})
-	//controllers.RtmCtl.UpdateRuntimeHistory(time.Now().Add(time.Hour * time.Duration(-hours)), time.Time{})
 }
 
 func trimBoilerData() {

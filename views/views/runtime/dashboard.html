@@ -23,7 +23,7 @@
         <div class="">
 
             <h6 class="font-grey-salsa" style="padding-bottom: 6px;">
-                采样时间: {{ runtime.instants[0].date | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
+                采样时间: {{ runtime.currentDate | amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
             </h6>
             <!-- BEGIN SAMPLE TABLE PORTLET-->
             <div class="portlet light bordered" style="padding:0px 5px; height: 405px;width: 100%; overflow: auto; overflow-x: hidden;"
@@ -83,7 +83,7 @@
                                 <td> 使用企业 </td>
                                 <td> {{ runtime.boiler.Enterprise.Name }}</td>
                             </tr>
-                            <tr>
+                            <tr ng-hide="runtime.boiler.Medium.Id===2">
                                 <td> 额定蒸发量 </td>
                                 <td> {{ runtime.boiler.EvaporatingCapacity }} t/h </td>
                             </tr>

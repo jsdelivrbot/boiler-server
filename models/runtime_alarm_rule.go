@@ -16,7 +16,7 @@ type RuntimeAlarmRule struct {
 	Danger				float32					// 危险值
 
 	Priority			int32					`orm:"index;default(0)"`
-	Scope				int32					`orm:"index"` //告警作用域：系统/企业
+	Scope				int32					`orm:"index"` 				// 告警作用域：系统/企业
 
 	NeedSend			bool					// 是否推送报警
 	Delay				int64					// 延迟报警时间，单位分

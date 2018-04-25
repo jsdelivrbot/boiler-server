@@ -77,31 +77,16 @@
                 <div class="container">
                     <!-- BEGIN: BRAND -->
                     <div class="c-navbar-wrapper clearfix">
+                        <div class="pull-left">
+                            <img src="images/qiantian/logo.png" style=" margin-top: 10px;" alt="">
+                        </div>
                         <!-- BEGIN: HOR NAV -->
                         <!-- BEGIN: LAYOUT/HEADERS/MEGA-MENU -->
                         <!-- BEGIN: MEGA MENU -->
                         <!-- Dropdown menu toggle on mobile: c-toggler class can be applied to the link arrow or link itself depending on toggle mode -->
                         <nav class="c-mega-menu c-pull-right c-mega-menu-dark c-mega-menu-dark-mobile c-fonts-uppercase c-fonts-bold ng-cloak" ng-cloak>
                             <ul class="nav navbar-nav c-theme-nav">
-                                <!--
-                                <li>
-                                    <a href="javascript:;" class="c-link dropdown-toggle">主页
-                                        <span class="c-arrow c-toggler"></span>
-                                    </a>
-                                </li>
-                                -->
-                                <!--
-                                <li class="c-active c-menu-type-classic">
-                                    <a href="javascript:;" class="c-link dropdown-toggle">产品
-                                        <span class="c-arrow c-toggler"></span>
-                                    </a>
-                                </li>
-                                <li class="c-search-toggler-wrapper">
-                                    <a href="#" class="c-btn-icon c-search-toggler">
-                                        <i class="fa fa-search"></i>
-                                    </a>
-                                </li>
-                                -->
+
                                 <li ng-show="home.currentUser">
                                     <a href="/admin" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
                                         <i class="fa fa-desktop"></i> 进入管理平台 </a>
@@ -342,35 +327,26 @@
                                 <!--<a href="javascript:;" data-toggle="modal" data-target="#forget-password-form"-->
                                    <!--data-dismiss="modal" class="c-btn-forgot">忘记密码？</a>-->
                             </div>
-                            <div class="clearfix">
+                            <!--<div class="clearfix">
                                 <div class="c-content-divider c-divider-sm c-icon-bg c-bg-grey c-margin-b-20">
                                     <span>第三方平台登录</span>
                                 </div>
                                 <ul class="c-content-list-adjusted">
                                     <li>
-                                        <!--<a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx9bf9041710b5e5b6&redirect_uri=http%3A%2F%2Fwww.lucidcube.info%2Fuser_login_weixin%2F&response_type=code&scope=snsapi_login&state=boiler_login#wechat_redirect" class="btn btn-block c-btn-square btn-social btn-weixin">-->
+                                        &lt;!&ndash;<a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx9bf9041710b5e5b6&redirect_uri=http%3A%2F%2Fwww.lucidcube.info%2Fuser_login_weixin%2F&response_type=code&scope=snsapi_login&state=boiler_login#wechat_redirect" class="btn btn-block c-btn-square btn-social btn-weixin">&ndash;&gt;
                                         <a href="user_login_weixin/" class="btn btn-block c-btn-square btn-social btn-weixin">
                                             <i class="fa fa-weixin"></i> 微信 </a>
                                     </li>
-                                    <!--
-                                    <li>
-                                        <a class="btn btn-block c-btn-square btn-social btn-facebook">
-                                            <i class="fa fa-facebook"></i> Facebook </a>
-                                    </li>
-                                    <li>
-                                        <a class="btn btn-block c-btn-square btn-social btn-google">
-                                            <i class="fa fa-google"></i> Google </a>
-                                    </li>
-                                    -->
+
                                 </ul>
-                                <!--<div id="weixin_login_container"></div>-->
-                            </div>
+                                &lt;!&ndash;<div id="weixin_login_container"></div>&ndash;&gt;
+                            </div>-->
                         </form>
                     </div>
-                    <div class="modal-footer c-no-border">
+                    <!--<div class="modal-footer c-no-border">
                         <span class="c-text-account">还没有账户？</span>
                         <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">立即注册</a>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -386,46 +362,22 @@
                         <ul>
                             <!--BEGIN: SLIDE #1 -->
                             <li data-transition="fade" data-slotamount="1" data-masterspeed="1000">
-                                <img alt="" src="assets/base/img/content/backgrounds/bg-63.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">
-                                <div class="tp-caption customin customout" data-x="center" data-y="center" data-hoffset="" data-voffset="-50" data-speed="500" data-start="1000" data-transform_idle="o:1;" data-transform_in="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;"
-                                data-transform_out="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;" data-splitin="none" data-splitout="none" data-elementdelay="0.1" data-endelementdelay="0.1" data-endspeed="600">
-                                    <h3 class="c-main-title-circle c-font-48 c-font-bold c-font-center c-font-uppercase c-font-white c-block">工业能源<br>集成管理</h3>
-                                </div>
+                                <img alt="" src="images/qiantian/banner0.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">
 
-                                <div ng-show="home.currentUser.Uid" class="tp-caption lft" data-x="center" data-y="center" data-voffset="110" data-speed="900" data-start="2000" data-transform_idle="o:1;" data-transform_in="x:100;y:100;rX:120;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;"
-                                data-transform_out="x:100;y:100;rX:120;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;">
-                                    <a href="/admin" class="c-action-btn btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase">进入管理平台</a>
-                                </div>
                             </li>
                             <!--END -->
                             <!--BEGIN: SLIDE #2 -->
                             <li data-transition="fade" data-slotamount="1" data-masterspeed="1000">
-                                <img alt="" src="assets/base/img/content/backgrounds/bg-24.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">
-                                <div class="tp-caption customin customout" data-x="center" data-y="center" data-hoffset="" data-voffset="-50" data-speed="500" data-start="1000" data-transform_idle="o:1;" data-transform_in="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;"
-                                data-transform_out="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:600;e:Back.easeInOut;" data-splitin="none" data-splitout="none" data-elementdelay="0.1" data-endelementdelay="0.1" data-endspeed="600">
-                                    <h3 class="c-main-title-circle c-font-48 c-font-bold c-font-center c-font-uppercase c-font-white c-block">智慧设备<br>一体化设计</h3>
-                                </div>
-                                <div ng-show="home.currentUser.Uid" class="tp-caption lft" data-x="center" data-y="center" data-voffset="110" data-speed="900" data-start="2000" data-transform_idle="o:1;" data-transform_in="x:100;y:100;rX:120;scaleX:0.75;scaleY:0.75;o:0;s:900;e:Back.easeInOut;"
-                                data-transform_out="x:100;y:100;rX:120;scaleX:0.75;scaleY:0.75;o:0;s:900;e:Back.easeInOut;">
-                                    <a href="/admin" class="c-action-btn btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase">进入管理平台</a>
-                                </div>
+                                <img alt="" src="images/qiantian/banner1.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">
+
 
                             </li>
                             <!--END -->
                             <!--BEGIN: SLIDE #3 -->
                             <li data-transition="fade" data-slotamount="1" data-masterspeed="700" data-delay="6000" data-thumb="">
                                 <!-- THE MAIN IMAGE IN THE FIRST SLIDE -->
-                                <img alt="" src="assets/base/img/content/backgrounds/bg-19.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="visible-xs" />
-                                <div class="rs-background-video-layer" data-forcerewind="on" data-volume="mute" data-videowidth="100%" data-videoheight="100%" data-videomp4="assets/base/media/video/video-2.mp4" data-videopreload="preload" data-videoloop="none"
-                                data-forceCover="1" data-aspectratio="16:9" data-autoplay="true" data-autoplayonlyfirsttime="false" data-nextslideatend="true"> </div>
-                                <div class="tp-caption customin customout" data-x="center" data-y="center" data-hoffset="" data-voffset="-30" data-speed="500" data-start="1000" data-transform_idle="o:1;" data-transform_in="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;"
-                                data-transform_out="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:600;e:Back.easeInOut;" data-splitin="none" data-splitout="none" data-elementdelay="0.1" data-endelementdelay="0.1" data-endspeed="600">
-                                    <h3 class="c-main-title-square c-font-55 c-font-bold c-font-center c-font-uppercase c-font-white c-block">安全、快速、可靠<br>无限的可能性</h3>
-                                </div>
-                                <div class="tp-caption lft" data-x="center" data-y="center" data-voffset="130" data-speed="900" data-start="2000" data-transform_idle="o:1;" data-transform_in="x:100;y:100;rX:120;scaleX:0.75;scaleY:0.75;o:0;s:900;e:Back.easeInOut;"
-                                data-transform_out="x:100;y:100;rX:120;scaleX:0.75;scaleY:0.75;o:0;s:900;e:Back.easeInOut;">
-                                    <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="c-action-btn btn btn-lg c-btn-square c-btn-border-2x c-btn-white c-btn-bold c-btn-uppercase">马上注册</a>
-                                </div>
+                                <img alt="" src="images/qiantian/banner2.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="visible-xs" />
+
                             </li>
                             <!--END -->
                         </ul>

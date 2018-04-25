@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/AzureRelease/boiler-server/dba"
 	"github.com/AzureRelease/boiler-server/models"
-	"github.com/AzureRelease/boiler-server/conf"
 
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureTech/goazure"
@@ -19,16 +18,17 @@ import (
 	"time"
 	"encoding/json"
 	"sort"
-	"errors"
+
 	"github.com/pborman/uuid"
+	"github.com/AzureRelease/boiler-server/models/logs"
+	"math/rand"
 )
 
 type ParameterController struct {
 	MainController
 
-	ReloadLimit int64
-
-	Parameters []*models.RuntimeParameter
+	ReloadLimit 	int64
+	Parameters 		[]*models.RuntimeParameter
 }
 
 var ParamCtrl *ParameterController = &ParameterController{}
@@ -253,7 +253,7 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 }
 
 func (ctl *ParameterController) RefreshParameters() {
-	ParamCtrl.bWaitGroup.Add(1)
+	ParamCtrl.WaitGroup.Add(1)
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
 	if num, err := qs.RelatedSel("Category").
@@ -274,24 +274,12 @@ func (ctl *ParameterController) RefreshParameters() {
 
 	ParamCtrl.Parameters = params
 
-	ParamCtrl.bWaitGroup.Done()
-}
-
-func (ctl *ParameterController) GetRuntimeParameter(typeId int32) (*models.RuntimeParameter, error) {
-	for _, param := range ParamCtrl.Parameters {
-		if param.ParamId == typeId {
-			return param, nil
-		}
-	}
-
-	err := errors.New("can not find any parameter with this Id")
-
-	return nil, err
+	ParamCtrl.WaitGroup.Done()
 }
 
 func (ctl *ParameterController) RuntimeParameterList() {
 	goazure.Warning("Ready to Get RuntimeParameterList")
-	ParamCtrl.bWaitGroup.Wait()
+	ParamCtrl.WaitGroup.Wait()
 	ctl.Data["json"] = ParamCtrl.Parameters
 	ctl.ServeJSON()
 }
@@ -325,66 +313,51 @@ func (ctl *ParameterController) RuntimeParameterIssuedList() {
 }
 
 func (ctl *ParameterController) ChannelDataReload(t time.Time) {
-	data := ctl.DataListNeedReload()
+	var lgIn	logs.BoilerRuntimeLog
+	nonce := rand.Intn(254)
+	lgIn.Name = "ChannelDataReload()"
+	lgIn.CreatedDate = t
+	lgIn.Status = logs.BOILER_RUNTIME_LOG_STATUS_INIT
+	LogCtl.AddReloadLog(&lgIn)
 
-	var disIds []string
+	data := ctl.DataListNeedReload(nonce)
 
-	for _, d := range data {
-		code := d["Boiler_term_id"].(string)
-		set := d["Boiler_boiler_id"].(string)
-		t := d["TS"].(string)
-		//ver := d["Boiler_data_fmt_ver"].(string)
-		//sn := d["Boiler_sn"].(string)
+	var lgRd	logs.BoilerRuntimeLog
+	lgRd.Name = "DataListNeedReload()"
+	lgRd.TableName = "boiler_m163"
+	lgRd.Query = "SELECT"
+	lgRd.CreatedDate = time.Now()
+	lgRd.Duration = float64(lgRd.CreatedDate.Sub(t)) / float64(time.Second)
+	lgRd.DurationTotal = lgRd.Duration
+	lgRd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
+	LogCtl.AddReloadLog(&lgRd)
 
-		//TODO: Temporary
-		//var boiler	models.Boiler
-		var combined models.BoilerTerminalCombined
-
-		co, _ := strconv.ParseInt(code, 10, 32)
-		st, _ := strconv.ParseInt(set, 10, 32)
-
-		if err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
-			RelatedSel("Boiler").RelatedSel("Terminal").
-			Filter("TerminalCode", co).Filter("TerminalSetId", st).OrderBy("TerminalSetId").
-			One(&combined); err != nil {
-			goazure.Error("Get BoilerInfo Error:", err, co, st)
-		}
-
-		rawReloadDisabled :=
-			"UPDATE	`boiler_m163` " +
-				"SET	`need_reload` = FALSE " +
-				"WHERE	`uid` = " + "'" + d["uid"].(string) + "';"
-
-		disIds = append(disIds, d["uid"].(string))
-
-		runtimeReload := func(cnf *models.RuntimeParameterChannelConfig) {
+	runtimeReload := func(rt orm.Params, bCnfs []*models.RuntimeParameterChannelConfig, b *models.Boiler, lastLog *logs.BoilerRuntimeLog) {
+		for _, cnf := range bCnfs {
 			var rtm models.BoilerRuntime
 			var value int64
+
 			chName := models.ChannelName(cnf.ChannelType, cnf.ChannelNumber)
-			goazure.Info("Channel_Name", chName, d[chName], reflect.ValueOf(d[chName]).Kind())
-			switch reflect.ValueOf(d[chName]).Kind() {
+			//goazure.Info("Channel_Name", chName, rt[chName], reflect.ValueOf(rt[chName]).Kind())
+			switch reflect.ValueOf(rt[chName]).Kind() {
 			case reflect.String:
-				value, _ = strconv.ParseInt(d[chName].(string), 10, 64)
+				value, _ = strconv.ParseInt(rt[chName].(string), 10, 64)
 				if value == 0 {
-					v, _ := strconv.ParseFloat(d[chName].(string), 10)
+					v, _ := strconv.ParseFloat(rt[chName].(string), 10)
 					value = int64(v)
 				}
 			case reflect.Int32:
-				value = int64(d[chName].(int32))
+				value = int64(rt[chName].(int32))
 			case reflect.Int64:
-				value = d[chName].(int64)
+				value = rt[chName].(int64)
 			case reflect.Float32:
-				value = int64(d[chName].(float32))
+				value = int64(rt[chName].(float32))
 			case reflect.Float64:
-				value = int64(d[chName].(float64))
+				value = int64(rt[chName].(float64))
 			}
 
 			if value > 65535 {
-				if res, err := dba.BoilerOrm.Raw(rawReloadDisabled).Exec(); err != nil {
-					goazure.Error("Update m163 after reload Error:", err, res)
-				}
-
-				return
+				continue
 			}
 
 			switch cnf.Parameter.Category.Id {
@@ -427,13 +400,13 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 			}
 
 			rtm.Parameter = cnf.Parameter
-			rtm.Boiler = combined.Boiler
+			rtm.Boiler = b
 			rtm.Value = value
 			rtm.Remark = cnf.Remark
 
 			rtm.Status = models.RUNTIME_STATUS_NEW
 
-			if tm, err := time.ParseInLocation("2006-01-02 15:04:05", t, time.Local); err != nil {
+			if tm, err := time.ParseInLocation("2006-01-02 15:04:05", rt["TS"].(string), time.Local); err != nil {
 				goazure.Error("Parse Time Error:", err)
 			} else {
 				//goazure.Info("Parse Time:", t, "||", tm)
@@ -442,76 +415,131 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				rtm.CreatedDate = tm
 			}
 
-			if err := DataCtl.AddData(&rtm, true); err != nil {
+			if  err := DataCtl.AddData(&rtm, true); err != nil {
 				goazure.Error("Reload Runtime Error:", err)
 				//isSuccess = false
-				return
 			} else {
-				RtmCtl.RuntimeDataReload(&rtm)
-			}
+				var lgd logs.BoilerRuntimeLog
+				lgd.Name = "runtimeReload()"
+				lgd.Runtime = &rtm
+				lgd.TableName = "boiler_m163 -> boiler_runtime"
+				lgd.Query = "INSERT"
+				lgd.CreatedDate = time.Now()
+				lgd.Duration = float64(lgd.CreatedDate.Sub(lastLog.CreatedDate)) / float64(time.Second)
+				lgd.DurationTotal = lastLog.DurationTotal + lgd.Duration
+				lgd.Status = logs.BOILER_RUNTIME_LOG_STATUS_DONE
+				LogCtl.AddReloadLog(&lgd)
 
-			if res, err := dba.BoilerOrm.Raw(rawReloadDisabled).Exec(); err != nil {
-				goazure.Error("Update m163 after reload Error:", err, res)
+				go RtmCtl.RuntimeDataReload(&rtm, lgd.DurationTotal)
 			}
 		}
+	}
 
-		if combined.Boiler != nil &&
+	for _, d := range data {
+		var tm time.Time
+		code := d["Boiler_term_id"].(string)
+		set := d["Boiler_boiler_id"].(string)
+		t := d["TS"].(string)
+		//ver := d["Boiler_data_fmt_ver"].(string)
+		//sn := d["Boiler_sn"].(string)
+		tm, _ = time.ParseInLocation("2006-01-02 15:04:05", t, time.Local)
+
+		rawDisUid :=
+			"UPDATE	`boiler_m163` " +
+			"SET	`need_reload` = 0 " +
+			"WHERE	`uid` = " + "'" + d["uid"].(string) + "';"
+
+		//var boiler	models.Boiler
+		var combined	models.BoilerTerminalCombined
+
+		co, _ := strconv.ParseInt(code, 10, 32)
+		st, _ := strconv.ParseInt(set, 10, 32)
+
+		if  err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
+			RelatedSel("Boiler").RelatedSel("Terminal").
+			Filter("TerminalCode", co).Filter("TerminalSetId", st).OrderBy("TerminalSetId").
+			One(&combined);
+			err != nil {
+			goazure.Error("Get BoilerInfo Error:", err, co, st)
+
+			go dba.BoilerOrm.Raw(rawDisUid).Exec()
+
+			continue
+		}
+
+		startTime := time.Now()
+
+		var lgr logs.BoilerRuntimeLog
+		lgr.Name = "runtimeReload()"
+		lgr.TableName = "boiler_m163 -> boiler_runtime"
+		lgr.Query = d["uid"].(string)
+		lgr.CreatedDate = startTime
+		lgr.Duration = float64(startTime.Sub(tm)) / float64(time.Second)
+		lgr.DurationTotal = lgr.Duration
+		lgr.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
+		LogCtl.AddReloadLog(&lgr)
+
+		if 	combined.Boiler != nil &&
 			len(combined.Boiler.Uid) > 0 {
 
-			bConfs := ctl.ChannelConfigList(code)
-			for _, cnf := range bConfs {
-				fmt.Println("处理的code:",code)
-				fmt.Println("处理的通道cnf:",cnf.ChannelType,cnf.ChannelNumber)
-				runtimeReload(cnf)
-			}
+			bCnfs := ctl.ChannelConfigList(code)
+
+			go runtimeReload(d, bCnfs, combined.Boiler, &lgr)
 		}
+
+		go dba.BoilerOrm.Raw(rawDisUid).Exec()
 	}
 
-	//ids := "(" + strings.Join(disIds, ",") + ")"
-	//rawDisabled :=
-	//	"UPDATE	`boiler_m163` " +
-	//	"SET	`need_reload` = FALSE " +
-	//	"WHERE	`uid` IN " + ids + "';"
-	//
-	//if res, err := dba.BoilerOrm.Raw(rawDisabled).Exec(); err != nil {
-	//	goazure.Error("Update m163 after reload Error:", err, res)
-	//} else {
-	//	num, _ := res.RowsAffected()
-	//	goazure.Info("rawDis:", num, "\n", rawDisabled)
-	//	//time.Sleep(time.Minute * 20)
-	//}
+	/*
+	rawDis :=
+		"UPDATE	`boiler_m163` " +
+		"SET	`need_reload` = 0 " +
+		"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
+	go dba.BoilerOrm.Raw(rawDis).Exec()
+	*/
 }
 
-func (ctl *ParameterController) DataListNeedReload() []orm.Params {
-	var data []orm.Params
+func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
+	var data 	[]orm.Params
 
-	limit := ParamCtrl.ReloadLimit
-	if limit <= 0 {
-		limit = 600
-	}
-
-	//raw := "SELECT * FROM `boiler_m163` WHERE `TS` > '2017-11-10 00:00:00' ORDER BY `TS` DESC LIMIT 1000;"
+	/*
+	rawReady :=
+		"UPDATE	`boiler_m163` " +
+		"SET	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + " " +
+		"WHERE	`need_reload` = 1 " +
+		"LIMIT	" + strconv.FormatInt(limit, 10) + ";"
+	*/
 
 	raw :=
 		"SELECT	`rtm`.* " +
-			"FROM	`boiler_m163` AS `rtm`, `boiler_terminal_combined` AS `boiler` " +
+		//"FROM	`boiler_m163` AS `rtm`, `boiler_terminal_combined` AS `boiler` " +
 		//"WHERE	`boiler`.`terminal_code` = CAST(`rtm`.`Boiler_term_id` AS SIGNED) " +
 		//"AND 	`boiler`.`terminal_set_id` = CAST(`rtm`.`Boiler_boiler_id` AS SIGNED) " +
+		//"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
+		//"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
+		//"  AND	`rtm`.`need_reload` = TRUE "
+		"FROM	`boiler_m163` "  +
+		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
+		"WHERE	`need_reload` = 1;"
+		//"WHERE	`TS` > '2018-03-27 00:00:00';"
+		//"ORDER BY `TS` DESC; "
 
-			"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
-			"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
-			"  AND	`rtm`.`need_reload` = TRUE "
+	var lg logs.BoilerRuntimeLog
+	lg.Name = "DataListNeedReload()"
+	lg.TableName = "boiler_163m"
+	lg.Query = raw
+	lg.CreatedDate = time.Now()
+	lg.Status = logs.BOILER_RUNTIME_LOG_STATUS_READY
+	LogCtl.AddReloadLog(&lg)
 
-	if limit <= 600 {
-		raw = raw + "ORDER BY `rtm`.`TS` DESC "
+	/*
+	if res, err := dba.BoilerOrm.Raw(rawReady).Exec(); err != nil {
+		goazure.Error("Ready DataListNeedReload Error", err, res)
+		return data
 	}
-	raw = raw +
-		"LIMIT	" + strconv.FormatInt(limit, 10) + ";"
+	*/
 
-	//goazure.Warning("Limit:", limit, "\nRaw:", raw)
-	//time.Sleep(time.Minute * 1)
-
-	if num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil || num == 0 {
+	if  num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil {
 		goazure.Error("Get DataListNeedReload Error", err, num)
 	}
 
@@ -519,11 +547,11 @@ func (ctl *ParameterController) DataListNeedReload() []orm.Params {
 }
 
 func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.RuntimeParameterChannelConfig {
-	goazure.Warning("ChannelConfigList:", code)
-	var dfConfs []*models.RuntimeParameterChannelConfig
-	var bConfs []*models.RuntimeParameterChannelConfig
-	var co int64
-	//将code转成int类型
+	//goazure.Warning("ChannelConfigList:", code)
+	var dfConfs 	[]*models.RuntimeParameterChannelConfig
+	var bConfs 		[]*models.RuntimeParameterChannelConfig
+	var co			int64
+
 	switch reflect.ValueOf(code).Kind() {
 	case reflect.String:
 		co, _ = strconv.ParseInt(code.(string), 10, 64)
@@ -552,10 +580,9 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 		RelatedSel("Terminal").
 		Filter("Terminal__TerminalCode", co).Filter("IsDeleted", false).All(&bConfs); err != nil || num == 0 {
 		goazure.Error("Get Boiler Channel Config Error:", err, num)
-	} else {
-		goazure.Info("Get Boiler Channel Config:", num, "\n", bConfs)
 	}
 	//状态量查询
+
 	for _, c := range bConfs {
 		if c.ChannelType == models.CHANNEL_TYPE_RANGE {
 			var bRanges []*models.RuntimeParameterChannelConfigRange
@@ -1116,8 +1143,9 @@ func (ctl *ParameterController) RuntimeParameterDelete() {
 	go ParamCtrl.RefreshParameters()
 }
 
-func runtimeParameter(pid int) *models.RuntimeParameter {
-	param := models.RuntimeParameter{}
+
+func (ctl *ParameterController) RuntimeParameter(pid int) *models.RuntimeParameter {
+	var param models.RuntimeParameter
 
 	if err := dba.BoilerOrm.QueryTable("runtime_parameter").
 		RelatedSel("Category").
@@ -1183,7 +1211,7 @@ func generateDefaultChannelConfig() error {
 		if errRead != nil {
 			log.Fatal(errRead)
 		}
-		fmt.Println("Records: ", records)
+		goazure.Info("Records: ", records)
 
 		var fieldNames []string
 		for i, row := range records {
@@ -1206,7 +1234,7 @@ func generateDefaultChannelConfig() error {
 					switch j {
 					case paramIdCol:
 						pid, _ := strconv.ParseInt(field, 10, 64)
-						value = runtimeParameter(int(pid))
+						value = ParamCtrl.RuntimeParameter(int(pid))
 						name = value.(*models.RuntimeParameter).Name
 						if strings.Index(name, "室内温度") >= 0 {
 							name = "室内温度"
@@ -1242,7 +1270,6 @@ func generateDefaultChannelConfig() error {
 					da.FieldByName(fieldNames[j]).Set(reflect.ValueOf(value))
 				}
 
-				//fmt.Println("Da: ", da)
 				//idx := i - fieldRowNo - 1
 				DataCtl.AddData(in, true,
 					"Parameter",
@@ -1262,14 +1289,10 @@ func generateDefaultChannelConfig() error {
 	return err
 }
 
-func (ctl *ParameterController) InitParameterChannelConfig(limit int64) {
+func (ctl *ParameterController) InitParameterChannelConfig() {
 	// generateDefaultChannelConfig()
-	ParamCtrl.ReloadLimit = limit
 
-	interval := time.Second * 15
-	if !conf.IsRelease {
-		interval = time.Minute * 2
-	}
+	interval := time.Second * 10
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {

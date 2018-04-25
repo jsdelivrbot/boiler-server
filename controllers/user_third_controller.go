@@ -124,6 +124,7 @@ type WeixinTemplateMessage struct {
 	EmphasisKeyword string	`json:"emphasis_keyword"`	// 模板需要放大的关键词，不填则默认无放大
 }
 
+/*** LOGIN ***/
 func (ctl *UserThirdController) UserLoginWeixinWeb() {
 	fmt.Println("Ready to Login With Weixin!!!")
 	fmt.Println(ctl.Ctx.Input.URI(), ctl.Ctx.Input.URL(), ctl.Ctx.Input.Domain(), ctl.Ctx.Input.Params())
@@ -281,6 +282,218 @@ func (ctl *UserThirdController) LoginWeixinWebDone(third *models.UserThird) erro
 	return nil
 }
 
+func (ctl *UserThirdController) UserLoginWeixinMini() {
+	goazure.Error("Ready to UserLoginWeixinMini()")
+	third := models.UserThird{}
+
+	info := WeixinUserInfo{}
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &info); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Login Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	goazure.Info("WeixinMini User Info:", info)
+
+	domain := ctl.Ctx.Input.Domain()
+	app := models.Application{ Domain: domain, App: "mini" }
+	if err := DataCtl.ReadData(&app, "Domain", "App"); err != nil {
+		goazure.Error("Read AppInfo Error:", app)
+	}
+
+	access, err := GetWeixinAccess(&app, info.Code, false)
+	if err != nil || access.ErrCode != 0 {
+		e := fmt.Sprintln("GetWeixinMiniAccess Error:", err)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+
+	sif, err := ctl.UserDataDecryptBase64(access.SessionKey, info.EncryptedData, info.Iv)
+	if err != nil {
+		goazure.Error(err)
+	}
+
+	if 	err := dba.BoilerOrm.QueryTable("user_third").Filter("OpenId", access.OpenId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&third); err != nil {
+		goazure.Error("Read UserThird Error", err)
+
+		third.OpenId = access.OpenId
+		third.UnionId = sif.UnionId
+
+		var ath models.UserThird
+		if 	err := dba.BoilerOrm.QueryTable("user_third").Filter("UnionId", sif.UnionId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&ath); err != nil {
+			goazure.Error("Not Get UnionId!")
+			//usr.Status = models.USER_STATUS_THIRD
+			//usr.Role = role(models.USER_ROLE_USER)
+			//usr.Thirds = append(usr.Thirds, &third)
+			//
+			//ctl.SetSession(SESSION_CURRENT_USER, &usr)
+			//ctl.Ctx.Output.SetStatus(400)
+			//ctl.Ctx.Output.Body([]byte("Third Read Error!"))
+			//return
+		} else {
+			goazure.Warn("Get Exist UnionId User:", ath)
+			third.User = ath.User
+			third.UnionId = ath.UnionId
+			third.IsDeleted = false
+		}
+	}
+
+	if  third.UnionId != sif.UnionId {
+		third.UnionId = sif.UnionId
+	}
+
+	third.Application = &app
+	third.Platform = app.Platform
+	third.App = app.App
+	third.Identity = app.Identity
+	third.SessionKey = access.SessionKey
+	third.ExpiresIn = time.Now().Add(time.Second * time.Duration(access.ExpiresIn))
+
+	third.Name = info.Nickname
+	third.Sex = info.Sex
+	third.HeadImageUrl = info.HeadImageUrl
+	third.Province = info.Province
+	third.City = info.City
+	third.Country = info.Country
+
+	//third.IsDeleted = false
+	//goazure.Info("Third: ", third.User)
+	DataCtl.AddData(&third, true, "OpenId")
+	goazure.Error("Third Updated: ", third.User)
+
+	if  err := ctl.LoginWeixinMini(&third); err != nil {
+		goazure.Error(err)
+		ctl.Ctx.Output.SetStatus(302)
+		ctl.Data["json"] = third
+		ctl.ServeJSON()
+
+		return
+	}
+
+	u := ctl.GetCurrentUser()
+	th := &third
+	th.User = nil
+	u.Thirds = []*models.UserThird{th}
+
+	ctl.Data["json"] = u
+	ctl.ServeJSON()
+}
+
+func (ctl *UserThirdController) UserDataDecryptBase64(key, encryptedData, iv string) (*WeixinSecretInfo, error) {
+	aKey, _ := base64.StdEncoding.DecodeString(key)
+	ciphertext, _ := base64.StdEncoding.DecodeString(encryptedData)
+
+	block, err := aes.NewCipher(aKey)
+	if err != nil {
+		e := errors.New(fmt.Sprintln("ciphertext Error:", ciphertext))
+		return nil, e
+	}
+	aIv, _ := base64.StdEncoding.DecodeString(iv)
+
+	// CBC mode always works in whole blocks.
+	if len(ciphertext) % aes.BlockSize != 0 {
+		e := errors.New("ciphertext is not a multiple of the block size")
+		return nil, e
+	}
+
+	mode := cipher.NewCBCDecrypter(block, aIv)
+	// CryptBlocks can work in-place if the two arguments are the same.
+	mode.CryptBlocks(ciphertext, ciphertext)
+	//goazure.Error("ciphertext", fmt.Sprintf("%s", ciphertext))
+	//goazure.Warn(ciphertext)
+
+	if idx := bytes.LastIndexByte(ciphertext, byte(125)); idx > -1 {
+		//goazure.Warn("Find Last '}' Index:", idx)
+		ciphertext = ciphertext[:idx + 1]
+	}
+	//goazure.Warn(ciphertext)
+	goazure.Info(fmt.Sprintf("%s", ciphertext))
+
+	var sinfo WeixinSecretInfo
+	if err := json.Unmarshal(ciphertext, &sinfo); err != nil {
+		e := errors.New(fmt.Sprintln("Weixin User Secret Ummarshal Error:", err))
+		return nil, e
+	}
+	goazure.Info("WeixinMini Secret Info:", sinfo)
+
+	return &sinfo, nil
+}
+
+func (ctl *UserThirdController) LoginWeixinMini(third *models.UserThird) error {
+	goazure.Info("Weixin Mini Login: ", third, third.User)
+	if third.Application == nil {
+		return errors.New("UserThird Application Can NOT be nil!")
+	}
+
+	if third.User == nil {
+		return errors.New("UserThird User Can NOT be nil!")
+	}
+
+	login := models.UserLogin {}
+	login.User = third.User
+
+	login.Name = third.Name
+	login.Remark = "微信小程序登录成功"
+	login.CreatedBy = third.User
+
+	login.LoginPassword = third.OpenId
+	login.IsSuccess = true
+	login.IsLogin = true
+	login.LoginMethod = "Weixin Mini"
+
+	if err := DataCtl.InsertData(&login); err != nil {
+		goazure.Error("LoginLog Error", err)
+	}
+
+	var sessions []*models.UserSession
+	if num, err := dba.BoilerOrm.QueryTable("user_session").
+		Filter("User__Uid", third.User.Uid).Filter("Application__Uid", third.Application.Uid).
+		Filter("IsDeleted", false).Filter("IsActived", true).
+		OrderBy("-CreatedDate").All(&sessions); err != nil || num == 0 {
+		goazure.Warning("Read Actived Session Error:", err)
+	} else {
+		for _, se := range sessions {
+			se.IsActived = false
+			DataCtl.UpdateData(se)
+		}
+	}
+
+	session := models.UserSession {
+		User: third.User,
+		Login: &login,
+		Application: third.Application,
+		Token: uuid.New(),
+		IsActived: true,
+	}
+	if err := DataCtl.InsertData(&session); err != nil {
+		goazure.Error("Session Error", err)
+	}
+
+	ctl.UpdateCurrentUser(third.User)
+
+	return nil
+}
+
+func (ctl *UserThirdController) LoginWeixinWeb(app *models.Application, callbackPath string) error {
+	u, _ := url.Parse(WEIXIN_OPEN_BASE_URL)
+	u.Path = "/connect/qrconnect"
+	q := u.Query()
+	q.Set("appid", app.AppId)
+	q.Set("redirect_uri", fmt.Sprintf("http://%s/%s/callback", app.Domain, callbackPath))
+	q.Set("response_type", "code")
+	q.Set("scope", "snsapi_login")
+	q.Set("state", "boiler_login#wechat_redirect")
+	u.RawQuery = q.Encode()
+
+	//ctl.Redirect(url, 302)
+	ctl.Ctx.Redirect(302, u.String())
+
+	return nil
+}
+
+/*** BIND ***/
 func (ctl *UserThirdController) UserBindWeixin() {
 	fmt.Println("Ready to Bind With Weixin!!!")
 	domain := ctl.Ctx.Input.Domain()
@@ -350,6 +563,68 @@ func (ctl *UserThirdController) UserBindWeixinCallback() {
 	ctl.Ctx.Redirect(302, "/admin#!/profile/account")
 }
 
+func (ctl *UserThirdController) UserBindWeixinMini() {
+	var third models.UserThird
+
+	var u Usr
+	if  err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Login Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	goazure.Info("WeixinMini Bind:", u)
+
+	//domain := ctl.Ctx.Input.Domain()
+	//app := models.Application{ Domain: domain, App: "mini" }
+	//if err := DataCtl.ReadData(&app, "Domain", "App"); err != nil {
+	//	goazure.Error("Read AppInfo Error:", err)
+	//}
+
+	usr, err := ctl.Login(&u)
+	if  err != nil {
+		e := fmt.Sprintln("Weixin Mini Login Error:", err)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(403)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+
+	if  err := dba.BoilerOrm.QueryTable("user_third").Filter("OpenId", u.OpenId).One(&third); err != nil {
+		e := fmt.Sprintln("Read UserThird Error", err, third.User, third.IsDeleted)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(403)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+
+	third.User = usr
+	third.IsDeleted = false
+	DataCtl.AddData(&third, true, "OpenId")
+
+	var aThirds []*models.UserThird
+	if  num, err := dba.BoilerOrm.QueryTable("user_third").
+		Filter("UnionId", third.UnionId).All(&aThirds); err != nil {
+		goazure.Error("Update UnionIds:", err, num)
+	}
+	for _, th := range aThirds {
+		th.User = third.User
+		th.IsDeleted = false
+
+		DataCtl.UpdateData(th)
+	}
+
+	if err := ctl.LoginWeixinMini(&third); err != nil {
+		goazure.Error(err)
+		ctl.Ctx.Output.SetStatus(302)
+		ctl.Data["json"] = third
+	} else {
+		ctl.Data["json"] = ctl.GetCurrentUser()
+	}
+
+	ctl.ServeJSON()
+}
+
 func (ctl *UserThirdController) UserLoginBindThird() {
 	au := ctl.GetSession(SESSION_CURRENT_USER).(*models.User)
 	third := au.Thirds[0]
@@ -363,7 +638,7 @@ func (ctl *UserThirdController) UserLoginBindThird() {
 	}
 
 	usr, err := ctl.Login(&u)
-	if err != nil {
+	if  err != nil {
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte(err.Error()))
 		return
@@ -371,16 +646,16 @@ func (ctl *UserThirdController) UserLoginBindThird() {
 	third.User = usr
 	third.IsDeleted = false
 
-	if len(usr.Name) == 0 || usr.Name == usr.Username {
+	if  len(usr.Name) == 0 || usr.Name == usr.Username {
 		usr.Name = third.Name
 	}
-	if err := DataCtl.AddData(third, true, "OpenId"); err != nil {
+	if  err := DataCtl.AddData(third, true, "OpenId"); err != nil {
 		goazure.Warn("Login And Bind User Error: ", err)
 	}
 	DataCtl.UpdateData(usr)
 
 	var aThirds []*models.UserThird
-	if num, err := dba.BoilerOrm.QueryTable("user_third").
+	if  num, err := dba.BoilerOrm.QueryTable("user_third").
 		Filter("UnionId", third.UnionId).All(&aThirds); err != nil {
 		goazure.Error("Update UnionIds:", err, num)
 	}
@@ -391,8 +666,8 @@ func (ctl *UserThirdController) UserLoginBindThird() {
 		DataCtl.UpdateData(th)
 	}
 
-	fmt.Println("User: ", usr)
-	fmt.Println("Third: ", third)
+	//fmt.Println("User: ", usr)
+	//fmt.Println("Third: ", third)
 	ctl.UpdateCurrentUser(usr)
 
 	ctl.Ctx.Output.SetStatus(200)
@@ -439,11 +714,12 @@ func (ctl *UserThirdController) UserRegisterBindThird() {
 	ctl.Ctx.Output.Body([]byte("绑定成功，您可以通过微信扫码直接登录平台"))
 }
 
+/*** UNBIND ***/
 func (ctl *UserThirdController) UserUnbindWeixin() {
 	var token string
 	var openid string
 	usr := ctl.GetCurrentUser()
-	if usr == nil {
+	if  usr == nil {
 		goazure.Info("Params:", ctl.Input())
 		if ctl.Input()["token"] == nil || len(ctl.Input()["token"]) == 0 {
 			return
@@ -452,7 +728,7 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 
 		var err error
 		usr, err = ctl.GetCurrentUserWithToken(token)
-		if err != nil {
+		if  err != nil {
 			ctl.Ctx.Output.SetStatus(400)
 			ctl.Ctx.Output.Body([]byte(err.Error()))
 
@@ -466,13 +742,13 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 
 	var oThirds, uThirds []*models.UserThird
 	qs := dba.BoilerOrm.QueryTable("user_third").Filter("Platform", "weixin").Filter("IsDeleted", false)
-	if len(openid) <= 0 {
+	if  len(openid) <= 0 {
 		qs = qs.Filter("User__Uid", usr.Uid)
 	} else {
 		qs = qs.Filter("OpenId", openid)
 	}
 
-	if num, err := qs.All(&oThirds); err != nil || num == 0 {
+	if  num, err := qs.All(&oThirds); err != nil {
 		e := fmt.Sprintln("Get UserThird By OpenId For Delete Error:", err, num)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -483,12 +759,13 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 
 	var th *models.UserThird
 	for _, t := range oThirds {
-		if len(t.UnionId) > 0 {
+		if  len(t.UnionId) > 0 {
 			th = t
+			break
 		}
 	}
 
-	if th == nil || len(th.UnionId) <= 0 {
+	if  th == nil || len(th.UnionId) <= 0 {
 		e := fmt.Sprintln("Get UnionId for Delete Error!")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -497,7 +774,7 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 		return
 	}
 
-	if num, err := dba.BoilerOrm.QueryTable("user_third").Filter("UnionId", th.UnionId).All(&uThirds); err != nil || num == 0 {
+	if  num, err := dba.BoilerOrm.QueryTable("user_third").Filter("UnionId", th.UnionId).All(&uThirds); err != nil {
 		e := fmt.Sprintln("Get UserThird By UnionId For Delete Error:", err, num)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
@@ -507,278 +784,30 @@ func (ctl *UserThirdController) UserUnbindWeixin() {
 	}
 
 	for _, t := range uThirds {
-			t.User = nil
-			t.IsDeleted = true
-			DataCtl.UpdateData(t)
+		var login models.UserLogin
+		login.User = t.User
+		login.Name = t.Name
+		login.Remark = "微信小程序用户解绑"
+		login.CreatedBy = usr
+
+		login.IsLogin = false
+		login.IsSuccess = true
+
+		login.LoginPassword = "Weixin Mini Unbind"
+
+		if err := DataCtl.InsertData(&login); err != nil {
+			goazure.Error("LoginLog Error", err)
+		}
+
+		t.User = nil
+		t.IsDeleted = true
+		DataCtl.UpdateData(t)
 	}
 
 	ctl.UpdateCurrentUser(usr)
 }
 
-func (ctl *UserThirdController) UserLoginWeixinMini() {
-	goazure.Error("Ready to UserLoginWeixinMini()")
-	third := models.UserThird{}
 
-	info := WeixinUserInfo{}
-	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &info); err != nil {
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte("Login Json Error!"))
-		goazure.Error("Unmarshal Error", err)
-		return
-	}
-	goazure.Info("WeixinMini User Info:", info)
-	
-	domain := ctl.Ctx.Input.Domain()
-	app := models.Application{ Domain: domain, App: "mini" }
-	if err := DataCtl.ReadData(&app, "Domain", "App"); err != nil {
-		goazure.Error("Read AppInfo Error:", app)
-	}
-
-	access, err := GetWeixinAccess(&app, info.Code, false)
-	if err != nil || access.ErrCode != 0 {
-		e := fmt.Sprintln("GetWeixinMiniAccess Error:", err)
-		goazure.Error(e)
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte(e))
-		return
-	}
-
-	sif, err := ctl.UserDataDecryptBase64(access.SessionKey, info.EncryptedData, info.Iv)
-	if err != nil {
-		goazure.Error(err)
-	}
-
-	if err := dba.BoilerOrm.QueryTable("user_third").Filter("OpenId", access.OpenId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&third); err != nil {
-		goazure.Error("Read UserThird Error", err)
-
-		third.OpenId = access.OpenId
-		third.UnionId = sif.UnionId
-
-		var ath models.UserThird
-		if err := dba.BoilerOrm.QueryTable("user_third").Filter("UnionId", sif.UnionId).Filter("User__isnull", false).Filter("IsDeleted", false).One(&ath); err != nil {
-			goazure.Error("Not Get UnionId!", ath)
-			//usr.Status = models.USER_STATUS_THIRD
-			//usr.Role = role(models.USER_ROLE_USER)
-			//usr.Thirds = append(usr.Thirds, &third)
-			//
-			//ctl.SetSession(SESSION_CURRENT_USER, &usr)
-			//ctl.Ctx.Output.SetStatus(400)
-			//ctl.Ctx.Output.Body([]byte("Third Read Error!"))
-			//return
-		} else {
-			goazure.Warn("Get Exist UnionId User:", ath)
-			third.User = ath.User
-			third.UnionId = ath.UnionId
-			third.IsDeleted = false
-		}
-	}
-
-	if len(third.UnionId) == 0 {
-		third.UnionId = sif.UnionId
-	}
-
-	third.Application = &app
-	third.Platform = app.Platform
-	third.App = app.App
-	third.Identity = app.Identity
-	third.SessionKey = access.SessionKey
-	third.ExpiresIn = time.Now().Add(time.Second * time.Duration(access.ExpiresIn))
-
-	third.Name = info.Nickname
-	third.Sex = info.Sex
-	third.HeadImageUrl = info.HeadImageUrl
-	third.Province = info.Province
-	third.City = info.City
-	third.Country = info.Country
-
-	//third.IsDeleted = false
-	//goazure.Info("Third: ", third.User)
-	DataCtl.AddData(&third, true, "OpenId")
-	//goazure.Info("Third Updated: ", third.User)
-
-	if err := ctl.LoginWeixinMini(&third); err != nil {
-		goazure.Error(err)
-		ctl.Ctx.Output.SetStatus(302)
-		ctl.Data["json"] = third
-	} else {
-		ctl.Data["json"] = ctl.GetCurrentUser()
-	}
-
-	ctl.ServeJSON()
-}
-
-func (ctl *UserThirdController) UserDataDecryptBase64(key, encryptedData, iv string) (*WeixinSecretInfo, error) {
-	aKey, _ := base64.StdEncoding.DecodeString(key)
-	ciphertext, _ := base64.StdEncoding.DecodeString(encryptedData)
-
-	block, err := aes.NewCipher(aKey)
-	if err != nil {
-		e := errors.New(fmt.Sprintln("ciphertext Error:", ciphertext))
-		return nil, e
-	}
-	aIv, _ := base64.StdEncoding.DecodeString(iv)
-
-	// CBC mode always works in whole blocks.
-	if len(ciphertext) % aes.BlockSize != 0 {
-		e := errors.New("ciphertext is not a multiple of the block size")
-		return nil, e
-	}
-
-	mode := cipher.NewCBCDecrypter(block, aIv)
-	// CryptBlocks can work in-place if the two arguments are the same.
-	mode.CryptBlocks(ciphertext, ciphertext)
-	//goazure.Error("ciphertext", fmt.Sprintf("%s", ciphertext))
-	//goazure.Warn(ciphertext)
-
-	if idx := bytes.LastIndexByte(ciphertext, byte(125)); idx > -1 {
-		//goazure.Warn("Find Last '}' Index:", idx)
-		ciphertext = ciphertext[:idx + 1]
-	}
-	//goazure.Warn(ciphertext)
-	goazure.Info(fmt.Sprintf("%s", ciphertext))
-
-	var sinfo WeixinSecretInfo
-	if err := json.Unmarshal(ciphertext, &sinfo); err != nil {
-		e := errors.New(fmt.Sprintln("Weixin User Secret Ummarshal Error:", err))
-		return nil, e
-	}
-	goazure.Info("WeixinMini Secret Info:", sinfo)
-
-	return &sinfo, nil
-}
-
-func (ctl *UserThirdController) UserBindWeixinMini() {
-	var third models.UserThird
-
-	var u Usr
-	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte("Login Json Error!"))
-		goazure.Error("Unmarshal Error", err)
-		return
-	}
-	goazure.Info("WeixinMini Bind:", u)
-
-	//domain := ctl.Ctx.Input.Domain()
-	//app := models.Application{ Domain: domain, App: "mini" }
-	//if err := DataCtl.ReadData(&app, "Domain", "App"); err != nil {
-	//	goazure.Error("Read AppInfo Error:", err)
-	//}
-
-	usr, err := ctl.Login(&u)
-	if err != nil {
-		e := fmt.Sprintln("Weixin Mini Login Error:", err)
-		goazure.Error(e)
-		ctl.Ctx.Output.SetStatus(403)
-		ctl.Ctx.Output.Body([]byte(e))
-		return
-	}
-
-	if err := dba.BoilerOrm.QueryTable("user_third").Filter("OpenId", u.OpenId).One(&third); err != nil {
-		e := fmt.Sprintln("Read UserThird Error", err, third.User, third.IsDeleted)
-		goazure.Error(e)
-		ctl.Ctx.Output.SetStatus(403)
-		ctl.Ctx.Output.Body([]byte(e))
-		return
-	}
-
-	third.User = usr
-	third.IsDeleted = false
-	DataCtl.AddData(&third, true, "OpenId")
-
-	var aThirds []*models.UserThird
-	if num, err := dba.BoilerOrm.QueryTable("user_third").
-		Filter("UnionId", third.UnionId).All(&aThirds); err != nil {
-		goazure.Error("Update UnionIds:", err, num)
-	}
-	for _, th := range aThirds {
-		th.User = third.User
-		th.IsDeleted = false
-
-		DataCtl.UpdateData(th)
-	}
-
-	if err := ctl.LoginWeixinMini(&third); err != nil {
-		goazure.Error(err)
-		ctl.Ctx.Output.SetStatus(302)
-		ctl.Data["json"] = third
-	} else {
-		ctl.Data["json"] = ctl.GetCurrentUser()
-	}
-
-	ctl.ServeJSON()
-}
-
-func (ctl *UserThirdController) LoginWeixinMini(third *models.UserThird) error {
-	goazure.Info("Weixin Mini Login: ", third, third.User)
-	if third.Application == nil {
-		return errors.New("UserThird Application Can NOT be nil!")
-	}
-
-	if third.User == nil {
-		return errors.New("UserThird User Can NOT be nil!")
-	}
-
-	login := models.UserLogin {}
-	login.User = third.User
-
-	login.Name = third.Name
-	login.Remark = "微信小程序登录成功"
-	login.CreatedBy = third.User
-
-	login.LoginPassword = "Weixin Mini Login"
-	login.IsSuccess = true
-	login.LoginMethod = "Weixin Mini"
-
-	if err := DataCtl.InsertData(&login); err != nil {
-		goazure.Error("LoginLog Error", err)
-	}
-
-	var sessions []*models.UserSession
-	if num, err := dba.BoilerOrm.QueryTable("user_session").
-		Filter("User__Uid", third.User.Uid).Filter("Application__Uid", third.Application.Uid).
-		Filter("IsDeleted", false).Filter("IsActived", true).
-		OrderBy("-CreatedDate").All(&sessions); err != nil || num == 0 {
-		goazure.Warning("Read Actived Session Error:", err)
-	} else {
-		for _, se := range sessions {
-			se.IsActived = false
-			DataCtl.UpdateData(se)
-		}
-	}
-
-	session := models.UserSession {
-		User: third.User,
-		Login: &login,
-		Application: third.Application,
-		Token: uuid.New(),
-		IsActived: true,
-	}
-	if err := DataCtl.InsertData(&session); err != nil {
-		goazure.Error("Session Error", err)
-	}
-
-	ctl.UpdateCurrentUser(third.User)
-
-	return nil
-}
-
-func (ctl *UserThirdController) LoginWeixinWeb(app *models.Application, callbackPath string) error {
-	u, _ := url.Parse(WEIXIN_OPEN_BASE_URL)
-	u.Path = "/connect/qrconnect"
-	q := u.Query()
-	q.Set("appid", app.AppId)
-	q.Set("redirect_uri", fmt.Sprintf("http://%s/%s/callback", app.Domain, callbackPath))
-	q.Set("response_type", "code")
-	q.Set("scope", "snsapi_login")
-	q.Set("state", "boiler_login#wechat_redirect")
-	u.RawQuery = q.Encode()
-
-	//ctl.Redirect(url, 302)
-	ctl.Ctx.Redirect(302, u.String())
-
-	return nil;
-}
 
 func (ctl *UserThirdController) SendTemplateMessageMini(app *models.Application, tempMsg *WeixinTemplateMessage) {
 	access, err := GetWeixinAccess(app, "", true)
@@ -815,7 +844,7 @@ func GetWeixinAccess(app *models.Application, code string, isTemplate bool) (*We
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
-	fmt.Println("WeixinAccess Body:", buf.String())
+	goazure.Info("WeixinAccess Body:", buf.String())
 	//body := make([]byte, resp.ContentLength)
 	//if n, err := resp.Body.Read(body); err != nil || n == 0 {
 	//	fmt.Println("Read Weixin LoginInfo Body Error:", err, n)
