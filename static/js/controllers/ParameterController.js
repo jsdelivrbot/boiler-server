@@ -232,7 +232,18 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
     $modal.commit = function () {
         Ladda.create(document.getElementById('boiler_ok')).start();
 
-        $http.post("/runtime_parameter_update/", $modal.data)
+        $http.post("/runtime_parameter_update/", {
+            id:$modal.data.Parameter.Id,
+            category_id:$modal.data.Parameter.Id,
+            organization_id:$modal.data.Organization.Uid,
+            fix:$modal.data.Parameter.Fix,
+            length:$modal.data.Parameter.Length,
+            name:$modal.data.Parameter.Name,
+            param_id:$modal.data.Parameter.ParamId,
+            scale:$modal.data.Parameter.Scale,
+            unit:$modal.data.Parameter.Unit,
+            remark:$modal.data.Parameter.Remark
+        })
             .then(function (res) {
                 swal({
                     title: "参数更新成功",
@@ -241,6 +252,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
                 }).then(function () {
                     $uibModalInstance.close('success');
                     $rootScope.getParameterList();
+                    // parameter.refreshDataTables(PARAMETER_CATEGORY_ANALOG);
                 });
             }, function (err) {
                 swal({
@@ -265,7 +277,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
             closeOnConfirm: false
         }).then(function () {
             $http.post("/runtime_parameter_delete/", {
-                Id: $modal.data.Id
+                Id: $modal.data.Parameter.Id
             }).then(function (res) {
                 swal({
                     title: "参数删除成功",
