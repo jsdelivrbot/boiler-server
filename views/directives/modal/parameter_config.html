@@ -78,7 +78,7 @@
                 <div class="input-group">
                     <span class="input-group-addon">换算比例</span>
                     <input type="number"
-                           ng-model="$modal.data.Scale" name="paramScale"
+                           ng-model="$modal.data.Parameter.Scale" name="paramScale"
                            ng-disabled="!$modal.editing"
                            class="form-control ng-pristine ng-valid ng-touched has-success"
                            placeholder="参数值 = 报文值 × 换算比例" required>
@@ -88,7 +88,7 @@
                 <div class="input-group">
                     <span class="input-group-addon">参数单位</span>
                     <input type="text"
-                           ng-model="$modal.data.Unit"
+                           ng-model="$modal.data.Parameter.Unit"
                            ng-disabled="!$modal.editing"
                            class="form-control ng-pristine ng-valid ng-touched has-success"
                            placeholder="（可选）参数的计量单位">
@@ -100,7 +100,7 @@
             <div class="form-group col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon">所属企业</span>
-                    <ui-select ng-model="$modal.data.Parameter.Organization"
+                    <ui-select ng-model="$modal.data.Organization"
                                theme="bootstrap">
                         <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.Name}}</ui-select-match>
                         <ui-select-choices group-by="'type'" repeat="org in organizations | filter: $select.search">
@@ -128,7 +128,7 @@
                 ng-click="$modal.delete()">删除</button>
         <button type="button" class="btn ladda-button"
                 ng-show="$modal.editing"
-                ng-disabled="$modal.data.Parameter.Category.Id <= 0 || parameterForm.paramName.$error.required || parameterForm.paramScale.$error.required"
+                ng-disabled="$modal.data.Parameter.Category.Id <= 0 || parameterForm.paramName.$error.required || parameterForm.paramScale.$error.required || !$modal.data.Organization"
                 ng-class="[{'btn-primary': $modal.data.Parameter.Category.Id > 0}, {'grey': $modal.data.Parameter.Category.Id <= 0}]"
                 data-style="zoom-out"
                 id="boiler_ok" ng-click="$modal.commit()"><span class="ladda-label">提交</span></button>
