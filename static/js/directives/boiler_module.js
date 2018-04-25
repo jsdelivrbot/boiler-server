@@ -132,6 +132,13 @@ boilerAdmin.directive('boilerModule', function () {
             bModule.moduleId = BOILE_MODULE_IRON;
         }
 
+        if (bModule.boiler.Form.Id === 1004) {
+                bModule.moduleId = BOILE_MODULE_LV;
+            }
+        if (bModule.boiler.Form.Id === 1005) {
+            bModule.moduleId = BOILE_MODULE_IRON;
+        }
+
         switch (bModule.moduleId) {
             case BOILE_MODULE_COAL_DOUBLE:
                 svgName = "/img/boiler_coal_double.svg";
@@ -1375,7 +1382,6 @@ boilerAdmin.directive('boilerModule', function () {
         }, sec);
     };
 
-
     //铸铝
     var renderLvDashes = function (id) {
         var waterSize = 6;
@@ -1481,6 +1487,7 @@ boilerAdmin.directive('boilerModule', function () {
 
     };
 
+
     var renderLvFire = function (id) {
         var fireG = bModule.svg.select(id);
         if (!fireG) {
@@ -1512,7 +1519,8 @@ boilerAdmin.directive('boilerModule', function () {
         }, sec);
     };
 
-//铸铁
+
+    //铸铁
     var renderIronDashes = function (id) {
         var waterSize = 6;
         var size = 8;
@@ -1544,7 +1552,6 @@ boilerAdmin.directive('boilerModule', function () {
                 .transition().duration(sec / 2).ease(d3.easeLinear).attr("cy", 60)
                 .transition().duration(sec / 2).ease(d3.easeLinear).attr("cx", 450)
                 .remove();
-
         };
 
         var dashWaterOut = function () {
@@ -1562,6 +1569,43 @@ boilerAdmin.directive('boilerModule', function () {
                 .transition().delay(360).on("start", function () {
                 dashWaterIn();
 //              dashWaterOut();
+                repeat();
+            });
+        });
+    };
+
+    var renderIronSmokeDashes = function (id) {
+        var size = 8;
+        var sec = 4096;
+
+        var dashSmokeModule = bModule.svg.select(id);
+        if (!dashSmokeModule) {
+            console.warn("There IS NO " + id + "!");
+            return;
+        }
+
+        var dashSmoke = function () {
+            dashSmokeModule
+                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
+                .transition().duration(sec / 1.0).ease(d3.easeLinear).attr("cx", 766)
+                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
+                .transition().duration(sec / 2.5).ease(d3.easeLinear).attr("cx", 955)
+                .remove();
+
+            dashSmokeModule
+                .append("circle").attr("cx", 440).attr("cy", 208).attr("r", size / 2).style("fill", "#999")
+                .transition().duration(sec / 3).ease(d3.easeLinear).attr("cx", 533)
+                .transition().duration(sec / 1.5).ease(d3.easeLinear).attr("cy", 478)
+                .transition().duration(sec / 1).ease(d3.easeLinear).attr("cx", 955)
+                .remove();
+
+        };
+
+        dashSmokeModule
+            .transition().on("start", function repeat() {
+            dashSmokeModule
+                .transition().delay(260).on("start", function () {
+                dashSmoke();
                 repeat();
             });
         });
@@ -1617,12 +1661,6 @@ boilerAdmin.directive('boilerModule', function () {
             burn();
         }, sec);
     };
-
-
-
-
-
-
 
     bModule.updateStatusLabels = function () {
         if (!bModule.boiler) {

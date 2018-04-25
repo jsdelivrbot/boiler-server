@@ -61,7 +61,6 @@ func (ctl *LocationController) LocationList() {
 	}
 
 	//goazure.Warn("Locations:", provinces)
-	//panic(0)
 
 	ctl.Data["json"] = provinces
 	ctl.ServeJSON()
