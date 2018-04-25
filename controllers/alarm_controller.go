@@ -52,7 +52,7 @@ func (ctl *AlarmController) AlarmRuleList() {
 		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
 		qs = qs.Filter("Alarm__IsDemo", true)
 	} else if usr.IsOrganizationUser() {
-		qs.Filter("Organization__Uid",usr.Organization.Uid)
+		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
 		//qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
 	}
 	if num, err:=qs.Filter("IsDeleted",false).All(&issuedRule);err!=nil{
