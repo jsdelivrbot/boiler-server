@@ -100,9 +100,8 @@
 
     </div>
 
-    <div class="form-group col-md-12" style="float:none;">
-        <div class="input-group">
-            <span class="input-group-addon">所属企业</span>
+    <div class="form-group input-group col-md-12">
+            <span class="input-group-addon" style="width: 22%">所属企业</span>
             <ui-select ng-model="$modal.org"
                        theme="bootstrap">
                 <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.Name}}</ui-select-match>
@@ -110,7 +109,6 @@
                     <span ng-bind-html="org.Name | highlight: $select.search"></span>
                 </ui-select-choices>
             </ui-select>
-        </div>
     </div>
 
     <!--
