@@ -130,6 +130,8 @@ func init() {
 		new(models.IssuedErrorCode),
 		new(models.IssuedPlcAlarm),
 		new(models.IssuedBoilerStatus),
+		new(models.IssuedAlarmOrganization),
+		new(models.IssuedParameterOrganization),
 	)
 
 	orm.Debug = false//!conf.IsRelease

@@ -148,7 +148,7 @@ func (ctl *SocketController)SocketConfigSend(reqBuf string)([]byte) {
 }
 
 //批量下发
-func (ctl *SocketController) SocketBatchConfigSend(reqBuf string) {
+/*func (ctl *SocketController) SocketBatchConfigSend(reqBuf string) {
 	server := "47.100.0.27:18887"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
@@ -161,7 +161,7 @@ func (ctl *SocketController) SocketBatchConfigSend(reqBuf string) {
 	goazure.Info("connect success")
 	SendConfig(reqBuf,conn)
 	conn.Close()
-}
+}*/
 
 //重启
 func (ctl *SocketController)SocketTerminalRestart(code string)([]byte) {

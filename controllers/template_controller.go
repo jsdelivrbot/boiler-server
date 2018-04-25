@@ -9,6 +9,8 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"strconv"
 	"github.com/AzureTech/goazure/orm"
+	"github.com/AzureRelease/boiler-server/conf"
+	"bytes"
 )
 
 type TemplateController struct {
@@ -16,7 +18,6 @@ type TemplateController struct {
 }
 
 var TempCtrl *TemplateController = &TemplateController{}
-var batchCode = make(chan string,100)
 type Chan struct {
 	ParameterId		int			`json:"parameter_id"`
 	ChannelType		int			`json:"channel_type"`
@@ -77,10 +78,17 @@ func (ctl *TemplateController) TemplateGroupConfig() {
 		fmt.Println("Unmarshal Comment Error", err)
 		return
 	} else {
-		ctl.Ctx.Output.SetStatus(200)
-		ctl.Ctx.Output.Body([]byte("正在配置中..."))
+		if conf.BatchFlag {
+			ctl.Ctx.Output.SetStatus(200)
+			ctl.Ctx.Output.Body([]byte("正在配置中..."))
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("服务器忙，还在处理上次批量下发！"))
+			return
+		}
 	}
 	go func () {
+		conf.BatchFlag = false
 		for _,c := range tempGroupConfig.GroupConfig {
 			start,err:=strconv.Atoi(c.Start)
 			if err!=nil {
@@ -107,6 +115,7 @@ func (ctl *TemplateController) TemplateGroupConfig() {
 			fmt.Println("更新的模板：",tempConfig.TemplateUid)
 			ctl.IssuedTemplateToCurr(tempConfig)
 		}
+		conf.BatchFlag =true
 	}()
 
 }
@@ -381,6 +390,8 @@ func (ctl *TemplateController) TemplateChannelConfigDelete(cnf *models.RuntimePa
 }
 
 func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
+	usr:=ctl.GetCurrentUser()
+	ip:= IssuedCtl.IssuedGetIp(ctl.Ctx.Request.RemoteAddr)
 	Byte:=ctl.IssuedTemplateMessage(temp.TemplateUid)
 	var configTemp []models.IssuedChannelConfigTemplate
 	var confSwitchTemps []models.IssuedChannelConfigTemplate
@@ -399,7 +410,6 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 		goazure.Error("Query issued_communication_template Error",err)
 	}
 	for _, t := range temp.Terminals {
-		fmt.Println("aaaaaaaaaaaaaaa:",t.TerminalCode)
 		var aCnf []models.RuntimeParameterChannelConfig
 		if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 			Filter("Terminal__Uid", t.Uid).Filter("IsDefault", false).
@@ -567,59 +577,67 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 			return
 		}
 		SocketCtrl.SocketBatchConfigSend(reqBuf)*/
-		batchCode <- code
-		/*if reqBuf == "" {
-			tErr.TerminalCode= code
-			tErr.MsgErr="还未保存配置"
-		}
-		if len(reqBuf) != 362 {
-			tErr.TerminalCode= code
-			tErr.MsgErr="报文发生错误"
-		}
-		buf := SocketCtrl.SocketConfigSend(reqBuf)
-		if buf == nil {
-			tErr.TerminalCode= code
-			tErr.MsgErr="发送报文失败"
-		} else if bytes.Equal(conf.TermNoRegist, buf) {
-			tErr.TerminalCode= code
-			tErr.MsgErr="终端还未连接平台"
-		} else if bytes.Equal(conf.TermTimeout, buf) {
-			tErr.TerminalCode= code
-			tErr.MsgErr="终端返回信息超时"
-		} else if len(buf) > 4 {
-			switch buf[15] {
-			case 16:
-				newVer := ByteToIntTwo(buf[13:15])
-				fmt.Println("终端返回版本号:",newVer)
-				termCode := fmt.Sprintf("%s", buf[7:13])
-				sql := "insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now()) on duplicate key update ver=?,update_time=now()"
-				if _, err := dba.BoilerOrm.Raw(sql, termCode, newVer, newVer).Exec(); err != nil {
-					goazure.Error("insert issued_version Error", err)
+		go func(){
+				reqBuf :=IssuedCtl.ReqMessage(code)
+				if reqBuf == "" {
+					goazure.Error("报文为空")
+					return
 				}
-				fmt.Println("插入终端版本成功")
-			case 1:
-				tErr.TerminalCode= code
-				tErr.MsgErr="CRC校验错误"
-			case 2:
-				tErr.TerminalCode= code
-				tErr.MsgErr="SN不一致"
-			case 3:
-				tErr.TerminalCode= code
-				tErr.MsgErr="配置错误"
-			case 4:
-				tErr.TerminalCode= code
-				tErr.MsgErr="PLC未连接"
-			default:
-				tErr.TerminalCode= code
-				tErr.MsgErr="终端配置错误"
+				if len(reqBuf) != 362 {
+					goazure.Error("报文长度错误")
+					return
+				}
+			if temp:=IssuedCtl.IssuedVerController(code);!temp{
+				goazure.Error(code+"终端版本号低，不支持改功能!")
+				return
 			}
-		} else {
-			tErr.TerminalCode= code
-			tErr.MsgErr="返回报文信息错误"
-		}
-		if tErr.TerminalCode != ""{
-			rErr=append(rErr,tErr)
-		}*/
+			if conf.ContentLogsFlag {
+				IssuedCtl.IssuedContentLogs(usr.Username,ip,code,conf.TermConfig,temp.TemplateUid+":"+fmt.Sprintf("%x",reqBuf))
+			} else {
+				IssuedCtl.IssuedContentLogs(usr.Username,ip,code,conf.TermConfig,temp.TemplateUid)
+			}
+				buf:=SocketCtrl.SocketConfigSend(reqBuf)
+			if buf == nil {
+				goazure.Error("发送报文失败")
+				return
+			} else if bytes.Equal(conf.TermNoRegist, buf) {
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("终端还未连接平台"))
+				return
+			} else if bytes.Equal(conf.TermTimeout, buf) {
+				goazure.Error("终端返回信息超时")
+				return
+			} else if len(buf) > 4 {
+				switch buf[15] {
+				case 16:
+					newVer := ByteToIntTwo(buf[13:15])
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					sql := "insert into issued_version(sn,ver,create_time,update_time) values(?,?,now(),now()) on duplicate key update ver=?,update_time=now()"
+					if _, err := dba.BoilerOrm.Raw(sql, termCode, newVer, newVer).Exec(); err != nil {
+						goazure.Error("insert issued_version Error", err)
+					}
+					fmt.Println(termCode+"终端插入终端版本成功")
+				case 1:
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端CRC校验错误")
+				case 2:
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端SN不一致")
+				case 3:
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端配置错误")
+				case 4:
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端PLC未连接")
+				default:
+					termCode := fmt.Sprintf("%s", buf[7:13])
+					goazure.Error(termCode+"终端配置错误")
+				}
+			} else {
+				termCode := fmt.Sprintf("%s", buf[7:13])
+				goazure.Error(termCode+"终端返回报文信息错误")
+			}
+		}()
 	}
 }
 
@@ -988,18 +1006,4 @@ func (ctl *TemplateController) TemplateDelete() {
 	}
 }
 
-func (ctl *TemplateController) TemplateBatchIssued() {
-	batch := func() {
-		for bc := range batchCode {
-			reqBuf :=IssuedCtl.ReqMessage(bc)
-			if reqBuf == "" {
-				return
-			}
-			if len(reqBuf) != 362 {
-				return
-			}
-			 SocketCtrl.SocketBatchConfigSend(reqBuf)
-		}
-	}
-	go batch()
-}
+
