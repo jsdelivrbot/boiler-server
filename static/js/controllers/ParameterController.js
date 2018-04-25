@@ -83,8 +83,10 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
 
     bParameter.new = function () {
         currentData = {
-            Category: {
-                Id: PARAMETER_CATEGORY_UNDEFINED
+            Parameter:{
+                Category: {
+                    Id: PARAMETER_CATEGORY_UNDEFINED
+                }
             }
         };
         isNew = true;
