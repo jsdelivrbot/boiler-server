@@ -234,7 +234,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
 
         $http.post("/runtime_parameter_update/", {
             id:$modal.data.Parameter.Id,
-            category_id:$modal.data.Parameter.Id,
+            category_id:$modal.data.Parameter.Category.Id,
             organization_id:$modal.data.Organization.Uid,
             fix:$modal.data.Parameter.Fix,
             length:$modal.data.Parameter.Length,
