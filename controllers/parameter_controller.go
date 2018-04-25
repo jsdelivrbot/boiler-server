@@ -304,12 +304,13 @@ func (ctl *ParameterController) RuntimeParameterIssuedList() {
 	qs := dba.BoilerOrm.QueryTable("issued_parameter_organization")
 	qs = qs.RelatedSel("Parameter").RelatedSel("Organization").RelatedSel("Parameter__Category")
 	if usr.IsOrganizationUser() {
-		qs.Filter("Organization__Uid",usr.Organization.Uid)
+		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
 		//qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
 	}
 	if num,err:=qs.Filter("IsDeleted",false).All(&issuedParams);err!=nil || num == 0 {
 		goazure.Error("Get RuntimeParameterList Error:", num, err)
 	}
+	fmt.Println("qs:",fmt.Sprintf("%s",qs))
 	for i, v := range issuedParams {
 		if num, err := dba.BoilerOrm.LoadRelated(v.Parameter, "BoilerMediums"); err != nil && num == 0 {
 			goazure.Error("[", i, "]", v, num, err)
@@ -1070,7 +1071,7 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte(e))
 	}
-	sql:="insert into issued_parameter_organization(parameter_id,create_time,update_time,organization_id) values(?,now(),now(),?) on duplicate key update set update_time=now(), organization_id=?"
+	sql:="insert into issued_parameter_organization(parameter_id,create_time,update_time,organization_id) values(?,now(),now(),?) on duplicate key update update_time=now(),is_deleted=false, organization_id=?"
 	if _,err:=dba.BoilerOrm.Raw(sql,bParam.Id,bParam.OrganizationId,bParam.OrganizationId).Exec();err!=nil{
 		goazure.Error("Insert issued_parameter_organization Error",err)
 	}
