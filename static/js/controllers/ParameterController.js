@@ -190,20 +190,20 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
     $modal.initCurrent();
     */
     $modal.categoryChanged = function () {
-        var cateId = $modal.data.Category.Id;
+        var cateId = $modal.data.Parameter.Category.Id;
         if (cateId <= 0) {
-            $modal.data.ParamId = 0;
-            $modal.data.Id = 0;
+            $modal.data.Parameter.ParamId = 0;
+            $modal.data.Parameter.Id = 0;
         }
 
         if (cateId === PARAMETER_CATEGORY_SWITCH || cateId === PARAMETER_CATEGORY_STATUS) {
-            $modal.data.Scale = 1;
-            $modal.data.Fix = 0;
-            $modal.data.Unit = "";
-            $modal.data.Length = 1;
+            $modal.data.Parameter.Scale = 1;
+            $modal.data.Parameter.Fix = 0;
+            $modal.data.Parameter.Unit = "";
+            $modal.data.Parameter.Length = 1;
         } else {
-            $modal.data.Fix = 2;
-            $modal.data.Length = 2;
+            $modal.data.Parameter.Fix = 2;
+            $modal.data.Parameter.Length = 2;
         }
 
         var paramId = 100;
@@ -214,8 +214,8 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
             }
         }
 
-        $modal.data.ParamId = paramId;
-        $modal.data.Id = parseInt(cateId + '' + paramId);
+        $modal.data.Parameter.ParamId = paramId;
+        $modal.data.Parameter.Id = parseInt(cateId + '' + paramId);
     };
 
     $modal.commit = function () {
