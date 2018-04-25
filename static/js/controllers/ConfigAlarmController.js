@@ -160,6 +160,18 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
 
     $modal.priority = 1;
 
+    $http.get("/runtime_parameter_issued_list").then(function (res){
+        $modal.parameterData = [];
+        var parameterData = res.data;
+        for( var i = 0; i<parameterData.length; i++){
+            var param;
+            param = parameterData[i].Parameter;
+            $modal.parameterData.push(param);
+        }
+        console.log($modal.parameterData);
+    });
+
+
     if (currentData) {
         $modal.editing = true;
         $modal.title = "编辑告警规则";
