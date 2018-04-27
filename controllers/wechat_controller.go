@@ -45,14 +45,14 @@ type Request struct {
 
 type Response struct {
 	XMLName 		xml.Name 	`xml:"xml"`
-	ToUserName   		string		`xml:",cdata"`
-	FromUserName 		string		`xml:",cdata"`
-	CreateTime   		time.Duration	//`xml:"CreateTime"`
-	MsgType      		string		`xml:",cdata"`
-	Content      		string		`xml:",cdata"`
-	ArticleCount 		int     	`xml:",omitempty"`
-	Articles     		[]*item 	`xml:"Articles>item,omitempty"`
-	FuncFlag     		int
+	ToUserName   	string		`xml:",cdata"`
+	FromUserName 	string		`xml:",cdata"`
+	CreateTime   	time.Duration	//`xml:"CreateTime"`
+	MsgType      	string		`xml:",cdata"`
+	Content      	string		`xml:",cdata"`
+	ArticleCount 	int     	`xml:",omitempty"`
+	Articles     	[]*item 	`xml:"Articles>item,omitempty"`
+	FuncFlag     	int
 }
 
 type item struct {
@@ -114,11 +114,13 @@ func (ctl *WechatController) InitWechatService() {
 	if err := dba.BoilerOrm.QueryTable("application").Filter("Identity", identity).
 		Filter("App", "service").One(app); err != nil {
 		goazure.Error("Read App Error:", err)
+		return
 	}
 
 	if err := dba.BoilerOrm.QueryTable("application").Filter("Identity", identity).
 		Filter("App", "mini").One(mini); err != nil {
 		goazure.Error("Read Mini Error:", err)
+		return
 	}
 
 	msgServer = core.NewServer(app.OriginId, app.AppId, app.ApiToken, app.AesKey, msgHandler, nil)
@@ -249,7 +251,7 @@ func (ctl *WechatController) SendTemplateInformation(openId string, tempMsg *tem
 func (ctl *WechatController) SendTemplateMessage(openId string, tempMsg *template.TemplateMessage2) {
 	tempMsg.ToUser = openId
 
-	if id, err := template.Send(wechatClient, tempMsg); err != nil {
+	if 	id, err := template.Send(wechatClient, tempMsg); err != nil {
 		goazure.Error("Wechat TemplateMsg Send Error:", err, id)
 	}
 	/*
@@ -442,7 +444,9 @@ func (ctl *WechatController) SyncUserList() {
 			//ctl.LoginWeixinWebDone(&third)
 		}
 
-		goazure.Error(info, "|UnionId:", info.UnionId, "|Errors:", err)
+		if 	err != nil {
+			goazure.Error(info, "|UnionId:", info.UnionId, "|Errors:", err)
+		}
 	}
 }
 

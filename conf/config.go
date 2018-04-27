@@ -1,8 +1,12 @@
 package conf
 
-import "github.com/AzureTech/goazure"
+import (
+	"github.com/AzureTech/goazure"
+	"net/url"
+)
 
 var IsRelease bool = goazure.AppConfig.String("runmode") == "prod"
+
 var Version string = "e884cb938479205f9e25c91152bf359db1c35d6f"
 var BinPath string = "/home/apps/bin/"
 var TermNoRegist = []byte("Term not be registed")
@@ -17,3 +21,17 @@ var TermOnline string = "1000000000"
 var TermOffline string = "0000000000"
 var BatchFlag bool = true
 var ContentLogsFlag bool = true
+var IsReloadLogEnabled = true
+
+var DbConnection string
+
+func init() {
+	if IsRelease {
+		DbConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
+	} else {
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+	}
+}
+
+
+

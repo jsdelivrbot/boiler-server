@@ -6,8 +6,11 @@ import (
 
 	"github.com/AzureTech/goazure/orm"
 	"github.com/AzureRelease/boiler-server/models"
+	"github.com/AzureRelease/boiler-server/models/logs"
 	"github.com/AzureRelease/boiler-server/models/caches"
 	"github.com/AzureRelease/boiler-server/common"
+
+	"github.com/AzureRelease/boiler-server/conf"
 )
 
 var MyORM 		orm.Ormer
@@ -16,10 +19,7 @@ var BoilerOrm 	orm.Ormer
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
-
-	var myConnection string = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
-
-	orm.RegisterDataBase("default", "mysql", myConnection)
+	orm.RegisterDataBase("default", "mysql", conf.DbConnection)
 
 	orm.RegisterModel(
 		new(models.IssuedBinUpload),
@@ -58,7 +58,7 @@ func init() {
 		new(models.BoilerRuntimeArchived),
 
 		new(caches.BoilerRuntimeCacheInstant),
-		//new(caches.BoilerRuntimeCacheHistory),
+
 		new(caches.BoilerRuntimeCacheDay),
 		new(caches.BoilerRuntimeCacheWeek),
 		new(caches.BoilerRuntimeCacheMonth),
@@ -76,9 +76,12 @@ func init() {
 		new(caches.BoilerRuntimeCacheExcessAir),
 
 		new(caches.BoilerRuntimeHistory),
+		new(caches.BoilerRuntimeHistoryArchived),
 
 		new(caches.BoilerRuntimeCacheStatus),
 		new(caches.BoilerRuntimeCacheStatusRunning),
+
+		new(logs.BoilerRuntimeLog),
 
 		new(models.BoilerCalculateParameter),
 		new(models.BoilerCalculateResult),
@@ -108,8 +111,7 @@ func init() {
 
 		new(models.Dialogue),
 		new(models.DialogueComment),
-		new(models.BoilerTermStatus),
-			//下发
+
 		new(models.IssuedFunctionCode),
 		new(models.IssuedByte),
 		new(models.IssuedBaudRate),
@@ -130,15 +132,17 @@ func init() {
 		new(models.IssuedErrorCode),
 		new(models.IssuedPlcAlarm),
 		new(models.IssuedBoilerStatus),
-		new(models.IssuedAlarmOrganization),
+    new(models.IssuedAlarmOrganization),
 		new(models.IssuedParameterOrganization),
+
+		new(models.BoilerTermStatus),
 	)
 
 	orm.Debug = false//!conf.IsRelease
 
 	MyORM = orm.NewOrm()
 	MyORM.Using("default")
-	// orm.RunSyncdb("default", false, true)
+	orm.RunSyncdb("default", false, true)
 
 	BoilerOrm = MyORM
 	common.BoilerOrm = BoilerOrm

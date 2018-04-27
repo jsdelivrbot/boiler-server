@@ -51,7 +51,7 @@ func (ctl *UserController) Post() {
 
 func (ctl *UserController) GetCurrentUser() *models.User {
 	if ctl == nil {
-		goazure.Warning("UserCtl is Nil!")
+		//goazure.Warning("UserCtl is Nil!")
 		//return ctl.getSysUser()
 		return nil
 	}
@@ -332,11 +332,11 @@ func (ctl *UserController) UserLogin() {
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &u); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Login Json Error!"))
-		fmt.Println("Unmarshal Error", err)
+		goazure.Info("Unmarshal Error", err)
 		return
 	}
 
-	fmt.Println("User Login! ", u)
+	goazure.Info("User Login! ", u)
 
 	if _, err := ctl.Login(&u); err != nil {
 		ctl.Ctx.Output.SetStatus(403)
@@ -402,8 +402,7 @@ func (ctl *UserController) Login(u *Usr) (*models.User, error) {
 		fmt.Println("LoginLog Error", err)
 	}
 
-	fmt.Println("===============")
-	fmt.Println("User Has Login", usr)
+	goazure.Info("User Has Login", usr)
 
 	if isSuccess {
 		ctl.UpdateCurrentUser(&usr)
@@ -501,9 +500,40 @@ func (ctl *UserController) UserRegister() (*models.User, error) {
 }
 
 func (ctl *UserController) UserLogout() {
-	fmt.Println("Ready to Logout")
+	usr := ctl.GetCurrentUser()
+	if  usr == nil {
+		goazure.Info("Params:", ctl.Input())
+		if ctl.Input()["token"] == nil || len(ctl.Input()["token"]) == 0 {
+			return
+		}
+		token := ctl.Input()["token"][0]
+
+		var err error
+		usr, err = ctl.GetCurrentUserWithToken(token)
+		if err != nil {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(err.Error()))
+			return
+		}
+	}
+	goazure.Info("Ready to Logout")
 	//ctl.setCookiesWithUser(nil)
 	ctl.DestroySession()
+
+	var login models.UserLogin
+	login.User = usr
+	login.Name = usr.Username
+	login.Remark = "用户登出"
+	login.CreatedBy = usr
+
+	login.IsLogin = false
+	login.IsSuccess = true
+
+	login.LoginPassword = "Logout"
+
+	if err := DataCtl.InsertData(&login); err != nil {
+		goazure.Error("LoginLog Error", err)
+	}
 
 	//defer ctl.Ctx.Output.SetStatus(200)
 	//defer ctl.Ctx.Output.Body([]byte("注销成功！"))

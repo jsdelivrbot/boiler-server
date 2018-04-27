@@ -79,10 +79,10 @@ func (cb *BoilerTerminalCombined) TableUnique() [][]string {
 }
 
 type BoilerTermStatus struct{
-	Boiler_term_id                 string `orm:"pk"`
-	Boiler_term_ip                 string
-	Boiler_term_pwd                int32
-	Boiler_term_status             string
+	BoilerTermId		string				`orm:"pk;column(Boiler_term_id)"`
+	BoilerTermIp		string				`orm:"column(Boiler_term_ip)"`
+	BoilerTermPwd		int32				`orm:"column(Boiler_term_pwd)"`
+	BoilerTermStatus	string				`orm:"column(Boiler_term_status)"`
 }
 
 type BoilerOrganizationLinked struct{

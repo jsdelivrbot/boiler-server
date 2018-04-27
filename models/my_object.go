@@ -4,7 +4,7 @@ import "time"
 
 type MyObject struct {
 	Name			string		`orm:"size(60);index"`
-	NameEn			string		`orm:"size(60)"`
+	NameEn		string		`orm:"size(60)"`
 	//NameShort		string		`orm:"size(60)"`
 	Remark			string
 

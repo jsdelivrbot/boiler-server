@@ -130,7 +130,7 @@
                     <input type="number"
                            ng-model="$modal.data.evaporatingCapacity"
                            class="form-control ng-pristine ng-valid ng-touched has-success"
-                           placeholder="输入额定蒸发量" required>
+                           placeholder="输入额定蒸发量" >
                 </div>
             </div>
             <div class="form-group col-md-6">
@@ -301,16 +301,14 @@
                         $modal.data.modelCode.length < 4 ||
                         $modal.data.mediumId < 0 ||
                         $modal.data.fuelId.length <= 0 ||
-                        $modal.data.formId < 0 ||
-                        $modal.data.evaporatingCapacity <= 0"
+                        $modal.data.formId < 0 "
             ng-class="$modal.data.name.length >= 4 &&
                       $modal.data.registerCode.length >= 6 &&
                       $modal.data.deviceCode.length >= 4 &&
                       $modal.data.modelCode.length >= 4 &&
                       $modal.data.mediumId >= 0 &&
                       $modal.data.fuelId.length > 0 &&
-                      $modal.data.formId >= 0 &&
-                      $modal.data.evaporatingCapacity > 0 ? 'btn-primary' : 'grey'"
+                      $modal.data.formId >= 0  ? 'btn-primary' : 'grey'"
             type="submit">
         <span class="ladda-label">保存</span>
     </button>
