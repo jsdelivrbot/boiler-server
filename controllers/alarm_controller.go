@@ -44,9 +44,21 @@ func (ctl *AlarmController) InitAlarmSendService() {
 
 func (ctl *AlarmController) AlarmRuleList() {
 	usr := ctl.GetCurrentUser()
-
-	var alarmRules []models.RuntimeAlarmRule
-	qs := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
+	var issuedRule []models.IssuedAlarmOrganization
+	//var alarmRules []models.RuntimeAlarmRule
+	qs := dba.BoilerOrm.QueryTable("issued_alarm_organization")
+	qs = qs.RelatedSel("Alarm").RelatedSel("Organization").RelatedSel("Alarm__Parameter__Category").RelatedSel("Alarm__BoilerForm").RelatedSel("Alarm__BoilerMedium").RelatedSel("Alarm__BoilerFuelType")
+	if usr.IsCommonUser() ||
+		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
+		qs = qs.Filter("Alarm__IsDemo", true)
+	} else if usr.IsOrganizationUser() {
+		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
+		//qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
+	}
+	if num, err:=qs.Filter("IsDeleted",false).All(&issuedRule);err!=nil{
+		fmt.Printf("Returned Rows Num: %d, %s", num, err)
+	}
+	/*qs := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
 	qs = qs.RelatedSel("Parameter__Category").RelatedSel("BoilerForm").RelatedSel("BoilerMedium").RelatedSel("BoilerFuelType")
 	if usr.IsCommonUser() ||
 		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
@@ -54,13 +66,13 @@ func (ctl *AlarmController) AlarmRuleList() {
 	} else if usr.IsOrganizationUser() {
 		//qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
 	}
-	num, err := qs.Filter("IsDeleted", false).OrderBy("Parameter").All(&alarmRules)
-	fmt.Printf("Returned Rows Num: %d, %s", num, err)
+	num, err := qs.Filter("IsDeleted", false).OrderBy("Parameter").All(&alarmRules)*/
+
 
 	//se := ctl.GetSession(SESSION_CURRENT_USER)
 	//fmt.Println("\nBoiler Get CurrentUser: ", usr, " | ", se);
 
-	ctl.Data["json"] = alarmRules
+	ctl.Data["json"] = issuedRule
 	ctl.ServeJSON()
 }
 
@@ -397,8 +409,9 @@ func (ctl *AlarmController) BoilerAlarmFeedbackList() {
 }
 
 type bAlarmRule struct {
-	Uid					string		`json:"uid"`
-	ParamId 			int64		`json:"paramId"`
+	Uid			string		`json:"uid"`
+	Organization  string      `json:"organization"`
+	ParamId 		int64		`json:"paramId"`
 	BoilerFormId 		int64		`json:"boilerFormId"`
 	BoilerMediumId		int64		`json:"boilerMediumId"`
 	BoilerFuelTypeId 	int64 		`json:"boilerFuelTypeId"`
@@ -520,6 +533,17 @@ func (ctl *AlarmController) AlarmRuleUpdate() {
 		return
 	}
 
+	if len(al.Uid) > 0 {
+		sql:="update issued_alarm_organization set update_time=now(),organization_id=? where alarm_id=?"
+		if _,err:=dba.BoilerOrm.Raw(sql,al.Organization,al.Uid).Exec();err!=nil{
+			goazure.Error("Update Issued Alarm Organization Error",err)
+		}
+	} else {
+		sql:="insert into issued_alarm_organization(alarm_id,create_time,update_time,organization_id) values(?,now(),now(),?)"
+		if _,err:=dba.BoilerOrm.Raw(sql,rule.Uid,al.Organization).Exec();err!=nil{
+			goazure.Error("Insert Issued Alarm Organization Error",err)
+		}
+	}
 	goazure.Info("\nUpdate AlarmRule:", rule, al)
 }
 
@@ -553,6 +577,12 @@ func (ctl *AlarmController) AlarmRuleDelete() {
 	}
 	if err := DataCtl.DeleteData(&alarmRule); err != nil {
 		e := fmt.Sprintln("Delete runtime_alarm_rule Error!", alarmRule, err)
+		goazure.Error(e)
+		ctl.Ctx.Output.Body([]byte(e))
+	}
+    sql:="update issued_alarm_organization set is_deleted=true where alarm_id=?"
+    if _,err:=dba.BoilerOrm.Raw(sql,a.Uid).Exec();err!=nil{
+		e := fmt.Sprintln("Delete issued_alarm_organization Error!", alarmRule, err)
 		goazure.Error(e)
 		ctl.Ctx.Output.Body([]byte(e))
 	}

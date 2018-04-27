@@ -8,16 +8,16 @@
             <!--</div>-->
         </div>
         <div class="col-md-6">
-            <div class="tabbable-line pull-right">
+            <div class="tabbable-line pull-right" ng-init="param.refreshDataTables();">
                 <ul class="nav nav-tabs">
                     <li ng-class="{'active': param.category === 10}">
-                        <a ng-click="param.refreshDataTables(10);">
+                        <a ng-click="param.changeCategory(10);">
                             <i class="icon-graph"></i>
                             模拟量
                         </a>
                     </li>
                     <li ng-class="{'active': param.category === 11}">
-                        <a ng-click="param.refreshDataTables(11);">
+                        <a ng-click="param.changeCategory(11);">
                             <i class="fa fa-sliders"></i>
                             开关量
                         </a>
@@ -29,7 +29,7 @@
                         <!--</a>-->
                     <!--</li>-->
                     <li ng-class="{'active': param.category === 13}">
-                        <a ng-click="param.refreshDataTables(13);">
+                        <a ng-click="param.changeCategory(13);">
                             <i class="fa fa-pie-chart"></i>
                             状态量
                         </a>
@@ -109,24 +109,24 @@
             </label>
         </td>
         -->
-        <td>{{ data.Id }}</td>
-        <td>{{ data.Name }}</td>
-        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Scale + data.Unit }}</td>
-        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Length }}</td>
+        <td>{{ data.Parameter.Id }}</td>
+        <td>{{ data.Parameter.Name }}</td>
+        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Parameter.Scale + data.Parameter.Unit }}</td>
+        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Parameter.Length }}</td>
         <td>
-            <span ng-repeat="medium in data.BoilerMediums" ng-class="['label', {'label-default': medium.Id == 0}, {'label-success': medium.Id == 1}, {'label-primary': medium.Id == 2}, {'label-info': medium.Id == 4}, {'label-warning': medium.Id == 5}]" style="margin-right: 4px;">
+            <span ng-repeat="medium in data.Parameter.BoilerMediums" ng-class="['label', {'label-default': medium.Id == 0}, {'label-success': medium.Id == 1}, {'label-primary': medium.Id == 2}, {'label-info': medium.Id == 4}, {'label-warning': medium.Id == 5}]" style="margin-right: 4px;">
                 {{ medium.Name }}
             </span>
         </td>
-        <td> </td>
-        <td ng-show="currentUser.Role.RoleId < 10">{{ data.Remark }}</td>
+        <td> {{ data.Organization.Name}} </td>
+        <td ng-show="currentUser.Role.RoleId < 10">{{ data.Parameter.Remark }}</td>
         <td ng-show="currentUser.Role.RoleId < 10">
-            <a ng-show="data.ParamId < 100"
+            <a ng-show="data.Parameter.ParamId < 100"
                ng-click="param.view(data)"
                class="btn view btn-outline btn-circle blue view_btn">
                 <i class="fa fa-eye"></i> 查看
             </a>
-            <a ng-show="data.ParamId >= 100"
+            <a ng-show="data.Parameter.ParamId >= 100"
                ng-click="param.edit(data)"
                class="btn view btn-outline btn-circle green edit_btn">
                 <i class="fa fa-edit"></i> 编辑

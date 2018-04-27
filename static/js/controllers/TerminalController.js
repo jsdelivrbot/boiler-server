@@ -153,8 +153,8 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     //消息调试
     terminal.getOriginMessages = function () {
         // terminal.msgData = {};
-        // terminal.msgData.isEmpty = true;
-        // terminal.msgData.lastUpload = null;
+        terminal.msgData.isEmpty = true;
+        terminal.msgData.lastUpload = null;
         // Ladda.create(document.getElementById('terminal_origin_messages')).start();
         $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
             .then(function (res) {
@@ -1009,31 +1009,37 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.calculateParameters = [{Id: 0, Name: '默认配置'}];
     $modal.rangeParameters = [{Id: 0, Name: '默认配置'}];
 
-    for (var i in $rootScope.parameters) {
-        var param = $rootScope.parameters[i];
-        switch (param.Category.Id) {
-            case 10:
-                $modal.analogParameters.push(param);
-                break;
-            case 11:
-                $modal.switchParameters.push(param);
-                break;
-            case 12:
-                $modal.calculateParameters.push(param);
-                break;
-            case 13:
-                $modal.rangeParameters.push(param);
-                break;
+    $http.get("/runtime_parameter_issued_list").then(function (res) {
+        $modal.parameterData = res.data;
+        for (var i in $modal.parameterData) {
+            var param = $modal.parameterData[i].Parameter;
+            switch (param.Category.Id) {
+                case 10:
+                    $modal.analogParameters.push(param);
+                    break;
+                case 11:
+                    $modal.switchParameters.push(param);
+                    break;
+                case 12:
+                    $modal.calculateParameters.push(param);
+                    break;
+                case 13:
+                    $modal.rangeParameters.push(param);
+                    break;
+            }
         }
-    }
 
-    $modal.parameters = [
-        $modal.analogParameters,
-        $modal.analogParameters,
-        $modal.switchParameters,
-        $modal.calculateParameters,
-        $modal.rangeParameters
-    ];
+        $modal.parameters = [
+            $modal.analogParameters,
+            $modal.analogParameters,
+            $modal.switchParameters,
+            $modal.calculateParameters,
+            $modal.rangeParameters
+        ];
+    });
+
+
+
 
 
 

@@ -34,7 +34,7 @@
                    ng-disabled="$modal.editing">
             <ui-select-match>{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
             <ui-select-choices
-                    repeat="param.Id as param in parameters | filter: $select.search">
+                    repeat="param.Id as param in $modal.parameterData | filter: $select.search">
                 <span ng-bind-html="param.Name | highlight: $select.search"></span>
                 <small ng-bind-html="param.Id | highlight: $select.search"></small>
             </ui-select-choices>
@@ -100,9 +100,8 @@
 
     </div>
 
-    <div class="form-group col-md-12" style="float:none;">
-        <div class="input-group">
-            <span class="input-group-addon">所属企业</span>
+    <div class="form-group input-group col-md-12">
+            <span class="input-group-addon" style="width: 22%">所属企业</span>
             <ui-select ng-model="$modal.org"
                        theme="bootstrap">
                 <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.Name}}</ui-select-match>
@@ -110,7 +109,6 @@
                     <span ng-bind-html="org.Name | highlight: $select.search"></span>
                 </ui-select-choices>
             </ui-select>
-        </div>
     </div>
 
     <!--

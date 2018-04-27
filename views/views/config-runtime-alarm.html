@@ -37,7 +37,7 @@
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject bold uppercase"> 规则列表</span>
                     </div>
-                    <div class="btn-group pull-right" ng-show="currentUser.Role.RoleId < 10">
+                    <div class="btn-group pull-right">
                         <button id="sample_editable_1_new" ng-click="alarm.new()" class="btn sbold green">
                             <i class="fa fa-plus"></i> 添加
                         </button>
@@ -125,7 +125,7 @@
                         <tbody style="text-align: center">
                         <tr ng-repeat='data in alarm.datasource'>
                             <td> {{ data.num }} </td>
-                            <td> {{ data.Parameter.Name }} </td>
+                            <td> {{ data.Alarm.Parameter.Name }} </td>
                             <!--
                             <td>
                                 <span ng-class="[{'light-gray': data.BoilerForm.FormId == 0}]">
@@ -134,33 +134,33 @@
                             </td>
                             -->
                             <td>
-                                <span ng-class="[{'light-gray': data.BoilerMedium.Id == 0}]">
-                                    {{ data.mediumName }}
+                                <span ng-class="[{'light-gray': data.Alarm.BoilerMedium.Id == 0}]">
+                                    {{ data.Alarm.mediumName }}
                                 </span>
                             </td>
                             <td>
-                                <span ng-class="[{'light-gray': data.BoilerFuelType.Id == 0}]">
-                                    {{ data.fuelName }}
+                                <span ng-class="[{'light-gray': data.Alarm.BoilerFuelType.Id == 0}]">
+                                    {{ data.Alarm.fuelName }}
                                 </span>
                             </td>
                             <td>
-                                <span ng-class="[{'light-gray': data.BoilerCapacityMin <= 0 && data.BoilerCapacityMax <= 0}]">
-                                    {{ data.capacity }}
+                                <span ng-class="[{'light-gray': data.Alarm.BoilerCapacityMin <= 0 && data.Alarm.BoilerCapacityMax <= 0}]">
+                                    {{ data.Alarm.capacity }}
                                 </span>
                             </td>
-                            <td> {{ data.Normal }}</td>
-                            <td> {{ data.warning }}</td>
-                            <td> {{ data.Delay }}</td>
+                            <td> {{ data.Alarm.Normal }}</td>
+                            <td> {{ data.Alarm.warning }}</td>
+                            <td> {{ data.Alarm.Delay }}</td>
                             <td>
-                                <span ng-class="['label', {'label-info': data.Priority == 0}, {'label-warning': data.Priority == 1}, {'label-danger': data.Priority == 2}]">
-                                    {{ data.priortyText }}
+                                <span ng-class="['label', {'label-info': data.Alarm.Priority == 0}, {'label-warning': data.Alarm.Priority == 1}, {'label-danger': data.Alarm.Priority == 2}]">
+                                    {{ data.Alarm.priortyText }}
                                 </span>
                             </td>
                             <!--<td>-->
                                 <!--{{ data.Description}}-->
                             <!--</td>-->
                             <td>
-                                {{ currentUser.Organization.Name }}
+                                {{ data.Organization.Name }}
                             </td>
                             <td>
                                 <a ng-click="" class="btn view btn-outline btn-circle blue view_btn">
