@@ -47,12 +47,131 @@ type Status struct {
 	}
 }
 
+type IssuedInformationPush struct {
+	BoilerUid string
+	BoilerName string
+	UserUid string
+	AlarmCount int
+	ParameterId int
+	ParameterAlarmCount int
+	Description string
+	BoilerRuntime float64
+	status bool
+}
+
+type BoilerPush struct {
+	BoilerId string
+	Name string
+}
+
 var RtmCtl *RuntimeController = &RuntimeController{}
 
 const rtmDefaultsPath string = "models/properties/runtime_defaults/"
 
 func init() {
 	RtmCtl.MainController = *MainCtrl
+}
+
+func (ctl *RuntimeController) InitInformationPush() {
+	ticker := time.NewTicker(time.Hour*1)
+	tick := func() {
+		for t := range ticker.C {
+			if (t.Weekday().String() == "Monday")&& t.Hour() == 8{
+				ctl.PushInformation(t)
+			}
+		}
+	}
+	go tick()
+	if (time.Now().Weekday().String() == "Friday")&& time.Now().Hour() == 16{
+		go ctl.PushInformation(time.Now())
+	}
+}
+
+func (ctl *RuntimeController) PushInformation(t time.Time) {
+	var boiler []BoilerPush
+	sql:="select distinct bms.boiler_id , b.name  from boiler_message_subscriber bms,boiler b where b.uid= bms.boiler_id"
+	if _,err:=dba.BoilerOrm.Raw(sql).QueryRows(&boiler);err!=nil{
+		goazure.Error("Query boiler_message_subscriber Error",err)
+	}
+	for _,b:= range boiler {
+		bid := b.BoilerId
+		bName := b.Name
+		var alarmCount int
+		var parameterId int
+		var parameterAlarmCount int
+		var description string
+		var runtime float64
+		sql := "select count(*) from boiler_alarm_history where boiler_id=? and date(date_sub(?,interval 7 day)) <= date(start_date) and date(start_date) < date(?)"
+		if err := dba.BoilerOrm.Raw(sql, bid, t,t).QueryRow(&alarmCount); err != nil {
+			goazure.Error("Query boiler_alarm_history Error",err)
+		}
+		if alarmCount == 0{
+			parameterId = 0
+			parameterAlarmCount = 0
+			description = ""
+		} else {
+			var param []orm.Params
+			maxsql:= "select parameter_id,description, count(*) as count  from boiler_alarm_history where boiler_id=? and date(date_sub(?,interval 7 day)) <= date(start_date) and date(start_date) < date(?) " +
+				"group by parameter_id order by count desc limit 1"
+			if _,err:=dba.BoilerOrm.Raw(maxsql,bid,t,t).Values(&param);err!=nil{
+				goazure.Error("Query boiler_alarm_history Error",err)
+			}
+			if pid,err:=strconv.Atoi(param[0]["parameter_id"].(string));err!=nil{
+				goazure.Error("Parse Int Error",err)
+			} else {
+				parameterId = pid
+			}
+			if pCount,err:= strconv.Atoi(param[0]["count"].(string));err!=nil{
+				goazure.Error("Parse Int Error",err)
+			} else {
+				parameterAlarmCount = pCount
+			}
+			description = param[0]["description"].(string)
+		}
+		runtimeSql := "select Fire_duration from boiler_terminal_combined btc , issued_boiler_fire_duration ibf where btc.terminal_code = ibf.Boiler_term_id " +
+			"and btc.boiler_id=? and btc.terminal_set_id = 1"
+		if err:=dba.BoilerOrm.Raw(runtimeSql,bid).QueryRow(&runtime);err!=nil{
+			fmt.Println("err:",err)
+		}
+		var users []*models.User
+		raw := "SELECT 	`user`.* "
+		raw += "FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` "
+		raw += "WHERE	`boiler`.`uid` = `sub`.`boiler_id` AND `user`.`uid` = `sub`.`user_id` "
+		raw += fmt.Sprintf("AND	`boiler`.`uid` = '%s';", bid)
+		if num, err := dba.BoilerOrm.Raw(raw).QueryRows(&users); err != nil {
+			fmt.Println("Get Boiler Subscribers Error:", err, num)
+		}
+		for _,u := range users {
+			var info IssuedInformationPush
+			info.BoilerUid = bid
+			info.BoilerName = bName
+			info.UserUid =u.Uid
+			info.AlarmCount =alarmCount
+			info.ParameterId = parameterId
+			info.ParameterAlarmCount = parameterAlarmCount
+			info.Description =description
+			info.BoilerRuntime =runtime
+			var su models.UserThird
+			qu := dba.BoilerOrm.QueryTable("user_third")
+			qu = qu.Filter("User__Uid", u.Uid).Filter("App", "service").Filter("IsDeleted", false)
+			if err := qu.One(&su); err != nil {
+				goazure.Error("User", u.Name, "Is NOT Subscribed.")
+				continue
+			}
+			tempMsg, _ := WxCtl.TemplateInformationPush(&info)
+			err:=WxCtl.SendTemplateInformation(su.OpenId, tempMsg)
+			if err!=nil {
+				info.status = false
+			} else {
+				info.status = true
+			}
+			infoSql:="insert into issued_information_push_log(uid,boiler_uid,user_uid,create_time,alarm_count,parameter_id,parameter_alarm_count,description,boiler_runtime,status) "+
+				"values(uuid(),?,?,now(),?,?,?,?,?,?)"
+			if _,err:=dba.BoilerOrm.Raw(infoSql,info.BoilerUid,info.UserUid,info.AlarmCount,info.ParameterId,info.ParameterAlarmCount,info.Description,info.BoilerRuntime,info.status).Exec();err!=nil{
+				goazure.Error("Insert issued_information_push_log Error",err)
+			}
+		}
+	}
 }
 
 func (ctl *RuntimeController) GetBoilerRank() {

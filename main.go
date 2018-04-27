@@ -40,6 +40,7 @@ func main() {
 
 	//go controllers.RtmCtl.GetBoilerRank()
 	//go controllers.RtmCtl.GetRunningDuration()
+	go controllers.RtmCtl.InitInformationPush()
 	goazure.Run()
 }
 
