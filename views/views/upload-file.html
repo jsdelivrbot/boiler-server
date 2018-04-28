@@ -39,6 +39,9 @@
                             <th>序号</th>
                             <th>文件名称</th>
                             <th>文件路径</th>
+                            <th>所属企业</th>
+                            <th>上传时间</th>
+                            <th>状态</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -47,13 +50,23 @@
                         <tr ng-repeat='data in upload.datasource'>
                             <td> {{data.num}} </td>
 
-                            <td> {{ data.name }} </td>
+                            <td> {{ data.Name }} </td>
                             <td>
-                                {{ data.filePath }} <br>
+                                {{ data.BinPath}}
                             </td>
 
                             <td>
-                                <a ng-click="upload.delete(data.Uid)" class="btn view btn-outline btn-circle red delete_btn">
+                                {{ data.Organization.Name}}
+                            </td>
+                            <td>
+                                {{ data.UpdateTime }}
+                            </td>
+                            <td>
+                                <span ng-if="data.Status" class="label label-info">成功</span>
+                                <span ng-if="!data.Status" class="label label-default">失败</span>
+                            </td>
+                            <td>
+                                <a ng-click="upload.delete(data.Name)" class="btn view btn-outline btn-circle red delete_btn">
                                     <i class="fa fa-trash"> 删除 </i>
                                 </a>
                             </td>
@@ -105,7 +118,7 @@
                        style="opacity: 0; filter:Alpha(opacity=0); height: 0px;">
             </div>
             <div class="modal-footer">
-                <input type="submit" value="提交" class="btn btn-primary">
+                <input type="submit" value="提交" class="btn btn-primary" ng-click="ok()">
                 <!--<button class="btn btn-primary" type="button" ng-click="ok()">提交</button>-->
                 <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
             </div>
