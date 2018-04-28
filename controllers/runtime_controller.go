@@ -81,7 +81,7 @@ func (ctl *RuntimeController) InitInformationPush() {
 		}
 	}
 	go tick()
-	if (time.Now().Weekday().String() == "Friday")&& time.Now().Hour() == 16{
+	if (time.Now().Weekday().String() == "Monday")&& time.Now().Hour() == 8{
 		go ctl.PushInformation(time.Now())
 	}
 }
@@ -171,6 +171,11 @@ func (ctl *RuntimeController) PushInformation(t time.Time) {
 			}
 		}
 	}
+	durationSql:="update issued_boiler_fire_duration " +
+		"set Start_statistic_time = now(), End_statistic_time=now(),Fire_duration=0"
+		if _,err:=dba.BoilerOrm.Raw(durationSql).Exec();err!=nil{
+			goazure.Error("Update issued_boiler_fire_duration Error",err)
+		}
 }
 
 func (ctl *RuntimeController) GetBoilerRank() {
