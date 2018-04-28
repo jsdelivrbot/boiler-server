@@ -2,6 +2,7 @@ package conf
 
 import (
 	"github.com/AzureTech/goazure"
+	"github.com/AzureRelease/boiler-server-product/conf"
 )
 
 var IsRelease bool = goazure.AppConfig.String("runmode") == "prod"
@@ -25,7 +26,12 @@ var IsReloadLogEnabled = true
 var DbConnection string
 
 func init() {
-	DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+	if conf.IsRelease{
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+	} else {
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+	}
+
 }
 
 
