@@ -90,10 +90,8 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2),
         DTColumnDefBuilder.newColumnDef(3),
-        DTColumnDefBuilder.newColumnDef(4),
-        DTColumnDefBuilder.newColumnDef(5),
-        DTColumnDefBuilder.newColumnDef(6).notSortable(),
-        DTColumnDefBuilder.newColumnDef(7).notSortable()
+        DTColumnDefBuilder.newColumnDef(4).notSortable(),
+        DTColumnDefBuilder.newColumnDef(5).notSortable()
     ];
 
     bParameter.new = function () {

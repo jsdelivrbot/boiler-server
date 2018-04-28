@@ -21,8 +21,8 @@
 
 </style>
 <div class="modal-body" id="modal-body">
-    <div class="form-group form-selector col-md-6">
-        <label class="control-label">监测参数</label>
+    <div class="form-group input-group form-selector col-md-12">
+        <label class="input-group-addon" style="width: 22%">监测参数</label>
         <!--<select ng-model="$modal.paramId"-->
                 <!--ng-options="param.Id as param.Name group by param.Category.Name for param in parameters"-->
                 <!--ng-disabled="$modal.editing"-->
@@ -30,7 +30,7 @@
 
         <!--</select>-->
         <ui-select ng-model="$modal.paramId"
-                   theme="bootstrap" style="width: 74%;" class="pull-right"
+                   theme="bootstrap"
                    ng-disabled="$modal.editing">
             <ui-select-match>{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
             <ui-select-choices
@@ -41,14 +41,14 @@
         </ui-select>
 
     </div>
-    <div class="form-group form-selector col-md-6">
+    <!--<div class="form-group form-selector col-md-6">
         <label class="control-label">炉型</label>
         <select ng-model="$modal.boilerFormId"
                 ng-options="form.Id as form.Name for form in boilerForms"
                 class="form-control ng-pristine ng-valid ng-not-empty ng-touched">
         </select>
-    </div>
-    <div class="form-group form-selector col-md-6">
+    </div>-->
+    <!--<div class="form-group form-selector col-md-6">
         <label class="control-label">介质</label>
         <select ng-model="$modal.boilerMediumId"
                 ng-options="medium.Id as medium.Name for medium in boilerMediums"
@@ -69,7 +69,7 @@
                 </span>
         <input type="number" ng-model="$modal.boilerCapacityMin" class="form-control ng-pristine ng-valid ng-touched" style="width: 50%" placeholder="最小值">
         <input type="number" ng-model="$modal.boilerCapacityMax" class="form-control ng-pristine ng-valid ng-touched" style="width: 50%" placeholder="最大值">
-    </div>
+    </div>-->
     <div class="input-group form-group col-md-12">
         <span class="input-group-addon" style="width: 22%">
             <i class="fa fa-warning font-yellow-lemon"></i>

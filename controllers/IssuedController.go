@@ -750,11 +750,11 @@ func (ctl *IssuedController) UpgradeConfiguration() {
 func (ctl *IssuedController) BinFileList() {
 	usr := ctl.GetCurrentUser()
 	var binUploads []*models.IssuedBinUpload
-	qs := dba.BoilerOrm.QueryTable("issued_bin_upload")
+	qs := dba.BoilerOrm.QueryTable("issued_bin_upload").RelatedSel("Organization")
 	if usr.IsOrganizationUser() {
 		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
 	}
-	if num, err := qs.OrderBy("UpdateTime").All(&binUploads); err != nil || num == 0 {
+	if num, err := qs.Filter("IsDeleted",false).OrderBy("UpdateTime").All(&binUploads); err != nil || num == 0 {
 		goazure.Error("Read binFile List Error:", err, num)
 	} else {
 		goazure.Info("Returned binFile RowNum:", num)
@@ -762,6 +762,21 @@ func (ctl *IssuedController) BinFileList() {
 	fmt.Println("binUploads:", binUploads)
 	ctl.Data["json"] = binUploads
 	ctl.ServeJSON()
+}
+func (ctl *IssuedController) BinFileDelete() {
+	var bin models.IssuedBinUpload
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &bin); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		goazure.Error("Unmarshal Terminal Error", err)
+		return
+	}
+	sql:="update issued_bin_upload set is_deleted=true where name=?"
+	if _,err:=dba.BoilerOrm.Raw(sql,bin.Name).Exec();err!=nil{
+		goazure.Error("delete issued_bin_upload Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("删除失败!"))
+	}
 }
 
 //文件上传
@@ -789,7 +804,8 @@ func (ctl *IssuedController) BinUpload() {
 			ctl.Ctx.Output.Body([]byte(e))
 			return
 		}
-		if _, err := dba.MyORM.Raw("insert into issued_bin_upload(name,create_time,update_time,organization_id,bin_path,status ) values(?,now(),now(),?,?,0) on duplicate key update update_time=now(),organization_id=organization_id", fileName, orgUid, binPath+fileName).Exec(); err != nil {
+		sql:="insert into issued_bin_upload(name,create_time,update_time,organization_id,bin_path) values(?,now(),now(),?,?) on duplicate key update update_time=now(),is_deleted=false,organization_id=?,status=false"
+		if _, err := dba.BoilerOrm.Raw(sql, fileName, orgUid, binPath+fileName,orgUid).Exec(); err != nil {
 			goazure.Error("Insert issuedBinUpload error")
 			ctl.Ctx.Output.Body([]byte("插入数据失败"))
 		} else {
@@ -797,9 +813,12 @@ func (ctl *IssuedController) BinUpload() {
 		}
 		if b := util.FtpClient(fileName); b {
 			goazure.Info(" ftp client success")
+			suSql:="update issued_bin_upload set status=true where name=?"
+			if _,err := dba.BoilerOrm.Raw(suSql,fileName).Exec();err!=nil{
+				goazure.Error("insert issued_bin_upload Error")
+			}
 		} else {
 			goazure.Error("Insert issuedBinUpload fail")
-			ctl.Ctx.Output.Body([]byte("传输文件失败"))
 		}
 		goazure.Info("Save Done:", header.Filename, fileName)
 	}

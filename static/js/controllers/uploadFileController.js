@@ -1,4 +1,4 @@
-angular.module('BoilerAdmin').controller("uploadFileCtrl",function ($rootScope,$scope,$uibModal,$document,settings,DTOptionsBuilder, DTColumnDefBuilder) {
+angular.module('BoilerAdmin').controller("uploadFileCtrl",function ($rootScope,$scope,$uibModal,$http,$document,settings,DTOptionsBuilder, DTColumnDefBuilder) {
    var upload = this;
 
     App.initAjax();
@@ -17,21 +17,24 @@ angular.module('BoilerAdmin').controller("uploadFileCtrl",function ($rootScope,$
         DTColumnDefBuilder.newColumnDef(0),
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2),
-        DTColumnDefBuilder.newColumnDef(3).notSortable()
+        DTColumnDefBuilder.newColumnDef(3),
+        DTColumnDefBuilder.newColumnDef(4),
+        DTColumnDefBuilder.newColumnDef(5),
+        DTColumnDefBuilder.newColumnDef(6).notSortable()
     ];
 
-    upload.datasource=[
-        {
-            num:1,
-            name:"adafasdfa",
-            filePath:"C:/1231we64/45646"
-        },
-        {
-            num:2,
-            name:"adafasdfa",
-            filePath:"C:/1231we64/45646"
-        }
-    ];
+    upload.refresh = function () {
+      $http.get("/bin_list").then(function (res) {
+          upload.datasource = res.data;
+          for(var i = 0; i<upload.datasource.length; i++){
+              upload.datasource[i].num = i+1;
+          }
+
+      },function (err) {
+
+      })
+    };
+    upload.refresh();
 
     upload.new = function () {
         var modalInstance = $uibModal.open({
@@ -50,7 +53,7 @@ angular.module('BoilerAdmin').controller("uploadFileCtrl",function ($rootScope,$
     }
 
 
-    upload.delete = function (uid) {
+    upload.delete = function (name) {
         swal({
             title: "确认删除该文件？",
             text: "注意：删除后将无法恢复",
@@ -62,22 +65,22 @@ angular.module('BoilerAdmin').controller("uploadFileCtrl",function ($rootScope,$
             confirmButtonText: "删除",
             closeOnConfirm: false
         }).then(function () {
-            // $http.post("/dialogue_delete/", {
-            //     uid: uid
-            // }).then(function (res) {
-            //     swal({
-            //         title: "文件删除成功",
-            //         type: "success"
-            //     }).then(function () {
-            //         dialogue.refreshDataTables();
-            //     });
-            // }, function (err) {
-            //     swal({
-            //         title: "删除文件失败",
-            //         text: err.data,
-            //         type: "error"
-            //     });
-            // });
+            $http.post("/bin_delete", {
+                name: name
+            }).then(function (res) {
+                swal({
+                    title: "文件删除成功",
+                    type: "success"
+                }).then(function () {
+                    upload.refresh();
+                });
+            }, function (err) {
+                swal({
+                    title: "删除文件失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
         });
     };
 

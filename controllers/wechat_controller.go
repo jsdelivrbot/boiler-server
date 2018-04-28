@@ -26,6 +26,7 @@ import (
 	"github.com/AzureTech/wechat/mp/message/callback/response"
 	"github.com/AzureTech/wechat/mp/message/custom"
 	"github.com/AzureTech/wechat/mp/message/template"
+	"strconv"
 )
 
 type Request struct {
@@ -237,6 +238,16 @@ func (ctl *WechatController) SendText(openId, content, customerService string) {
 	}
 }
 
+func (ctl *WechatController) SendTemplateInformation(openId string, tempMsg *template.TemplateMessage2)(error) {
+	tempMsg.ToUser = openId
+
+	if id, err := template.Send(wechatClient, tempMsg); err != nil {
+		goazure.Error("Wechat TemplateInformation Send Error:", err, id)
+		return err
+	}
+	return nil
+}
+
 func (ctl *WechatController) SendTemplateMessage(openId string, tempMsg *template.TemplateMessage2) {
 	tempMsg.ToUser = openId
 
@@ -258,6 +269,63 @@ func (ctl *WechatController) SendTemplateMessage(openId string, tempMsg *templat
 		告警内容：{{keyword4.DATA}}
 		{{remark.DATA}}
 	 */
+}
+
+func (ctl *WechatController) TemplateInformationPush(information *IssuedInformationPush)(*template.TemplateMessage2,error) {
+	var tempId string
+	tempId = "jGjuTkF8hwdSGujAiAOmOTpTTB77PYuMdvgC-cvtIvQ"
+	var tempMsg template.TemplateMessage2
+	tempMsg.TemplateId = tempId
+	tempMsg.TopColor = "#999"
+	tempMsg.MiniProgram = template.TemplateMiniProgram{
+		AppId:mini.AppId,
+		PagePath:"page/monitor/index",
+	}
+	type tData struct {
+		First		template.DataItem	`json:"first"`
+		Keyword1	template.DataItem	`json:"keyword1"`
+		Keyword2	template.DataItem	`json:"keyword2"`
+		Keyword3	template.DataItem	`json:"keyword3"`
+		Keyword4	template.DataItem	`json:"keyword4"`
+		Remark		template.DataItem	`json:"remark"`
+	}
+	data := tData{}
+	data.First = template.DataItem{
+		Value: "上一周锅炉运行数据报告！",
+		Color: "#333333",
+	}
+	data.Keyword1 = template.DataItem{
+		Value: information.BoilerName,
+		Color: "#333333",
+	}
+	runtime:=fmt.Sprintf("%.2f",information.BoilerRuntime/3600)
+	data.Keyword2 = template.DataItem{
+		Value: runtime+"小时",
+		Color: "#333333",
+	}
+	data.Keyword3 = template.DataItem{
+		Value: strconv.Itoa(information.AlarmCount)+"次",
+		Color: "#333333",
+	}
+	data.Keyword4 = template.DataItem{
+		Value: information.Description,
+		Color: "#333333",
+	}
+	var remark string
+	if information.AlarmCount <5 {
+		remark = "优秀"
+	} else if information.AlarmCount >=5 && information.AlarmCount <10 {
+		remark = "良好"
+	} else if information.AlarmCount >= 10 {
+		remark = "一般"
+	}
+	data.Remark = template.DataItem{
+		Value: "您锅炉运行状况"+remark+",请再接再厉",
+		Color: "#333333",
+	}
+	tempMsg.Data = data
+
+	return &tempMsg, nil
 }
 
 func (ctl *WechatController) TemplateMessageAlarm(alarm *models.BoilerAlarm) (*template.TemplateMessage2, error) {
