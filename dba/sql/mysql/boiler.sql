@@ -11,7 +11,7 @@
  Target Server Version : 50634
  File Encoding         : 65001
 
- Date: 24/04/2018 23:55:32
+ Date: 24/04/2018 13:18:26
 */
 
 SET NAMES utf8mb4;
@@ -507,7 +507,7 @@ CREATE TABLE `boiler_m160` (
   `Boiler_term_id` char(6) CHARACTER SET utf8 NOT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3137 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3127 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for boiler_m163
@@ -721,7 +721,7 @@ CREATE TABLE `boiler_runtime` (
   KEY `boiler_runtime_uid` (`uid`) USING BTREE,
   KEY `boiler_runtime_main` (`boiler_id`,`parameter_id`,`created_date`) USING BTREE,
   KEY `boiler_runtime_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=2682993 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC
+) ENGINE=InnoDB AUTO_INCREMENT=1945482 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC
 /*!50100 PARTITION BY RANGE (YEARWEEK(`created_date`))
 SUBPARTITION BY HASH (`parameter_id`)
 SUBPARTITIONS 6
@@ -1469,7 +1469,7 @@ CREATE TABLE `boiler_runtime_cache_instant` (
   KEY `boiler_runtime_cache_instant_alarm_level` (`alarm_level`),
   KEY `boiler_runtime_cache_instant_boiler_id_parameter_id_updated_date` (`boiler_id`,`parameter_id`,`updated_date`),
   KEY `boiler_runtime_cache_instant_alarm_description` (`alarm_description`)
-) ENGINE=InnoDB AUTO_INCREMENT=178335668 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=177598177 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for boiler_runtime_cache_smoke_component
@@ -1814,7 +1814,7 @@ CREATE TABLE `boiler_runtime_history` (
   KEY `boiler_runtime_history_is_demo` (`is_demo`),
   KEY `boiler_runtime_history_is_deleted` (`is_deleted`),
   KEY `boiler_runtime_history_boiler_id` (`boiler_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5122035 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3738548 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for boiler_template
@@ -1873,7 +1873,7 @@ CREATE TABLE `boiler_terminal_combined` (
   KEY `boiler_terminal_combined_terminal_id` (`terminal_id`),
   KEY `boiler_terminal_combined_terminal_code` (`terminal_code`),
   KEY `boiler_terminal_combined_terminal_set_id` (`terminal_set_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34735 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33955 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for boiler_type
@@ -2111,19 +2111,6 @@ CREATE TABLE `fuel_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for issued_alarm_organization
--- ----------------------------
-DROP TABLE IF EXISTS `issued_alarm_organization`;
-CREATE TABLE `issued_alarm_organization` (
-  `alarm_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `create_time` datetime NOT NULL,
-  `update_time` datetime NOT NULL,
-  `is_deleted` tinyint(4) NOT NULL DEFAULT '0',
-  `organization_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`alarm_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
 -- Table structure for issued_analogue_switch
 -- ----------------------------
 DROP TABLE IF EXISTS `issued_analogue_switch`;
@@ -2335,19 +2322,6 @@ CREATE TABLE `issued_operation_logs` (
   `operation` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `remark` varchar(400) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
--- Table structure for issued_parameter_organization
--- ----------------------------
-DROP TABLE IF EXISTS `issued_parameter_organization`;
-CREATE TABLE `issued_parameter_organization` (
-  `parameter_id` int(11) NOT NULL,
-  `create_time` datetime NOT NULL,
-  `update_time` datetime NOT NULL,
-  `is_deleted` tinyint(4) NOT NULL DEFAULT '0',
-  `organization_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`parameter_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
@@ -2942,7 +2916,7 @@ CREATE TABLE `runtime_parameter_boiler_mediums` (
   `runtime_parameter_id` bigint(20) NOT NULL,
   `boiler_medium_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1209 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1207 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for runtime_parameter_category

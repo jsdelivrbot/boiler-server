@@ -70,9 +70,7 @@ func FtpClient(fileName string) bool{
 		log.Fatal(err)
 	}
 	defer srcFile.Close()
-
-	var remoteFileName = path.Base(localFilePath)
-	dstFile, err := sftpClient.Create(path.Join(remoteDir, remoteFileName))
+	dstFile, err := sftpClient.Create(path.Join(remoteDir,fileName))
 	if err != nil {
 		log.Fatal(err)
 	}

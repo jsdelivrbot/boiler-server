@@ -15,7 +15,7 @@ type MainController struct {
 	goazure.Controller
 
 	Boilers				[]*models.Boiler
-	bWaitGroup			sync.WaitGroup
+	WaitGroup			sync.WaitGroup
 }
 
 var IsRelease bool = (goazure.AppConfig.String("runmode") == "prod");
@@ -32,40 +32,40 @@ func initApplications() {
 	/*======================== HOLDER ==========================*/
 	wechatWebHolder := models.Application{}
 	wechatWebHolder.Name = "微信网站 厚德能源2025"
-	wechatWebHolder.NameEn = "Weixin Web HolderBoiler"
+	//wechatWebHolder.NameEn = "Weixin Web HolderBoiler"
 	wechatWebHolder.Platform = "weixin"
 	wechatWebHolder.App = "website"
 	wechatWebHolder.Identity = "holder"
-	wechatWebHolder.Domain = "www.holderboiler.com"
+	wechatWebHolder.Domain = "www.lukeep.com"
 	wechatWebHolder.AppId = "wxcd2d43cd41ef6912"
 	wechatWebHolder.AppSecret = "eb64cbee22c12c65f25af46761a3b98e"
 
 	wechatServiceHolder := models.Application{}
 	wechatServiceHolder.Name = "微信服务号 炉管家"
-	wechatServiceHolder.NameEn = "Weixin Service HolderBoiler"
+	//wechatServiceHolder.NameEn = "Weixin Service HolderBoiler"
 	wechatServiceHolder.Platform = "weixin"
 	wechatServiceHolder.App = "service"
 	wechatServiceHolder.Identity = "holder"
-	wechatServiceHolder.Domain = "www.holderboiler.com"
+	wechatServiceHolder.Domain = "www.lukeep.com"
 	wechatServiceHolder.Path = "wechat-server"
-	wechatServiceHolder.AppId = "wx7057a9dd005c2bd9"
-	wechatServiceHolder.AppSecret = "7cf71c5f2989a56c6cca5c323c351097"
+	wechatServiceHolder.AppId = "wxc198380391af3883"
+	wechatServiceHolder.AppSecret = "b5a2ca07969488756bf0d9336205653d"
 	wechatServiceHolder.OriginId = "gh_51f45f1ce9fa"
-	wechatServiceHolder.ApiToken = "kiaN8akaSl4ana"
-	wechatServiceHolder.AesKey = "Wp1tbvGfIBADQkFAyTMNCTavQgF4n4woOhxrZDkEBjf"
+	wechatServiceHolder.ApiToken = "aaa"
+	wechatServiceHolder.AesKey = "Ir5dhHsuzXlCuLmYX9iKiWcfPOYZSFDn3hTuLDo3lav"
 
 	wechatMiniHolder := models.Application{}
 	wechatMiniHolder.Name = "微信小程序 锅炉在线节能平台"
-	wechatMiniHolder.NameEn = "Weixin Mini Program HolderBoiler"
+	//wechatMiniHolder.NameEn = "Weixin Mini Program HolderBoiler"
 	wechatMiniHolder.Platform = "weixin"
 	wechatMiniHolder.App = "mini"
 	wechatMiniHolder.Identity = "holder"
-	wechatMiniHolder.Domain = "www.holderboiler.com"
+	wechatMiniHolder.Domain = "www.lukeep.com"
 	wechatMiniHolder.Path = "wechat-mini-server"
-	wechatMiniHolder.AppId = "wxe74ea02c8906c425"
-	wechatMiniHolder.AppSecret = "5af961b73ea272eceae3d28c23eb30c4"
-	wechatMiniHolder.ApiToken = "excalibur"
-	wechatMiniHolder.AesKey = "BbZ69KBORjgvgdTSkDbTFxDCOURpxuBJq5Jb7sXP0b7"
+	wechatMiniHolder.AppId = "wxf86c900ba6940fff"
+	wechatMiniHolder.AppSecret = "5b5c8b7992f5f26003516746a3bbcb74"
+	wechatMiniHolder.ApiToken = "aaa"
+	wechatMiniHolder.AesKey = "ztN0iNmo3zBIHXLjHKEOagswAh0FAcbVhn3ujEKoBeX"
 
 	DataCtl.AddData(&wechatWebHolder, true, "AppId")
 	DataCtl.AddData(&wechatServiceHolder, true, "AppId")

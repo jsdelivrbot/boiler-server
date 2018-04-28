@@ -51,11 +51,8 @@ func (ctl *DataController) ReadData(data models.DataInterface, cols ...string) (
 	return err
 }
 
-
 func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, cols ...string) (error) {
-	b := reflect.TypeOf(&models.Boiler{})
 	t := reflect.TypeOf(data)
-	goazure.Warn(fmt.Sprintf("Input Type %T %v %v", t, t, b))
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
@@ -79,7 +76,7 @@ func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, c
 	//goazure.Debug("Ready to Read aData:", aData, cols)
 	err := dba.BoilerOrm.Read(aData, cols...)
 	if err != nil {
-		warn := fmt.Sprintf("ReadData Error: %T, %v, %s\n", aData, aData, err)
+		warn := fmt.Sprintf("ReadData Error: %T, %v, %s", aData, aData, err)
 		goazure.Warn(warn)
 	}
 
@@ -92,7 +89,7 @@ func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, c
 	var crtUsr *models.User
 
 	isSysUser := t == reflect.TypeOf(models.User{}) &&
-		obj.Name == "system" && obj.NameEn == "system"
+		obj.Name == "system" //&& obj.NameEn == "system"
 	isSysRole := t == reflect.TypeOf(models.UserRole{}) &&
 		reflect.ValueOf(data).Elem().FieldByName("RoleId").Int() == 0
 

@@ -1306,7 +1306,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerBindCtrl', function ($uibMo
             var terminals = [];
             console.error("Get Bind Terminal List Resp:", res);
             boiler_loop:
-            for (var i = 0; i < res.data.length; i++) {
+            for (var i in res.data) {
                 var d = res.data[i];
                 if (!d.Boilers) {
                     d.Boilers = [];
