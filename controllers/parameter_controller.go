@@ -518,7 +518,7 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 		//"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
 		//"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
 		//"  AND	`rtm`.`need_reload` = TRUE "
-		"FROM	`boiler_m163` "  +
+		"FROM	`boiler_m163` AS `rtm`"  +
 		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
 		"WHERE	`need_reload` = 1;"
 		//"WHERE	`TS` > '2018-03-27 00:00:00';"
