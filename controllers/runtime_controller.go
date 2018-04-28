@@ -565,36 +565,6 @@ func (ctl *RuntimeController) BoilerRuntimeCount() {
 		goazure.Error("Read RuntimeCount Error: ", num, err)
 	}
 
-	/*
-	raw := "SELECT COUNT(*) FROM `boiler_runtime_view`"
-	if !usr.IsAdmin() || len(boilerUid) > 0 {
-		raw += " WHERE `boiler_id` IN "
-		bList := "("
-		for i, b := range boilers {
-			bList += "'" + b.Uid + "'"
-			if i < len(boilers) - 1 {
-				bList += ", "
-			}
-		}
-		bList += ")"
-		raw += bList
-	}
-
-	goazure.Info("RuntimeCount Raw:", raw)
-
-	var count orm.Params
-	err := dba.BoilerOrm.Raw(raw).QueryRow(&count)
-	if err != nil {
-		goazure.Error("Read RuntimeCount Error: ", err)
-		//panic("Read RuntimeCount Error: ")
-	}
-
-	res, err := dba.BoilerOrm.Raw(raw).Exec()
-	num, _ := res.RowsAffected()
-	id, _ := res.LastInsertId()
-	goazure.Warn("Exec()", num, id, err)
-	*/
-
 	ctl.Data["json"] = num
 	ctl.ServeJSON()
 }
