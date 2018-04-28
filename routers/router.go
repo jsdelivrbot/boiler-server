@@ -133,6 +133,8 @@ func init() {
 	goazure.Router("/bin_upload",&controllers.IssuedController{},"post:BinUpload")
 	//获取bin文件路径
 	goazure.Router("/bin_list",&controllers.IssuedController{},"get:BinFileList")
+	//删除bin文件
+	goazure.Router("/bin_delete",&controllers.IssuedController{},"post:BinFileDelete")
 	//bin升级配置
 	goazure.Router("/upgrade_configuration",&controllers.IssuedController{},"post:UpgradeConfiguration")
 
