@@ -61,7 +61,7 @@ func init() {
 	goazure.Router("/boiler_config/", &controllers.BoilerController{}, "post:GetBoilerConfig")
 	goazure.Router("/boiler_config_set/", &controllers.BoilerController{}, "post:SetBoilerConfig")
 	goazure.Router("/boiler/state/is_burning/", &controllers.BoilerController{}, "get:BoilerIsBurning")
-	goazure.Router("/boiler/state/is_Online",&controllers.BoilerController{},"get:BoilerIsOnline")
+	goazure.Router("/boiler/state/is_online",&controllers.BoilerController{},"get:BoilerIsOnline")
 	goazure.Router("/boiler/state/has_subscribed/", &controllers.BoilerController{}, "get:BoilerHasSubscribed")
 	goazure.Router("/boiler/state/set_subscribe/", &controllers.BoilerController{}, "post:BoilerSetSubscribe")
 	goazure.Router("/boiler/state/has_channel_custom/", &controllers.ParameterController{}, "get:BoilerHasChannelCustom")

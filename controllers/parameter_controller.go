@@ -59,25 +59,24 @@ type Param struct {
 
 //新增的通道下发
 type ChannelIssued struct {
-	TerminalCode string `json:"terminal_code"`
-	ParameterId  int    `json:"parameter_id"`
+	TerminalCode 	string	`json:"terminal_code"`
+	ParameterId  	int    	`json:"parameter_id"`
 
-	ChannelType    int32   `json:"channel_type"`
-	ChannelNumber  int32   `json:"channel_number"`
-	FcodeId        int   `json:"fcodeName"`  //功能码
-	BitAddress     int   `json:"bitAddress"` //位地址
-	TermByteId     int   `json:"termByte"`   //高低字节
-	Modbus         int   `json:"modbus"`     //modbus
-	Status         int32 `json:"status"`
-	SequenceNumber int32 `json:"sequence_number"`
+	ChannelType    	int32   `json:"channel_type"`
+	ChannelNumber  	int32   `json:"channel_number"`
+	FcodeId        	int   	`json:"fcodeName"`  //功能码
+	BitAddress     	int   	`json:"bitAddress"` //位地址
+	TermByteId     	int   	`json:"termByte"`   //高低字节
+	Modbus         	int   	`json:"modbus"`     //modbus
+	Status         	int32 	`json:"status"`
+	SequenceNumber 	int32 	`json:"sequence_number"`
 
-	SwitchValue int32 `json:"switch_status"`
+	SwitchValue 	int32 	`json:"switch_status"`
 
-	Scale float32 `json:"scale"`
+	Scale 			float32 `json:"scale"`
+	Ranges 			[]bRange `json:"ranges"`
 
-	Ranges []bRange `json:"ranges"`
-
-	IsDeleted bool `json:"is_deleted"`
+	IsDeleted 		bool 	`json:"is_deleted"`
 }
 
 type bRuntimeParameter struct {
@@ -455,6 +454,17 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 		co, _ := strconv.ParseInt(code, 10, 32)
 		st, _ := strconv.ParseInt(set, 10, 32)
 
+		var ter orm.Params = orm.Params{}
+		ter["is_online"] = "1"
+		//ter["sim_number"] = "1800000"
+		goazure.Error("Ter", ter)
+		if  num, err := dba.BoilerOrm.QueryTable("terminal").Filter("TerminalCode", co).Update(ter); err != nil {
+			goazure.Warn("Updated Terminal Online Error!")
+			goazure.Warn(err, num)
+			goazure.Warn("terminal_code", co)
+			//return
+		}
+
 		if  err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").
 			RelatedSel("Boiler").RelatedSel("Terminal").
 			Filter("TerminalCode", co).Filter("TerminalSetId", st).OrderBy("TerminalSetId").
@@ -511,14 +521,15 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	*/
 
 	raw :=
-		"SELECT	`rtm`.* " +
+		//"SELECT	`rtm`.* " +
 		//"FROM	`boiler_m163` AS `rtm`, `boiler_terminal_combined` AS `boiler` " +
 		//"WHERE	`boiler`.`terminal_code` = CAST(`rtm`.`Boiler_term_id` AS SIGNED) " +
 		//"AND 	`boiler`.`terminal_set_id` = CAST(`rtm`.`Boiler_boiler_id` AS SIGNED) " +
 		//"WHERE	`boiler`.`terminal_code` = `rtm`.`Boiler_term_id` " +
 		//"  AND 	`boiler`.`terminal_set_id` = `rtm`.`Boiler_boiler_id` " +
 		//"  AND	`rtm`.`need_reload` = TRUE "
-		"FROM	`boiler_m163` AS `rtm`"  +
+		"SELECT *" +
+		"FROM	`boiler_m163` "  +
 		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
 		"WHERE	`need_reload` = 1;"
 		//"WHERE	`TS` > '2018-03-27 00:00:00';"
@@ -1292,7 +1303,7 @@ func generateDefaultChannelConfig() error {
 func (ctl *ParameterController) InitParameterChannelConfig() {
 	// generateDefaultChannelConfig()
 
-	interval := time.Second * 10
+	interval := time.Second * 3
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {

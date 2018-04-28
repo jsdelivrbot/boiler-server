@@ -63,7 +63,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             return;
         }
 
-        $http.get('/boiler/state/is_Online/?boiler=' + boiler.Uid)
+        $http.get('/boiler/state/is_online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 console.info("Fetch OnlineStatus Resp:", res.data);
                 boiler.isOnline = res.data;
