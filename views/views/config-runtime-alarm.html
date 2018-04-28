@@ -110,13 +110,13 @@
                             <!--
                             <th>对应炉型</th>
                             -->
-                            <th>介质</th>
+                            <!--<th>介质</th>
                             <th>燃料</th>
-                            <th>额定蒸发量</th>
+                            <th>额定蒸发量</th>-->
                             <th>基准值</th>
                             <th>告警阀值</th>
                             <th>告警延迟(分)</th>
-                            <th>优先级</th>
+                            <th>告警等级</th>
                             <th>所属企业</th>
                             <th>操作</th>
                         </tr>
@@ -133,7 +133,7 @@
                                 </span>
                             </td>
                             -->
-                            <td>
+                           <!-- <td>
                                 <span ng-class="[{'light-gray': data.Alarm.BoilerMedium.Id == 0}]">
                                     {{ data.Alarm.mediumName }}
                                 </span>
@@ -147,7 +147,7 @@
                                 <span ng-class="[{'light-gray': data.Alarm.BoilerCapacityMin <= 0 && data.Alarm.BoilerCapacityMax <= 0}]">
                                     {{ data.Alarm.capacity }}
                                 </span>
-                            </td>
+                            </td>-->
                             <td> {{ data.Alarm.Normal }}</td>
                             <td> {{ data.Alarm.warning }}</td>
                             <td> {{ data.Alarm.Delay }}</td>
@@ -164,7 +164,7 @@
                             </td>
                             <td>
                                 <a ng-click="" class="btn view btn-outline btn-circle blue view_btn">
-                                    <i class="fa fa-eye"> 查看 </i>
+                                    <i class="fa fa-cog"> 设置 </i>
                                 </a>
                             </td>
                         </tr>

@@ -102,7 +102,8 @@
 
     <div class="row">
 
-        <div class="form-module col-md-3 col-sm-3 col-xs-6">
+
+        <div class="form-module col-md-5 col-sm-5 col-xs-10">
             <div class="form-group first col-md-12 col-sm-12 col-xs-12">
                 <select ng-model="dashboard.aForm"
                         ng-options="fm.Name for fm in dashboard.forms"
@@ -125,7 +126,8 @@
                 </select>
             </div>-->
         </div>
-        <div class="form-switch col-md-3 col-sm-3 col-xs-6">
+
+        <div class="form-switch col-md-1 col-sm-1 col-xs-2 ">
             <div class="form-group">
                 <input bs-switch
                        ng-model="dashboard.aBurning"
@@ -147,14 +149,14 @@
                        style="width: 100%">
             </div>
         </div>
-        <div class="form-info col-md-6 col-sm-6 col-xs-12 " style="padding-left: 10px;">
-            <div class="form-group col-md-3 col-sm-3 col-xs-2 pull-right">
+        <div class="form-info col-md-6 col-sm-6 col-xs-12 ">
+            <div class="form-group col-md-3 col-sm-3 col-xs-2 pull-right" style="padding-left: 0">
                 <button type="button" ng-click="dashboard.initSearch(); dashboard.filterBoilers();" class="btn grey-cascade btn-outline btn-block sbold uppercase">
                     <i class="fa fa-refresh"></i>
                     重置
                 </button>
             </div>
-            <div class="form-group form-input col-md-8 col-sm-8 col-xs-10 pull-right">
+            <div class="form-group form-input col-md-9 col-sm-9 col-xs-10 pull-left">
                 <input type="text" ng-model="dashboard.aQuery" ng-change="dashboard.filterBoilers()" class="form-control" placeholder="输入锅炉信息进行搜索">
             </div>
 

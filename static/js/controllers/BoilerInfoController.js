@@ -638,11 +638,11 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 fuelId: "",
                 formId:  -1,
 
-                evaporatingCapacity: 0,
+                evaporatingCapacity: NaN,
 
                 RegisterOrg: null,
-                enterpriseId: "",
-                factoryId: "",
+                // enterpriseId: "",
+                // factoryId: "",
                 installedId: "",
 
                 links: []

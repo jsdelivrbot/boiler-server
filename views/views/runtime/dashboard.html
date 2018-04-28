@@ -112,7 +112,12 @@
     </div>
     <div class="col-md-6" style="padding: 0;" ng-init="runtime.initControl();">
         <div class="" style="margin-left: 50px;" ng-if="isRemoteControl">
-            <div class="btn-group pull-left">
+            <div class="pull-right" style="margin-right: 20px;">
+                <button type="button" class="btn btn-default" ng-click="dataConfig();">
+                    参数设置
+                </button>
+            </div>
+            <div class="btn-group pull-right" style="margin-right: 5px;">
                 <button type="button" class="btn blue" ng-click="boilerRestart(2)">启动锅炉</button>
                 <button type="button" class="btn green" ng-click="boilerRestart(1)">关闭锅炉</button>
                 <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)">重启锅炉</button>
@@ -136,11 +141,7 @@
                   </span>-->
 
             </div>
-            <div class="pull-right" style="margin-right: 20px;">
-                <button type="button" class="btn btn-default" ng-click="dataConfig();">
-                    参数设置
-                </button>
-            </div>
+
         </div>
 
         <boiler-module></boiler-module>
