@@ -750,7 +750,7 @@ func (ctl *IssuedController) UpgradeConfiguration() {
 func (ctl *IssuedController) BinFileList() {
 	usr := ctl.GetCurrentUser()
 	var binUploads []*models.IssuedBinUpload
-	qs := dba.BoilerOrm.QueryTable("issued_bin_upload")
+	qs := dba.BoilerOrm.QueryTable("issued_bin_upload").RelatedSel("Organization")
 	if usr.IsOrganizationUser() {
 		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
 	}
