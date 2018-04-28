@@ -459,9 +459,9 @@ table#alarm_history_table tr.demo td {
     padding: 0 15px 6px 10px;
 }
 
-#parameter.portlet.light>.portlet-title {
-    min-height: 0;
-}
+/*#parameter.portlet.light>.portlet-title {*/
+    /*min-height: 0;*/
+/*}*/
 
 #parameter .tabbable-line>.nav-tabs {
     margin-top: -18px;

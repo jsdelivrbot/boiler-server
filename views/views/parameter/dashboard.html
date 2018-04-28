@@ -91,8 +91,8 @@
         <th>参数代码</th>
         <th>参数名称</th>
         <th ng-show="param.category !== 11 && param.category !== 13">计量单位</th>
-        <th ng-show="param.category !== 11 && param.category !== 13">长度</th>
-        <th>使用锅炉</th>
+        <!--<th ng-show="param.category !== 11 && param.category !== 13">长度</th>
+        <th>使用锅炉</th>-->
         <th>所属企业</th>
         <th ng-show="currentUser.Role.RoleId < 10">备注</th>
         <th ng-show="currentUser.Role.RoleId < 10">操作</th>
@@ -112,12 +112,12 @@
         <td>{{ data.Parameter.Id }}</td>
         <td>{{ data.Parameter.Name }}</td>
         <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Parameter.Scale + data.Parameter.Unit }}</td>
-        <td ng-show="param.category !== 11 && param.category !== 13">{{ data.Parameter.Length }}</td>
+        <!--<td ng-show="param.category !== 11 && param.category !== 13">{{ data.Parameter.Length }}</td>
         <td>
             <span ng-repeat="medium in data.Parameter.BoilerMediums" ng-class="['label', {'label-default': medium.Id == 0}, {'label-success': medium.Id == 1}, {'label-primary': medium.Id == 2}, {'label-info': medium.Id == 4}, {'label-warning': medium.Id == 5}]" style="margin-right: 4px;">
                 {{ medium.Name }}
             </span>
-        </td>
+        </td>-->
         <td> {{ data.Organization.Name}} </td>
         <td ng-show="currentUser.Role.RoleId < 10">{{ data.Parameter.Remark }}</td>
         <td ng-show="currentUser.Role.RoleId < 10">
@@ -129,7 +129,7 @@
             <a ng-show="data.Parameter.ParamId >= 100"
                ng-click="param.edit(data)"
                class="btn view btn-outline btn-circle green edit_btn">
-                <i class="fa fa-edit"></i> 编辑
+                <i class="fa fa-cog"></i> 设置
             </a>
         </td>
     </tr>
