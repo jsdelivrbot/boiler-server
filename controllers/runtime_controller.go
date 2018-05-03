@@ -589,6 +589,11 @@ func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time, end
 		his := &caches.History{}
 		param := ParamCtrl.RuntimeParameter(int(arch.Parameter.Id))
 		var val interface{}
+		if param == nil {
+			continue
+		} else if param.Category == nil {
+			continue
+		}
 		if param.Category.Id == models.RUNTIME_PARAMETER_CATEGORY_SWITCH {
 			val = float64(arch.Value)
 		} else {
