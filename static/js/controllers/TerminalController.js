@@ -160,6 +160,9 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
             .then(function (res) {
                 console.info("Get Terminal List Resp:", res);
+                setTimeout(function () {
+                    App.stopPageLoading();
+                }, 1500);
                 var datasource = res.data;
                 if (!datasource) {
                     return;
