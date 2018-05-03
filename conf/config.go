@@ -2,6 +2,7 @@ package conf
 
 import (
 	"github.com/AzureTech/goazure"
+	"net/url"
 )
 
 var IsRelease bool = goazure.AppConfig.String("runmode") == "prod"
@@ -26,9 +27,9 @@ var DbConnection string
 
 func init() {
 	if IsRelease {
-		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 	} else {
-		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8&loc=" + url.QueryEscape("PRC")
 	}
 
 }
