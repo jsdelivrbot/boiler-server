@@ -63,6 +63,22 @@ func (ctl *IssuedController) IssuedGetIp(ip string)(string) {
 	netInfo := strings.Split(ip,":")
 	return netInfo[0]
 }
+//周报信息统计
+func (ctl *IssuedController) IssuedInformationMini() {
+	var uid Code
+	var weekInformation models.IssuedWeekInformationLog
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &uid); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	if err:=dba.BoilerOrm.QueryTable("issued_week_information_log").Filter("Boiler__Uid",uid).OrderBy("-CreateTime").One(&weekInformation);err!=nil{
+		goazure.Error("Query issued_week_information_log Error",err)
+	}
+	ctl.Data["json"] = weekInformation
+	ctl.ServeJSON()
+}
 
 //往数据库插入操作记录
 func (ctl *IssuedController) IssuedContentLogs(username string,ip string,sn string,operation string, remark string) {

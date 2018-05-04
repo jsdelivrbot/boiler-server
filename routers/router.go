@@ -207,6 +207,7 @@ func init() {
 
 func initWeixinRoutes() {
 	goazure.Router("/issued_boiler_mini",&controllers.IssuedController{},"post:IssuedBoilerMini")
+	goazure.Router("/issued_information_mini",&controllers.IssuedController{},"post:IssuedInformationMini")
 	goazure.Router("/user_login_weixin/", &controllers.UserThirdController{}, "get:UserLoginWeixinWeb")
 	goazure.Router("/user_login_weixin/callback/?:code:state", &controllers.UserThirdController{}, "get:UserLoginWeixinWebCallback")
 	goazure.Router("/user_login_bind_third/", &controllers.UserThirdController{}, "post:UserLoginBindThird")

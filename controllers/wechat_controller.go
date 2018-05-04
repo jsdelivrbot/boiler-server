@@ -26,7 +26,6 @@ import (
 	"github.com/AzureTech/wechat/mp/message/callback/response"
 	"github.com/AzureTech/wechat/mp/message/custom"
 	"github.com/AzureTech/wechat/mp/message/template"
-	"strconv"
 )
 
 type Request struct {
@@ -271,7 +270,7 @@ func (ctl *WechatController) SendTemplateMessage(openId string, tempMsg *templat
 	 */
 }
 
-func (ctl *WechatController) TemplateInformationPush(information *IssuedInformationPush)(*template.TemplateMessage2,error) {
+/*func (ctl *WechatController) TemplateInformationPush(information *IssuedInformationPush)(*template.TemplateMessage2,error) {
 	var tempId string
 	tempId = "jGjuTkF8hwdSGujAiAOmOTpTTB77PYuMdvgC-cvtIvQ"
 	var tempMsg template.TemplateMessage2
@@ -326,7 +325,7 @@ func (ctl *WechatController) TemplateInformationPush(information *IssuedInformat
 	tempMsg.Data = data
 
 	return &tempMsg, nil
-}
+}*/
 
 func (ctl *WechatController) TemplateMessageAlarm(alarm *models.BoilerAlarm) (*template.TemplateMessage2, error) {
 	var tempId string

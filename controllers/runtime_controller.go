@@ -46,7 +46,7 @@ type Status struct {
 	}
 }
 
-type IssuedInformationPush struct {
+/*type IssuedInformationPush struct {
 	BoilerUid string
 	BoilerName string
 	UserUid string
@@ -56,10 +56,10 @@ type IssuedInformationPush struct {
 	Description string
 	BoilerRuntime float64
 	status bool
-}
+}*/
 
 type BoilerPush struct {
-	BoilerId string
+	Uid string
 	Name string
 }
 
@@ -76,17 +76,75 @@ func (ctl *RuntimeController) InitInformationPush() {
 	tick := func() {
 		for t := range ticker.C {
 			if (t.Weekday().String() == "Monday")&& t.Hour() == 8{
-				ctl.PushInformation(t)
+				ctl.WeekInformation(t)
 			}
 		}
 	}
 	go tick()
 	if (time.Now().Weekday().String() == "Monday")&& time.Now().Hour() == 8{
-		go ctl.PushInformation(time.Now())
+		go ctl.WeekInformation(time.Now())
+	}
+}
+func (ctl *RuntimeController) WeekInformation(t time.Time) {
+	var boiler []BoilerPush
+	sql:="select uid ,name from boiler"
+	if _,err:= dba.BoilerOrm.Raw(sql).QueryRows(&boiler);err!=nil{
+		goazure.Error("Query boiler Error",err)
+	}
+	for _,b := range boiler {
+		bid := b.Uid
+		bName := b.Name
+		var alarmCount int
+		var parameterId int
+		var parameterAlarmCount int
+		var description string
+		var runtime float64
+		sql := "select count(*) from boiler_alarm_history where boiler_id=? and date(date_sub(?,interval 7 day)) <= date(start_date) and date(start_date) < date(?)"
+		if err := dba.BoilerOrm.Raw(sql, bid, t,t).QueryRow(&alarmCount); err != nil {
+			goazure.Error("Query boiler_alarm_history Error",err)
+		}
+		if alarmCount == 0{
+			parameterId = 0
+			parameterAlarmCount = 0
+			description = "无"
+		} else {
+			var param []orm.Params
+			maxsql:= "select parameter_id,description, count(*) as count  from boiler_alarm_history where boiler_id=? and date(date_sub(?,interval 7 day)) <= date(start_date) and date(start_date) < date(?) " +
+				"group by parameter_id order by count desc limit 1"
+			if _,err:=dba.BoilerOrm.Raw(maxsql,bid,t,t).Values(&param);err!=nil{
+				goazure.Error("Query boiler_alarm_history Error",err)
+			}
+			if pid,err:=strconv.Atoi(param[0]["parameter_id"].(string));err!=nil{
+				goazure.Error("Parse Int Error",err)
+			} else {
+				parameterId = pid
+			}
+			if pCount,err:= strconv.Atoi(param[0]["count"].(string));err!=nil{
+				goazure.Error("Parse Int Error",err)
+			} else {
+				parameterAlarmCount = pCount
+			}
+			description = param[0]["description"].(string)
+		}
+		runtimeSql := "select Fire_duration from boiler_terminal_combined btc , issued_boiler_fire_duration ibf where btc.terminal_code = ibf.Boiler_term_id " +
+			"and btc.boiler_id=? and btc.terminal_set_id = 1"
+		if err:=dba.BoilerOrm.Raw(runtimeSql,bid).QueryRow(&runtime);err!=nil{
+			goazure.Error("Query Fire_duration Error",err)
+		}
+		infoSql:="insert into issued_week_information_log(uid,boiler_id,boiler_name,start_date,end_date,create_time,alarm_count,parameter_id,parameter_alarm_count,description,boiler_runtime) "+
+			"values(uuid(),?,?,date(date_sub(?,interval 7 day)),date(?),now(),?,?,?,?,?)"
+		if _,err:=dba.BoilerOrm.Raw(infoSql,bid,bName,t,t,alarmCount,parameterId,parameterAlarmCount,description,runtime).Exec();err!=nil{
+			goazure.Error("Insert issued_information_push_log Error",err)
+		}
+	}
+	durationSql:="update issued_boiler_fire_duration " +
+		"set Start_statistic_time = now(), End_statistic_time=now(),Fire_duration=0"
+	if _,err:=dba.BoilerOrm.Raw(durationSql).Exec();err!=nil{
+		goazure.Error("Update issued_boiler_fire_duration Error",err)
 	}
 }
 
-func (ctl *RuntimeController) PushInformation(t time.Time) {
+/*func (ctl *RuntimeController) PushInformation(t time.Time) {
 	var boiler []BoilerPush
 	sql:="select distinct bms.boiler_id , b.name  from boiler_message_subscriber bms,boiler b where b.uid= bms.boiler_id"
 	if _,err:=dba.BoilerOrm.Raw(sql).QueryRows(&boiler);err!=nil{
@@ -176,7 +234,7 @@ func (ctl *RuntimeController) PushInformation(t time.Time) {
 		if _,err:=dba.BoilerOrm.Raw(durationSql).Exec();err!=nil{
 			goazure.Error("Update issued_boiler_fire_duration Error",err)
 		}
-}
+}*/
 
 func (ctl *RuntimeController) GetBoilerRank() {
 	ticker := time.NewTicker(time.Minute * 15)
