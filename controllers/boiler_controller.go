@@ -765,22 +765,22 @@ func (ctl *BoilerController) TermIsOnline(termSn int64) bool {
 
 func (ctl *BoilerController) IsOnline(boilerUid string) bool {
 	var status bool
-	var term models.Terminal
+	//var term models.Terminal
 	var termCombined models.BoilerTerminalCombined
-	if err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Boiler__Uid",boilerUid).Filter("TerminalSetId",1).One(&termCombined);err!=nil{
+	if err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Terminal").Filter("Boiler__Uid",boilerUid).Filter("TerminalSetId",1).One(&termCombined);err!=nil{
 		goazure.Error("Query Boiler Terminal Combined Error",err)
 		status = false
 		return status
 	}
 
-	if err := dba.BoilerOrm.QueryTable("terminal").Filter("uid",termCombined.Terminal.Uid).One(&term);err!=nil{
-		goazure.Error("Query Boiler Terminal Combined Error",err)
+	/*if err := dba.BoilerOrm.QueryTable("terminal").Filter("uid",termCombined.Terminal.Uid).One(&term);err!=nil{
+		goazure.Error("Query Boiler Terminal  Error",err)
 		status = false
 		return status
 	}
 
-	status = term.IsOnline
-
+	status = term.IsOnline*/
+	status = ctl.TermIsOnline(termCombined.Terminal.TerminalCode)
 	return status
 }
 
