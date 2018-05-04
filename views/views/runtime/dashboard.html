@@ -111,7 +111,7 @@
         </div>
     </div>
     <div class="col-md-6" style="padding: 0;" ng-init="runtime.initControl();">
-        <div class="" style="margin-left: 50px;" ng-if="isRemoteControl">
+        <div class="" style="margin-left: 50px;" ng-if=" (currentUser.Organization && (currentUser.Organization.Type.TypeId===2||currentUser.Organization.Type.TypeId===6)) && isRemoteControl && runtime.boiler.isOnline">
             <div class="pull-right" style="margin-right: 20px;">
                 <button type="button" class="btn btn-default" ng-click="dataConfig();">
                     参数设置
