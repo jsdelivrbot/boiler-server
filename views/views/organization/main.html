@@ -43,7 +43,7 @@
                         <i class="icon-settings font-dark"></i>
                         <span class="caption-subject bold uppercase"> {{ org.titles[org.tid] }} </span>
                     </div>
-                    <div class="btn-group pull-right" ng-show="currentUser.Role.RoleId < 10">
+                    <div class="btn-group pull-right" ng-show="currentUser.Role.RoleId <= 10">
                         <button ng-click="org.new()" class="btn sbold green">
                             <i class="fa fa-plus"></i> 添加
                         </button>
