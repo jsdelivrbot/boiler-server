@@ -156,9 +156,13 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         terminal.msgData.isEmpty = true;
         terminal.msgData.lastUpload = null;
         // Ladda.create(document.getElementById('terminal_origin_messages')).start();
+        App.startPageLoading({message: '正在加载数据...'});
         $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
             .then(function (res) {
                 console.info("Get Terminal List Resp:", res);
+                setTimeout(function () {
+                    App.stopPageLoading();
+                }, 1500);
                 var datasource = res.data;
                 if (!datasource) {
                     return;
@@ -182,9 +186,12 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
                     terminal.msgData.isEmpty = false;
                 }
 
-                Ladda.create(document.getElementById('terminal_origin_messages')).stop();
+                // Ladda.create(document.getElementById('terminal_origin_messages')).stop();
             }, function (e) {
-                Ladda.create(document.getElementById('terminal_origin_messages')).stop();
+                setTimeout(function () {
+                    App.stopPageLoading();
+                }, 1500);
+                // Ladda.create(document.getElementById('terminal_origin_messages')).stop();
             });
     };
 
@@ -2308,6 +2315,9 @@ angular.module('BoilerAdmin').controller("terminalConfigStatus",function ($scope
 
 
 });
+
+
+
 
 
 
