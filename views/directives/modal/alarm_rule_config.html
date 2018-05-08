@@ -88,9 +88,9 @@
 
     </div>
     <div class="btn-group form-group col-md-12">
-        <label ng-class="['btn', {'btn-info': $modal.priority == 0}, {'btn-default': $modal.priority != 0}]" style="width: 33%;" ng-model="$modal.priority" uib-btn-radio="0" uncheckable>低优先级</label>
-        <label ng-class="['btn', {'btn-warning': $modal.priority == 1}, {'btn-default': $modal.priority != 1}]" style="width: 34%;" ng-model="$modal.priority" uib-btn-radio="1" uncheckable>中优先级</label>
-        <label ng-class="['btn', {'btn-danger': $modal.priority == 2}, {'btn-default': $modal.priority != 2}]" style="width: 33%;" ng-model="$modal.priority" uib-btn-radio="2" uib-uncheckable="uncheckable">高优先级</label>
+        <!--<label ng-class="['btn', {'btn-info': $modal.priority == 0}, {'btn-default': $modal.priority != 0}]" style="width: 33%;" ng-model="$modal.priority" uib-btn-radio="0" uncheckable>低优先级</label>-->
+        <label ng-class="['btn', {'btn-warning': $modal.priority == 1}, {'btn-default': $modal.priority != 1}]" style="width: 50%;" ng-model="$modal.priority" uib-btn-radio="1" uncheckable>告警不推送</label>
+        <label ng-class="['btn', {'btn-danger': $modal.priority == 2}, {'btn-default': $modal.priority != 2}]" style="width: 50%;" ng-model="$modal.priority" uib-btn-radio="2" uib-uncheckable="uncheckable">告警推送</label>
     </div>
     <div class="input-group form-group col-md-12">
                 <span class="input-group-addon" style="width: 22%">

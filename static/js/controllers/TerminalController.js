@@ -150,9 +150,11 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         terminal.msgData.code = data;
     };
 
+
     //消息调试
     terminal.getOriginMessages = function () {
         // terminal.msgData = {};
+        terminal.msgData.datasource = null;
         terminal.msgData.isEmpty = true;
         terminal.msgData.lastUpload = null;
         // Ladda.create(document.getElementById('terminal_origin_messages')).start();
