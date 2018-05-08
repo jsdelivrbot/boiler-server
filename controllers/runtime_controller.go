@@ -400,8 +400,6 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	goazure.Info("Alarm Occurs:", alarm)
 
 	if err := DataCtl.AddData(&alarm, true); err != nil {
-		goazure.Error("Added/Updated Alarm Error:", err, "\n", alarm)
-
 		return nil, err
 	}
 
@@ -1144,6 +1142,9 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 	for _, paramId := range b.RuntimeQueue {
 		num := 0
 		param := ParamCtrl.RuntimeParameter(paramId)
+		if param == nil {
+			continue
+		}
 		for _, r := range rs {
 			if  r["Parameter"] == int64(paramId) {
 				r["ParameterCategory"] = param.Category.Id
@@ -1163,13 +1164,15 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 		}
 	}
 
-	r := rtms[0]
-	var date string
-	if r["UpdatedDate"] != nil {
-		date = r["UpdatedDate"].(time.Time).Format("2006-01-02 15:04:05")
-	}
+	if len(rtms) > 0 {
+		r := rtms[0]
+		var date string
+		if r["UpdatedDate"] != nil {
+			date = r["UpdatedDate"].(time.Time).Format("2006-01-02 15:04:05")
+		}
 
-	r["Date"] = date
+		r["Date"] = date
+	}
 
 	//goazure.Warning("==========>>>>>>>>> RTMs: ", rtms)
 
