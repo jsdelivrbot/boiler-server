@@ -253,6 +253,18 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         });
 
 
+
+    };
+
+    bRuntime.initList = function () {
+        var rtmQ = [];
+        var boiler = bRuntime.boiler;
+        var data = {
+            uid: boiler.Uid,
+            runtimeQueue: rtmQ,
+            limit: 50
+        };
+
         $http.post('/boiler_runtime_list/', data).then(function (res) {
             console.info("Runtime Resp:", res);
             // alert("Boiler Put Detail Res," + res.status + res.data + "|" + Object.keys(res.data))
@@ -364,6 +376,11 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
             $rootScope.bRuntime = bRuntime.daily;
             console.info("BoilerData:", bRuntime.daily);
+
+
+            setTimeout(function () {
+                bRuntime.initList();
+            },15000);
 
             initChartHeatMonth(bRuntime.daily);
         });
