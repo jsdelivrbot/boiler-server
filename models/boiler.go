@@ -82,7 +82,7 @@ type BoilerTermStatus struct{
 	BoilerTermId		string				`orm:"pk;column(Boiler_term_id)"`
 	BoilerTermIp		string				`orm:"column(Boiler_term_ip)"`
 	BoilerTermPwd		int32				`orm:"column(Boiler_term_pwd)"`
-	BoilerTermStatus	string				`orm:"column(Boiler_term_status)"`
+	BoilerTermStatus	bool				`orm:"column(Boiler_term_status)"`
 }
 
 type BoilerOrganizationLinked struct{

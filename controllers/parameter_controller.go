@@ -387,7 +387,6 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 					if value >= rg.Min && value <= rg.Max {
 						v = rg.Value
 						rmk = rg.Name
-
 						goazure.Warn("Channel Range Matched!", rg, value, v)
 						break
 					}
@@ -409,8 +408,6 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 				goazure.Error("Parse Time Error:", err)
 			} else {
 				//goazure.Info("Parse Time:", t, "||", tm)
-				fmt.Println("m163 ts:",t)
-				fmt.Println("BoilerRuntime表的CreateDate:", tm)
 				rtm.CreatedDate = tm
 			}
 
