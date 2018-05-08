@@ -10,6 +10,7 @@ import (
 	_ "github.com/AzureRelease/boiler-server/models"
 	_ "github.com/AzureRelease/boiler-server/controllers"
 	_ "github.com/AzureRelease/boiler-server/log"
+	_ "github.com/AzureRelease/boiler-server/conf"
 )
 
 var wechatServerEnabled = true

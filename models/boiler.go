@@ -18,7 +18,7 @@ type Boiler struct {
 	Maintainer			*Organization			`orm:"rel(fk);null"`
 	Supervisor			*Organization			`orm:"rel(fk);null"`
 
-	OrganizationsLinked	[]*Organization				`orm:"rel(m2m);null;index;rel_through(github.com/AzureRelease/boiler-server/models.BoilerOrganizationLinked)"`
+	OrganizationsLinked	[]*Organization			`orm:"rel(m2m);null;index;rel_through(github.com/AzureRelease/boiler-server/models.BoilerOrganizationLinked)"`
 	//使用单位地址
 	//所在区域: 所在区域* 浙江省 杭州市 桐庐县	<-REGION
 	//经度，纬度
@@ -82,7 +82,7 @@ type BoilerTermStatus struct{
 	BoilerTermId		string				`orm:"pk;column(Boiler_term_id)"`
 	BoilerTermIp		string				`orm:"column(Boiler_term_ip)"`
 	BoilerTermPwd		int32				`orm:"column(Boiler_term_pwd)"`
-	BoilerTermStatus	string				`orm:"column(Boiler_term_status)"`
+	BoilerTermStatus	bool				`orm:"column(Boiler_term_status)"`
 }
 
 type BoilerOrganizationLinked struct{

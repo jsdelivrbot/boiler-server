@@ -63,6 +63,22 @@ func (ctl *IssuedController) IssuedGetIp(ip string)(string) {
 	netInfo := strings.Split(ip,":")
 	return netInfo[0]
 }
+//周报信息统计
+func (ctl *IssuedController) IssuedInformationMini() {
+	var boiler Code
+	var weekInformation models.IssuedWeekInformationLog
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &boiler); err != nil {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Config Json Error!"))
+		goazure.Error("Unmarshal Error", err)
+		return
+	}
+	if err:=dba.BoilerOrm.QueryTable("issued_week_information_log").Filter("Boiler__Uid",boiler.Uid).OrderBy("-CreateTime").One(&weekInformation);err!=nil{
+		goazure.Error("Query issued_week_information_log Error",err)
+	}
+	ctl.Data["json"] = weekInformation
+	ctl.ServeJSON()
+}
 
 //往数据库插入操作记录
 func (ctl *IssuedController) IssuedContentLogs(username string,ip string,sn string,operation string, remark string) {
@@ -750,7 +766,7 @@ func (ctl *IssuedController) UpgradeConfiguration() {
 func (ctl *IssuedController) BinFileList() {
 	usr := ctl.GetCurrentUser()
 	var binUploads []*models.IssuedBinUpload
-	qs := dba.BoilerOrm.QueryTable("issued_bin_upload")
+	qs := dba.BoilerOrm.QueryTable("issued_bin_upload").RelatedSel("Organization")
 	if usr.IsOrganizationUser() {
 		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
 	}

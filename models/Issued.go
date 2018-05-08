@@ -113,3 +113,16 @@ type IssuedParameterOrganization struct {
 	IsDeleted   bool		`orm:"index"`
 	Organization *Organization `orm:"rel(fk)"`
 }
+type IssuedWeekInformationLog struct {
+	Uid string       `orm:"pk"`
+	Boiler     *Boiler 		`orm:"rel(fk)"`
+	BoilerName string
+	StartDate time.Time      `orm:"type(datetime);auto_now;index"`
+	EndDate time.Time        `orm:"type(datetime);auto_now;index"`
+	CreateTime time.Time      `orm:"type(datetime);auto_now;index"`
+	AlarmCount int
+	ParameterId int
+	ParameterAlarmCount int
+	Description string
+	BoilerRuntime float64
+}

@@ -400,14 +400,17 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 		Filter("Template", temp.TemplateUid).Filter("ChannelType__in",models.CHANNEL_TYPE_TEMPERATURE,models.CHANNEL_TYPE_ANALOG,models.CHANNEL_TYPE_RANGE).
 		OrderBy("ChannelType").All(&configTemp); err != nil {
 		goazure.Error("Query issued channel config template Error", err)
+		return
 	}
 	if _, err := dba.BoilerOrm.QueryTable("issued_channel_config_template").RelatedSel("Parameter").RelatedSel("Func").
 		Filter("Template", temp.TemplateUid).Filter("ChannelType",models.CHANNEL_TYPE_SWITCH).
 		OrderBy("ChannelNumber").All(&confSwitchTemps); err != nil {
 		goazure.Error("Query issued channel config template Error", err)
+		return
 	}
 	if err:=dba.BoilerOrm.QueryTable("issued_communication_template").Filter("Template__Uid",temp.TemplateUid).One(&commTemp);err!=nil{
 		goazure.Error("Query issued_communication_template Error",err)
+		return
 	}
 	for _, t := range temp.Terminals {
 		var aCnf []models.RuntimeParameterChannelConfig

@@ -2,6 +2,7 @@ package conf
 
 import (
 	"github.com/AzureTech/goazure"
+	"net/url"
 )
 
 var IsRelease bool = goazure.AppConfig.String("runmode") == "prod"
@@ -16,8 +17,8 @@ var BoilerReset string = "\x99"
 var TermConfig string = "0xC0(终端配置)"
 var TermRestart string = "0xC9(终端重启)"
 var BoilerController string = "0xCF(锅炉控制)"
-var TermOnline string = "1000000000"
-var TermOffline string = "0000000000"
+var TermOnline bool = true
+var TermOffline bool = false
 var BatchFlag bool = true
 var ContentLogsFlag bool = true
 var IsReloadLogEnabled = true
@@ -26,9 +27,9 @@ var DbConnection string
 
 func init() {
 	if IsRelease {
-		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 	} else {
-		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8"//&loc=" + url.QueryEscape("PRC")
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8&loc=" + url.QueryEscape("PRC")
 	}
 
 }
