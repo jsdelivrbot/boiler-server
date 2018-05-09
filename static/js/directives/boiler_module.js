@@ -132,6 +132,9 @@ boilerAdmin.directive('boilerModule', function () {
             bModule.moduleId = BOILE_MODULE_IRON;
         }
 
+        if (bModule.boiler.Form.Id === 1006) {
+            bModule.moduleId = BOILE_MODULE_HEAT_STEAM_SYSTEM;
+        }
 
 
         switch (bModule.moduleId) {
@@ -152,6 +155,9 @@ boilerAdmin.directive('boilerModule', function () {
                 break;
             case BOILE_MODULE_HEAT_WATER_SYSTEM:
                 svgName = "/img/electricity.svg";
+                break;
+            case BOILE_MODULE_HEAT_STEAM_SYSTEM:
+                svgName = "/img/electricity2.svg";
                 break;
             case BOILE_MODULE_LV:
                 svgName = "/img/zhulv.svg";
@@ -1743,3 +1749,4 @@ const BOILE_MODULE_COAL_WATER = 6;
 const BOILE_MODULE_HEAT_WATER_SYSTEM = 11;
 const BOILE_MODULE_LV = 12;
 const BOILE_MODULE_IRON = 13;
+const BOILE_MODULE_HEAT_STEAM_SYSTEM = 14;
