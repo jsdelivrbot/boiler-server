@@ -326,7 +326,6 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	if boiler == nil {
 		return nil, errors.New("boiler can not be nil")
 	}
-
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization")
 	cond := orm.NewCondition()
 	if boiler.Form != nil {
@@ -347,12 +346,11 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	cond = cond.AndCond(condEva)
 
 	qr = qr.SetCond(cond)
-	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false).Filter("Organization__Uid",boiler.Enterprise.Uid)
+	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false).Filter("Organization",boiler.Enterprise.Uid)
 	if err := qr.One(&rule); err != nil {
 		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
 		return nil, err
 	}
-
 	var alarmDesc string
 	var alarmLevel int32 = models.RUNTIME_ALARM_LEVEL_UNDEFINED
 	if rule.Warning > rule.Normal && val.(float64) > float64(rule.Warning) {
