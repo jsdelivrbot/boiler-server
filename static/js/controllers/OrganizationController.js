@@ -318,7 +318,7 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
             postData.supervisor = $modal.supervisor;
         }
 
-        if (!currentData && (postData.type_id === 1 || postData.type_id === 2)) {
+        /*if (!currentData && (postData.type_id === 1 || postData.type_id === 2)) {
             swal({
                 title: "是否为该企业创建示例锅炉？",
                 text: "将创建燃煤锅炉、燃气锅炉、生物质锅炉、热水锅炉各一台。注意：所创建的锅炉将录入正式锅炉信息中，如需移除，请在锅炉信息列表中进行删除，或联系平台管理员协助操作。",
@@ -349,7 +349,9 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
             });
         } else {
             post(postData);
-        }
+        }*/
+
+        post(postData);
 
     };
 

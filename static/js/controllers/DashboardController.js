@@ -1479,7 +1479,7 @@ angular.module('BoilerAdmin').controller('ModalCalcCtl', function ($uibModalInst
         $modal.data.boiler_id = $modal.boiler.Uid;
         $modal.data.fuel_type_id = $modal.boiler.Fuel.Type.Id;
 
-        $http.post('/boiler_runtime_instants/', {
+        /*$http.post('/boiler_runtime_instants/', {
             uid: $modal.boiler.Uid,
             runtimeQueue: [1014, 1021, 1016]
         }).then(function (res) {
@@ -1489,7 +1489,11 @@ angular.module('BoilerAdmin').controller('ModalCalcCtl', function ($uibModalInst
             $modal.data.smoke_o2 = res.data[2].Value;
         }, function (err) {
             console.warn("Get Instant Tempers Error:", err);
-        });
+        });*/
+
+        $modal.data.smoke_temper = 0;
+        $modal.data.wind_temper = 0;
+        $modal.data.smoke_o2 = 0;
 
         $http.get('/boiler_calculate_parameter/?boiler=' + currentBoiler.Uid)
             .then(function (res) {
