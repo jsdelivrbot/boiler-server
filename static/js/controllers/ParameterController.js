@@ -242,8 +242,11 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
 
     $modal.commit = function () {
         Ladda.create(document.getElementById('boiler_ok')).start();
+        $modal.newData = $modal.data;
+        delete($modal.newData.Organization);
+        // $modal.newData.Organization = null;
 
-        $http.post("/runtime_parameter_update/", $modal.data)
+        $http.post("/runtime_parameter_update/", $modal.newData)
             .then(function (res) {
                 swal({
                     title: "参数更新成功",
