@@ -395,6 +395,27 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             */
     };
 
+
+    //告警提示框
+    $scope.alerts = [
+        // { type: 'alert-danger', msg: '出错消息' },
+        // { type: 'alert-success', msg: '成功消息' },
+        // { type: 'alert-info', msg: '提示消息' },
+        // { type: 'alert-warning', msg: '警告信息' }
+    ];
+    $scope.alertShow = true;
+    $scope.addAlert = function () {
+        $scope.alerts.push({ msg: '这是一条消息!' });
+        setTimeout(function () {
+            $scope.alertShow = false;
+        },5000)
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+
+
     /**
      * Search Section
      */
@@ -508,22 +529,25 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     };
 
     bMonitor.fetchStatus = function (boiler) {
-        $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
-            .then(function (res) {
-                // console.error("Fetch Status Resp:", res.data, boiler.Name);
-                boiler.isBurning = (res.data.value === "true");
-                // boiler.alarmLevel = boiler.isBurning ? 0 : -1;
-            }, function (err) {
-                console.error('Fetch Status Err!', err);
-            });
+
         $http.get('/boiler/state/is_online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
                 boiler.isOnline = res.data;
-                // boiler.alarmLevel = boiler.isOnline ? 0 : -1;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
-            });
+            }).then(function () {
+            $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
+                .then(function (res) {
+                    // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                    boiler.isBurning = (res.data.value === "true");
+                    if(boiler.alarmLevel==null){
+                        boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
+                    }
+                }, function (err) {
+                    console.error('Fetch Status Err!', err);
+                });
+        });
     };
 
     bMonitor.fetchThumbParam = function (boiler) {

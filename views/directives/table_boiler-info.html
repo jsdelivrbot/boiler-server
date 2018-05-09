@@ -238,7 +238,7 @@
                             <th>终端编码</th>
                             <!--<th>终端状态</th>-->
                             <th>终端名称</th>
-                            <th>机组番号</th>
+                            <!--<th>机组番号</th>-->
                             <th>操作</th>
                         </tr>
                         <tr ng-repeat="terminal in info.currentData.TerminalsCombined">
@@ -249,7 +249,7 @@
                             <!--</span>-->
                             <!--</td>-->
                             <td>{{ terminal.Name }}</td>
-                            <td>{{ terminal.setId }}</td>
+                            <!--<td>{{ terminal.setId }}</td>-->
                             <td><a ng-click="info.unbind(terminal) "
                                    class="btn btn-sm btn-outline btn-circle red delete_btn">
                                 <i class="fa fa-minus"></i> 解绑

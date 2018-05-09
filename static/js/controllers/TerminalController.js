@@ -150,9 +150,11 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         terminal.msgData.code = data;
     };
 
+
     //消息调试
     terminal.getOriginMessages = function () {
         // terminal.msgData = {};
+        terminal.msgData.datasource = null;
         terminal.msgData.isEmpty = true;
         terminal.msgData.lastUpload = null;
         // Ladda.create(document.getElementById('terminal_origin_messages')).start();
@@ -1016,10 +1018,10 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     $modal.calculateParameters = [{Id: 0, Name: '默认配置'}];
     $modal.rangeParameters = [{Id: 0, Name: '默认配置'}];
 
-    $http.get("/runtime_parameter_issued_list").then(function (res) {
+    $http.get("/runtime_parameter_list").then(function (res) {
         $modal.parameterData = res.data;
         for (var i in $modal.parameterData) {
-            var param = $modal.parameterData[i].Parameter;
+            var param = $modal.parameterData[i];
             switch (param.Category.Id) {
                 case 10:
                     $modal.analogParameters.push(param);

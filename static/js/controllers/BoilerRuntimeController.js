@@ -73,20 +73,22 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             })
             .then(function () {
                 $rootScope.isBoilerOnline = boiler.isOnline;
+                $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
+                    .then(function (res) {
+                        console.info("Fetch BurningStatus Resp:", res.data);
+                        boiler.isBurning = (res.data.value === "true");
+                    }, function (err) {
+                        console.error('Fetch Status Err!', err);
+                        boiler.isBurning = false;
+                    })
+                    .then(function () {
+                        $rootScope.isBoilerBurning = boiler.isBurning;
+                        boiler.alarmLevel = (boiler.isOnline && boiler.isBurning ) ? 0 : -1;
+                        bRuntime.fetchRuntime(bRuntime.boiler);
+                    });
             });
 
-        $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
-            .then(function (res) {
-                console.info("Fetch BurningStatus Resp:", res.data);
-                boiler.isBurning = (res.data.value === "true");
-            }, function (err) {
-                console.error('Fetch Status Err!', err);
-                boiler.isBurning = false;
-            })
-            .then(function () {
-                $rootScope.isBoilerBurning = boiler.isBurning;
-                bRuntime.fetchRuntime(bRuntime.boiler);
-            });
+
 
         $http.get('/boiler/state/has_subscribed/?boiler=' + boiler.Uid + "&uid=" + $rootScope.currentUser.Uid)
             .then(function (res) {
@@ -147,7 +149,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
         $http.post('/boiler_runtime_instants/', data).then(function (res) {
             $log.info("instants Resp:", res);
 
-            boiler.alarmLevel = (boiler.isBurning && boiler.isOnline) ? 0 : -1;
+
             boiler.hasSwitchValue = false;
             boiler.hasRangeValue = false;
 
@@ -250,6 +252,18 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
         });
 
+
+
+    };
+
+    bRuntime.initList = function () {
+        var rtmQ = [];
+        var p = $location.search();
+        var data = {
+            uid: p['boiler'],
+            runtimeQueue: rtmQ,
+            limit: 50
+        };
 
         $http.post('/boiler_runtime_list/', data).then(function (res) {
             console.info("Runtime Resp:", res);
@@ -362,6 +376,14 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
             $rootScope.bRuntime = bRuntime.daily;
             console.info("BoilerData:", bRuntime.daily);
+
+
+            if($state.includes("runtime.stats")){
+                setTimeout(function () {
+                    bRuntime.initList();
+                },15000);
+            }
+
 
             initChartHeatMonth(bRuntime.daily);
         });

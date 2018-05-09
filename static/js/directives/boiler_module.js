@@ -132,12 +132,7 @@ boilerAdmin.directive('boilerModule', function () {
             bModule.moduleId = BOILE_MODULE_IRON;
         }
 
-        if (bModule.boiler.Form.Id === 1004) {
-                bModule.moduleId = BOILE_MODULE_LV;
-            }
-        if (bModule.boiler.Form.Id === 1005) {
-            bModule.moduleId = BOILE_MODULE_IRON;
-        }
+
 
         switch (bModule.moduleId) {
             case BOILE_MODULE_COAL_DOUBLE:

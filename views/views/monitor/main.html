@@ -136,6 +136,26 @@
                 color: #fff;
                 background: #e5e5e5;
             }
+
+            .alert_con{
+                position: fixed;
+                bottom: 10px;
+                left: 250px;
+                right: 20px;
+                z-index: 9999;
+            }
+            .alertShow{
+                animation: fadeOut 5s linear forwards;
+            }
+
+            @keyframes fadeOut {
+                0%  { opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; transform: translateY(0px);}
+                99% { opacity: 0; transform: translateY(-30px);}
+                100% { opacity: 0; }
+            }
+
         </style>
         <div class="col-md-12">
             <div class="portlet light">
@@ -167,7 +187,16 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="alert_con">
+            <!--<button type="button" class='btn btn-default'  ng-click="addAlert()">提示框</button>-->
+            <div uib-alert ng-repeat="alert in alerts" class="alert-danger alertShow" ng-class="alert.type" close="closeAlert($index)" dismiss-on-timeout="10000">{{alert.msg}}</div>
+        </div>
     </div>
+
+
+
     <!-- END MAIN CONTENT -->
 </div>
 
