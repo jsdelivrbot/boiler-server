@@ -541,7 +541,9 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 .then(function (res) {
                     // console.error("Fetch Status Resp:", res.data, boiler.Name);
                     boiler.isBurning = (res.data.value === "true");
-                    boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
+                    if(boiler.alarmLevel==null){
+                        boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
+                    }
                 }, function (err) {
                     console.error('Fetch Status Err!', err);
                 });
@@ -661,7 +663,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             // };
             //
             // boiler.isBurning = isBurning();
-            // boiler.alarmLevel = (boiler.isBurning && boiler.isOnline) ? 0 : -1;
+            boiler.alarmLevel = (boiler.isBurning && boiler.isOnline) ? 0 : -1;
             boiler.img = boiler.imgName() + ((boiler.isBurning && boiler.isOnline) ? '.gif' : '.png');
 
             var runtime = [[], []];

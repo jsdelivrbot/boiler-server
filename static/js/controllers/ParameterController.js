@@ -41,12 +41,12 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
     bParameter.refreshDataTables = function () {
         // bParameter.category = category;
 
-        $http.get("/runtime_parameter_issued_list").then(function (res) {
+        $http.get("/runtime_parameter_list").then(function (res) {
             bParameter.parameters = res.data;
             /*for (var i = 0; i < parameters.length; i++) {
                 var param = parameters[i];
 
-                if (param.Parameter.Category.Id === category) {
+                if (param.Category.Id === category) {
                     datasource.push(param);
                 }
 
@@ -71,7 +71,7 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
         for (var i = 0; i < bParameter.parameters.length; i++) {
             var param = bParameter.parameters[i];
 
-            if (param.Parameter.Category.Id === category) {
+            if (param.Category.Id === category) {
                 datasource.push(param);
             }
 
@@ -96,10 +96,8 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
 
     bParameter.new = function () {
         currentData = {
-            Parameter:{
-                Category: {
-                    Id: PARAMETER_CATEGORY_UNDEFINED
-                }
+            Category: {
+                Id: PARAMETER_CATEGORY_UNDEFINED
             }
         };
         isNew = true;
@@ -214,20 +212,20 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
     $modal.initCurrent();
     */
     $modal.categoryChanged = function () {
-        var cateId = $modal.data.Parameter.Category.Id;
+        var cateId = $modal.data.Category.Id;
         if (cateId <= 0) {
-            $modal.data.Parameter.ParamId = 0;
-            $modal.data.Parameter.Id = 0;
+            $modal.data.ParamId = 0;
+            $modal.data.Id = 0;
         }
 
         if (cateId === PARAMETER_CATEGORY_SWITCH || cateId === PARAMETER_CATEGORY_STATUS) {
-            $modal.data.Parameter.Scale = 1;
-            $modal.data.Parameter.Fix = 0;
-            $modal.data.Parameter.Unit = "";
-            $modal.data.Parameter.Length = 1;
+            $modal.data.Scale = 1;
+            $modal.data.Fix = 0;
+            $modal.data.Unit = "";
+            $modal.data.Length = 1;
         } else {
-            $modal.data.Parameter.Fix = 2;
-            $modal.data.Parameter.Length = 2;
+            $modal.data.Fix = 2;
+            $modal.data.Length = 2;
         }
 
         var paramId = 100;
@@ -238,25 +236,14 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
             }
         }
 
-        $modal.data.Parameter.ParamId = paramId;
-        $modal.data.Parameter.Id = parseInt(cateId + '' + paramId);
+        $modal.data.ParamId = paramId;
+        $modal.data.Id = parseInt(cateId + '' + paramId);
     };
 
     $modal.commit = function () {
         Ladda.create(document.getElementById('boiler_ok')).start();
 
-        $http.post("/runtime_parameter_update/", {
-            id:$modal.data.Parameter.Id,
-            category_id:$modal.data.Parameter.Category.Id,
-            organization_id:$modal.data.Organization.Uid,
-            fix:$modal.data.Parameter.Fix,
-            length:$modal.data.Parameter.Length,
-            name:$modal.data.Parameter.Name,
-            param_id:$modal.data.Parameter.ParamId,
-            scale:$modal.data.Parameter.Scale,
-            unit:$modal.data.Parameter.Unit,
-            remark:$modal.data.Parameter.Remark
-        })
+        $http.post("/runtime_parameter_update/", $modal.data)
             .then(function (res) {
                 swal({
                     title: "参数更新成功",
@@ -290,7 +277,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
             closeOnConfirm: false
         }).then(function () {
             $http.post("/runtime_parameter_delete/", {
-                Id: $modal.data.Parameter.Id
+                Id: $modal.data.Id
             }).then(function (res) {
                 swal({
                     title: "参数删除成功",

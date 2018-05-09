@@ -258,9 +258,9 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
     bRuntime.initList = function () {
         var rtmQ = [];
-        var boiler = bRuntime.boiler;
+        var p = $location.search();
         var data = {
-            uid: boiler.Uid,
+            uid: p['boiler'],
             runtimeQueue: rtmQ,
             limit: 50
         };
@@ -378,9 +378,12 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
             console.info("BoilerData:", bRuntime.daily);
 
 
-            setTimeout(function () {
-                bRuntime.initList();
-            },15000);
+            if($state.includes("runtime.stats")){
+                setTimeout(function () {
+                    bRuntime.initList();
+                },15000);
+            }
+
 
             initChartHeatMonth(bRuntime.daily);
         });

@@ -125,7 +125,7 @@
                         <tbody style="text-align: center">
                         <tr ng-repeat='data in alarm.datasource'>
                             <td> {{ data.num }} </td>
-                            <td> {{ data.Alarm.Parameter.Name }} </td>
+                            <td> {{ data.Parameter.Name }} </td>
                             <!--
                             <td>
                                 <span ng-class="[{'light-gray': data.BoilerForm.FormId == 0}]">
@@ -148,12 +148,12 @@
                                     {{ data.Alarm.capacity }}
                                 </span>
                             </td>-->
-                            <td> {{ data.Alarm.Normal }}</td>
-                            <td> {{ data.Alarm.warning }}</td>
-                            <td> {{ data.Alarm.Delay }}</td>
+                            <td> {{ data.Normal }}</td>
+                            <td> {{ data.warning }}</td>
+                            <td> {{ data.Delay }}</td>
                             <td>
-                                <span ng-class="['label', {'label-info': data.Alarm.Priority == 0}, {'label-warning': data.Alarm.Priority == 1}, {'label-danger': data.Alarm.Priority == 2}]">
-                                    {{ data.Alarm.priortyText }}
+                                <span ng-class="['label', {'label-info': data.Priority == 0}, {'label-warning': data.Priority == 1}, {'label-danger': data.Priority == 2}]">
+                                    {{ data.priortyText }}
                                 </span>
                             </td>
                             <!--<td>-->
