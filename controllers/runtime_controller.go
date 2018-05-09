@@ -412,83 +412,14 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 }
 
 func (ctl *RuntimeController) ReloadCacheWithRuntime(rtm *models.BoilerRuntime, val interface{}) {
-	/*
-	IF NEW.`parameter_id` = 1001 THEN
-	SELECT 'boiler_runtime_cache_steam_temperature' INTO @tableName;
-
-	IF NEW.parameter_id = 1002 THEN
-	INSERT IGNORE `boiler_runtime_cache_steam_pressure`
-
-	IF NEW.`parameter_id` = 1003 THEN
-	INSERT IGNORE `boiler_runtime_cache_flow`
-
-	IF NEW.parameter_id = 1005 OR NEW.parameter_id = 1006 THEN
-	INSERT IGNORE `boiler_runtime_cache_water_temperature`
-
-	IF NEW.parameter_id = 1014 OR NEW.parameter_id = 1015 THEN
-	INSERT IGNORE boiler_runtime_cache_smoke_temperature
-
-	IF NEW.parameter_id = 1016 OR NEW.parameter_id = 1017 OR NEW.parameter_id = 1018 OR NEW.parameter_id = 1019 THEN
-	INSERT IGNORE boiler_runtime_cache_smoke_component
-
-	IF NEW.`parameter_id` = 1021 OR NEW.`parameter_id` = 1022 THEN
-	INSERT IGNORE `boiler_runtime_cache_environment_temperature`
-
-	IF NEW.`parameter_id` = 1201 THEN
-	INSERT IGNORE `boiler_runtime_cache_heat`
-
-	IF NEW.parameter_id = 1202 THEN
-	INSERT IGNORE boiler_runtime_cache_excess_air
-	SET 	`runtime_id` = NEW.`id`,
-		`boiler_id` = NEW.`boiler_id`,
-		`parameter_id` = NEW.`parameter_id`,
-		`alarm_id` = NEW.`alarm_id`,
-
-		`created_date` = NEW.`created_date`,
-		`created_by_id` = NEW.`created_by_id`,
-		`updated_date` = NEW.`updated_date`,
-		`updated_by_id` = NEW.`updated_by_id`,
-		`is_deleted` = NEW.`is_deleted`,
-		`is_demo` = NEW.`is_demo`,
-
-		`name_en` = NEW.`name_en`,
-		`remark` = NEW.`remark`,
-		`name` = (SELECT `boiler`.`name`
-	FROM `boiler`
-	WHERE `boiler`.uid = NEW.boiler_id),
-
-	`value` = (SELECT ROUND(`param`.`scale` * NEW.`value`, `param`.`fix`)
-	FROM `runtime_parameter` AS `param`
-	WHERE `param`.id = NEW.parameter_id),
-	`parameter_name` = (SELECT `param`.`name`
-	FROM `runtime_parameter` AS `param`
-	WHERE `param`.id = NEW.parameter_id),
-	`unit` = (SELECT `param`.`unit`
-	FROM `runtime_parameter` AS `param`
-	WHERE `param`.id = NEW.parameter_id),
-
-	`alarm_level` = (SELECT `alarm`.`alarm_level`
-	FROM `boiler_alarm` AS `alarm`
-	WHERE `alarm`.uid = NEW.alarm_id),
-	`alarm_description` = (SELECT `alarm`.`description`
-	FROM `boiler_alarm` AS `alarm`
-	WHERE `alarm`.uid = NEW.alarm_id)
-	;
-
-	UPDATE 	`boiler_runtime_cache_excess_air`
-	SET 	`alarm_level` = 0
-	WHERE 	`alarm_level` IS NULL;
-
-	UPDATE 	`boiler_runtime_cache_excess_air`
-	SET 	`alarm_description` = ''
-	WHERE 	`alarm_description` IS NULL;
-	END IF;
-	*/
-
 	/* CACHES */
 	tableNamePrefix := "boiler_runtime_cache_"
 	tableNameInst	:= "instant"
 	tableNameList 	:= []string{"day", "week", "month"}
+
+	if rtm.Parameter.Category.Id == models.RUNTIME_PARAMETER_CATEGORY_RANGE {
+		val = rtm.Value
+	}
 
 	alarmId := ""
 	alarmLv := int32(0)

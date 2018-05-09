@@ -242,7 +242,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
 
     $modal.commit = function () {
         Ladda.create(document.getElementById('boiler_ok')).start();
-        $modal.newData = $modal.data;
+        $modal.newData =angular.copy($modal.data);
         // delete $modal.newData.Organization.Type;
         $modal.newData.Organization = {
             Uid:$modal.data.Organization.Uid
@@ -272,7 +272,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
     $modal.delete = function () {
         swal({
             title: "确认删除该参数？",
-            text: "注意：删除后将无法恢复，且和此参数相关的数据通道将废止使用。",
+            html: "<div style='color: red;'>注意：删除后将无法恢复，且和此参数相关的数据通道将废止使用。</div>",
             type: "warning",
             showCancelButton: true,
             //confirmButtonClass: "btn-danger",
