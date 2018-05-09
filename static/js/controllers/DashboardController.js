@@ -395,6 +395,27 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             */
     };
 
+
+    //告警提示框
+    $scope.alerts = [
+        // { type: 'alert-danger', msg: '出错消息' },
+        // { type: 'alert-success', msg: '成功消息' },
+        // { type: 'alert-info', msg: '提示消息' },
+        // { type: 'alert-warning', msg: '警告信息' }
+    ];
+    $scope.alertShow = true;
+    $scope.addAlert = function () {
+        $scope.alerts.push({ msg: '这是一条消息!' });
+        setTimeout(function () {
+            $scope.alertShow = false;
+        },5000)
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+
+
     /**
      * Search Section
      */
@@ -508,22 +529,25 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     };
 
     bMonitor.fetchStatus = function (boiler) {
-        $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
-            .then(function (res) {
-                // console.error("Fetch Status Resp:", res.data, boiler.Name);
-                boiler.isBurning = (res.data.value === "true");
-                // boiler.alarmLevel = boiler.isBurning ? 0 : -1;
-            }, function (err) {
-                console.error('Fetch Status Err!', err);
-            });
+
         $http.get('/boiler/state/is_online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
                 boiler.isOnline = res.data;
-                // boiler.alarmLevel = boiler.isOnline ? 0 : -1;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
-            });
+            }).then(function () {
+            $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
+                .then(function (res) {
+                    // console.error("Fetch Status Resp:", res.data, boiler.Name);
+                    boiler.isBurning = (res.data.value === "true");
+                    if(boiler.alarmLevel==null){
+                        boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
+                    }
+                }, function (err) {
+                    console.error('Fetch Status Err!', err);
+                });
+        });
     };
 
     bMonitor.fetchThumbParam = function (boiler) {
@@ -1455,7 +1479,7 @@ angular.module('BoilerAdmin').controller('ModalCalcCtl', function ($uibModalInst
         $modal.data.boiler_id = $modal.boiler.Uid;
         $modal.data.fuel_type_id = $modal.boiler.Fuel.Type.Id;
 
-        $http.post('/boiler_runtime_instants/', {
+        /*$http.post('/boiler_runtime_instants/', {
             uid: $modal.boiler.Uid,
             runtimeQueue: [1014, 1021, 1016]
         }).then(function (res) {
@@ -1465,7 +1489,11 @@ angular.module('BoilerAdmin').controller('ModalCalcCtl', function ($uibModalInst
             $modal.data.smoke_o2 = res.data[2].Value;
         }, function (err) {
             console.warn("Get Instant Tempers Error:", err);
-        });
+        });*/
+
+        $modal.data.smoke_temper = 0;
+        $modal.data.wind_temper = 0;
+        $modal.data.smoke_o2 = 0;
 
         $http.get('/boiler_calculate_parameter/?boiler=' + currentBoiler.Uid)
             .then(function (res) {

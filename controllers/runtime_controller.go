@@ -327,7 +327,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		return nil, errors.New("boiler can not be nil")
 	}
 
-	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
+	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization")
 	cond := orm.NewCondition()
 	if boiler.Form != nil {
 		condFm := orm.NewCondition().Or("BoilerForm__Id", boiler.Form.Id).Or("BoilerForm__Id", 0)
@@ -347,7 +347,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	cond = cond.AndCond(condEva)
 
 	qr = qr.SetCond(cond)
-	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false)
+	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false).Filter("Organization__Uid",boiler.Enterprise.Uid)
 	if err := qr.One(&rule); err != nil {
 		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
 		return nil, err
@@ -380,7 +380,12 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		alarm.Description = alarmDesc
 		alarm.AlarmLevel = alarmLevel
 		alarm.Priority = rule.Priority
-		alarm.State = models.BOILER_ALARM_STATE_NEW
+		if alarmLevel == models.RUNTIME_ALARM_LEVEL_WARNING {
+			alarm.State = models.BOILER_ALARM_STATE_DEFAULT
+		}
+		if  alarmLevel == models.RUNTIME_ALARM_LEVEL_DANGER {
+			alarm.State = models.BOILER_ALARM_STATE_NEW
+		}
 		alarm.NeedSend = rule.NeedSend
 
 		alarm.StartDate = rtm.CreatedDate

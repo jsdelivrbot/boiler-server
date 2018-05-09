@@ -13,6 +13,43 @@
         background-color: #f0ad4e;
     }
 
+    .status_con{
+        text-align: center;
+        font-size: 13px;
+    }
+    .status_con .col-md-4{
+        padding: 0 3px;
+    }
+    .status_title{
+        background-color: #4c87b9;
+        color: #fff;
+        text-align: center;
+        line-height: 24px;
+    }
+    .status_con .status_text{
+        border: 1px solid #4c87b9;
+        padding: 3px;
+    }
+    .status_con .status_text .tbg{
+        display: block;
+        width: 100%;
+        height: 16px;
+        color: #fff;
+        font-size: 12px;
+        border-radius: 20px;
+    }
+    .status_con .status_text .tbg.tbg_blue{
+        background-color: #32c5d2;
+    }
+    .status_con .status_text .tbg.tbg_default{
+        background-color: #bfcad1;
+    }
+    .status_con .status_text .tbg.tbg_red{
+        background-color: #e7505a;
+    }
+    .status_con .status_text .tbg.tbg_yellow{
+        background-color: #f3c200;
+    }
 </style>
 
 <div class="row runtime_dash">
@@ -20,6 +57,42 @@
         <div ng-controller="statusModule" id="status_1" style="height: 50px;">
 
         </div>
+        <!--<div class="status_con row" style="height: 50px; margin:0 -3px;">
+            <div class="col-md-4">
+                <div class="status_title"> 终端状态 </div>
+                <div class="status_text">
+                    <span class="tbg tbg_blue" ng-if="runtime.boiler.isOnline">
+                        已连接
+                    </span>
+                    <span class="tbg tbg_default" ng-if="!runtime.boiler.isOnline">
+                        未连接
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="status_title"> 运行状态 </div>
+                <div class="status_text">
+                    <span class="tbg tbg_blue" ng-if="runtime.boiler.isOnline && runtime.boiler.isBurning">
+                        正在运行
+                    </span>
+                    <span class="tbg tbg_red" ng-if="!(runtime.boiler.isOnline && runtime.boiler.isBurning)">
+                        未运行
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="status_title"> 告警状态 </div>
+                <div class="status_text">
+                    <span class="tbg" ng-class="{'tbg_default':runtime.boiler.alarmLevel===-1,'tbg_blue':runtime.boiler.alarmLevel===0,'tbg_yellow':runtime.boiler.alarmLevel===1,'tbg_red':runtime.boiler.alarmLevel===2}">
+
+                    </span>
+                </div>
+            </div>
+
+        </div>-->
+
+
+
         <div class="">
 
             <h6 class="font-grey-salsa" style="padding-bottom: 6px;">

@@ -132,8 +132,6 @@ func init() {
 		new(models.IssuedErrorCode),
 		new(models.IssuedPlcAlarm),
 		new(models.IssuedBoilerStatus),
-        new(models.IssuedAlarmOrganization),
-		new(models.IssuedParameterOrganization),
 		new(models.BoilerTermStatus),
 		new(models.IssuedWeekInformationLog),
 	)
@@ -142,7 +140,7 @@ func init() {
 
 	MyORM = orm.NewOrm()
 	MyORM.Using("default")
-	// orm.RunSyncdb("default", false, true)
+	//orm.RunSyncdb("default", false, true)
 
 	BoilerOrm = MyORM
 	common.BoilerOrm = BoilerOrm

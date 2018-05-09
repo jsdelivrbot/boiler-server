@@ -142,19 +142,24 @@
             </div>
 
 
-            <!--<div class="form-group form-selector col-md-6">
+            <div ng-repeat="set in $modal.sets" class="form-group col-md-6" ng-if="$index===0">
                 <div class="input-group">
-                    <span class="input-group-addon">选择</span>
-                    <select ng-model="$modal.bin" ng-options="x.Name for x in $modal.bins" class="form-control">
-                    </select>
-                    <div class=" input-group-btn">
-                        <input ng-click="$modal.upgrade()"
-                               type="button" class="btn btn-info"
-                               value="升级配置">
-                    </div>
-
+                    <span class="input-group-addon">
+                        绑定锅炉
+                        <!--机组{{ set.num }}-->
+                    </span>
+                    <a ng-show="$modal.editing"
+                       ng-click="$modal.bindSet(set)"
+                       class="addon btn btn-outline btn-circle"
+                       ng-class="[{'green': !set.hasDev}, {'red': set.hasDev}]">
+                        <i ng-class="['fa', {'fa-plus': !set.hasDev}, {'fa-minus': set.hasDev}]"></i>
+                    </a>
+                    <input type="text" ng-model="set.Name" ng-disabled="true"
+                           class="form-control ng-pristine ng-valid ng-touched has-success"
+                           placeholder="">
                 </div>
-            </div>-->
+            </div>
+
 
 
             <!--<div class="form-group form-selector col-md-6">
@@ -167,11 +172,14 @@
 
 
         </div>
-        <hr>
+        <!--<hr>-->
         <div class="row">
-            <div ng-repeat="set in $modal.sets" class="form-group col-md-6">
+            <!--<div ng-repeat="set in $modal.sets" class="form-group col-md-6" ng-if="$index===0">
                 <div class="input-group">
-                    <span class="input-group-addon">机组{{ set.num }}</span>
+                    <span class="input-group-addon">
+                        绑定锅炉
+                        &lt;!&ndash;机组{{ set.num }}&ndash;&gt;
+                    </span>
                     <a ng-show="$modal.editing"
                        ng-click="$modal.bindSet(set)"
                        class="addon btn btn-outline btn-circle"
@@ -182,7 +190,7 @@
                            class="form-control ng-pristine ng-valid ng-touched has-success"
                            placeholder="">
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
