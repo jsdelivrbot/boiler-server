@@ -1073,8 +1073,11 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
+	fmt.Println("p:",p)
+	fmt.Println("p.id:",p.Category.Id)
 	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", p.Id).One(&param); err != nil {
 		e := fmt.Sprintln("Read Parameter Error", err)
+		fmt.Println("param:",param)
 		goazure.Warn(e)
 		param.Id= p.Id
 		param.ParamId = p.ParamId
@@ -1086,6 +1089,13 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
 		param.CreatedBy = ctl.GetCurrentUser()
+	}
+	organization := models.Organization{}
+	organization.Uid = p.Organization.Uid
+	if err := DataCtl.ReadData(&organization);err!=nil{
+		fmt.Println("Read AlarmRule Organization Error:",err)
+	} else {
+		param.Organization = &organization
 	}
 
 	param.Name = p.Name
@@ -1145,7 +1155,7 @@ func (ctl *ParameterController) RuntimeParameter(pid int) *models.RuntimeParamet
 
 	if err := dba.BoilerOrm.QueryTable("runtime_parameter").
 		RelatedSel("Category").RelatedSel("Organization").
-		Filter("Id", pid).Filter("IsDeleted", false).
+		Filter("Id", pid).Filter("IsDeleted", false).Filter("IsDefault",false).
 		One(&param); err != nil {
 		goazure.Error("Read Parameter Error: ", err)
 		return nil

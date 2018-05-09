@@ -9,7 +9,7 @@ type RuntimeParameter struct {
 	MyIdNoAutoObject
 
 	NameShort			string							`orm:"size(60)"`
-
+	IsDefault           bool		                     `orm:"index"`
 	ParamId       		int32							`orm:"index"`
 	Category      		*RuntimeParameterCategory		`orm:"rel(fk);index"`
 	Medium        		*RuntimeParameterMedium			`orm:"rel(fk);index"`
