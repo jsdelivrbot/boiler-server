@@ -929,6 +929,9 @@ boilerAdmin.directive('boilerModule', function () {
             case BOILE_MODULE_HEAT_WATER_SYSTEM:
                 renderElectricDashes("#dash_container");
                 break;
+            case BOILE_MODULE_HEAT_STEAM_SYSTEM:
+                renderElectricDashes("#dash_container");
+                break;
             case BOILE_MODULE_LV:
                 renderLvFire("#fire_container");
                 renderLvDashes("#dash_container");
