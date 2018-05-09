@@ -27,11 +27,10 @@ var DbConnection string
 
 func init() {
 	if IsRelease {
-		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
+		DbConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 	} else {
 		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler?charset=utf8&loc=" + url.QueryEscape("PRC")
 	}
-
 }
 
 
