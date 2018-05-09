@@ -666,7 +666,7 @@ func (ctl *AlarmController) BoilerAlarmUpdate() {
 func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	var alarms []*models.BoilerAlarm
 	if 	num, err := dba.BoilerOrm.QueryTable("boiler_alarm").
-		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").
+		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").Filter("AlarmLevel",models.RUNTIME_ALARM_LEVEL_DANGER).
 		//Filter("State", models.BOILER_ALARM_STATE_NEW).
 		Filter("IsDeleted", false).
 		All(&alarms); err != nil {
@@ -674,7 +674,7 @@ func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	}
 
 	for i, al := range alarms {
-		if 	al.Priority > 0 &&
+		if 	al.Priority > 1 &&
 			al.StartDate.Before(t.Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) &&
 			!al.EndDate.Before(t) {
 			var users []*models.User

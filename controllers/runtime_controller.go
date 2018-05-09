@@ -378,14 +378,8 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		alarm.Description = alarmDesc
 		alarm.AlarmLevel = alarmLevel
 		alarm.Priority = rule.Priority
-		if alarmLevel == models.RUNTIME_ALARM_LEVEL_WARNING {
-			alarm.State = models.BOILER_ALARM_STATE_DEFAULT
-		}
-		if  alarmLevel == models.RUNTIME_ALARM_LEVEL_DANGER {
-			alarm.State = models.BOILER_ALARM_STATE_NEW
-		}
+		alarm.State = models.BOILER_ALARM_STATE_NEW
 		alarm.NeedSend = rule.NeedSend
-
 		alarm.StartDate = rtm.CreatedDate
 		alarm.EndDate = rtm.CreatedDate
 
