@@ -558,7 +558,7 @@ func (ctl *AlarmController) AlarmRuleDelete() {
 		fmt.Println("Unmarshal Error", err)
 		return
 	}
-	if err := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Parameter__Category").RelatedSel("BoilerForm").RelatedSel("BoilerMedium").RelatedSel("BoilerFuelType").Filter("Uid", a.Uid).One(&alarmRule); err != nil {
+	if err := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization").RelatedSel("Parameter__Category").RelatedSel("BoilerForm").RelatedSel("BoilerMedium").RelatedSel("BoilerFuelType").Filter("Uid", a.Uid).One(&alarmRule); err != nil {
 		e := fmt.Sprintf("Read runtime_alarm_rule for Delete Error: %v", err)
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
