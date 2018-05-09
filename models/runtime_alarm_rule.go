@@ -4,6 +4,7 @@ type RuntimeAlarmRule struct {
 	MyUidObject
 
 	Parameter			*RuntimeParameter		`orm:"rel(fk);index"`
+	Organization		*Organization			`orm:"rel(fk);index"`
 
 	BoilerForm			*BoilerTypeForm			`orm:"rel(fk);null;index"`
 	BoilerMedium		*BoilerMedium			`orm:"rel(fk);null;index"`
