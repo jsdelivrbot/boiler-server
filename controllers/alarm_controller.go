@@ -27,7 +27,7 @@ type AlarmController struct {
 const ALARM_INTERVAL = time.Hour * 4
 
 func (ctl *AlarmController) InitAlarmSendService() {
-	interval := time.Minute * 5
+	interval := time.Minute * 15
 	if !conf.IsRelease {
 		interval = time.Second * 5
 	}
@@ -666,15 +666,17 @@ func (ctl *AlarmController) BoilerAlarmUpdate() {
 func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	var alarms []*models.BoilerAlarm
 	if 	num, err := dba.BoilerOrm.QueryTable("boiler_alarm").
-		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").
-		Filter("State", models.BOILER_ALARM_STATE_NEW).Filter("IsDeleted", false).
+		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").Filter("AlarmLevel",models.RUNTIME_ALARM_LEVEL_DANGER).
+		//Filter("State", models.BOILER_ALARM_STATE_NEW).
+		Filter("IsDeleted", false).
 		All(&alarms); err != nil {
 		goazure.Error("Fetch New Alarm Error:", num, err)
 	}
 
 	for i, al := range alarms {
-		if 	al.Priority > 0 &&
-			al.StartDate.Before(time.Now().Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) {
+		if 	al.Priority > 1 &&
+			al.StartDate.Before(t.Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) &&
+			!al.EndDate.Before(t) {
 			var users []*models.User
 			raw := 	"SELECT `user`.* " +
 					"FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` " +

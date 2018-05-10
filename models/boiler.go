@@ -30,7 +30,7 @@ type Boiler struct {
 	DeviceCode			string					`orm:"size(60)"`		//设备代码	<-BOILER_CODE
 	ModelCode			string					`orm:"size(60)"`		//锅炉型号	<-MAIN_PARAM
 
-	EvaporatingCapacity	int64					`orm:"index"`				//蒸发量
+	EvaporatingCapacity	 float64							//蒸发量
 	Contact				*Contact				`orm:"rel(fk);index;null"`	//联系人&联系电话
 
 	Terminal			*Terminal				`orm:"rel(fk);null;index"`

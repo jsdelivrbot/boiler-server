@@ -991,7 +991,7 @@ type BoilerInfo struct {
 	FactoryNumber		string		`json:"factoryNumber"`
 	CertificateNumber	string		`json:"certificateNumber"`
 
-	EvaporatingCapacity	int64		`json:"evaporatingCapacity"`
+	EvaporatingCapacity	float64		`json:"evaporatingCapacity"`
 
 	MediumId			int64		`json:"mediumId"`
 	FuelId				string		`json:"fuelId"`
