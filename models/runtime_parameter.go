@@ -9,7 +9,7 @@ type RuntimeParameter struct {
 	MyIdNoAutoObject
 
 	NameShort			string							`orm:"size(60)"`
-	IsDefault           bool		                     `orm:"index"`
+
 	ParamId       		int32							`orm:"index"`
 	Category      		*RuntimeParameterCategory		`orm:"rel(fk);index"`
 	Medium        		*RuntimeParameterMedium			`orm:"rel(fk);index"`
@@ -19,6 +19,8 @@ type RuntimeParameter struct {
 	Scale         		float32							`orm:"default(1.0)"`
 	Fix					int32							`orm:"default(2)"`
 	Unit          		string
+
+	IsDefault           bool		                    `orm:"index"`
 }
 
 func (param *RuntimeParameter)AddBoilerMedium(medId int64) error {

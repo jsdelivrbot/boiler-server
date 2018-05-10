@@ -256,6 +256,7 @@ func (ctl *ParameterController) RefreshParameters() {
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
 	if num, err := qs.RelatedSel("Category").RelatedSel("Organization").
+		Filter("IsDefault", false).
 		Filter("IsDeleted", false).OrderBy("Id").
 		All(&params); err != nil || num == 0 {
 		goazure.Error("Get RuntimeParameterList Error:", num, err)
