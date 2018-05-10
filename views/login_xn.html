@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<!--[if IE 9]> <html lang="zh-cmn-Hans" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html data-ng-app="BoilerHome">
+    <!--<![endif]-->
+    <!-- BEGIN HEAD -->
+
+    <head>
+        <meta charset="utf-8" />
+        <title>登录页</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="renderer" content="webkit"/>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta content="" name="description" />
+        <meta content="" name="author" />
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+
+        <link href='/res/robotocondensed300.css' rel='stylesheet' type='text/css'>
+        <link href="assets/plugins/socicon/socicon.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/bootstrap-social/bootstrap-social.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/animate/animate.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN: BASE PLUGINS  -->
+        <link href="assets/plugins/revo-slider/css/settings.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/revo-slider/css/layers.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/revo-slider/css/navigation.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/cubeportfolio/css/cubeportfolio.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/owl-carousel/owl.theme.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/owl-carousel/owl.transitions.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+        <link href="assets/plugins/slider-for-bootstrap/css/slider.css" rel="stylesheet" type="text/css" />
+        <!-- END: BASE PLUGINS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <link href="bower_components/sweetalert2/dist/sweetalert2.css" rel="stylesheet" type="text/css" />
+        <link href="bower_components/angular-ui-select/dist/select.css" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME STYLES -->
+        <link href="assets/base/css/plugins.css" rel="stylesheet" type="text/css" />
+        <link href="assets/base/css/components.css" id="style_components" rel="stylesheet" type="text/css" />
+        <link href="assets/base/css/themes/default.css" rel="stylesheet" id="style_theme" type="text/css" />
+        <link href="assets/base/css/custom.css" rel="stylesheet" type="text/css" />
+
+        <link rel="stylesheet" href="/js/scripts/ladda/ladda-themeless.min.css">
+        <script src="/js/scripts/ladda/core.js" type="text/javascript"></script>
+
+        <!-- END THEME STYLES -->
+        <link rel="shortcut icon" href="favicon.ico" />
+
+        <style type="text/css">
+            .swal2-container {
+                z-index: 20000;
+            }
+            .btn-weixin {
+                color: #fff;
+                background-color: #44b549;
+                border-color: rgba(0, 0, 0, 0.2)
+            }
+
+            .ng-cloak, .x-ng-cloak,
+            .ng-hide:not(.ng-hide-animate) {
+                display: none !important;
+            }
+        </style>
+
+    </head>
+
+    <body class="c-layout-header-fixed c-layout-header-mobile-fixed" ng-controller="HomeController as home">
+        <!-- BEGIN: LAYOUT/HEADERS/HEADER-1 -->
+        <!-- BEGIN: HEADER -->
+        <header class="c-layout-header c-layout-header-4 c-layout-header-default-mobile" data-minimize-offset="80">
+            <div class="c-navbar">
+                <div class="container">
+                    <!-- BEGIN: BRAND -->
+                    <div class="c-navbar-wrapper clearfix">
+                        <div class="pull-left">
+                            <img src="images/xiangneng/logo.png" style=" margin-top: 10px;" alt="">
+                        </div>
+                        <!-- BEGIN: HOR NAV -->
+                        <!-- BEGIN: LAYOUT/HEADERS/MEGA-MENU -->
+                        <!-- BEGIN: MEGA MENU -->
+                        <!-- Dropdown menu toggle on mobile: c-toggler class can be applied to the link arrow or link itself depending on toggle mode -->
+                        <nav class="c-mega-menu c-pull-right c-mega-menu-dark c-mega-menu-dark-mobile c-fonts-uppercase c-fonts-bold ng-cloak" ng-cloak>
+                            <ul class="nav navbar-nav c-theme-nav">
+
+                                <li ng-show="home.currentUser">
+                                    <a href="/admin" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
+                                        <i class="fa fa-desktop"></i> 进入管理平台 </a>
+                                </li>
+                                <li>
+                                    <a href data-toggle="modal" data-target="#login-form"
+                                       class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold ng-cloak"
+                                       ng-cloak>
+                                        <i class="icon-user"></i> {{ home.loginName }}</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- END: MEGA MENU -->
+                        <!-- END: LAYOUT/HEADERS/MEGA-MENU -->
+                        <!-- END: HOR NAV -->
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- END: HEADER -->
+        <!-- END: LAYOUT/HEADERS/HEADER-1 -->
+        <!-- BEGIN: CONTENT/USER/FORGET-PASSWORD-FORM -->
+        <div class="modal fade c-content-login-form" id="forget-password-form" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content c-square">
+                    <div class="modal-header c-no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="c-font-24 c-font-sbold">忘记密码？</h3>
+                        <p>请填写你的邮箱地址以找回密码</p>
+                        <form name="forgetForm">
+                            <div class="form-group">
+                                <label for="forget-email" class="hide">E-mail地址</label>
+                                <input type="email" class="form-control input-lg c-square" id="forget-email"
+                                       placeholder="Email" naem="femail">
+                                <span style="background: url(../images/sprite2.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="forgetForm.femail.$error.required"></span>
+                                <span style="background: url(../images/sprite3.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="forgetForm.femail.$error.email"></span>
+                                <span style="background: url(../images/sprite.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="forgetForm.femail.$valid"></span>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login">提交</button>
+                                <a href="javascript:;" class="c-btn-forgot" data-toggle="modal" data-target="#login-form" data-dismiss="modal">返回登录</a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer c-no-border">
+                        <span class="c-text-account">还没有账户？</span>
+                        <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">注册</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: CONTENT/USER/FORGET-PASSWORD-FORM -->
+        <!-- BEGIN: CONTENT/USER/SIGNUP-FORM -->
+        <div class="modal fade c-content-login-form" id="signup-form" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content c-square">
+                    <div class="modal-header c-no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <style type="text/css">
+                            div.user-role {
+                                width: 100%;
+                                text-align: center;
+                            }
+                            div.user-role label {
+                                display: inline-block;
+                                background-color: #d5e0ea;
+                                color: #fff;
+                                margin: 0 3px;
+                                width: 32.6%;
+                            }
+                            div.user-role label:hover {
+                                background-color: #6f95b7;
+                                color: #fff;
+                            }
+
+                            div.user-role label.active.btn-green {
+                                background-color: #5bc2ce;
+                                color: #fff;
+                            }
+
+                            div.user-role label.active.btn-yellow {
+                                background-color: #f1c40f;
+                                color: #fff;
+                            }
+
+                            div.user-role label.active.btn-red {
+                                background-color: #eb5d68;
+                                color: #fff;
+                            }
+
+                            @font-face {
+                                font-family: "info";
+                            url("../assets/plugins/revo-slider/fonts/fontawesome-webfont.woff") format("woff"),
+                            url("../assets/plugins/revo-slider/fonts/fontawesome-webfont.ttf") format("truetype"), font-weight: normal;
+                                font-style: normal;
+
+                            }
+
+                        </style>
+                        <h3 class="c-font-24 c-font-sbold">注册用户</h3>
+                        <p>请填写以下注册信息</p>
+                        <form name="signupForm" ng-submit="home.register()" novalidate="novalidate">
+                            <div class="form-group">
+                                <label for="signup-username" class="hide">用户名</label>
+                                <input type="text" ng-model="username" class="form-control input-lg c-square"
+                                       id="signup-username" name="username" placeholder="用户名" required>
+                                <span style="background: url(../images/sprite2.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.username.$error.required"></span>
+                                <span style="background: url(../images/sprite.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.username.$valid"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-password" class="hide">密码</label>
+                                <input type="password" ng-model="password" class="form-control input-lg c-square"
+                                       id="signup-password" name="password" placeholder="密码" required>
+                                <span style="background: url(../images/sprite2.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.password.$error.required"></span>
+                                <span style="background: url(../images/sprite.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.password.$valid"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-mobile" class="hide">手机号</label>
+                                <input type="text" ng-model="mobile"
+                                       ng-pattern="/^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/"
+                                       name="mobile" class="form-control input-lg c-square" id="signup-mobile"
+                                       placeholder="手机号" required>
+                                <span style="background: url(../images/sprite2.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.mobile.$error.required"></span>
+                                <span style="background: url(../images/sprite3.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.mobile.$error.pattern"></span>
+                                <span style="background: url(../images/sprite.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="signupForm.mobile.$valid"></span>
+                            </div>
+                            <!--
+                            <div class="form-group">
+                                <label for="signup-email" class="hide">邮箱地址</label>
+                                <input type="email" ng-model="email" class="form-control input-lg c-square" id="signup-email" placeholder="邮箱地址">
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-fullname" class="hide">全名</label>
+                                <input type="text" ng-model="fullname" class="form-control input-lg c-square" id="signup-fullname" placeholder="全名">
+                            </div>
+                            -->
+                            <!--
+                            <div class="btn-group btn-group-divided user-role" data-toggle="buttons">
+                                <label class="btn btn-md c-btn-square c-btn-bold btn-green active" uib-btn-radio="20" ng-change="home.setRole()" ng-model="home.roleId">
+                                    <input type="radio" class="toggle">普通用户
+                                </label>
+                                <label class="btn btn-md c-btn-square c-btn-bold btn-yellow" uib-btn-radio="11" ng-change="home.setRole()" ng-model="home.roleId">
+                                    <input type="radio" class="toggle">企业用户
+                                </label>
+                                <label class="btn btn-md c-btn-square c-btn-bold btn-red" uib-btn-radio="2" ng-change="home.setRole()" ng-model="home.roleId">
+                                    <input type="radio" class="toggle">管理员
+                                </label>
+                            </div>
+
+                            <div ng-show="home.roleId == 11 || home.roleId == 10" class="form-group">
+                                <ui-select ng-model="home.aOrg" theme="bootstrap">
+                                    <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices group-by="'type'" repeat="org in home.organizations | filter: $select.search">
+                                        <span ng-bind-html="org.name | highlight: $select.search"></span>
+                                        <small ng-bind-html="org.Name | highlight: $select.search"></small>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                            -->
+
+                            <div class="form-group">
+                                <button type="submit"
+                                        ng-disabled="signupForm.mobile.$error.pattern || signupForm.mobile.$error.required || signupForm.password.$error.required || signupForm.username.$error.required"
+                                        class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login">
+                                    注册
+                                </button>
+                                <a href="javascript:;" class="c-btn-forgot" data-toggle="modal" data-target="#login-form" data-dismiss="modal">返回登录</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: CONTENT/USER/SIGNUP-FORM -->
+        <!-- BEGIN: CONTENT/USER/LOGIN-FORM -->
+        <div class="modal fade c-content-login-form" id="login-form" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content c-square">
+                    <div class="modal-header c-no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="c-font-24 c-font-sbold">用户登录</h3>
+                        <p>欢迎回来，请填写你的用户名和密码进行登录。</p>
+                        <form ng-submit="home.login();" name="loginForm" novalidate="novalidate">
+                            <div class="form-group">
+                                <label for="login-username" class="hide">用户名</label>
+                                <input type="text" ng-model="username" class="form-control input-lg c-square"
+                                       id="login-username" name="loginuser" placeholder="用户名" required>
+                                <span style="background: url(../images/sprite2.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="loginForm.loginuser.$error.required"></span>
+                                <span style="background: url(../images/sprite.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="loginForm.loginuser.$valid"></span></div>
+                            <div class="form-group">
+                                <label for="login-password" class="hide">密码</label>
+                                <input type="password" ng-model="password" class="form-control input-lg c-square"
+                                       id="login-password" placeholder="密码" name="loginpass" required>
+                                <span style="background: url(../images/sprite2.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="loginForm.loginpass.$error.required"></span>
+                                <span style="background: url(../images/sprite.png) no-repeat;float: right;width: 25px;height: 25px;margin: -35px 8.5px;"
+                                      ng-show="loginForm.loginpass.$valid"></span></div>
+                            <!-- 记住用户名
+                            <div class="form-group">
+                                <div class="c-checkbox">
+                                    <input type="checkbox" id="login-rememberme" class="c-check">
+                                    <label for="login-rememberme" class="c-font-thin c-font-17">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span> 记住用户名 </label>
+                                </div>
+                            </div>
+                            -->
+                            <div class="form-group">
+                                <button id="login-submit" type="submit" data-style="zoom-out"
+                                        class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login btn-primary ladda-button">
+                                    <span class="ladda-label">登录</span>
+                                </button>
+                                <!--<a href="javascript:;" data-toggle="modal" data-target="#forget-password-form"-->
+                                   <!--data-dismiss="modal" class="c-btn-forgot">忘记密码？</a>-->
+                            </div>
+                            <!--<div class="clearfix">
+                                <div class="c-content-divider c-divider-sm c-icon-bg c-bg-grey c-margin-b-20">
+                                    <span>第三方平台登录</span>
+                                </div>
+                                <ul class="c-content-list-adjusted">
+                                    <li>
+                                        &lt;!&ndash;<a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx9bf9041710b5e5b6&redirect_uri=http%3A%2F%2Fwww.lucidcube.info%2Fuser_login_weixin%2F&response_type=code&scope=snsapi_login&state=boiler_login#wechat_redirect" class="btn btn-block c-btn-square btn-social btn-weixin">&ndash;&gt;
+                                        <a href="user_login_weixin/" class="btn btn-block c-btn-square btn-social btn-weixin">
+                                            <i class="fa fa-weixin"></i> 微信 </a>
+                                    </li>
+
+                                </ul>
+                                &lt;!&ndash;<div id="weixin_login_container"></div>&ndash;&gt;
+                            </div>-->
+                        </form>
+                    </div>
+                    <!--<div class="modal-footer c-no-border">
+                        <span class="c-text-account">还没有账户？</span>
+                        <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">立即注册</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <!-- END: CONTENT/USER/LOGIN-FORM -->
+
+        <!-- BEGIN: PAGE CONTAINER -->
+        <div class="c-layout-page">
+            <!-- BEGIN: PAGE CONTENT -->
+            <!-- BEGIN: LAYOUT/SLIDERS/REVO-SLIDER-4 -->
+            <section class="c-layout-revo-slider c-layout-revo-slider-4">
+                <div class="tp-banner-container c-theme">
+                    <div class="tp-banner rev_slider" data-version="5.0">
+                        <ul>
+                            <!--BEGIN: SLIDE #1 -->
+                            <li data-transition="fade" data-slotamount="1" data-masterspeed="1000">
+                                <img alt="" src="images/xiangneng/banner0.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">
+
+                            </li>
+                            <!--END -->
+                            <!--BEGIN: SLIDE #2 -->
+                            <li data-transition="fade" data-slotamount="1" data-masterspeed="1000">
+                                <img alt="" src="images/xiangneng/banner1.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">
+
+
+                            </li>
+                            <!--END -->
+                            <!--BEGIN: SLIDE #3 -->
+                            <li data-transition="fade" data-slotamount="1" data-masterspeed="700" data-delay="6000" data-thumb="">
+                                <!-- THE MAIN IMAGE IN THE FIRST SLIDE -->
+                                <img alt="" src="images/xiangneng/banner2.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="visible-xs" />
+
+                            </li>
+                            <li data-transition="fade" data-slotamount="1" data-masterspeed="700" data-delay="6000" data-thumb="">
+                                <!-- THE MAIN IMAGE IN THE FIRST SLIDE -->
+                                <img alt="" src="images/xiangneng/banner3.jpg" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="visible-xs" />
+
+                            </li>
+                            <!--END -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <!-- END: LAYOUT/SLIDERS/REVO-SLIDER-4 -->
+            <!-- END: PAGE CONTENT -->
+        </div>
+        <!-- END: PAGE CONTAINER -->
+
+        <!-- BEGIN: LAYOUT/FOOTERS/GO2TOP -->
+        <div class="c-layout-go2top">
+            <i class="icon-arrow-up"></i>
+        </div>
+        <!-- END: LAYOUT/FOOTERS/GO2TOP -->
+
+        <!-- BEGIN: LAYOUT/BASE/BOTTOM -->
+        <!-- BEGIN: CORE PLUGINS -->
+        <!--[if lt IE 9]>
+	<script src="../assets/global/plugins/excanvas.min.js"></script> 
+	<![endif]-->
+        <script src="assets/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/jquery.easing.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/reveal-animate/wow.js" type="text/javascript"></script>
+        <script src="assets/base/js/scripts/reveal-animate/reveal-animate.js" type="text/javascript"></script>
+        <!-- END: CORE PLUGINS -->
+        <!-- BEGIN: LAYOUT PLUGINS -->
+        <script src="assets/plugins/revo-slider/js/jquery.themepunch.tools.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/revo-slider/js/jquery.themepunch.revolution.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/revo-slider/js/extensions/revolution.extension.slideanims.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/revo-slider/js/extensions/revolution.extension.layeranimation.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/revo-slider/js/extensions/revolution.extension.navigation.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/revo-slider/js/extensions/revolution.extension.video.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/owl-carousel/owl.carousel.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
+        <script src="assets/plugins/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+        <script src="assets/plugins/slider-for-bootstrap/js/bootstrap-slider.js" type="text/javascript"></script>
+        <!-- END: LAYOUT PLUGINS -->
+        <!-- BEGIN: THEME SCRIPTS -->
+        <script src="assets/base/js/components.js" type="text/javascript"></script>
+        <script src="assets/base/js/components-shop.js" type="text/javascript"></script>
+        <script src="assets/base/js/app.js" type="text/javascript"></script>
+
+        <!-- END: THEME SCRIPTS -->
+        <!-- BEGIN: PAGE SCRIPTS -->
+        <script>
+            $(document).ready(function()
+            {
+                App.init(); // init core
+
+                var slider = $('.c-layout-revo-slider .tp-banner');
+                var cont = $('.c-layout-revo-slider .tp-banner-container');
+                var height = (App.getViewPort().width < App.getBreakpoint('md') ? 400 : 620);
+                var api = slider.show().revolution(
+                {
+                    sliderType: "standard",
+                    sliderLayout: "fullwidth",
+                    delay: 15000,
+                    autoHeight: 'off',
+                    touchenabled: "on",
+                    navigation:
+                    {
+                        keyboardNavigation: "off",
+                        keyboard_direction: "horizontal",
+                        mouseScrollNavigation: "off",
+                        onHoverStop: "on",
+                        arrows:
+                        {
+                            style: "circle",
+                            enable: true,
+                            hide_onmobile: false,
+                            hide_onleave: false,
+                            tmp: '',
+                            left:
+                            {
+                                h_align: "left",
+                                v_align: "center",
+                                h_offset: 30,
+                                v_offset: 0
+                            },
+                            right:
+                            {
+                                h_align: "right",
+                                v_align: "center",
+                                h_offset: 30,
+                                v_offset: 0
+                            }
+                        }
+                    },
+                    shadow: 0,
+                    spinner: "spinner2",
+                    disableProgressBar: "on",
+                    fullScreenOffsetContainer: '.tp-banner-container',
+                    hideThumbsOnMobile: "on",
+                    hideNavDelayOnMobile: 1500,
+                    hideBulletsOnMobile: "on",
+                    hideArrowsOnMobile: "on",
+                    hideThumbsUnderResolution: 0,
+                });
+
+                /*
+                var obj = new WxLogin({
+                    id: "weixin_login_container",
+                    appid: appid,
+                    scope: "snsapi_login",
+                    redirect_uri: "http://www.lucidcube.info/user_login_weixin/",
+                    state: "3d6be0a4035d839573b04816624a415e",
+                    style: "",
+                    href: ""
+                });
+                */
+
+            }); //ready
+
+        </script>
+        <!-- END: PAGE SCRIPTS -->
+        <!-- END: LAYOUT/BASE/BOTTOM -->
+
+        <!-- BEGIN CORE ANGULARJS PLUGINS -->
+        <script src="../assets/global/plugins/angularjs/angular.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/angularjs/angular-sanitize.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/angularjs/angular-touch.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/angularjs/angular-cookies.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/angularjs/plugins/angular-ui-router.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js" type="text/javascript"></script>
+        <script src="js/lib/angular-ui-bootstrap/ui-bootstrap-tpls-2.5.0.min.js" type="text/javascript"></script>
+        <!-- END CORE ANGULARJS PLUGINS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script src="bower_components/angular-ui-select/dist/select.js" type="text/javascript"></script>
+        <script src="bower_components/sweetalert2/dist/sweetalert2.min.js" type="text/javascript"></script>
+        <script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+        <!-- END PAGE LEVEL PLUGINS -->
+        <script src="/js/scripts/ladda/spin.min.js"></script>
+        <script src="/js/scripts/ladda/ladda.min.js"></script>
+        <script src="/js/home.js"></script>
+    </body>
+
+</html>
