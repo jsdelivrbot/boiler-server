@@ -100,7 +100,7 @@
             </h6>
             <!-- BEGIN SAMPLE TABLE PORTLET-->
             <div class="portlet light bordered" style="padding:0px 5px; height: 405px;width: 100%; overflow: auto; overflow-x: hidden;"
-                 ng-show="(runtime.instants|filter:{category:'13'}).length>0 && (runtime.boiler.isOnline||runtime.boiler.isBurning)">
+                 ng-hide="(runtime.instants|filter:{category:'13'}).length==0">
 
                 <div class="portlet-body">
 
