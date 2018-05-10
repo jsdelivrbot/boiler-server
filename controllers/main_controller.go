@@ -81,6 +81,10 @@ func (ctl *MainController) Get() {
 		tplName = "login.html"
 	}
 
+	if strings.HasPrefix(domain, "login_xn") || strings.Index(u, "login_xn") > -1 {
+		tplName = "login_xn.html"
+	}
+
 	ctl.TplName = tplName
 	ctl.Render()
 }

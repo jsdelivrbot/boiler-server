@@ -11,6 +11,7 @@ func init() {
 
 	goazure.Router("/", &controllers.MainController{})
 	goazure.Router("/login/", &controllers.MainController{})
+	goazure.Router("/login_xn/", &controllers.MainController{})
 	goazure.Router("/admin", &controllers.AdminController{})
 
 	goazure.Router("/user", &controllers.UserController{})
