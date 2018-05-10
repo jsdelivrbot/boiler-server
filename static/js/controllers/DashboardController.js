@@ -536,16 +536,15 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 boiler.isOnline = res.data;
             }, function (err) {
                 console.error('Fetch Status Err!', err);
+                boiler.isOnline = false;
             }).then(function () {
             $http.get('/boiler/state/is_burning/?boiler=' + boiler.Uid)
                 .then(function (res) {
                     // console.error("Fetch Status Resp:", res.data, boiler.Name);
                     boiler.isBurning = (res.data.value === "true");
-                    if(boiler.alarmLevel==null){
-                        boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
-                    }
                 }, function (err) {
                     console.error('Fetch Status Err!', err);
+                    boiler.isBurning = false;
                 });
         });
     };

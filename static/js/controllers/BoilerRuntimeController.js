@@ -83,7 +83,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                     })
                     .then(function () {
                         $rootScope.isBoilerBurning = boiler.isBurning;
-                        boiler.alarmLevel = (boiler.isOnline && boiler.isBurning ) ? 0 : -1;
+                        // boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
                         bRuntime.fetchRuntime(bRuntime.boiler);
                     });
             });
@@ -152,6 +152,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
             boiler.hasSwitchValue = false;
             boiler.hasRangeValue = false;
+            boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
 
             var instants = [];
             for (var i = 0; i < res.data.length; i++) {
