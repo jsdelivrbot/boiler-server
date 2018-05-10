@@ -94,8 +94,8 @@
         <!--<th ng-show="param.category !== 11 && param.category !== 13">长度</th>
         <th>使用锅炉</th>-->
         <th>所属企业</th>
-        <th ng-show="currentUser.Role.RoleId < 10">备注</th>
-        <th ng-show="currentUser.Role.RoleId < 10">操作</th>
+        <th>备注</th>
+        <th>操作</th>
     </tr>
     </thead>
 
@@ -119,8 +119,8 @@
             </span>
         </td>-->
         <td> {{ data.Organization.Name}} </td>
-        <td ng-show="currentUser.Role.RoleId < 10">{{ data.Remark }}</td>
-        <td ng-show="currentUser.Role.RoleId < 10">
+        <td>{{ data.Remark }}</td>
+        <td>
             <a ng-show="data.ParamId < 100"
                ng-click="param.view(data)"
                class="btn view btn-outline btn-circle blue view_btn">
