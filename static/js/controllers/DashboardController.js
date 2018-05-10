@@ -541,7 +541,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 .then(function (res) {
                     // console.error("Fetch Status Resp:", res.data, boiler.Name);
                     boiler.isBurning = (res.data.value === "true");
-                    if(boiler.alarmLevel==null){
+                    if(!boiler.alarmLevel || boiler.alarmLevel<=0){
                         boiler.alarmLevel = ( boiler.isOnline && boiler.isBurning ) ? 0 : -1;
                     }
                 }, function (err) {
