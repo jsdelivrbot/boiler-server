@@ -53,11 +53,12 @@ func (ctl *AlarmController) AlarmRuleList() {
 		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
 		qs = qs.Filter("IsDemo", true)
 	} else if usr.IsOrganizationUser() {
-		qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
+		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
 	}
 	if _, err := qs.Filter("IsDeleted", false).OrderBy("Parameter").All(&alarmRules);err!=nil{
 		goazure.Error("Query runtime_alarm_rule Error",err)
 	}
+	goazure.Error("alarmRules:",alarmRules)
 	ctl.Data["json"] = alarmRules
 	ctl.ServeJSON()
 }
@@ -668,7 +669,7 @@ func (ctl *AlarmController) BoilerAlarmUpdate() {
 func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	var alarms []*models.BoilerAlarm
 	if 	num, err := dba.BoilerOrm.QueryTable("boiler_alarm").
-		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").
+		RelatedSel("Boiler__Address").RelatedSel("TriggerRule").Filter("AlarmLevel",models.RUNTIME_ALARM_LEVEL_DANGER).
 		//Filter("State", models.BOILER_ALARM_STATE_NEW).
 		Filter("IsDeleted", false).
 		All(&alarms); err != nil {
@@ -676,7 +677,7 @@ func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	}
 
 	for i, al := range alarms {
-		if 	al.Priority > 0 &&
+		if 	al.Priority > 1 &&
 			al.StartDate.Before(t.Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) &&
 			!al.EndDate.Before(t) {
 			var users []*models.User

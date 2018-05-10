@@ -154,7 +154,7 @@
                            ng-class="[{'fa-exclamation font-red-pink': !$modal.data.evaporatingCapacity || $modal.data.evaporatingCapacity <= 0}, {'fa-check font-green': $modal.data.evaporatingCapacity > 0}]"
                            data-container="body"></i>-->
                         <span class="unit" style="right: 30px;">t/h</span>
-                        <input type="number"
+                        <input type="number" step="0.0001"
                                ng-model="$modal.data.evaporatingCapacity"
                                class="form-control ng-pristine ng-valid ng-touched has-success"
                                placeholder="输入额定蒸发量">

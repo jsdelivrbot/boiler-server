@@ -24,7 +24,7 @@
         background-color: #4c87b9;
         color: #fff;
         text-align: center;
-        line-height: 24px;
+        line-height: 20px;
     }
     .status_con .status_text{
         border: 1px solid #4c87b9;
@@ -54,10 +54,10 @@
 
 <div class="row runtime_dash">
     <div class="col-md-3" style="padding: 0; padding-left: 10px; ">
-        <div ng-controller="statusModule" id="status_1" style="height: 50px;">
+        <!--<div ng-controller="statusModule" id="status_1" style="height: 50px;">
 
-        </div>
-        <!--<div class="status_con row" style="height: 50px; margin:0 -3px;">
+        </div>-->
+        <div class="status_con row" style="height: 50px; margin:0 -3px;">
             <div class="col-md-4">
                 <div class="status_title"> 终端状态 </div>
                 <div class="status_text">
@@ -89,7 +89,7 @@
                 </div>
             </div>
 
-        </div>-->
+        </div>
 
 
 
@@ -100,7 +100,7 @@
             </h6>
             <!-- BEGIN SAMPLE TABLE PORTLET-->
             <div class="portlet light bordered" style="padding:0px 5px; height: 405px;width: 100%; overflow: auto; overflow-x: hidden;"
-                 ng-show="(runtime.instants|filter:{category:'13'}).length>0 && (runtime.boiler.isOnline||runtime.boiler.isBurning)">
+                 ng-hide="(runtime.instants|filter:{category:'13'}).length==0">
 
                 <div class="portlet-body">
 
