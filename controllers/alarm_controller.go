@@ -24,12 +24,14 @@ type AlarmController struct {
 	MainController
 }
 
-const ALARM_INTERVAL = time.Hour * 4
+const (
+	ALARM_INTERVAL = time.Hour * 1
+)
 
 func (ctl *AlarmController) InitAlarmSendService() {
 	interval := time.Minute * 15
 	if !conf.IsRelease {
-		interval = time.Second * 5
+		interval = time.Second * 15
 	}
 
 	ticker := time.NewTicker(interval)
