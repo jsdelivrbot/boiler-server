@@ -279,7 +279,15 @@ func (ctl *ParameterController) RefreshParameters() {
 func (ctl *ParameterController) RuntimeParameterList() {
 	goazure.Warning("Ready to Get RuntimeParameterList")
 	ParamCtrl.WaitGroup.Wait()
-	ctl.Data["json"] = ParamCtrl.Parameters
+	usr := ctl.GetCurrentUser()
+	var params []*models.RuntimeParameter
+	for _, p := range ParamCtrl.Parameters {
+		if  p.Organization == nil ||
+			p.Organization == usr.Organization {
+			params = append(params, p)
+		}
+	}
+	ctl.Data["json"] = params
 	ctl.ServeJSON()
 }
 

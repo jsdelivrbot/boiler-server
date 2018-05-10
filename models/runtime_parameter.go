@@ -13,7 +13,7 @@ type RuntimeParameter struct {
 	ParamId       		int32							`orm:"index"`
 	Category      		*RuntimeParameterCategory		`orm:"rel(fk);index"`
 	Medium        		*RuntimeParameterMedium			`orm:"rel(fk);index"`
-	Organization        *Organization					`orm:"rel(fk);index"`
+	Organization        *Organization					`orm:"rel(fk);null;index"`
 	BoilerMediums 		[]*BoilerMedium					`orm:"rel(m2m)"`
 	Length        		int32							`orm:"default(2)"`
 	Scale         		float32							`orm:"default(1.0)"`
