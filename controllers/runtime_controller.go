@@ -326,6 +326,9 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	if boiler == nil {
 		return nil, errors.New("boiler can not be nil")
 	}
+	if boiler.Enterprise == nil{
+		return nil,errors.New("boiler Enterprise can not be nil")
+	}
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization")
 	cond := orm.NewCondition()
 	if boiler.Form != nil {

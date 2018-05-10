@@ -51,11 +51,12 @@ func (ctl *AlarmController) AlarmRuleList() {
 		usr.Status == models.USER_STATUS_INACTIVE || usr.Status == models.USER_STATUS_NEW {
 		qs = qs.Filter("IsDemo", true)
 	} else if usr.IsOrganizationUser() {
-		qs = qs.Filter("Scope", models.RUNTIME_ALARM_SCOPE_ENTERPRISE)
+		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
 	}
 	if _, err := qs.Filter("IsDeleted", false).OrderBy("Parameter").All(&alarmRules);err!=nil{
 		goazure.Error("Query runtime_alarm_rule Error",err)
 	}
+	goazure.Error("alarmRules:",alarmRules)
 	ctl.Data["json"] = alarmRules
 	ctl.ServeJSON()
 }
