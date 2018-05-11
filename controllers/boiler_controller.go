@@ -57,7 +57,7 @@ func initCalculateParameter() {
 
 func (ctl *BoilerController) BoilerTemplateList() {
 	usr := ctl.GetCurrentUser()
-	var boilerTemplate models.BoilerTemplate
+	var boilerTemplate []models.BoilerTemplate
 	qs := dba.BoilerOrm.QueryTable("boiler_template").RelatedSel("Organization")
 	if !usr.IsAdmin() {
 		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
