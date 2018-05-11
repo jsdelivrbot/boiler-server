@@ -125,6 +125,31 @@
         </div>
     </div>
 
+    <div class="row">
+        <div ng-show="$modal.editing && currentUser.Role.RoleId < 10"
+             class="form-group col-lg-6 col-md-6 col-sm-6">
+            <label class="control-label" style="font-size: 15px; margin-right: 6px;">是否主管单位</label>
+            <input bs-switch
+                   ng-model="$modal.isSuper"
+                   type="checkbox"
+                   switch-on-text="打开"
+                   switch-off-text="关闭"
+                   switch-on-color="success"
+                   switch-off-color="default"
+                   switch-animate="{{ true }}"
+                   switch-size="{{ size }}"
+                   switch-label="{{ label }}"
+                   switch-icon="{{ icon }}"
+                   switch-radio-off="{{ true }}"
+                   switch-label-width="auto"
+                   switch-handle-width="auto"
+                   switch-wrapper="{{ wrapper }}"
+                   switch-inverse="false"
+                   style="width: 100%">
+        </div>
+    </div>
+
+
     <!--
     <hr ng-show="false" style="margin-top: 6px;">
     <div ng-show="false" class="row">

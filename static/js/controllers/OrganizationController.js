@@ -254,7 +254,6 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
 
         switch (locationScope) {
             case "province":
-                console.log($modal.aProvince, "city");
                 getLocation(locationId, $modal.aProvince.cities, "city");
                 break;
             case "city":
@@ -275,7 +274,7 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
         $modal.showBrand = currentData.ShowBrand;
         $modal.brandName = currentData.BrandName;
 
-        $modal.isSuper = currentData.IsSupervior;
+        $modal.isSuper = currentData.IsSupervisor;
         $modal.supervisor = currentData.SuperOrganization;
 
         var locationId = $modal.location.LocationId;
