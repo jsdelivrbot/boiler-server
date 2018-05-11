@@ -33,7 +33,7 @@ func main() {
 	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
 
-	go controllers.ParamCtrl.InitParameterChannelConfig()
+	//go controllers.ParamCtrl.InitParameterChannelConfig()
 	//go controllers.RtmCtl.ImportExistCache()
 
 	//t := time.Now()
