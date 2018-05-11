@@ -1317,16 +1317,22 @@ func generateDefaultChannelConfig() error {
 
 func (ctl *ParameterController) InitParameterChannelConfig() {
 	// generateDefaultChannelConfig()
+	defer func() {
+		if r := recover(); r != nil {
+			goazure.Error("Recovered in f", r)
+			time.Sleep(time.Second * 20)
+		}
+	}()
 
 	interval := time.Second * 3
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {
-			fmt.Println("处理ChannelDataReload:",t)
-			ParamCtrl.ChannelDataReload(t)
+			goazure.Info("处理ChannelDataReload:", t)
+
+			go ParamCtrl.ChannelDataReload(t)
 		}
 	}
 
-	go tick()
-	go ParamCtrl.ChannelDataReload(time.Now())
+	tick()
 }
