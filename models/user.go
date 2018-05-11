@@ -48,6 +48,10 @@ func (usr *User) IsOrganizationUser() bool {
 	return usr.Role.RoleId == USER_ROLE_ORG_USER || usr.Role.RoleId == USER_ROLE_ORG_ADMIN
 }
 
+func (usr *User) IsAllowCreateOrganization() bool {
+	return usr.Role.RoleId <= USER_ROLE_SUPERADMIN || usr.Role.RoleId == USER_ROLE_ORG_ADMIN
+}
+
 func (usr *User) IsCommonUser() bool {
 	return usr.Role.RoleId == USER_ROLE_USER
 }

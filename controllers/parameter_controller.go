@@ -284,12 +284,16 @@ func (ctl *ParameterController) RuntimeParameterList() {
 	ParamCtrl.WaitGroup.Wait()
 	usr := ctl.GetCurrentUser()
 	var params []*models.RuntimeParameter
-	for _, p := range ParamCtrl.Parameters {
-		//goazure.Error("Param_Org:", p.Organization)
-		if  p.Organization == nil ||
-			len(p.Organization.Uid) != 36 ||
-			p.Organization == usr.Organization {
-			params = append(params, p)
+	if usr.IsAdmin() {
+		params = ParamCtrl.Parameters
+	} else {
+		for _, p := range ParamCtrl.Parameters {
+			//goazure.Error("Param_Org:", p.Organization)
+			if  p.Organization == nil ||
+				len(p.Organization.Uid) != 36 ||
+				p.Organization == usr.Organization {
+				params = append(params, p)
+			}
 		}
 	}
 	//goazure.Info("Params:", params)
