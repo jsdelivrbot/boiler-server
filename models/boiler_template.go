@@ -3,7 +3,7 @@ package models
 type BoilerTemplate struct {
 	MyUidObject
 	TemplateId		int32			`orm:"index"`
-	Organization *Organization    `orm:"rel(fk)"`
+	Organization *Organization    `orm:"rel(fk);null"`
 }
 
 func (obj *BoilerTemplate) TableUnique() [][]string {
