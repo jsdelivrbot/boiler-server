@@ -191,9 +191,9 @@
                 </button>
             </div>
             <div class="btn-group pull-right" style="margin-right: 5px;">
-                <button type="button" class="btn blue" ng-click="boilerRestart(2)">启动锅炉</button>
-                <button type="button" class="btn green" ng-click="boilerRestart(1)">关闭锅炉</button>
-                <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)">重启锅炉</button>
+                <button type="button" class="btn blue" ng-click="boilerRestart(2)" ng-disabled="runtime.boiler.isOnline && runtime.boiler.isBurning">启动锅炉</button>
+                <button type="button" class="btn green" ng-click="boilerRestart(1)" ng-disabled="!(runtime.boiler.isOnline && runtime.boiler.isBurning)">关闭锅炉</button>
+                <button type="button" class="btn yellow-lemon" ng-click="boilerRestart(3)" ng-disabled="!(runtime.boiler.isOnline && runtime.boiler.isBurning)">重启锅炉</button>
                 <!--<select ng-model="terminalRestart" ng-options="ter.Name for ter in runtime.boiler.TerminalsCombined"
                         class="form-control" style="width: 50%">
                     <option value="" disabled>请选择终端</option>
