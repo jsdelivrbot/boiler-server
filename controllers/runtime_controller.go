@@ -272,6 +272,13 @@ func (ctl *RuntimeController) RuntimeReload() {
 }
 
 func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due float64) {
+	defer func() {
+		if r := recover(); r != nil {
+			goazure.Error("Recovered in RtmCtl.RuntimeDataReload()", r)
+			//time.Sleep(time.Second * 10)
+		}
+	}()
+
 	startTime := time.Now()
 
 	var lgr logs.BoilerRuntimeLog
@@ -527,6 +534,13 @@ func (ctl *RuntimeController) ReloadHistory() {
 }
 
 func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time, endDate time.Time) {
+	defer func() {
+		if r := recover(); r != nil {
+			goazure.Error("Recovered in RtmCtl.ReloadHistoryWithArchived()", r)
+			//time.Sleep(time.Second * 10)
+		}
+	}()
+
 	BlrCtl.WaitGroup.Wait()
 	ParamCtrl.WaitGroup.Wait()
 

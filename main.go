@@ -13,7 +13,7 @@ import (
 	_ "github.com/AzureRelease/boiler-server/conf"
 )
 
-var wechatServerEnabled = true
+var wechatServerEnabled = false
 
 func main() {
 	//go controllers.BlrCtl.InitBoilerDefaults()
@@ -33,7 +33,7 @@ func main() {
 	//go initDefaultData()
 	//go controllers.CalcCtl.ImportBoilerCalculateFromHSEI()
 
-	//go controllers.ParamCtrl.InitParameterChannelConfig()
+	go controllers.ParamCtrl.InitParameterChannelConfig()
 	//go controllers.RtmCtl.ImportExistCache()
 
 	//t := time.Now()

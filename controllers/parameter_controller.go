@@ -332,6 +332,13 @@ func (ctl *ParameterController) RuntimeParameterList() {
 }*/
 
 func (ctl *ParameterController) ChannelDataReload(t time.Time) {
+	defer func() {
+		if r := recover(); r != nil {
+			goazure.Error("Recovered in ParamCtl.ChannelDataReload()", r)
+			//time.Sleep(time.Second * 10)
+		}
+	}()
+
 	var lgIn	logs.BoilerRuntimeLog
 	nonce := rand.Intn(254)
 	lgIn.Name = "ChannelDataReload()"
@@ -352,6 +359,13 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	LogCtl.AddReloadLog(&lgRd)
 
 	runtimeReload := func(rt orm.Params, bCnfs []*models.RuntimeParameterChannelConfig, b *models.Boiler, lastLog *logs.BoilerRuntimeLog) {
+		defer func() {
+			if r := recover(); r != nil {
+				goazure.Error("Recovered in runtimeReload()", r)
+				//time.Sleep(time.Second * 10)
+			}
+		}()
+
 		for _, cnf := range bCnfs {
 			var rtm models.BoilerRuntime
 			var value int64
@@ -1317,19 +1331,11 @@ func generateDefaultChannelConfig() error {
 
 func (ctl *ParameterController) InitParameterChannelConfig() {
 	// generateDefaultChannelConfig()
-	defer func() {
-		if r := recover(); r != nil {
-			goazure.Error("Recovered in f", r)
-			time.Sleep(time.Second * 20)
-		}
-	}()
-
 	interval := time.Second * 3
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {
 			goazure.Info("处理ChannelDataReload:", t)
-
 			go ParamCtrl.ChannelDataReload(t)
 		}
 	}
