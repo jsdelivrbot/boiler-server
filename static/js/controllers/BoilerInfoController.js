@@ -584,7 +584,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 mediumId: currentData.Medium ? currentData.Medium.Id : -1,
                 fuelId: currentData.Fuel ? currentData.Fuel.Uid : "",
                 formId: currentData.Form ? currentData.Form.Id : -1,
-                templateId:currentData.Template ? currentData.Template.Id : -1,
+                templateId:currentData.Template ? currentData.Template.TemplateId : -1,
                 evaporatingCapacity: currentData.EvaporatingCapacity,
 
                 RegisterOrg: currentData.RegisterOrg ? currentData.RegisterOrg : null,
@@ -637,6 +637,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 mediumId: -1,
                 fuelId: "",
                 formId:  -1,
+                templateId: -1,
 
                 evaporatingCapacity: NaN,
 
@@ -654,6 +655,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
         $modal.mediums = [{ Id: -1, Name: '请选择...' }];
         $modal.forms = [{ Id: -1, Name: '请选择...' }];
         $modal.fuels = [{ Uid: '', Name: '请选择...' }];
+        $modal.templates = [{ Id: -1, Name: '请选择...' }];
 
         $modal.enterprises = [{ Uid: '', name: '请选择...' }];
         $modal.factories = [{ Uid: '', name: '请选择...' }];
@@ -717,13 +719,14 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
             $modal.forms.push(form);
         }
 
+        console.log($rootScope.boilerTemplates);
         for (var i in $rootScope.boilerTemplates) {
-            var form = $rootScope.boilerTemplates[i];
-            if (form.Id === 0 || $modal.templates.indexOf(form) > -1) {
+            var template = $rootScope.boilerTemplates[i];
+            if (template.TemplateId=== 0 || $modal.templates.indexOf(template) > -1) {
                 continue;
             }
 
-            $modal.templates.push(form);
+            $modal.templates.push(template);
         }
 
         for (var i in $rootScope.fuels) {
