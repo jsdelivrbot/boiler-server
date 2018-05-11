@@ -256,20 +256,23 @@ func (ctl *ParameterController) RefreshParameters() {
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
 	if num, err := qs.RelatedSel("Category").RelatedSel("Organization").
+		Filter("IsDefault", false).
 		Filter("IsDeleted", false).OrderBy("Id").
 		All(&params); err != nil || num == 0 {
 		goazure.Error("Get RuntimeParameterList Error:", num, err)
 	}
 
-	for i, v := range params {
-		if num, err := dba.BoilerOrm.LoadRelated(v, "BoilerMediums"); err != nil && num == 0 {
-			goazure.Error("[", i, "]", v, num, err)
-		}
+	go func() {
+		for i, v := range params {
+			if num, err := dba.BoilerOrm.LoadRelated(v, "BoilerMediums"); err != nil && num == 0 {
+				goazure.Error("[", i, "]", v, num, err)
+			}
 
-		for _, b := range v.BoilerMediums {
-			b.Name = strings.TrimSuffix(b.Name, "锅炉")
+			for _, b := range v.BoilerMediums {
+				b.Name = strings.TrimSuffix(b.Name, "锅炉")
+			}
 		}
-	}
+	}()
 
 	ParamCtrl.Parameters = params
 
@@ -279,7 +282,22 @@ func (ctl *ParameterController) RefreshParameters() {
 func (ctl *ParameterController) RuntimeParameterList() {
 	goazure.Warning("Ready to Get RuntimeParameterList")
 	ParamCtrl.WaitGroup.Wait()
-	ctl.Data["json"] = ParamCtrl.Parameters
+	usr := ctl.GetCurrentUser()
+	var params []*models.RuntimeParameter
+	if usr.IsAdmin() {
+		params = ParamCtrl.Parameters
+	} else {
+		for _, p := range ParamCtrl.Parameters {
+			//goazure.Error("Param_Org:", p.Organization)
+			if  p.Organization == nil ||
+				len(p.Organization.Uid) != 36 ||
+				p.Organization == usr.Organization {
+				params = append(params, p)
+			}
+		}
+	}
+	//goazure.Info("Params:", params)
+	ctl.Data["json"] = params
 	ctl.ServeJSON()
 }
 

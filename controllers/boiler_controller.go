@@ -751,7 +751,7 @@ func (ctl *BoilerController) TermIsOnline(termSn int64) bool {
 	var status bool
 	var termStatus models.BoilerTermStatus
 	if err:=dba.BoilerOrm.QueryTable("boiler_term_status").Filter("Boiler_term_id",termSn).One(&termStatus);err!=nil{
-		goazure.Error("Query Boiler Terminal Combined Error",err)
+		goazure.Error("Query boiler term status Error",err)
 		status = false
 		return status
 	}
@@ -769,6 +769,7 @@ func (ctl *BoilerController) IsOnline(boilerUid string) bool {
 	var termCombined models.BoilerTerminalCombined
 	if err := dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Terminal").Filter("Boiler__Uid",boilerUid).Filter("TerminalSetId",1).One(&termCombined);err!=nil{
 		goazure.Error("Query Boiler Terminal Combined Error",err)
+		goazure.Error("Not combined boiler",boilerUid)
 		status = false
 		return status
 	}

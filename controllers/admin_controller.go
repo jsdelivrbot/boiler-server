@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/AzureRelease/boiler-server/models"
 	"github.com/AzureRelease/boiler-server/conf"
 
+	"github.com/AzureTech/goazure"
 )
 
 type AdminController struct {
@@ -16,7 +16,7 @@ var AdminCtl *AdminController = &AdminController{}
 func (ctl *AdminController) Get() {
 	session := ctl.GetSession(SESSION_CURRENT_USER)
 	version := conf.Version
-	fmt.Println("Admin Get Session:", session)
+	goazure.Error("Admin Get Session:", session)
 	if session == nil {
 		ctl.Ctx.Redirect(302, "/")
 	} else {
