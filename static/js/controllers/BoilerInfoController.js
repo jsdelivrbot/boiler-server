@@ -719,7 +719,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
 
         for (var i in $rootScope.fuels) {
             var fuel = $rootScope.fuels[i];
-            if (fuel.Type.Id === 0 || fuel.Type.Id >= 5 || $modal.fuels.indexOf(fuel) > -1) {
+            if (fuel.Type.Id === 0  || $modal.fuels.indexOf(fuel) > -1) {
                 continue;
             }
             $modal.fuels.push(fuel);
