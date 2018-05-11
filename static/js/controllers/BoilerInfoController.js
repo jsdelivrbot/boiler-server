@@ -584,7 +584,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 mediumId: currentData.Medium ? currentData.Medium.Id : -1,
                 fuelId: currentData.Fuel ? currentData.Fuel.Uid : "",
                 formId: currentData.Form ? currentData.Form.Id : -1,
-
+                templateId:currentData.Template ? currentData.Template.Id : -1,
                 evaporatingCapacity: currentData.EvaporatingCapacity,
 
                 RegisterOrg: currentData.RegisterOrg ? currentData.RegisterOrg : null,
@@ -715,6 +715,15 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
             }
 
             $modal.forms.push(form);
+        }
+
+        for (var i in $rootScope.boilerTemplates) {
+            var form = $rootScope.boilerTemplates[i];
+            if (form.Id === 0 || $modal.templates.indexOf(form) > -1) {
+                continue;
+            }
+
+            $modal.templates.push(form);
         }
 
         for (var i in $rootScope.fuels) {

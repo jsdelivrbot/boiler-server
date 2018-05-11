@@ -601,7 +601,10 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             runtimeQueue: rtmQ
         }).then(function (res) {
             boiler.imgName = function() {
+
                 var imgName = boiler.Form.Id === 101 ? 'fb' : 'coalsingle';
+
+                /*var imgName = boiler.Form.Id === 101 ? 'fb' : 'coalsingle';
                 if (boiler.Fuel && boiler.Fuel.Type) {
                     switch (boiler.Fuel.Type.Id) {
                         case 1:
@@ -632,19 +635,14 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                 if (boiler.Form.Id === 1003 || boiler.Form.Id === 1006) {
                     imgName = 'heatwater';
                 }
-                if (boiler.Form.Id === 1004) {
-                    imgName = 'zhulv';
-                }
-                if (boiler.Form.Id === 1005) {
-                    imgName = 'zhutie';
-                }
+
 
                 if (boiler.Form.Id === 1004) {
                     imgName = 'zhulv';
                 }
                 if (boiler.Form.Id === 1005) {
                     imgName = 'zhutie';
-                }
+                }*/
 
                 return imgName;
             };
