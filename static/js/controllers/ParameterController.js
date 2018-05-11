@@ -52,6 +52,10 @@ angular.module('BoilerAdmin').controller('ParameterController', function ($rootS
 
                 bParameter.datasource = datasource;
             }*/
+            if(bParameter.parameters==null){
+                App.stopPageLoading();
+                return;
+            }
             bParameter.changeCategory(bParameter.category);
             setTimeout(function () {
                 App.stopPageLoading();
