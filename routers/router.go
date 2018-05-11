@@ -59,6 +59,8 @@ func init() {
 	goazure.Router("/boiler_fuel_list", &controllers.FuelController{}, "get:FuelList")
 	goazure.Router("/boiler_fuel_type_list", &controllers.FuelController{}, "get:FuelTypeList")
 
+	goazure.Router("/boiler_template_list",&controllers.BoilerController{},"get:BoilerTemplateList")
+
 	goazure.Router("/boiler_config/", &controllers.BoilerController{}, "post:GetBoilerConfig")
 	goazure.Router("/boiler_config_set/", &controllers.BoilerController{}, "post:SetBoilerConfig")
 	goazure.Router("/boiler/state/is_burning/", &controllers.BoilerController{}, "get:BoilerIsBurning")
