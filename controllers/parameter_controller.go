@@ -288,10 +288,12 @@ func (ctl *ParameterController) RuntimeParameterList() {
 		params = ParamCtrl.Parameters
 	} else {
 		for _, p := range ParamCtrl.Parameters {
+			goazure.Error("usrOrganization:",usr.Organization)
+			goazure.Error("pOrganization:",p.Organization)
 			//goazure.Error("Param_Org:", p.Organization)
 			if  p.Organization == nil ||
 				len(p.Organization.Uid) != 36 ||
-				p.Organization == usr.Organization {
+				p.Organization.Uid == usr.Organization.Uid {
 				params = append(params, p)
 			}
 		}
@@ -1173,7 +1175,7 @@ func (ctl *ParameterController) RuntimeParameter(pid int) *models.RuntimeParamet
 
 	if err := dba.BoilerOrm.QueryTable("runtime_parameter").
 		RelatedSel("Category").RelatedSel("Organization").
-		Filter("Id", pid).Filter("IsDeleted", false).Filter("IsDefault",false).
+		Filter("Id", pid).Filter("IsDeleted", false).
 		One(&param); err != nil {
 		goazure.Error("Read Parameter Error: ", err)
 		return nil
