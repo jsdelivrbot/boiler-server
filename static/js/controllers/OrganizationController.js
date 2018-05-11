@@ -279,6 +279,12 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
         $modal.supervisor = currentData.SuperOrganization;
 
         var locationId = $modal.location.LocationId;
+        if(locationId>=1000 && locationId<100000){
+            locationId = locationId*100;
+        }
+        if(locationId<1000){
+            locationId = locationId*10000;
+        }
         getLocation(locationId, $rootScope.locations, "province");
     }
 
