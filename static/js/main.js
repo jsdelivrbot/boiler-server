@@ -1091,6 +1091,10 @@ boilerAdmin.run(["$rootScope", "$http", "$log", "$timeout", "settings", "$state"
             .then(function (res) {
                 $rootScope.boilerMediums = res.data;
             });
+        $http.get('/boiler_template_list')
+            .then(function (res) {
+                $rootScope.boilerTemplates = res.data;
+            });
 
         $rootScope.getBoilerList();
         $rootScope.getParameterList();
