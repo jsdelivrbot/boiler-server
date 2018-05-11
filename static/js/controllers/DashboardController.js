@@ -602,7 +602,29 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         }).then(function (res) {
             boiler.imgName = function() {
 
-                var imgName = boiler.Form.Id === 101 ? 'fb' : 'coalsingle';
+                var imgName = boiler.Template.TemplateId === 101 ? 'fb' : 'coalsingle';
+                switch (boiler.Template.TemplateId){
+                    case 101:
+                        imgName = 'fb';
+                        break;
+                    case 201:
+                    case 203:
+                        imgName = 'coalsingle';
+                        break;
+                    case 205:
+                        imgName = 'boilerwater';
+                        break;
+                    case 1003:
+                    case 1006:
+                        imgName = 'heatwater';
+                        break;
+                    case 1004:
+                        imgName = 'zhulv';
+                        break;
+                    case 1005:
+                        imgName = 'zhutie';
+
+                }
 
                 /*var imgName = boiler.Form.Id === 101 ? 'fb' : 'coalsingle';
                 if (boiler.Fuel && boiler.Fuel.Type) {

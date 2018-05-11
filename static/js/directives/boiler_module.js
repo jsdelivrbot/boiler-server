@@ -101,7 +101,32 @@ boilerAdmin.directive('boilerModule', function () {
 
         var svgName = "/img/boiler_coal_double.svg";
         bModule.moduleId = BOILE_MODULE_COAL_DOUBLE;
-        switch (bModule.boiler.Fuel.Type.Id) {
+
+        switch (bModule.boiler.Template.TemplateId){
+            case 201:
+            case 202:
+                bModule.moduleId = BOILE_MODULE_COAL_DOUBLE;
+                break;
+            case 205:
+                bModule.moduleId = BOILE_MODULE_WATER;
+                break;
+            case 1003:
+                bModule.moduleId = BOILE_MODULE_HEAT_WATER_SYSTEM;
+                break;
+            case 1004:
+                bModule.moduleId = BOILE_MODULE_LV;
+                break;
+            case 1005:
+                bModule.moduleId = BOILE_MODULE_IRON;
+                break;
+            case 1006:
+                bModule.moduleId = BOILE_MODULE_HEAT_STEAM_SYSTEM;
+                break;
+
+
+        }
+
+        /*switch (bModule.boiler.Fuel.Type.Id) {
             case 2:
                 bModule.moduleId = BOILE_MODULE_OIL;
                 break;
@@ -134,7 +159,7 @@ boilerAdmin.directive('boilerModule', function () {
 
         if (bModule.boiler.Form.Id === 1006) {
             bModule.moduleId = BOILE_MODULE_HEAT_STEAM_SYSTEM;
-        }
+        }*/
 
 
         switch (bModule.moduleId) {
