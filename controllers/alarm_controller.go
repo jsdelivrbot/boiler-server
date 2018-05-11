@@ -413,7 +413,7 @@ type bAlarmRule struct {
 }
 
 func (ctl *AlarmController) AlarmRuleUpdate() {
-	usr := ctl.GetCurrentUser()
+/*	usr := ctl.GetCurrentUser()
 
 	if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied!")
@@ -421,7 +421,7 @@ func (ctl *AlarmController) AlarmRuleUpdate() {
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
-	}
+	}*/
 	var al bAlarmRule
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &al); err != nil {
