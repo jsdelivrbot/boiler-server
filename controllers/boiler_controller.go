@@ -1016,6 +1016,7 @@ type BoilerInfo struct {
 	FactoryId			string		`json:"factoryId"`
 	MaintainerId		string		`json:"maintainerId"`
 	SupervisorId		string		`json:"supervisorId"`
+	TemplateId          int32      `json:"templateId"`
 	
 	Address				string		`json:"address"`
 	LocationId			int64		`json:"location_id"`
@@ -1126,6 +1127,7 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	var med models.BoilerMedium
 	var fuel models.Fuel
 	var form models.BoilerTypeForm
+	var template models.BoilerTemplate
 	usage.Id = 1
 	med.Id = info.MediumId
 	fuel.Uid = info.FuelId
@@ -1134,7 +1136,7 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if err := DataCtl.ReadData(&med); err == nil { boiler.Medium = &med }
 	if err := DataCtl.ReadData(&fuel); err == nil { boiler.Fuel = &fuel }
 	if err := DataCtl.ReadData(&form); err == nil { boiler.Form = &form }
-
+	if err :=dba.BoilerOrm.QueryTable("boiler_template").Filter("TemplateId",info.TemplateId).One(&template);err == nil {boiler.Template = &template}
 	var enterprise, factory, maintainer, supervisor models.Organization
 	enterprise.Uid = info.EnterpriseId
 	factory.Uid = info.FactoryId
