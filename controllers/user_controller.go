@@ -97,7 +97,11 @@ func (ctl *UserController) UserList() {
 	qs := dba.BoilerOrm.QueryTable("user")
 	qs = qs.RelatedSel()
 	if usr.IsOrganizationUser() {
-		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
+		orCond := orm.NewCondition().
+			Or("Organization__Uid", usr.Organization.Uid).
+			Or("Organization__SuperOrganization__Uid", usr.Organization.Uid)
+		cond := orm.NewCondition().AndCond(orCond)
+		qs = qs.SetCond(cond)
 	}
 	//if usr != nil {
 	//	uid := usr.Uid
@@ -352,7 +356,8 @@ func (ctl *UserController) Login(u *Usr) (*models.User, error) {
 	}
 
 	var usr models.User
-	err := dba.BoilerOrm.QueryTable("user").Filter("Username", u.Username).Filter("IsDeleted", false).One(&usr)
+	err := dba.BoilerOrm.QueryTable("user").
+		Filter("Username", u.Username).Filter("IsDeleted", false).One(&usr)
 
 	var resBody string
 	var isSuccess bool = false
