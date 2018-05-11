@@ -74,7 +74,7 @@ boilerAdmin.factory('settings', ['$rootScope', function($rootScope) {
     return settings;
 }]);
 
-const IP_JSON_URL = 'http://ipv4.myexternalip.com/json';
+const IP_JSON_URL = 'https://ipv4.myexternalip.com/json';
 
 var clientkey = "?clientkey=" + getCookie("request_session");
 
