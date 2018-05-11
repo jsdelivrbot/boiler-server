@@ -679,7 +679,7 @@ func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	for i, al := range alarms {
 		if 	al.Priority > 1 &&
 			al.StartDate.Before(t.Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) &&
-			!al.EndDate.Before(t) {
+			!al.EndDate.Before(t.Add(time.Minute * -2)) {
 			var users []*models.User
 			raw := 	"SELECT `user`.* " +
 					"FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` " +
