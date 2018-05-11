@@ -130,7 +130,8 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 
 	if 	!usr.IsAdmin() {
 		if 	usr.Organization.Uid != organization.Uid &&
-			(organization.CreatedBy == nil || usr.Uid != organization.CreatedBy.Uid) &&
+			!usr.Organization.IsSupervisor &&
+			(organization.CreatedBy == nil || usr.Uid != 			organization.CreatedBy.Uid) &&
 			(usr.Organization == nil || organization.SuperOrganization == nil || usr.Organization.Uid != organization.SuperOrganization.Uid) {
 			ctl.Ctx.Output.SetStatus(403)
 			ctl.Ctx.Output.Body([]byte("Permission Denied!"))

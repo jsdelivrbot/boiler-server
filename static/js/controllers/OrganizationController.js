@@ -228,11 +228,12 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
     };
 
     var getLocation = function (locationId, locationList, locationScope) {
-        for (var pi = 0; pi < locationList.length; pi++) {
+        var localId = locationId.toString();
+        for (var pi in locationList) {
             var local = locationList[pi];
-            if (local.LocationId === Math.floor(locationId / 10000) ||
-                local.LocationId === Math.floor(locationId / 100) ||
-                local.LocationId === locationId) {
+            if (local.LocationId == localId.substr(0, 2) ||
+                local.LocationId == localId.substr(0, 4) ||
+                local.LocationId == localId.substr(0, 6)) {
                 switch (locationScope) {
                     case "province":
                         $modal.aProvince = local;
@@ -254,9 +255,15 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
 
         switch (locationScope) {
             case "province":
+                if (!$modal.aProvince) {
+                    break;
+                }
                 getLocation(locationId, $modal.aProvince.cities, "city");
                 break;
             case "city":
+                if (!$modal.aCity) {
+                    break;
+                }
                 getLocation(locationId, $modal.aCity.regions, "region");
                 break;
             case "region":
