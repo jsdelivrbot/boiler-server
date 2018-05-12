@@ -896,11 +896,11 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         var items = $filter('filter')(boilers, function (item) {
             //console.warn('Item: ' + Object.keys(item));
             if (typeof bMonitor.aBurning === 'undefined') {
-                matchNum++;
-                return true;
+               matchNum++;
+               return true;
             }
 
-            if (bMonitor.aBurning == item.isBurning) {
+            if (bMonitor.aBurning === item.isBurning) {
                 matchNum++;
                 return true;
             }
