@@ -614,7 +614,7 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 		Filter("IsDefault", true).Filter("IsDeleted", false).All(&dfConfs); err != nil || num == 0 {
 		goazure.Error("Default Channel Config is Missing!", err, num)
 	} else {
-		goazure.Info("Get Boiler Channel Config:", num, "\n", bConfs)
+		goazure.Info("Get Boiler Channel Config:", num, "\n", dfConfs)
 	}
 	//查询出配置的通道
 	if num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
@@ -1107,11 +1107,23 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		ctl.Ctx.Output.Body([]byte(e))
 		return
 	}
-	fmt.Println("p:",p)
-	fmt.Println("p.id:",p.Category.Id)
+	if p.Id == 0 {
+		var max int32
+		sql:="select max(param_id) as param_id from runtime_parameter where category_id=? and is_deleted =false"
+		if err:=dba.BoilerOrm.Raw(sql,p.Category.Id).QueryRow(&max);err!=nil {
+			goazure.Error("Query runtime_parameter Error",err)
+		}
+		if max >= 100 {
+			p.ParamId = max + 1
+		} else {
+			p.ParamId = 100
+		}
+		a := fmt.Sprintf("%d%d",p.Category.Id,p.ParamId)
+		p.Id ,_ = strconv.ParseInt(a,10,64)
+		goazure.Info("Add param_id:",p.Id)
+	}
 	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", p.Id).One(&param); err != nil {
 		e := fmt.Sprintln("Read Parameter Error", err)
-		fmt.Println("param:",param)
 		goazure.Warn(e)
 		param.Id= p.Id
 		param.ParamId = p.ParamId
@@ -1192,6 +1204,7 @@ func (ctl *ParameterController) RuntimeParameter(pid int) *models.RuntimeParamet
 		Filter("Id", pid).Filter("IsDeleted", false).
 		One(&param); err != nil {
 		goazure.Error("Read Parameter Error: ", err)
+		goazure.Error("Unfind Parameter Id :",pid)
 		return nil
 	}
 

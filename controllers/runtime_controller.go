@@ -1043,9 +1043,9 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 				}
 			}
 
-			if len(b.RuntimeQueue) <= 0 {
+		/*	if len(b.RuntimeQueue) <= 0 {
 				b.RuntimeQueue = []int{1201, 1015, 1002, 1202}
-			}
+			}*/
 
 			//goazure.Error("RuntimeQueue:", b.RuntimeQueue)
 		case "wxapp":
