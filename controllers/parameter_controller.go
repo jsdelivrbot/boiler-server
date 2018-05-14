@@ -614,7 +614,7 @@ func (ctl *ParameterController) ChannelConfigList(code interface{}) []*models.Ru
 		Filter("IsDefault", true).Filter("IsDeleted", false).All(&dfConfs); err != nil || num == 0 {
 		goazure.Error("Default Channel Config is Missing!", err, num)
 	} else {
-		goazure.Info("Get Boiler Channel Config:", num, "\n", bConfs)
+		goazure.Info("Get Boiler Channel Config:", num, "\n", dfConfs)
 	}
 	//查询出配置的通道
 	if num, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
@@ -1192,6 +1192,7 @@ func (ctl *ParameterController) RuntimeParameter(pid int) *models.RuntimeParamet
 		Filter("Id", pid).Filter("IsDeleted", false).
 		One(&param); err != nil {
 		goazure.Error("Read Parameter Error: ", err)
+		goazure.Error("Unfind Parameter Id :",pid)
 		return nil
 	}
 
