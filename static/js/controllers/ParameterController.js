@@ -217,10 +217,10 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
     */
     $modal.categoryChanged = function () {
         var cateId = $modal.data.Category.Id;
-        if (cateId <= 0) {
+        /*if (cateId <= 0) {
             $modal.data.ParamId = 0;
             $modal.data.Id = 0;
-        }
+        }*/
 
         if (cateId === PARAMETER_CATEGORY_SWITCH || cateId === PARAMETER_CATEGORY_STATUS) {
             $modal.data.Scale = 1;
@@ -232,7 +232,7 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
             $modal.data.Length = 2;
         }
 
-        var paramId = 100;
+       /* var paramId = 100;
         for (var i = 0; i < $rootScope.parameters.length; i++) {
             var p = $rootScope.parameters[i];
             if (p.Category.Id === cateId && p.ParamId >= paramId) {
@@ -241,7 +241,8 @@ angular.module('BoilerAdmin').controller('ModalParameterCtrl', function ($uibMod
         }
 
         $modal.data.ParamId = paramId;
-        $modal.data.Id = parseInt(cateId + '' + paramId);
+        $modal.data.Id = parseInt(cateId + '' + paramId);*/
+
     };
 
     $modal.commit = function () {
