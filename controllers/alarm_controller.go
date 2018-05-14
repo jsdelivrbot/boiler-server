@@ -544,16 +544,16 @@ type Alarm struct {
 	Uid     string    `json:"uid"`
 }
 func (ctl *AlarmController) AlarmRuleDelete() {
-	usr := ctl.GetCurrentUser()
+	//usr := ctl.GetCurrentUser()
 	var a Alarm
 	var alarmRule models.RuntimeAlarmRule
 
-	if !usr.IsAdmin() {
+/*	if !usr.IsAdmin() {
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte("Permission Denied!"))
 		goazure.Error("Permission Denied!")
 		return
-	}
+	}*/
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &a); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
