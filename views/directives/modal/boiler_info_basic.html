@@ -99,16 +99,17 @@
                 </div>
 
 
+
+
                 <div class="form-group col-md-6">
                     <div class="input-group">
                         <span class="input-group-addon">锅炉型态</span>
-                        <select ng-model="$modal.data.formId"
-                                ng-options="fm.Id as fm.Name group by fm.Type.Name for fm in $modal.forms"
+                        <select ng-model="$modal.data.templateId"
+                                ng-options="tm.TemplateId as tm.Name for tm in $modal.templates"
                                 class="form-control ng-pristine ng-valid ng-touched" required>
                         </select>
                     </div>
                 </div>
-
 
 
             </div>
@@ -315,7 +316,7 @@
             ng-class="$modal.data.name.length >= 4 &&
                       $modal.data.mediumId >= 0 &&
                       $modal.data.fuelId.length > 0 &&
-                      $modal.data.formId >= 0  ? 'btn-primary' : 'grey'"
+                      $modal.data.templateId >= 0  ? 'btn-primary' : 'grey'"
             type="submit">
         <span class="ladda-label">保存</span>
     </button>

@@ -55,6 +55,20 @@ func initCalculateParameter() {
 
 }
 
+func (ctl *BoilerController) BoilerTemplateList() {
+	usr := ctl.GetCurrentUser()
+	var boilerTemplate []models.BoilerTemplate
+	qs := dba.BoilerOrm.QueryTable("boiler_template").RelatedSel("Organization")
+	if !usr.IsAdmin() {
+		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
+	}
+	if _,err:=qs.All(&boilerTemplate); err!=nil{
+		goazure.Error("Query boiler_template Error",err)
+	}
+	ctl.Data["json"] = boilerTemplate
+	ctl.ServeJSON()
+}
+
 func (ctl *BoilerController) BoilerCount() {
 	usr := ctl.GetCurrentUser()
 	if usr == nil {
@@ -1002,6 +1016,7 @@ type BoilerInfo struct {
 	FactoryId			string		`json:"factoryId"`
 	MaintainerId		string		`json:"maintainerId"`
 	SupervisorId		string		`json:"supervisorId"`
+	TemplateId          int32      `json:"templateId"`
 	
 	Address				string		`json:"address"`
 	LocationId			int64		`json:"location_id"`
@@ -1112,6 +1127,7 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	var med models.BoilerMedium
 	var fuel models.Fuel
 	var form models.BoilerTypeForm
+	var template models.BoilerTemplate
 	usage.Id = 1
 	med.Id = info.MediumId
 	fuel.Uid = info.FuelId
@@ -1120,7 +1136,7 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if err := DataCtl.ReadData(&med); err == nil { boiler.Medium = &med }
 	if err := DataCtl.ReadData(&fuel); err == nil { boiler.Fuel = &fuel }
 	if err := DataCtl.ReadData(&form); err == nil { boiler.Form = &form }
-
+	if err :=dba.BoilerOrm.QueryTable("boiler_template").Filter("TemplateId",info.TemplateId).One(&template);err == nil {boiler.Template = &template}
 	var enterprise, factory, maintainer, supervisor models.Organization
 	enterprise.Uid = info.EnterpriseId
 	factory.Uid = info.FactoryId

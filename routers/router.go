@@ -11,6 +11,7 @@ func init() {
 
 	goazure.Router("/", &controllers.MainController{})
 	goazure.Router("/login/", &controllers.MainController{})
+	goazure.Router("/login_xn/", &controllers.MainController{})
 	goazure.Router("/admin", &controllers.AdminController{})
 
 	goazure.Router("/user", &controllers.UserController{})
@@ -57,6 +58,8 @@ func init() {
 	goazure.Router("/boiler_form_list/", &controllers.BoilerController{}, "get:BoilerFormList")
 	goazure.Router("/boiler_fuel_list", &controllers.FuelController{}, "get:FuelList")
 	goazure.Router("/boiler_fuel_type_list", &controllers.FuelController{}, "get:FuelTypeList")
+
+	goazure.Router("/boiler_template_list",&controllers.BoilerController{},"get:BoilerTemplateList")
 
 	goazure.Router("/boiler_config/", &controllers.BoilerController{}, "post:GetBoilerConfig")
 	goazure.Router("/boiler_config_set/", &controllers.BoilerController{}, "post:SetBoilerConfig")

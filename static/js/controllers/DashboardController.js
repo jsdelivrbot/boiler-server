@@ -439,6 +439,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         bMonitor.mediums = [{Name: '锅炉介质（不限）'}];
         bMonitor.forms = [{Name: '锅炉型态（不限）'}];
         bMonitor.fuels = [{Name: '锅炉燃料（不限）'}];
+        bMonitor.templates = [{Name: '锅炉型态（不限）'}];
+
 
         for (var i = 0; $rootScope.organizations && i < $rootScope.organizations.length; i++) {
             var org = $rootScope.organizations[i];
@@ -460,6 +462,15 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             }
 
             bMonitor.forms.push(form);
+        }
+
+        for (var i = 0; $rootScope.boilerTemplates && i < $rootScope.boilerTemplates.length; i++) {
+            var template = $rootScope.boilerTemplates[i];
+            if (template.TemplateId === 0 || bMonitor.templates.indexOf(template) > -1) {
+                continue;
+            }
+
+            bMonitor.templates.push(template);
         }
 
         for (var i = 0; $rootScope.fuelTypes && i < $rootScope.fuelTypes.length; i++) {
@@ -517,6 +528,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
         bMonitor.aEvaporate = bMonitor.evaporates[0];
         bMonitor.aForm = bMonitor.forms[0];
+        bMonitor.aTemplate = bMonitor.templates[0];
         bMonitor.aMedium = bMonitor.mediums[0];
         bMonitor.aOrg = bMonitor.organizations[0];
         //bMonitor.aProvince = bMonitor.provinces[0];
@@ -601,7 +613,32 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             runtimeQueue: rtmQ
         }).then(function (res) {
             boiler.imgName = function() {
-                var imgName = boiler.Form.Id === 101 ? 'fb' : 'coalsingle';
+
+                var imgName = boiler.Template.TemplateId === 101 ? 'fb' : 'coalsingle';
+                switch (boiler.Template.TemplateId){
+                    case 101:
+                        imgName = 'fb';
+                        break;
+                    case 201:
+                    case 203:
+                        imgName = 'coalsingle';
+                        break;
+                    case 205:
+                        imgName = 'boilerwater';
+                        break;
+                    case 1003:
+                    case 1006:
+                        imgName = 'heatwater';
+                        break;
+                    case 1004:
+                        imgName = 'zhulv';
+                        break;
+                    case 1005:
+                        imgName = 'zhutie';
+
+                }
+
+                /*var imgName = boiler.Form.Id === 101 ? 'fb' : 'coalsingle';
                 if (boiler.Fuel && boiler.Fuel.Type) {
                     switch (boiler.Fuel.Type.Id) {
                         case 1:
@@ -629,22 +666,17 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                     imgName = 'boilerwater';
                 }
 
-                if (boiler.Form.Id === 1003) {
-                    imgName = 'gasboiler_v';
+                if (boiler.Form.Id === 1003 || boiler.Form.Id === 1006) {
+                    imgName = 'heatwater';
                 }
-                if (boiler.Form.Id === 1004) {
-                    imgName = 'zhulv';
-                }
-                if (boiler.Form.Id === 1005) {
-                    imgName = 'zhutie';
-                }
+
 
                 if (boiler.Form.Id === 1004) {
                     imgName = 'zhulv';
                 }
                 if (boiler.Form.Id === 1005) {
                     imgName = 'zhutie';
-                }
+                }*/
 
                 return imgName;
             };
@@ -750,6 +782,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         items = bMonitor.filterBurning(items);
         // console.warn("items_burning:", items.length);
         items = bMonitor.filterForm(items);
+
+        items = bMonitor.filterTemplate(items);
         // console.warn("items_medium:", items.length);
         items = bMonitor.filterFuel(items);
         // console.warn("items_form:", items.length);
@@ -900,7 +934,8 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                return true;
             }
 
-            if (bMonitor.aBurning === item.isBurning) {
+
+            if (bMonitor.aBurning === (item.isOnline && item.isBurning)) {
                 matchNum++;
                 return true;
             }
@@ -935,6 +970,21 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             //alert('Item: ' + Object.keys(item));
             if ((item.Form.Id === bMonitor.aForm.Id) ||
                 !bMonitor.aForm || !bMonitor.aForm.Id) {
+                matchNum++;
+                return true;
+            }
+            return false;
+        });
+        bMonitor.matchNum = matchNum;
+
+        return items;
+    };
+
+    bMonitor.filterTemplate = function (boilers) {
+        var matchNum = 0;
+        var items = $filter('filter')(boilers, function (item) {
+            if ((item.Template.TemplateId === bMonitor.aTemplate.TemplateId) ||
+                !bMonitor.aTemplate || !bMonitor.aTemplate.TemplateId) {
                 matchNum++;
                 return true;
             }

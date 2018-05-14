@@ -413,7 +413,7 @@ type bAlarmRule struct {
 }
 
 func (ctl *AlarmController) AlarmRuleUpdate() {
-	usr := ctl.GetCurrentUser()
+/*	usr := ctl.GetCurrentUser()
 
 	if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied!")
@@ -421,7 +421,7 @@ func (ctl *AlarmController) AlarmRuleUpdate() {
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
-	}
+	}*/
 	var al bAlarmRule
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &al); err != nil {
@@ -679,7 +679,7 @@ func (ctl *AlarmController) SendAlarmMessage(t time.Time) {
 	for i, al := range alarms {
 		if 	al.Priority > 1 &&
 			al.StartDate.Before(t.Add(time.Minute * time.Duration(-al.TriggerRule.Delay))) &&
-			!al.EndDate.Before(t) {
+			!al.EndDate.Before(t.Add(time.Minute * -2)) {
 			var users []*models.User
 			raw := 	"SELECT `user`.* " +
 					"FROM	`boiler`, `user`, `boiler_message_subscriber` AS `sub` " +

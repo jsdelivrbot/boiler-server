@@ -35,106 +35,39 @@
 
 <div class="input-append">
     <div class="row">
-        <!--<div class="form-location col-md-4 col-sm-4 col-xs-8">-->
-            <!--<div class="form-group col-md-4 col-sm-4 col-xs-4">-->
-                <!--<select ng-model="dashboard.aProvince"-->
-                        <!--ng-options="prov.Name for prov in dashboard.provinces"-->
-                        <!--ng-change="dashboard.changeProvince();"-->
-                        <!--class="form-control">-->
-                <!--</select>-->
-            <!--</div>-->
-            <!--<div class="form-group col-md-4 col-sm-4 col-xs-4">-->
-                <!--<select ng-model="dashboard.aCity"-->
-                        <!--ng-options="city.Name for city in dashboard.aProvince.cities"-->
-                        <!--ng-change="dashboard.changeCity();"-->
-                        <!--ng-disabled="!dashboard.aProvince || dashboard.aProvince.LocationId == 0"-->
-                        <!--class="form-control">-->
-                <!--</select>-->
-            <!--</div>-->
-            <!--<div class="form-group col-md-4 col-sm-4 col-xs-4">-->
-                <!--<select ng-model="dashboard.aRegion"-->
-                        <!--ng-options="region.Name for region in dashboard.aCity.regions"-->
-                        <!--ng-change="dashboard.changeRegion();"-->
-                        <!--ng-disabled="!dashboard.aCity || dashboard.aCity.LocationId == 0"-->
-                        <!--class="form-control">-->
-                <!--</select>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="form-switch col-md-2 col-sm-2 col-xs-4">-->
-            <!--<div class="form-group">-->
-                <!--<input bs-switch-->
-                       <!--ng-model="dashboard.aBurning"-->
-                       <!--ng-change="dashboard.filterBoilers()"-->
-                       <!--type="checkbox"-->
-                       <!--switch-on-text="燃烧"-->
-                       <!--switch-off-text="停燃"-->
-                       <!--switch-on-color="success"-->
-                       <!--switch-off-color="danger"-->
-                       <!--switch-animate="{{ true }}"-->
-                       <!--switch-size="{{ size }}"-->
-                       <!--switch-label="{{ label }}"-->
-                       <!--switch-icon="{{ icon }}"-->
-                       <!--switch-radio-off="{{ true }}"-->
-                       <!--switch-label-width="auto"-->
-                       <!--switch-handle-width="auto"-->
-                       <!--switch-wrapper="{{ wrapper }}"-->
-                       <!--switch-inverse="false"-->
-                       <!--style="width: 100%">-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="form-group col-md-6 col-sm-6 col-xs-12">-->
-            <!--&lt;!&ndash;-->
-            <!--<select ng-model="dashboard.aOrg"-->
-                    <!--ng-options="org.Name group by org.Type.Name for org in dashboard.organizations"-->
-                    <!--ng-change="dashboard.filterBoilers()"-->
-                    <!--class="form-control">-->
-            <!--</select>-->
-            <!--&ndash;&gt;-->
-            <!--<ui-select ng-model="dashboard.aOrg" ng-change="dashboard.filterBoilers()" theme="bootstrap">-->
-                <!--<ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>-->
-                <!--<ui-select-choices group-by="'type'" repeat="org in dashboard.organizations | filter: $select.search">-->
-                    <!--<span ng-bind-html="org.name | highlight: $select.search"></span>-->
-                    <!--&lt;!&ndash;<small ng-bind-html="org.Name | highlight: $select.search"></small>&ndash;&gt;-->
-                <!--</ui-select-choices>-->
-            <!--</ui-select>-->
-        <!--</div>-->
-    </div>
-
-    <div class="row">
-
-
-        <div class="form-module col-md-5 col-sm-5 col-xs-10">
-            <div class="form-group first col-md-12 col-sm-12 col-xs-12">
-                <select ng-model="dashboard.aForm"
-                        ng-options="fm.Name for fm in dashboard.forms"
-                        ng-change="dashboard.filterBoilers();"
+        <!--<div class="form-location col-md-4 col-sm-4 col-xs-8">
+            <div class="form-group col-md-4 col-sm-4 col-xs-4">
+                <select ng-model="dashboard.aProvince"
+                        ng-options="prov.Name for prov in dashboard.provinces"
+                        ng-change="dashboard.changeProvince();"
                         class="form-control">
                 </select>
             </div>
-            <!--<div class="form-group col-md-4 col-sm-4 col-xs-4">-->
-                <!--<select ng-model="dashboard.aFuel"-->
-                        <!--ng-options="fuel.Name for fuel in dashboard.fuels"-->
-                        <!--ng-change="dashboard.filterBoilers();"-->
-                        <!--class="form-control">-->
-                <!--</select>-->
-            <!--</div>-->
-            <!--<div class="form-group last col-md-6 col-sm-6 col-xs-6">
-                <select ng-model="dashboard.aEvaporate"
-                        ng-options="eva.Text for eva in dashboard.evaporates"
-                        ng-change="dashboard.filterBoilers()"
+            <div class="form-group col-md-4 col-sm-4 col-xs-4">
+                <select ng-model="dashboard.aCity"
+                        ng-options="city.Name for city in dashboard.aProvince.cities"
+                        ng-change="dashboard.changeCity();"
+                        ng-disabled="!dashboard.aProvince || dashboard.aProvince.LocationId == 0"
                         class="form-control">
                 </select>
-            </div>-->
+            </div>
+            <div class="form-group col-md-4 col-sm-4 col-xs-4">
+                <select ng-model="dashboard.aRegion"
+                        ng-options="region.Name for region in dashboard.aCity.regions"
+                        ng-change="dashboard.changeRegion();"
+                        ng-disabled="!dashboard.aCity || dashboard.aCity.LocationId == 0"
+                        class="form-control">
+                </select>
+            </div>
         </div>
-
-        <div class="form-switch col-md-1 col-sm-1 col-xs-2 ">
+        <div class="form-switch col-md-2 col-sm-2 col-xs-4">
             <div class="form-group">
                 <input bs-switch
                        ng-model="dashboard.aBurning"
                        ng-change="dashboard.filterBoilers()"
                        type="checkbox"
-                       switch-on-text="启"
-                       switch-off-text="停"
+                       switch-on-text="燃烧"
+                       switch-off-text="停燃"
                        switch-on-color="success"
                        switch-off-color="danger"
                        switch-animate="{{ true }}"
@@ -149,6 +82,86 @@
                        style="width: 100%">
             </div>
         </div>
+        <div class="form-group col-md-6 col-sm-6 col-xs-12">
+            &lt;!&ndash;
+            <select ng-model="dashboard.aOrg"
+                    ng-options="org.Name group by org.Type.Name for org in dashboard.organizations"
+                    ng-change="dashboard.filterBoilers()"
+                    class="form-control">
+            </select>
+            &ndash;&gt;
+            <ui-select ng-model="dashboard.aOrg" ng-change="dashboard.filterBoilers()" theme="bootstrap">
+                <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
+                <ui-select-choices group-by="'type'" repeat="org in dashboard.organizations | filter: $select.search">
+                    <span ng-bind-html="org.name | highlight: $select.search"></span>
+                    &lt;!&ndash;<small ng-bind-html="org.Name | highlight: $select.search"></small>&ndash;&gt;
+                </ui-select-choices>
+            </ui-select>
+        </div>-->
+    </div>
+
+    <div class="row">
+
+        <!--<div class="form-module col-md-5 col-sm-5 col-xs-10">
+            <div class="form-group first col-md-12 col-sm-12 col-xs-12">
+                <select ng-model="dashboard.aForm"
+                        ng-options="fm.Name for fm in dashboard.forms"
+                        ng-change="dashboard.filterBoilers();"
+                        class="form-control">
+                </select>
+            </div>
+            <div class="form-group col-md-4 col-sm-4 col-xs-4">
+                <select ng-model="dashboard.aFuel"
+                        ng-options="fuel.Name for fuel in dashboard.fuels"
+                        ng-change="dashboard.filterBoilers();"
+                        class="form-control">
+                </select>
+            </div>
+            <div class="form-group last col-md-6 col-sm-6 col-xs-6">
+                <select ng-model="dashboard.aEvaporate"
+                        ng-options="eva.Text for eva in dashboard.evaporates"
+                        ng-change="dashboard.filterBoilers()"
+                        class="form-control">
+                </select>
+            </div>
+        </div>-->
+
+
+
+
+        <div class="form-module col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group first col-md-10 col-sm-10 col-xs-8">
+                <select ng-model="dashboard.aTemplate"
+                        ng-options="fm.Name for fm in dashboard.templates"
+                        ng-change="dashboard.filterBoilers();"
+                        class="form-control">
+                </select>
+            </div>
+
+            <div class="form-switch col-md-2 col-sm-2 col-xs-4 ">
+                <div class="form-group">
+                    <input bs-switch
+                           ng-model="dashboard.aBurning"
+                           ng-change="dashboard.filterBoilers()"
+                           type="checkbox"
+                           switch-on-text="启"
+                           switch-off-text="停"
+                           switch-on-color="success"
+                           switch-off-color="danger"
+                           switch-animate="{{ true }}"
+                           switch-size="{{ size }}"
+                           switch-label="{{ label }}"
+                           switch-icon="{{ icon }}"
+                           switch-radio-off="{{ true }}"
+                           switch-label-width="auto"
+                           switch-handle-width="auto"
+                           switch-wrapper="{{ wrapper }}"
+                           switch-inverse="false"
+                           style="width: 100%">
+                </div>
+            </div>
+        </div>
+
         <div class="form-info col-md-6 col-sm-6 col-xs-12 ">
             <div class="form-group col-md-3 col-sm-3 col-xs-2 pull-right" style="padding-left: 0">
                 <button type="button" ng-click="dashboard.initSearch(); dashboard.filterBoilers();" class="btn grey-cascade btn-outline btn-block sbold uppercase">

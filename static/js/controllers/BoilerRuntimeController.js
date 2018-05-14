@@ -41,6 +41,9 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 bRuntime.boiler = res.data[0];
                 bRuntime.hasBoiler = true;
                 bRuntime.fetchStatus(bRuntime.boiler);
+                if($state.includes("runtime.stats")){
+                    bRuntime.initList();
+                }
                 setTimeout(function () {
                     App.stopPageLoading();
                 }, 300);
@@ -260,12 +263,19 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
     bRuntime.initList = function () {
         var rtmQ = [];
         var p = $location.search();
+
+        if(!bRuntime.boiler){
+            return;
+        }
         var data = {
-            uid: p['boiler'],
+            uid: bRuntime.boiler.Uid,
             runtimeQueue: rtmQ,
             limit: 50
         };
 
+        bRuntime.data = { Uid: bRuntime.boiler.Uid };
+
+        console.log("bRuntime.boiler:",bRuntime.boiler);
         $http.post('/boiler_runtime_list/', data).then(function (res) {
             console.info("Runtime Resp:", res);
             // alert("Boiler Put Detail Res," + res.status + res.data + "|" + Object.keys(res.data))
