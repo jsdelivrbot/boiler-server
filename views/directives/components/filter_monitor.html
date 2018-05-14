@@ -110,26 +110,34 @@
                         class="form-control">
                 </select>
             </div>
-            &lt;!&ndash;<div class="form-group col-md-4 col-sm-4 col-xs-4">&ndash;&gt;
-                &lt;!&ndash;<select ng-model="dashboard.aFuel"&ndash;&gt;
-                        &lt;!&ndash;ng-options="fuel.Name for fuel in dashboard.fuels"&ndash;&gt;
-                        &lt;!&ndash;ng-change="dashboard.filterBoilers();"&ndash;&gt;
-                        &lt;!&ndash;class="form-control">&ndash;&gt;
-                &lt;!&ndash;</select>&ndash;&gt;
-            &lt;!&ndash;</div>&ndash;&gt;
-            &lt;!&ndash;<div class="form-group last col-md-6 col-sm-6 col-xs-6">
+            <div class="form-group col-md-4 col-sm-4 col-xs-4">
+                <select ng-model="dashboard.aFuel"
+                        ng-options="fuel.Name for fuel in dashboard.fuels"
+                        ng-change="dashboard.filterBoilers();"
+                        class="form-control">
+                </select>
+            </div>
+            <div class="form-group last col-md-6 col-sm-6 col-xs-6">
                 <select ng-model="dashboard.aEvaporate"
                         ng-options="eva.Text for eva in dashboard.evaporates"
                         ng-change="dashboard.filterBoilers()"
                         class="form-control">
                 </select>
-            </div>&ndash;&gt;
+            </div>
         </div>-->
 
 
 
 
         <div class="form-module col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group first col-md-10 col-sm-10 col-xs-8">
+                <select ng-model="dashboard.aTemplate"
+                        ng-options="fm.Name for fm in dashboard.templates"
+                        ng-change="dashboard.filterBoilers();"
+                        class="form-control">
+                </select>
+            </div>
+
             <div class="form-switch col-md-2 col-sm-2 col-xs-4 ">
                 <div class="form-group">
                     <input bs-switch
