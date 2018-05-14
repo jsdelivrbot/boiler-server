@@ -983,7 +983,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     bMonitor.filterTemplate = function (boilers) {
         var matchNum = 0;
         var items = $filter('filter')(boilers, function (item) {
-            if ((item.Template.TemplateId === bMonitor.aTemplate.TemplateId) ||
+            if ( !item.Template || (item.Template.TemplateId === bMonitor.aTemplate.TemplateId) ||
                 !bMonitor.aTemplate || !bMonitor.aTemplate.TemplateId) {
                 matchNum++;
                 return true;

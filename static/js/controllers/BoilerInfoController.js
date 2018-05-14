@@ -201,6 +201,9 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
     };
 
     bInfo.updateCurrentLinks = function () {
+        if(!bInfo.currentData){
+            return;
+        }
         for (var i in bInfo.currentData.Links) {
             var link = bInfo.currentData.Links[i];
             for (var j in $rootScope.organizations) {
@@ -215,6 +218,9 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
     };
 
     bInfo.updateCurrentLinksType = function () {
+        if(!bInfo.currentData){
+            return;
+        }
         for (var i in bInfo.currentData.Links) {
             var link = bInfo.currentData.Links[i];
             if (!link.type || link.type <= 0) {
