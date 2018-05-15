@@ -589,7 +589,7 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 Usage: "工业锅炉",
                 mediumId: currentData.Medium ? currentData.Medium.Id : -1,
                 fuelId: currentData.Fuel ? currentData.Fuel.Uid : "",
-                formId: currentData.Form ? currentData.Form.Id : -1,
+                formId: currentData.Form ? currentData.Form.Id : 0,
                 templateId:currentData.Template ? currentData.Template.TemplateId : -1,
                 evaporatingCapacity: currentData.EvaporatingCapacity,
 
