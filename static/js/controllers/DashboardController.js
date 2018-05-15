@@ -781,7 +781,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         // console.warn("items_organization:", items.length);
         items = bMonitor.filterBurning(items);
         // console.warn("items_burning:", items.length);
-        items = bMonitor.filterForm(items);
+        // items = bMonitor.filterForm(items);
 
         items = bMonitor.filterTemplate(items);
         // console.warn("items_medium:", items.length);
