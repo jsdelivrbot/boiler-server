@@ -436,7 +436,7 @@ func (ctl *BoilerController) BoilerListWeixin() {
 		"Uid", "Name",
 		"Enterprise__Name", "Factory__Name", "Maintainer__Name", "Supervisor__Name",
 		"CertificateNumber", "DeviceCode", "ModelCode", "RegisterCode",
-		"Form__Name", "Form__Id",
+		"Form__Name", "Form__Id","Template__TemplateId",
 		"Fuel__Name", "Fuel__Type__Name", "Fuel__Type__Id",
 		"Medium__Id", "Medium__Name",
 		"Address__Location__LocationId", "Address__Location__Name", "Address__Location__LocationName",
