@@ -4,7 +4,7 @@ type Boiler struct {
 	MyUidObject
 
 	//锅炉类型* 卧式-双筒 etc.
-	Form				*BoilerTypeForm			`orm:"rel(fk)"`
+	Form				*BoilerTypeForm			`orm:"rel(fk);null"`
 	//锅炉介质：蒸汽锅炉、热水锅炉、有机热载体锅炉
 	Medium				*BoilerMedium			`orm:"rel(fk)"`
 	//锅炉用途：热电锅炉、工业锅炉
