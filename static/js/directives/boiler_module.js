@@ -105,6 +105,8 @@ boilerAdmin.directive('boilerModule', function () {
         switch (bModule.boiler.Template.TemplateId){
             case 201:
             case 202:
+            case 203:
+            case 204:
                 bModule.moduleId = BOILE_MODULE_COAL_DOUBLE;
                 break;
             case 205:
@@ -121,6 +123,10 @@ boilerAdmin.directive('boilerModule', function () {
                 break;
             case 1006:
                 bModule.moduleId = BOILE_MODULE_HEAT_STEAM_SYSTEM;
+                break;
+            case 1007:
+            case 1008:
+                bModule.moduleId = BOILE_MODULE_GAS;
                 break;
 
 
