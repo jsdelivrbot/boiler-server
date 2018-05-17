@@ -623,6 +623,10 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                     case 203:
                         imgName = 'coalsingle';
                         break;
+                    case 202:
+                    case 204:
+                        imgName = 'coaldouble';
+                        break;
                     case 205:
                         imgName = 'boilerwater';
                         break;
@@ -635,6 +639,12 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                         break;
                     case 1005:
                         imgName = 'zhutie';
+                        break;
+                    case 1007:
+                        imgName = 'gasboiler';
+                        break;
+                    case 1008:
+                        imgName = 'gasboiler_v';
 
                 }
 
