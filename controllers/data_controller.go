@@ -99,7 +99,6 @@ func (ctl *DataController) AddData(data models.DataInterface, needUpdate bool, c
 		crtUsr = UsrCtl.GetCurrentUser()
 	}
 	//fmt.Println("isSysUser: ", isSysUser, "\nisSysRole: ", isSysRole)
-
 	switch err {
 	case orm.ErrNoRows:
 		fallthrough

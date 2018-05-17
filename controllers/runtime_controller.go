@@ -1022,7 +1022,12 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 	}
 
 	boiler = BlrCtl.Boiler(b.Uid)
-
+	var combined models.BoilerTerminalCombined
+	if err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Terminal").Filter("Boiler__Uid",b.Uid).Filter("TerminalSetId",1).One(&combined);err!=nil{
+		goazure.Error("Query boiler_terminal_combined Error",err)
+		return
+	}
+	fmt.Println("terminal:",combined.TerminalCode)
 	if len(b.RuntimeQueue) <= 0 {
 		b.RuntimeQueue = ParamCtrl.ParamQueueWithBoiler(boiler)
 		switch scope {
@@ -1093,6 +1098,11 @@ func (ctl *RuntimeController) BoilerRuntimeInstants() {
 		for _, r := range rs {
 			if  r["Parameter"] == int64(paramId) {
 				r["ParameterCategory"] = param.Category.Id
+				var channel models.RuntimeParameterChannelConfig
+				if err:=dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").Filter("Terminal__Uid",combined.Terminal.Uid).Filter("Parameter__Id",param.Id).One(&channel);err!=nil{
+					goazure.Error("Query channel_config by param and terminal Error")
+				}
+				r["SwitchStatus"] = channel.SwitchStatus
 				rtms = append(rtms, r)
 				num++
 				break
