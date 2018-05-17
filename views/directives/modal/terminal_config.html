@@ -209,8 +209,8 @@
     <button class="btn red" type="button" ng-show="$modal.editing && $modal.currentData" ng-click="$modal.delete()">删除</button>
     <button type="button" class="btn ladda-button"
             ng-show="$modal.editing"
-            ng-disabled="$modal.code.length !== 6"
-            ng-class="[{'btn-primary': $modal.code.length === 6}, {'grey': $modal.code.length !== 6}]"
+            ng-disabled="$modal.code.length !== 6 || !$modal.org"
+            ng-class="[{'btn-primary': $modal.code.length === 6 && $modal.org}, {'grey': $modal.code.length !== 6 || !$modal.org}]"
             data-style="zoom-out"
             id="boiler_ok" ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
     <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>

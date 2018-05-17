@@ -620,7 +620,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
     };
 
     $modal.ok = function () {
-        if (!$modal.code.length || $modal.code.length !== 6) {
+        if (!$modal.code.length || $modal.code.length !== 6 || !$modal.org) {
             return;
         }
         Ladda.create(document.getElementById('boiler_ok')).start();
