@@ -125,7 +125,6 @@ boilerAdmin.directive('boilerModule', function () {
                 bModule.moduleId = BOILE_MODULE_HEAT_STEAM_SYSTEM;
                 break;
             case 1007:
-            case 1008:
                 bModule.moduleId = BOILE_MODULE_GAS;
                 break;
 
