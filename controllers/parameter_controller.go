@@ -163,7 +163,7 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 				cnf.Length = cnf.Parameter.Length
 			}
 			cnf.Uid = uuid.New()
-			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber == 2) {
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH  {
 				if c.SwitchValue == 0 {
 					c.SwitchValue = 1
 				}
