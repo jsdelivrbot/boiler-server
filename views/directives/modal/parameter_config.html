@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h3 class="modal-title" id="modal-title" style="display: inline-block;">{{ $modal.title }}</h3>
-    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modal.data.Parameter.Id }}</span>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block;">#{{ $modal.data.Id }}</span>
 </div>
 <style type="text/css">
     div.input-group.form-group,
@@ -114,7 +114,7 @@
         <div class="row">
             <div class="form-group col-md-12">
                 <label><i class="icon-note"></i> 备注： </label>
-                <textarea ng-model="$modal.data.Parameter.Remark"
+                <textarea ng-model="$modal.data.Remark"
                           class="form-control ng-pristine ng-valid ng-touched has-success"
                           placeholder="在这里输入备注内容">
             </textarea>

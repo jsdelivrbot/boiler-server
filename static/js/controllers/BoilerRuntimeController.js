@@ -174,7 +174,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                 */
                 value = d.Value;
                 if (d.ParameterCategory === 11) {
-                    d.SwitchFlag = d.AlarmLevel;
+                    d.SwitchFlag = d.SwitchStatus;
                     d.AlarmLevel = 0;
                 }
 

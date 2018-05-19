@@ -614,14 +614,18 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         }).then(function (res) {
             boiler.imgName = function() {
 
-                var imgName = boiler.Template.TemplateId === 101 ? 'fb' : 'coalsingle';
+                var imgName = 'coalsingle';
                 switch (boiler.Template.TemplateId){
                     case 101:
-                        imgName = 'fb';
-                        break;
+                        // imgName = 'fb';
+                        // break;
                     case 201:
                     case 203:
                         imgName = 'coalsingle';
+                        break;
+                    case 202:
+                    case 204:
+                        imgName = 'coaldouble';
                         break;
                     case 205:
                         imgName = 'boilerwater';
@@ -635,6 +639,11 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                         break;
                     case 1005:
                         imgName = 'zhutie';
+                        break;
+                    case 1007:
+                        imgName = 'gasboiler';
+                        break;
+
 
                 }
 
@@ -935,7 +944,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             }
 
 
-            if (bMonitor.aBurning === (item.isOnline && item.isBurning)) {
+            if (bMonitor.aBurning === item.isBurning) {
                 matchNum++;
                 return true;
             }
