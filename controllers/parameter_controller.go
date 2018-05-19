@@ -158,10 +158,12 @@ func (ctl *ParameterController) ChannelIssuedUpdate() {
 			}
 			fmt.Println("p:",cnf)
 			fmt.Println("cnf.pararamter:",cnf.Parameter)
-			cnf.Name = cnf.Parameter.Name
-			cnf.Length = cnf.Parameter.Length
+			if cnf.Parameter != nil{
+				cnf.Name = cnf.Parameter.Name
+				cnf.Length = cnf.Parameter.Length
+			}
 			cnf.Uid = uuid.New()
-			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH {
+			if cnf.ChannelType == models.CHANNEL_TYPE_SWITCH && (cnf.ChannelNumber == 1 || cnf.ChannelNumber == 2) {
 				if c.SwitchValue == 0 {
 					c.SwitchValue = 1
 				}
@@ -259,6 +261,7 @@ func (ctl *ParameterController) RefreshParameters() {
 	var params []*models.RuntimeParameter
 	qs := dba.BoilerOrm.QueryTable("runtime_parameter")
 	if num, err := qs.RelatedSel("Category").RelatedSel("Organization").
+		Filter("IsDefault",false).
 		Filter("IsDeleted", false).OrderBy("Id").
 		All(&params); err != nil || num == 0 {
 		goazure.Error("Get RuntimeParameterList Error:", num, err)
