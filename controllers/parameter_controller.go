@@ -263,7 +263,7 @@ func (ctl *ParameterController) RefreshParameters() {
 	if num, err := qs.RelatedSel("Category").RelatedSel("Organization").
 		Filter("IsDefault",false).
 		Filter("IsDeleted", false).OrderBy("Id").
-		All(&params); err != nil || num == 0 {
+		Limit(-1).All(&params); err != nil || num == 0 {
 		goazure.Error("Get RuntimeParameterList Error:", num, err)
 	}
 
