@@ -326,6 +326,7 @@ func (ctl *BoilerController) IsBoilerBelongToUser(boiler *models.Boiler, usr *mo
 }
 
 func (ctl *BoilerController) BoilerList() ([]*models.Boiler, error) {
+	ctl.RefreshGlobalBoilerList()
 	usr := ctl.GetCurrentUser()
 	if usr == nil {
 		goazure.Info("Params:", ctl.Input())
