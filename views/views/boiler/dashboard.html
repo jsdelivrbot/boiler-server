@@ -49,8 +49,9 @@
         <th>锅炉名称</th>
         <th>从属机构</th>
         <th>关联终端号</th>
-        <th>型号</th>
-        <th>燃料</th>
+        <!--<th>型号</th>-->
+        <!--<th>燃料</th>-->
+        <th>炉型</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -65,8 +66,9 @@
         </td>
         <td>{{ data.Factory.Name }}</td>
         <td><span style="display: block;" ng-repeat="term in data.TerminalsCombined"> {{ term.TerminalCode }} </span></td>
-        <td>{{ data.ModelCode }}</td>
-        <td>{{ data.Fuel.Name }}</td>
+        <!--<td>{{ data.ModelCode }}</td>
+        <td>{{ data.Fuel.Name }}</td>-->
+        <td> {{data.Template.Name}} </td>
         <td>
             <a ng-click="info.viewInfo(data)" class="btn view btn-outline btn-circle blue view_btn">
                 <i class="fa fa-eye"></i> 查看

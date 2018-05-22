@@ -416,6 +416,14 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
     };
 
 
+
+    bMonitor.refresh = function () {
+        $http.get('/boiler_list/').then(function (res) {
+            $rootScope.boilers = res.data;
+        })
+    };
+    bMonitor.refresh();
+
     /**
      * Search Section
      */
