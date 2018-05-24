@@ -104,6 +104,13 @@
                class="btn delete btn-outline btn-circle btn-sm red delete_btn">
                 <i class="fa fa-trash-o"></i> 删除
             </a>
+
+            <a ng-show="currentUser.Role.RoleId <= 10"
+               ui-sref="user-account"
+               class="btn btn-outline btn-circle btn-sm green">
+                <i class="fa fa-plus"></i> 添加账号
+            </a>
+
         </td>
     </tr>
     </tbody>
