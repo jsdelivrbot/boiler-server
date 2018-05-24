@@ -250,10 +250,17 @@
                             <!--</td>-->
                             <td>{{ terminal.Name }}</td>
                             <!--<td>{{ terminal.setId }}</td>-->
-                            <td><a ng-click="info.unbind(terminal) "
+                            <td>
+                                <a ui-sref="terminal.dashboard"
                                    class="btn btn-sm btn-outline btn-circle red delete_btn">
-                                <i class="fa fa-minus"></i> 解绑
-                            </a></td>
+                                    <i class="fa fa-minus"></i> 解绑
+                                </a>
+
+                                <a ng-click="info.unbind(terminal) " ng-show="currentUser.Role.RoleId <= 11"
+                                   class="btn btn-sm btn-outline btn-circle green">
+                                    <i class="fa fa-terminal"></i> 终端管理
+                                </a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

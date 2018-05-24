@@ -259,14 +259,14 @@ angular.module('BoilerAdmin').controller('ModalAlarmCtrl', function ($uibModalIn
         console.error("Get Alarm Runtime Failed:", e);
     });
 
-    $http.post("/boiler_alarm_feedback_list/", {
+    /*$http.post("/boiler_alarm_feedback_list/", {
         uid: currentData.Uid
     }).then(function (res) {
         console.warn("Get Alarm Feedback Resp:", res);
         $modal.feedbacks = res.data;
     }, function (e) {
         console.error("Get Alarm Runtime Failed:", e);
-    });
+    });*/
 
 
     //$modal.title = "#" + currentData.DialogueId + " " + currentData.Name;
