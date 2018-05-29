@@ -767,7 +767,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             setTimeout(function () {
                 bMonitor.fetchStatus(boiler);
                 bMonitor.fetchThumbParam(boiler);
-            }, 15000);
+            }, 5000);
         });
     };
 
