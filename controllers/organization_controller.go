@@ -318,7 +318,7 @@ func (ctl *OrganizationController) OrganizationDelete() {
 	var organization models.Organization
 	var users []*models.User
 
-	if !usr.IsAdmin() {
+	if !usr.IsAllowCreateOrganization() {
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte("Permission Denied!"))
 		goazure.Error("Permission Denied!")
