@@ -112,7 +112,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
         setTimeout(function () {
             bRuntime.fetchStatus(boiler);
-        }, 15000);
+        }, 5000);
     };
 
     bRuntime.fetchRuntime = function (boiler) {
