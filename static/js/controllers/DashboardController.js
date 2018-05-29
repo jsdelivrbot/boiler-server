@@ -26,8 +26,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2),
         DTColumnDefBuilder.newColumnDef(3),
-        DTColumnDefBuilder.newColumnDef(4),
-        DTColumnDefBuilder.newColumnDef(5).notSortable()
+        DTColumnDefBuilder.newColumnDef(4).notSortable()
     ];
 
     bMonitor.mapColumnDefs = [
@@ -768,7 +767,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
             setTimeout(function () {
                 bMonitor.fetchStatus(boiler);
                 bMonitor.fetchThumbParam(boiler);
-            }, 15000);
+            }, 5000);
         });
     };
 

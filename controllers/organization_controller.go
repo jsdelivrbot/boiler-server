@@ -129,12 +129,12 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 	}
 
 	if 	!usr.IsAdmin() {
-		if 	usr.Organization.Uid != organization.Uid &&
+		if  usr.Role.RoleId == models.USER_ROLE_ORG_USER  ||(	usr.Organization.Uid != organization.Uid &&
 			!usr.Organization.IsSupervisor &&
 			(organization.CreatedBy == nil || usr.Uid != 			organization.CreatedBy.Uid) &&
-			(usr.Organization == nil || organization.SuperOrganization == nil || usr.Organization.Uid != organization.SuperOrganization.Uid) {
+			(usr.Organization == nil || organization.SuperOrganization == nil || usr.Organization.Uid != organization.SuperOrganization.Uid) ){
 			ctl.Ctx.Output.SetStatus(403)
-			ctl.Ctx.Output.Body([]byte("Permission Denied!"))
+			ctl.Ctx.Output.Body([]byte("权限不足!"))
 			goazure.Error("Permission Denied!")
 			return
 		}
@@ -318,7 +318,7 @@ func (ctl *OrganizationController) OrganizationDelete() {
 	var organization models.Organization
 	var users []*models.User
 
-	if !usr.IsAdmin() {
+	if !usr.IsAllowCreateOrganization() {
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte("Permission Denied!"))
 		goazure.Error("Permission Denied!")

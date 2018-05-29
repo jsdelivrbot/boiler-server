@@ -9,8 +9,9 @@
         <th>序号</th>
         <th>锅炉名称</th>
         <th>制造企业</th>
-        <th>注册码</th>
-        <th>型号</th>
+        <!--<th>注册码</th>-->
+        <!--<th>型号</th>-->
+        <th>锅炉形态</th>
         <th>状态</th>
     </tr>
     </thead>
@@ -30,8 +31,9 @@
                 <!--<span class="label label-ent label-sm label-default">{{ boiler.Enterprise.Name }}</span>-->
             </td>
             <td>{{ boiler.Factory.Name }}</td>
-            <td>{{ boiler.RegisterCode }}</td>
-            <td>{{ boiler.ModelCode }}</td>
+            <!--<td>{{ boiler.RegisterCode }}</td>
+            <td>{{ boiler.ModelCode }}</td>-->
+            <td>{{ boiler.Template.Name }}</td>
             <td>
 
                 <div class="status-icon" uib-tooltip="终端状态" tooltip-class="pop_green" ng-class="[{'success': boiler.isOnline}, { 'default': !boiler.isOnline}]"></div>
