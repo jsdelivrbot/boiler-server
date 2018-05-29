@@ -174,6 +174,252 @@ func (ctl *AlarmController) BoilerAlarmList() {
 	ctl.ServeJSON()
 }
 
+func (ctl *AlarmController) BoilerAlarmListMini() {
+	usr := ctl.GetCurrentUser()
+	if usr == nil {
+		goazure.Info("Params:", ctl.Input())
+		token := ctl.Input()["token"][0]
+
+		var err error
+		usr, err = ctl.GetCurrentUserWithToken(token)
+		if err != nil {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(err.Error()))
+
+			return
+		}
+	}
+	var boilerUid string
+	goazure.Warn("Alarm GET URL:", ctl.Input())
+	if ctl.Input()["boiler"] != nil &&
+		len(ctl.Input()["boiler"]) > 0 &&
+		ctl.Input()["boiler"][0] != "undefined" {
+		boilerUid = ctl.Input()["boiler"][0]
+	}
+
+	var boilers []models.Boiler
+	if !usr.IsAdmin() || len(boilerUid) > 0 {
+		qs := dba.BoilerOrm.QueryTable("boiler")
+		if usr.IsCommonUser() ||
+			usr.Status == models.USER_STATUS_INACTIVE ||
+			usr.Status == models.USER_STATUS_NEW {
+			qs = qs.Filter("IsDemo", true)
+		} else if usr.IsOrganizationUser() {
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
+			cond := orm.NewCondition().AndCond(orgCond)
+			qs = qs.SetCond(cond).Filter("IsDemo", false)
+		}
+		if len(boilerUid) > 0 {
+			qs = qs.Filter("Uid", boilerUid)
+		}
+
+		if num, err := qs.Filter("IsDeleted", false).OrderBy("IsDemo", "Name").All(&boilers); num == 0 || err != nil {
+			goazure.Error("Read BoilerList For Alarm Error: ", err, num)
+		}
+	}
+
+	if !usr.IsAdmin() && len(boilers) <= 0 {
+		e := fmt.Sprintln("No Admin && No Boiler Accessed")
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		goazure.Error(e)
+		return
+	}
+
+	var objs []orm.Params
+	qa := dba.BoilerOrm.QueryTable("boiler_alarm")
+	qa = qa.RelatedSel("Boiler__Enterprise").RelatedSel("Parameter")
+	qa = qa.Filter("EndDate__gt", time.Now().Add(ALARM_INTERVAL * -1))
+	if !usr.IsAdmin() || len(boilers) > 0 {
+		qa = qa.Filter("Boiler__in", boilers)
+	}
+	if num, err := qa.Filter("IsDeleted", false).
+		OrderBy("-EndDate").
+		Values(&objs, "Uid", "StartDate", "EndDate", "Priority", "State", "Description",
+		"Boiler__Uid", "Boiler__Name", "Boiler__Enterprise__Name",
+		"Parameter__Name"); num == 0 || err != nil {
+		goazure.Error("Read AlarmList Error:", num, err)
+	}
+
+	for _, a := range objs {
+		//dba.BoilerOrm.LoadRelated(&a, "Runtime")
+		//goazure.Warn("RTM:", a)
+		//startDateStr := a.StartDate.Format("2006-01-02 15:04")
+		//endDateStr := a.EndDate.Format("2006-01-02 15:04")
+
+		dateText := func(date time.Time) string {
+			var str string
+			nYear, nMonth, nDay := time.Now().Date()
+			dYear, dMonth, dDay := date.Date()
+
+			if nYear == dYear {
+				if nMonth == dMonth && nDay == dDay {
+					str = date.Format("15:04")
+				} else {
+					str = date.Format("01/02 15:04")
+				}
+			} else {
+				str = date.Format("2006/01/02 15:04")
+			}
+
+			return str
+		}
+
+		start := a["StartDate"].(time.Time)
+		end := a["EndDate"].(time.Time)
+		duration := end.Sub(start)
+
+		dueText := ""
+
+		days := duration / (time.Hour * 24)
+		duration -= days * time.Hour * 24
+		hours := duration / time.Hour
+		duration -= hours * time.Hour
+		minutes := duration / time.Minute
+
+		if days > 0 {
+			dueText += fmt.Sprintf("%d天", days)
+		}
+		if hours > 0 {
+			dueText += fmt.Sprintf("%d时", hours)
+		}
+		dueText += fmt.Sprintf("%d分", minutes)
+
+		startText := dateText(start)
+		endText := dateText(end)
+
+		a["Duration"] = duration
+		a["DueText"] = dueText
+		a["StartText"] = startText
+		a["EndText"] = endText
+	}
+
+	ctl.Data["json"] = objs
+	ctl.ServeJSON()
+}
+
+func (ctl *AlarmController) BoilerAlarmHistoryListMini() {
+	usr := ctl.GetCurrentUser()
+	if usr == nil {
+		goazure.Info("Params:", ctl.Input())
+		token := ctl.Input()["token"][0]
+
+		var err error
+		usr, err = ctl.GetCurrentUserWithToken(token)
+		if err != nil {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(err.Error()))
+
+			return
+		}
+	}
+	var boilerUid string
+	goazure.Warn("Alarm GET URL:", ctl.Input())
+	if ctl.Input()["boiler"] != nil &&
+		len(ctl.Input()["boiler"]) > 0 &&
+		ctl.Input()["boiler"][0] != "undefined" {
+		boilerUid = ctl.Input()["boiler"][0]
+	}
+
+	var boilers []models.Boiler
+	if !usr.IsAdmin() || len(boilerUid) > 0 {
+		qs := dba.BoilerOrm.QueryTable("boiler")
+		if usr.IsCommonUser() ||
+			usr.Status == models.USER_STATUS_INACTIVE ||
+			usr.Status == models.USER_STATUS_NEW {
+			qs = qs.Filter("IsDemo", true)
+		} else if usr.IsOrganizationUser() {
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
+			cond := orm.NewCondition().AndCond(orgCond)
+			qs = qs.SetCond(cond).Filter("IsDemo", false)
+		}
+		if len(boilerUid) > 0 {
+			qs = qs.Filter("Uid", boilerUid)
+		}
+
+		if num, err := qs.Filter("IsDeleted", false).OrderBy("IsDemo", "Name").All(&boilers); num == 0 || err != nil {
+			goazure.Error("Read BoilerList For Alarm Error: ", err, num)
+		}
+	}
+
+	//goazure.Warn("Boilers:", boilers)
+	if !usr.IsAdmin() && len(boilers) <= 0 {
+		e := fmt.Sprintln("No Admin && No Boiler Accessed")
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		goazure.Error(e)
+		return
+	}
+
+	var objs []orm.Params
+	qa := dba.BoilerOrm.QueryTable("boiler_alarm_history")
+	qa = qa.RelatedSel("Boiler__Enterprise").RelatedSel("Parameter")
+	if !usr.IsAdmin() || len(boilers) > 0 {
+		qa = qa.Filter("Boiler__in", boilers)
+	}
+	if num, err := qa.Filter("IsDeleted", false).OrderBy("-EndDate", "-IsDemo").Values(&objs, "Uid", "StartDate", "EndDate", "Priority", "Description", "IsDemo",
+		"Boiler__Uid", "Boiler__Name", "Boiler__Enterprise__Name",
+		"Parameter__Name"); num == 0 || err != nil {
+		goazure.Error("Read Alarm History List Error:", num, err)
+	}
+
+	for _, a := range objs {
+		//dba.BoilerOrm.LoadRelated(&a, "Runtime")
+		//goazure.Warn("RTM:", a)
+		//startDateStr := a.StartDate.Format("2006-01-02 15:04")
+		//endDateStr := a.EndDate.Format("2006-01-02 15:04")
+
+		dateText := func(date time.Time) string {
+			var str string
+			nYear, nMonth, nDay := time.Now().Date()
+			dYear, dMonth, dDay := date.Date()
+
+			if nYear == dYear {
+				if nMonth == dMonth && nDay == dDay {
+					str = date.Format("15:04")
+				} else {
+					str = date.Format("01/02 15:04")
+				}
+			} else {
+				str = date.Format("2006/01/02 15:04")
+			}
+
+			return str
+		}
+
+		start := a["StartDate"].(time.Time)
+		end := a["EndDate"].(time.Time)
+		duration := end.Sub(start)
+
+		dueText := ""
+
+		days := duration / (time.Hour * 24)
+		duration -= days * time.Hour * 24
+		hours := duration / time.Hour
+		duration -= hours * time.Hour
+		minutes := duration / time.Minute
+
+		if days > 0 {
+			dueText += fmt.Sprintf("%d天", days)
+		}
+		if hours > 0 {
+			dueText += fmt.Sprintf("%d时", hours)
+		}
+		dueText += fmt.Sprintf("%d分", minutes)
+
+		startText := dateText(start)
+		endText := dateText(end)
+
+		a["Duration"] = duration
+		a["DueText"] = dueText
+		a["StartText"] = startText
+		a["EndText"] = endText
+	}
+
+	ctl.Data["json"] = objs
+	ctl.ServeJSON()
+}
+
 func (ctl *AlarmController) BoilerAlarmHistoryList() {
 	usr := ctl.GetCurrentUser()
 	var boilerUid string

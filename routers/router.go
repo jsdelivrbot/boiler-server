@@ -222,6 +222,8 @@ func initWeixinRoutes() {
 	goazure.Router("/user_unbind_weixin_mini/", &controllers.UserThirdController{}, "get:UserUnbindWeixin")
 
 	goazure.Router("/boiler_list_weixin/", &controllers.BoilerController{}, "get:BoilerListWeixin")
+	goazure.Router("/boiler_alarm_list_mini",&controllers.AlarmController{},"get:BoilerAlarmListMini")
+	goazure.Router("/boiler_alarm_history_list_mini",&controllers.AlarmController{},"get:BoilerAlarmHistoryListMini")
 	goazure.Router("/boiler_runtime_daily_weixin/", &controllers.RuntimeController{}, "post:BoilerRuntimeDaily")
 
 	goazure.Router("/location_list_weixin/", &controllers.LocationController{}, "get:LocationListWeixin")
