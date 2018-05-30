@@ -22,7 +22,7 @@ var TermOffline bool = false
 var BatchFlag bool = true
 var ContentLogsFlag bool = true
 var IsReloadLogEnabled = true
-
+var Server string= "139.196.152.127:12000"
 var DbConnection string
 
 func init() {

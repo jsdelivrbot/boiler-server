@@ -97,7 +97,7 @@ type Info struct {
 }
 //锅炉重启等报文
 func SocketBoilerSend(code string,termSetId int32,value int)([]byte) {
-	server := "47.100.0.27:18887"
+	server := conf.Server
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
@@ -129,7 +129,7 @@ func SendConfig(reqBuf string,conn net.Conn) {
 
 //下发配置
 func (ctl *SocketController)SocketConfigSend(reqBuf string)([]byte) {
-	server := "47.100.0.27:18887"
+	server := conf.Server
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
@@ -165,7 +165,7 @@ func (ctl *SocketController)SocketConfigSend(reqBuf string)([]byte) {
 
 //重启
 func (ctl *SocketController)SocketTerminalRestart(code string)([]byte) {
-	server := "47.100.0.27:18887"
+	server := conf.Server
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
