@@ -88,7 +88,7 @@
             <div class="input-group">
                 <span class="input-group-addon">所属企业</span>
                 <ui-select ng-model="$modal.data.org"
-                           ng-disabled="$modal.data.role < 2 || $modal.data.role >= 20"
+                           ng-disabled="$modal.hasOrg || $modal.data.role < 2 || $modal.data.role >= 20 "
                            ng-change="$modal.dataChanged();"
                            theme="bootstrap">
                     <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
