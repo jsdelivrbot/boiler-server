@@ -106,9 +106,9 @@
             </a>
 
             <a ng-show="currentUser.Role.RoleId <= 10"
-               ui-sref="user-account"
+               ng-click="org.openAccount(data)"
                class="btn btn-outline btn-circle btn-sm green">
-                <i class="fa fa-plus"></i> 添加账号
+                <i class="fa fa-plus"></i> 账号
             </a>
 
         </td>

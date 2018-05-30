@@ -167,6 +167,33 @@ angular.module('BoilerAdmin').controller('OrganizationController', function($roo
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
+
+
+
+    organization.openAccount = function (data) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: '/directives/modal/user_account_info.html',
+            controller: 'ModalOrgAccountCtrl',
+            controllerAs: '$modal',
+            size: "",
+            windowClass: 'zindex',
+            resolve: {
+                currentData: function () {
+                    return data;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            // dialogue.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+
 });
 
 var organization;
@@ -401,6 +428,117 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
         currentData = null;
     };
 });
+
+
+angular.module('BoilerAdmin').controller('ModalOrgAccountCtrl', function ($uibModalInstance, $rootScope,$state, $http, $log, currentData) {
+    var $modal = this;
+
+    $modal.isValid = false;
+    $modal.data = {
+        org : currentData.Uid
+    };
+    $modal.hasOrg = true;
+
+
+    $http.get('/user_roles/')
+        .then(function (res) {
+            $modal.aRoles = res.data;
+            $modal.init();
+        }, function (err) {
+            console.error("Get Roles List Err: ", err);
+        });
+
+
+    $modal.init = function () {
+        $modal.roles = [];
+        if ($rootScope.currentUser.Role.RoleId < 10) {
+            angular.forEach($modal.aRoles, function (d, key) {
+                if (d.RoleId > $rootScope.currentUser.Role.RoleId) {
+                    $modal.roles.push({ id: d.RoleId, name: d.Name });
+                }
+            });
+        }
+
+        if (Math.floor($rootScope.currentUser.Role.RoleId / 10) === 1) {
+            angular.forEach($modal.aRoles, function (d, key) {
+                if (d.RoleId > $rootScope.currentUser.Role.RoleId && d.RoleId < 20) {
+                    $modal.roles.push({ id: d.RoleId, name: d.Name });
+                }
+            });
+        }
+
+        if ($rootScope.currentUser.Role.RoleId >= 20) {
+            angular.forEach($modal.aRoles, function (d, key) {
+                if (d.RoleId >= $rootScope.currentUser.Role.RoleId) {
+                    $modal.roles.push({ id: d.RoleId, name: d.Name });
+                }
+            });
+        }
+
+        if ($modal.roles.length === 1 && $modal.roles[0]) {
+            $modal.data.role = $modal.roles[0].id;
+        }
+    };
+
+
+    if ($rootScope.currentUser.Role.RoleId > 1) {
+        $modal.data.org = $rootScope.currentUser.Organization.Uid;
+    }
+
+
+    $modal.dataChanged = function () {
+        if ($modal.data.username.length < 6 || $modal.data.username.length > 16 ||
+            $modal.data.password.length < 6 || $modal.data.username.length > 16 ||
+            !$modal.data.role ||
+            $modal.data.role <= $rootScope.currentUser.Role.RoleId ||
+            ($modal.data.role > 1 && $modal.data.org.length <= 0)) {
+            $modal.isValid = false;
+
+            return;
+        }
+
+        $modal.isValid = true;
+    };
+
+    $modal.commit = function () {
+        if (!$modal.isValid) {
+            return
+        }
+
+        Ladda.create(document.getElementById('boiler_ok')).start();
+        $modal.data.uid = "";
+        $http.post("/user_update/", $modal.data)
+            .then(function (res) {
+                bAccount.refreshDataTables();
+                swal({
+                    title: "用户" + $modal.data.username + "添加成功",
+                    type: "success"
+                }).then(function () {
+                    $uibModalInstance.dismiss('cancel');
+                    $state.go("user-account");
+                });
+            }, function (err) {
+                swal({
+                    title: "添加用户失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+        Ladda.create(document.getElementById('boiler_ok')).stop();
+    };
+
+    $modal.delete = function () {
+
+    };
+
+    $modal.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+
+        currentData = null;
+    };
+});
+
+
 
 // Please note that the close and dismiss bindings are from $uibModalInstance.
 

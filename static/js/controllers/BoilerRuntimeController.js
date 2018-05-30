@@ -112,7 +112,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
 
         setTimeout(function () {
             bRuntime.fetchStatus(boiler);
-        }, 15000);
+        }, 5000);
     };
 
     bRuntime.fetchRuntime = function (boiler) {
@@ -204,7 +204,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                         label = "告警";
                         break;
                 }
-                if (bRuntime.boiler.Form.Id === 205) {
+                /*if (bRuntime.boiler.Form.Id === 205) {
                     switch (d.Parameter) {
                         case 1005:
                             name = "回水温度";
@@ -213,7 +213,7 @@ angular.module('BoilerAdmin').controller('BoilerRuntimeController', function($ro
                             name = "出水温度";
                             break;
                     }
-                }
+                }*/
 
                 if (d.ParameterCategory === 11) {
                     boiler.hasSwitchValue = true;
