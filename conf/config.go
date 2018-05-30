@@ -22,15 +22,17 @@ var TermOffline bool = false
 var BatchFlag bool = true
 var ContentLogsFlag bool = true
 var IsReloadLogEnabled = true
-var Server string= "139.196.152.127:12000"
+var Server string
 var DbConnection string
 
 func init() {
 	if IsRelease {
 		DbConnection = "holder2025:hold+123456789@tcp(rm-uf6s78595q8r68it7vo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
+		Server = "47.100.0.27:18887"
 		goazure.Warning("数据库连接到压力服")
 	} else {
 		DbConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
+		Server = "139.196.152.127:12000"
 		goazure.Warning("数据库连接到正式服")
 	}
 }
