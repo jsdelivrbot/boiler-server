@@ -26,6 +26,11 @@ var BlrCtl *BoilerController = &BoilerController{}
 
 const boilerDefautlPath string = "models/properties/boiler_defaults/"
 
+type TermBoilerStatus struct {
+	BoilerStatus  bool   `json:"boiler_status"`
+	TermStatus    bool   `json:"term_status"`
+}
+
 func init() {
 	BlrCtl.MainController = *MainCtrl
 
@@ -762,6 +767,25 @@ func (ctl *BoilerController) BoilerConfig(boilerUid string, config string) (inte
 	return value, nil
 }
 //***************************************** CONFIG END
+
+func (ctl *BoilerController) TerminalBoilerStatus() {
+	if ctl.Input()["boiler"] == nil || len(ctl.Input()["boiler"]) == 0 {
+		e := fmt.Sprintln("there is no boiler!")
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	var termBoilerStatus TermBoilerStatus
+	boilerUid := ctl.Input()["boiler"][0]
+	termStatus := ctl.IsOnline(boilerUid)
+	isBurning := ctl.IsBurning(boilerUid)
+	termBoilerStatus.TermStatus = termStatus
+	termBoilerStatus.BoilerStatus = isBurning
+	ctl.Data["json"]=termBoilerStatus
+	ctl.ServeJSON()
+}
+
 func (ctl *BoilerController) TermIsOnline(termSn int64) bool {
 	var status bool
 	var termStatus models.BoilerTermStatus
