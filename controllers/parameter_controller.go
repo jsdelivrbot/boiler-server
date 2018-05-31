@@ -967,6 +967,13 @@ func (ctl *ParameterController) ChannelConfigMatrix() {
 		}
 	}
 	goazure.Info("ChannelConfig Matrix:", matrix)
+	if matrix[0][2].AnalogueSwitch.Function == nil {
+		var noneFunc models.IssuedFunctionCode
+		if err:=dba.BoilerOrm.QueryTable("issued_function_code").Filter("Id",99).One(&noneFunc);err!=nil{
+			goazure.Error("Query issued_function_code Error",err)
+		}
+		matrix[0][2].AnalogueSwitch.Function = &noneFunc
+	}
 	ctl.Data["json"] = matrix
 	ctl.ServeJSON()
 }
