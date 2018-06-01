@@ -252,15 +252,21 @@
                             <!--<td>{{ terminal.setId }}</td>-->
                             <td>
                                 <a ng-click="info.unbind(terminal) " ng-show="currentUser.Role.RoleId <= 11"
-                                   class="btn btn-sm btn-outline btn-circle green">
+                                   class="btn btn-sm btn-outline btn-circle red delete_btn">
                                     解绑
                                 </a>
 
-                                <a ui-sref="terminal.dashboard"
-                                   class="btn btn-sm btn-outline btn-circle red delete_btn">
-
-                                    终端管理
+                                <a ui-sref="terminal.message({terminal:terminal.TerminalCode})"
+                                   class="btn btn-sm btn-outline btn-circle green">
+                                    调试
                                 </a>
+
+                                <button ng-click="info.channel(terminal)"
+                                        class="btn btn-sm btn-outline btn-circle green"
+                                        style="margin-left: 3px;">
+                                    配置
+                                </button>
+
                             </td>
                         </tr>
                         </tbody>

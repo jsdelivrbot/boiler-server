@@ -151,51 +151,7 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
     };
 
 
-    //消息调试
-    terminal.getOriginMessages = function () {
-        // terminal.msgData = {};
-        terminal.msgData.datasource = null;
-        terminal.msgData.isEmpty = true;
-        terminal.msgData.lastUpload = null;
-        // Ladda.create(document.getElementById('terminal_origin_messages')).start();
-        App.startPageLoading({message: '正在加载数据...'});
-        $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
-            .then(function (res) {
-                console.info("Get Terminal List Resp:", res);
-                setTimeout(function () {
-                    App.stopPageLoading();
-                }, 1500);
-                var datasource = res.data;
-                if (!datasource) {
-                    return;
-                }
 
-                for (var i = 0; i < datasource.length; i++) {
-                    var d = datasource[i];
-                    d.num = i;
-                    d.date = new Date(d.TS);
-                    for (var ic = 0; ic < terminal.calcCols.length; ic++) {
-                        var col = terminal.calcCols[ic];
-                        if (d[col]) {
-                            d[col] = parseInt(d[col]);
-                        }
-                    }
-                }
-
-                terminal.msgData.datasource = datasource;
-
-                if (datasource.length > 0){
-                    terminal.msgData.isEmpty = false;
-                }
-
-                // Ladda.create(document.getElementById('terminal_origin_messages')).stop();
-            }, function (e) {
-                setTimeout(function () {
-                    App.stopPageLoading();
-                }, 1500);
-                // Ladda.create(document.getElementById('terminal_origin_messages')).stop();
-            });
-    };
 
     /**
      * Modals
@@ -281,9 +237,9 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
             appendTo: parentElem,
             windowClass: 'zindex',
             resolve: {
-                // items: function () {
-                //     return terminal.items;
-                // }
+                currentData: function () {
+                    return currentData;
+                }
             }
         });
 
@@ -793,7 +749,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalCtrl', function ($uibModa
     };
 });
 
-angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($uibModalInstance, $uibModal, $rootScope, $scope, $http, $log) {
+angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($uibModalInstance, $uibModal, $rootScope, $scope, $http, $log,currentData) {
     var $modal = this;
     $modal.currentData = currentData;
     $modal.editing = editing;
@@ -856,7 +812,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
     });
 
 
-    $modal.terminalPass = "123456";
+    $modal.terminalPass = "";
 
     //通信参数
     $modal.initParam = function () {
@@ -1190,6 +1146,15 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         console.warn("$modal channel update!");
         if (!$modal.code.length || $modal.code.length !== 6) {
             console.error("$modal.code error:", $modal.code);
+            return;
+        }
+
+        if($modal.terminalPass!=="1234567"){
+            swal({
+                title: "终端密码错误",
+                // text:" ",
+                type: "error"
+            });
             return;
         }
         // Ladda.create(document.getElementById('channel_ok')).start();
@@ -1965,6 +1930,8 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
             template:null
         }
     ];
+
+    $scope.password = "";
     $http.get("/template_list").then(function (res) {
         $scope.templates = res.data;
         console.log($scope.templates);
@@ -1985,6 +1952,15 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
     };
 
     $scope.ok = function () {
+        if($scope.password!==1234567){
+            swal({
+                title: "配置密码错误",
+                // text: err.data,
+                type: "warning"
+            });
+            return;
+        }
+
         if($scope.items.length<=0){
             swal({
                 title: "没有配置数据",
@@ -2318,7 +2294,56 @@ angular.module('BoilerAdmin').controller("terminalConfigStatus",function ($scope
 
 });
 
+//调试
+angular.module('BoilerAdmin').controller("terminalMessageCtrl",function ($scope,$http,$stateParams) {
 
+    terminal.msgData.code = $stateParams.terminal;
+
+    terminal.getOriginMessages = function () {
+        // terminal.msgData = {};
+        terminal.msgData.datasource = null;
+        terminal.msgData.isEmpty = true;
+        terminal.msgData.lastUpload = null;
+        // Ladda.create(document.getElementById('terminal_origin_messages')).start();
+        App.startPageLoading({message: '正在加载数据...'});
+        $http.get('/terminal_origin_message_list/?dev=origin&terminal=' + terminal.msgData.code)
+            .then(function (res) {
+                console.info("Get Terminal List Resp:", res);
+                setTimeout(function () {
+                    App.stopPageLoading();
+                }, 1500);
+                var datasource = res.data;
+                if (!datasource) {
+                    return;
+                }
+
+                for (var i = 0; i < datasource.length; i++) {
+                    var d = datasource[i];
+                    d.num = i;
+                    d.date = new Date(d.TS);
+                    for (var ic = 0; ic < terminal.calcCols.length; ic++) {
+                        var col = terminal.calcCols[ic];
+                        if (d[col]) {
+                            d[col] = parseInt(d[col]);
+                        }
+                    }
+                }
+
+                terminal.msgData.datasource = datasource;
+
+                if (datasource.length > 0){
+                    terminal.msgData.isEmpty = false;
+                }
+
+                // Ladda.create(document.getElementById('terminal_origin_messages')).stop();
+            }, function (e) {
+                setTimeout(function () {
+                    App.stopPageLoading();
+                }, 1500);
+                // Ladda.create(document.getElementById('terminal_origin_messages')).stop();
+            });
+    };
+})
 
 
 
