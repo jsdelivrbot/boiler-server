@@ -134,7 +134,7 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 			(organization.CreatedBy == nil || usr.Uid != 			organization.CreatedBy.Uid) &&
 			(usr.Organization == nil || organization.SuperOrganization == nil || usr.Organization.Uid != organization.SuperOrganization.Uid) ){
 			ctl.Ctx.Output.SetStatus(403)
-			ctl.Ctx.Output.Body([]byte("Permission Denied!"))
+			ctl.Ctx.Output.Body([]byte("权限不足!"))
 			goazure.Error("Permission Denied!")
 			return
 		}
