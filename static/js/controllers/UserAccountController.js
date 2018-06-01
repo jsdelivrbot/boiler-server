@@ -31,7 +31,8 @@ angular.module('BoilerAdmin').controller('UserAccountController', function($root
         DTColumnDefBuilder.newColumnDef(2),
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4),
-        DTColumnDefBuilder.newColumnDef(5)//.notSortable()
+        DTColumnDefBuilder.newColumnDef(5),
+        DTColumnDefBuilder.newColumnDef(6).notSortable()
     ];
 
     bAccount.editing = false;

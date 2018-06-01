@@ -26,8 +26,7 @@ angular.module('BoilerAdmin').controller('BoilerMaintainController', function($r
         DTColumnDefBuilder.newColumnDef(2),
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4).notSortable(),
-        DTColumnDefBuilder.newColumnDef(5).notSortable(),
-        DTColumnDefBuilder.newColumnDef(6).notSortable()
+        DTColumnDefBuilder.newColumnDef(5).notSortable()
     ];
 
     bMaintain.getBoilers = function () {

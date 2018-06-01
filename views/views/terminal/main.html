@@ -43,16 +43,21 @@
                         <span class="caption-helper hide"></span>
                     </div>
                     <div class="actions">
+                        <div class="btn-group">
+                            <a ui-sref="template" class="btn green">通道模板 </a>
+                        </div>
+                        &nbsp;
+
                         <div class="btn-group" ng-show="currentUser.Role.RoleId < 10 && $state.current.name ==='terminal.dashboard'">
                             <button id="" ng-click="terminal.groupConfig()" class="btn sbold green">
-                                 批量配置导入
+                                 批量配置
                             </button>
                         </div>
                         &nbsp;
 
                         <div class="btn-group" ng-show="currentUser.Role.RoleId < 10 && $state.current.name!='terminal.message'">
                             <button id="editable_1_new" ng-click="terminal.new()" class="btn sbold green">
-                                <i class="fa fa-plus"></i> 添加
+                                新增终端
                             </button>
                         </div>
 

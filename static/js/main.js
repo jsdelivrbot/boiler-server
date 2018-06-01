@@ -740,7 +740,8 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             '../assets/boiler/global/plugins/fullcalendar/fullcalendar.js' + clientkey,
 
                             'js/controllers/BoilerInfoController.js' + clientkey,
-                            'js/directives/table_boiler-info.js' + clientkey
+                            'js/directives/table_boiler-info.js' + clientkey,
+                            'js/controllers/TerminalController.js' + clientkey,
                         ]
                     });
                 }]

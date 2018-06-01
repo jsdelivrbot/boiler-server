@@ -560,6 +560,38 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
             }
         }]);
     };
+
+    bInfo.channel = function (data) {
+        currentData = data;
+        currentData.code = data.TerminalCode.toString();
+        // console.log(currentData);
+        editing = true;
+        var modalInstance = $uibModal.open({
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: '/directives/modal/terminal_channel_config.html',
+            controller: 'ModalTerminalChannelCtrl',
+            controllerAs: '$modal',
+            backdrop:"static",
+            size: "lg",
+            windowClass: 'zindex',
+            resolve: {
+                currentData: function () {
+                    return currentData;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            terminal.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+
+    };
+
+
+
 });
 
 var bInfo;
