@@ -1952,7 +1952,7 @@ angular.module('BoilerAdmin').controller('ModalGroupConfigCtrl', function ($scop
     };
 
     $scope.ok = function () {
-        if($scope.password!==1234567){
+        if($scope.password!=="1234567"){
             swal({
                 title: "配置密码错误",
                 // text: err.data,
