@@ -549,7 +549,17 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
     bMonitor.fetchStatus = function (boiler) {
 
-        $http.get('/boiler/state/is_online/?boiler=' + boiler.Uid)
+        $http.get("/terminal_boiler_status/?boiler="+ boiler.Uid)
+            .then(function (res) {
+                boiler.isOnline = res.data.term_status;
+                boiler.isBurning = res.data.boiler_status && boiler.isOnline;
+
+            },function (err) {
+                boiler.isOnline = false;
+                boiler.isBurning = false;
+            })
+
+        /*$http.get('/boiler/state/is_online/?boiler=' + boiler.Uid)
             .then(function (res) {
                 // console.error("Fetch Status Resp:", res.data, boiler.Name);
                 boiler.isOnline = res.data;
@@ -565,7 +575,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                     console.error('Fetch Status Err!', err);
                     boiler.isBurning = false;
                 });
-        });
+        });*/
     };
 
     bMonitor.fetchThumbParam = function (boiler) {

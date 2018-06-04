@@ -106,7 +106,7 @@
         <div class="mt-comments">
             <div class="mt-comment" ng-repeat="comment in $modal.dialogue.Comments">
                 <div class="mt-comment-img">
-                    <img width="40px;" height="40px;" ng-src="{{ settings.layoutPath }}/img/{{ comment.CreatedBy.Picture }}" /> </div>
+                    <img width="40px;" height="40px;" ng-src="{{ comment.CreatedBy.Picture }}" /> </div>
                 <div class="mt-comment-body">
                     <div class="mt-comment-info">
                         <span class="mt-comment-author">{{ comment.CreatedBy.Name }}</span>

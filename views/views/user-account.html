@@ -46,7 +46,7 @@
                     <div class="actions">
                         <div class="btn-group" ng-show="currentUser.Role.RoleId <= 10">
                             <button ng-click="account.new()" class="btn sbold green">
-                                <i class="fa fa-plus"></i> 添加
+                                新增账号
                             </button>
                         </div>
                         <!--<a class="btn btn-circle btn-icon-only btn-default tooltips" data-original-title="帮助" ui-sref="wiki" style="margin-left: 10px;">-->
@@ -119,7 +119,7 @@
                                     <th>用户名称</th>
 
                                     <th>所属企业</th>
-                                    <th>创建时间</th>
+                                    <!--<th>创建时间</th>-->
                                     <th>用户状态</th>
 
                                     <th>操作</th>
@@ -134,12 +134,12 @@
 
                                     <td>{{ data.Name }}</td>
                                     <td>{{ data.Organization.Name }}</td>
-                                    <td>{{ data.CreatedDate | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
+                                    <!--<td>{{ data.CreatedDate | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>-->
 
                                     <td><span ng-class="['label', {'label-danger': data.Status == 2}, {'label-warning': data.Status == 0}, {'label-info': data.Status == 1}, {'label-success': data.Role.RoleId == -1}]">{{ account.status[data.Status].name }}</span></td>
                                     <td>
                                         <a href="javascript:;" class="btn view btn-outline btn-circle btn-sm blue">
-                                            <i class="fa fa-edit"></i> 查看
+                                            <i class="fa fa-cog"></i> 设置
                                         </a>
                                     </td>
                                 </tr>
