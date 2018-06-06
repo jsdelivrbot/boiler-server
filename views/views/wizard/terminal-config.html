@@ -1,289 +1,431 @@
 
 <!--终端配置-->
+<div class="modal-header">
+    <h3 class="modal-title" ng-show="$modal.category !== 16" id="modal-title" style="display: inline-block;" >终端配置</h3>
+    <span ng-hide="$modal.template" class="ticket-id bold font-blue font-lg" style="display: inline-block;">终端编码{{ $modal.code }}</span>
+</div>
 
-<!--模拟通道-->
-<table class="table table-striped table-hover table-bordered conf_confirm">
-    <thead>
-    <tr>
-        <th colspan="3">模拟通道</th>
-        <th>功能码</th>
-        <th>高低字节</th>
-        <th>MODBUS地址</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && !chan_row[0].noStatus">
-        <td width="10%" class="chanel_label">
-            模拟通道A
-        </td>
-        <td width="10%" class="chanel_label">
-            通道{{outerIndex +1}}
-        </td>
-        <td>
+<style type="text/css">
+    div.input-group.form-group,
+    div.btn-group.form-group {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 
-            <div>
-                [{{$modal.dataMatrix[outerIndex][0].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Id }}</small>]
-                (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Scale }}</small>
-                <small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Unit }}</small>)
-            </div>
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Function.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Byte.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Modbus}}
-        </td>
-    </tr>
-    <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="$index<12 && !chan_row[1].noStatus">
-        <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-            模拟通道B
-        </td>
-        <td class="chanel_label">
-            通道{{outerIndex +1}}
-        </td>
-        <td>
-            <div>
-                [{{$modal.dataMatrix[outerIndex][1].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Id }}</small>]
-                (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Scale }}</small>
-                <small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][1].Parameter.Unit }}</small>)
-            </div>
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Function.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Byte.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][1].AnalogueSwitch.Modbus}}
-        </td>
-    </tr>
-    </tbody>
+    .modal-body .input-group span.unit {
+        position: absolute;
+        left: auto;
+        right: 16px;
+        top: 8px;
+        float: right;
+        z-index: 10;
+        color: grey;
+    }
 
-</table>
+    .modal-body .input-group a.addon,
+    .modal-section .input-group a.addon {
+        position: absolute;
+        left: auto;
+        right: 6px;
+        top: 6px;
+        float: right;
+        z-index: 10;
+        padding: 4px;
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        line-height: 1em;
+    }
 
-<!--开关通道-->
-<table class="table table-striped table-hover table-bordered conf_confirm">
-    <thead>
-    <tr>
-        <th colspan="3">开关通道</th>
-        <th>功能码</th>
-        <th>MODBUS地址</th>
-        <th>位地址</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[2].noStatus">
-        <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-            开关通道1
-        </td>
-        <td class="chanel_label">
-            通道{{outerIndex +1}}
-        </td>
-        <td>
+    .modal-section {
+        padding: 15px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+    }
 
-            <div>
-                [{{$modal.dataMatrix[outerIndex][2].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][2].Parameter.Id }}</small>]
-            </div>
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Function.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Modbus}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.BitAddress}}
-        </td>
-    </tr>
-    <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[3].noStatus">
-        <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-            开关通道2
-        </td>
-        <td class="chanel_label">
-            通道{{outerIndex +1}}
-        </td>
-        <td>
-            <div ng-if="$modal.dataMatrix[outerIndex][3].Parameter==null">
-                [{{chan_row[3].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ chan_row[3].Parameter.Id }}</small>]
-            </div>
-            <div ng-if="$modal.dataMatrix[outerIndex][3].Parameter!=null">
-                [{{$modal.dataMatrix[outerIndex][3].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][3].Parameter.Id }}</small>]
-            </div>
+    .modal-body hr {
+        margin-top: 6px;
+    }
 
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Function.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Modbus}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.BitAddress}}
-        </td>
-    </tr>
-    <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[4].noStatus">
-        <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-            开关通道3
-        </td>
-        <td class="chanel_label">
-            通道{{outerIndex +1}}
-        </td>
-        <td>
-            <div>
-                [{{$modal.dataMatrix[outerIndex][4].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][4].Parameter.Id }}</small>]v
-            </div>
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Function.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Modbus}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.BitAddress}}
-        </td>
-    </tr>
-    </tbody>
-</table>
+    #channel div.ui-select-container {
+        display: inline-block;
+        float: left;
+        width: 72.8%;
+    }
 
-<!--状态通道-->
-<table class="table table-striped table-hover table-bordered conf_confirm">
-    <thead>
-    <tr>
-        <th colspan="3">状态通道</th>
-        <th>功能码</th>
-        <th>高低字节</th>
-        <th>MODBUS地址</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index"
-        ng-if="!chan_row[5].noStatus && $index<12">
-        <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
-            状态通道
-        </td>
-        <td class="chanel_label">
-            通道{{outerIndex +1}}
-        </td>
-        <td>
-            <div>
-                [{{$modal.dataMatrix[outerIndex][5].Parameter.Name}}]
-                [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][5].Parameter.Id }}</small>]
-            </div>
+    #channel div.dropdown-group {
+        display: inline-block;
+        float: left;
+        width: 13.4%;
+    }
 
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Function.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Byte.Name}}
-        </td>
-        <td>
-            {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Modbus}}
-        </td>
-    </tr>
-    </tbody>
-</table>
+    #channel button.btn-cell {
+        /*border-left: 1px solid #ccc;*/
+        width: 100%;
+        padding: 6px 3px;
+    }
 
-<!--通信参数-->
-<table class="table table-striped table-hover table-bordered conf_confirm">
-    <thead>
-    <tr>
-        <th colspan="2">参数类型</th>
-        <th colspan="4">参数配置</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            波特率
-        </td>
-        <td colspan="4">
-            {{$modal.BaudRate.Name}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            数据位
-        </td>
-        <td colspan="4">
-            {{$modal.dataBit.Name}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            停止位
-        </td>
-        <td colspan="4">
-            {{$modal.stopBit.Name}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            校验位
-        </td>
-        <td colspan="4">
-            {{$modal.checkDigit.Name}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            通信接口地址
-        </td>
-        <td colspan="4">
-            {{$modal.communiInterface.Name}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            从机地址
-        </td>
-        <td colspan="4">
-            {{$modal.subAdr.Name}}
-        </td>
-    </tr>
-    <!--<tr>-->
-    <!--<td colspan="2" class="chanel_label">-->
-    <!--底层应用支持-->
-    <!--</td>-->
-    <!--<td colspan="4">-->
-    <!--{{$modal.BaudRate}}-->
-    <!--</td>-->
-    <!--</tr>-->
-    <tr ng-show="currentUser.Role.RoleId <= 2">
-        <td colspan="2" class="chanel_label">
-            心跳包频率
-        </td>
-        <td colspan="4">
-            {{$modal.heartbeat.Name}}
-        </td>
-    </tr>
+    #channel .table > tbody > tr > td {
+        font-size: 13px;
+        padding: 1px;
+        border: 1px solid #ccc;
+    }
+
+    #channel .table > tbody > tr > td .btn-default {
+        border: none;
+    }
+
+    #channel .tabbable-line {
+        margin-left: 12px;
+    }
+
+    #channel .tabbable-line > .nav-tabs > li.open,
+    #channel .tabbable-line > .nav-tabs > li {
+        background: 0 0;
+        border-top: none;
+        border-bottom: none;
+        padding-top: 6px;
+    }
+
+    #channel .tabbable-line > .nav-tabs > li.open,
+    #channel .tabbable-line > .nav-tabs > li:hover {
+        border-top: 4px solid #9fe4ea;
+        padding-top: 2px;
+    }
+
+    #channel .tabbable-line > .nav-tabs > li.active {
+        background: 0 0;
+        border-top: 4px solid #36c6d3;
+        position: relative;
+        padding-top: 2px;
+    }
+
+    #channel.portlet.light .nav-tabs > li > a {
+        padding: 0 10px 6px 5px;
+    }
+
+    #channel.portlet.light > .portlet-title {
+        min-height: 0;
+    }
+
+    #channel .tabbable-line > .nav-tabs {
+        margin-top: -16px;
+    }
+
+    #channel .table input{
+        border: none;
+    }
+    #channel .table select{
+        border: none;
+    }
+    #channel .chanel_label{
+        color: #555;
+        text-align: center;
+        background-color: #eee;
+        border: 1px solid #ccc;
+    }
+    #channel .conf_confirm tr{
+        height:37px;
+    }
+    #channel .conf_confirm tr th{
+        color: #0b94ea;
+    }
+    #channel .table .has-error{
+        border: 1px solid #e73d4a;
+    }
+</style>
+
+<div class="modal-body">
+    <!--模拟通道-->
+    <table class="table table-striped table-hover table-bordered conf_confirm">
+        <thead>
+        <tr>
+            <th colspan="3">模拟通道</th>
+            <th>功能码</th>
+            <th>高低字节</th>
+            <th>MODBUS地址</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="chan in ">
+            <td width="10%" class="chanel_label">
+                模拟通道A
+            </td>
+            <td width="10%" class="chanel_label">
+                通道{{outerIndex +1}}
+            </td>
+            <td>
+
+                <div>
+                    [{{$modal.dataMatrix[outerIndex][0].Parameter.Name}}]
+                    [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Id }}</small>]
+                    (<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Scale }}</small>
+                    <small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][0].Parameter.Unit }}</small>)
+                </div>
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Function.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Byte.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][0].AnalogueSwitch.Modbus}}
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+    <!--开关通道-->
+    <table class="table table-striped table-hover table-bordered conf_confirm">
+        <thead>
+        <tr>
+            <th colspan="3">开关通道</th>
+            <th>功能码</th>
+            <th>MODBUS地址</th>
+            <th>位地址</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[2].noStatus">
+            <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                开关通道1
+            </td>
+            <td class="chanel_label">
+                通道{{outerIndex +1}}
+            </td>
+            <td>
+
+                <div>
+                    [{{$modal.dataMatrix[outerIndex][2].Parameter.Name}}]
+                    [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][2].Parameter.Id }}</small>]
+                </div>
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Function.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.Modbus}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][2].AnalogueSwitch.BitAddress}}
+            </td>
+        </tr>
+        <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[3].noStatus">
+            <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                开关通道2
+            </td>
+            <td class="chanel_label">
+                通道{{outerIndex +1}}
+            </td>
+            <td>
+                <div ng-if="$modal.dataMatrix[outerIndex][3].Parameter==null">
+                    [{{chan_row[3].Parameter.Name}}]
+                    [<small class="font-blue-oleo">{{ chan_row[3].Parameter.Id }}</small>]
+                </div>
+                <div ng-if="$modal.dataMatrix[outerIndex][3].Parameter!=null">
+                    [{{$modal.dataMatrix[outerIndex][3].Parameter.Name}}]
+                    [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][3].Parameter.Id }}</small>]
+                </div>
+
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Function.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.Modbus}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][3].AnalogueSwitch.BitAddress}}
+            </td>
+        </tr>
+        <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index" ng-if="!chan_row[4].noStatus">
+            <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                开关通道3
+            </td>
+            <td class="chanel_label">
+                通道{{outerIndex +1}}
+            </td>
+            <td>
+                <div>
+                    [{{$modal.dataMatrix[outerIndex][4].Parameter.Name}}]
+                    [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][4].Parameter.Id }}</small>]v
+                </div>
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Function.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.Modbus}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][4].AnalogueSwitch.BitAddress}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--状态通道-->
+    <table class="table table-striped table-hover table-bordered conf_confirm">
+        <thead>
+        <tr>
+            <th colspan="3">状态通道</th>
+            <th>功能码</th>
+            <th>高低字节</th>
+            <th>MODBUS地址</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="chan_row in $modal.chanMatrix track by $index" ng-init="outerIndex = $index"
+            ng-if="!chan_row[5].noStatus && $index<12">
+            <td width="30%" style="color: #555; text-align: center;background-color: #eee; border: 1px solid #ccc; ">
+                状态通道
+            </td>
+            <td class="chanel_label">
+                通道{{outerIndex +1}}
+            </td>
+            <td>
+                <div>
+                    [{{$modal.dataMatrix[outerIndex][5].Parameter.Name}}]
+                    [<small class="font-blue-oleo">{{ $modal.dataMatrix[outerIndex][5].Parameter.Id }}</small>]
+                </div>
+
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Function.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Byte.Name}}
+            </td>
+            <td>
+                {{$modal.chanMatrix[outerIndex][5].AnalogueSwitch.Modbus}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--通信参数-->
+    <table class="table table-striped table-hover table-bordered conf_confirm">
+        <thead>
+        <tr>
+            <th colspan="2">参数类型</th>
+            <th colspan="4">参数配置</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                波特率
+            </td>
+            <td colspan="4">
+                {{$modal.BaudRate.Name}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                数据位
+            </td>
+            <td colspan="4">
+                {{$modal.dataBit.Name}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                停止位
+            </td>
+            <td colspan="4">
+                {{$modal.stopBit.Name}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                校验位
+            </td>
+            <td colspan="4">
+                {{$modal.checkDigit.Name}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                通信接口地址
+            </td>
+            <td colspan="4">
+                {{$modal.communiInterface.Name}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                从机地址
+            </td>
+            <td colspan="4">
+                {{$modal.subAdr.Name}}
+            </td>
+        </tr>
+        <!--<tr>-->
+        <!--<td colspan="2" class="chanel_label">-->
+        <!--底层应用支持-->
+        <!--</td>-->
+        <!--<td colspan="4">-->
+        <!--{{$modal.BaudRate}}-->
+        <!--</td>-->
+        <!--</tr>-->
+        <tr ng-show="currentUser.Role.RoleId <= 2">
+            <td colspan="2" class="chanel_label">
+                心跳包频率
+            </td>
+            <td colspan="4">
+                {{$modal.heartbeat.Name}}
+            </td>
+        </tr>
 
 
 
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<table>
-    <tbody>
-    <tr>
-        <td colspan="2" class="chanel_label">
-            终端设置密码
-        </td>
-        <td colspan="4">
-            <input type="password" ng-model="$modal.terminalPass" class="form-control">
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <table>
+        <tbody>
+        <tr>
+            <td colspan="2" class="chanel_label">
+                终端设置密码
+            </td>
+            <td colspan="4">
+                <input type="password" ng-model="$modal.terminalPass" class="form-control">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-footer">
+    <button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData"
+            ng-click="matrixReset()" style="float: left">恢复默认
+    </button>
+    <button type="button" class="btn btn-info"
+            ng-show="$modal.category === 16"
+            ng-click="$modal.templateSave()"
+            style="float: left">
+        模板另存为
+    </button>
+
+    <button type="button" class="btn btn-primary"
+            ng-show="$modal.category !== 9"
+            ng-click="$modal.categoryChanged($modal.category-1)">上一步</button>
+    <button type="button" class="btn btn-primary"
+            ng-show="$modal.category !== 16"
+            ng-click="$modal.categoryChanged($modal.category+1)">下一步</button>
+
+    <button type="button" id="channel_ok"
+            class="btn ladda-button btn-primary"
+            ng-show="$modal.editing && $modal.category === 16"
+            data-style="expand-right"
+            ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
+    <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
+</div>
+
+
+
+
+
 
