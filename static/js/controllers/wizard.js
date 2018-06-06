@@ -1,6 +1,6 @@
 
 //锅炉配置
-angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$rootScope ,$stateParams,$http) {
+angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$rootScope,$state ,$stateParams,$http) {
 
     var uid = $stateParams.uid;
     if(!uid){
@@ -46,7 +46,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
         $scope.mediums = [{ Id: -1, Name: '请选择...' }];
         $scope.forms = [{ Id: -1, Name: '请选择...' }];
         $scope.fuels = [{ Uid: '', Name: '请选择...' }];
-        $scope.templates = [{ Id: -1, Name: '请选择...' }];
+        $scope.templates = [{ TemplateId: -1, Name: '请选择...' }];
 
         $scope.enterprises = [{ Uid: '', name: '请选择...' }];
         $scope.factories = [{ Uid: '', name: '请选择...' }];
@@ -119,6 +119,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 
             $scope.templates.push(template);
         }
+        console.log($scope.templates);
 
         for (var i in $rootScope.fuels) {
             var fuel = $rootScope.fuels[i];
@@ -166,7 +167,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 
     $scope.save = function () {
         console.info("ready to update bInfo!");
-        Ladda.create(document.getElementById('boiler_basic_submit')).start();
+        // Ladda.create(document.getElementById('boiler_basic_submit')).start();
         $scope.data.links = [];
         for (var i in $scope.links) {
             var li = $scope.links[i];
@@ -180,22 +181,22 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 
         $http.post("/fast_boiler_add", $scope.data)
             .then(function (res) {
-                console.error("Update bInfo Resp:", res);
-                // $rootScope.getBoilerList();
+                // console.error("Update bInfo Resp:", res);
+                $rootScope.getBoilerList();
                 swal({
                     title: "设备基本信息更新成功",
                     type: "success"
                 }).then(function () {
-
+                    console.log(res.data);
+                    $state.go("wizard.term-bind",{uid:res.data});
                 });
 
-                $uibModalInstance.close('success');
                 // $scope.initData(res.data);
                 // bInfo.currentData = res.data;
                 // bInfo.reset();
                 // $scope.currentData = res.data;
-                Ladda.create(document.getElementById('boiler_basic_submit')).stop();
-                $state.go("wizard.term-bind");
+                // Ladda.create(document.getElementById('boiler_basic_submit')).stop();
+
 
             }, function (err) {
                 swal({
@@ -203,7 +204,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
                     text: err.data,
                     type: "error"
                 });
-                Ladda.create(document.getElementById('boiler_basic_submit')).stop();
+                // Ladda.create(document.getElementById('boiler_basic_submit')).stop();
             });
     };
 
@@ -219,11 +220,10 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$rootScope,$state,$stateParams,$http) {
 
     var uid = $stateParams.uid;
-
     /*$scope.currentData = currentData;
     $scope.name = currentData.Name;*/
     $scope.terminal = [
-        NaN
+        {value:"",bind:false}
     ];
 
     /*$http.get('/terminal_list/?scope=boiler_bind&boiler=' + uid)
@@ -272,25 +272,35 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
         });
     */
 
+    $scope.getBoiler = function () {
+        $http.get("boiler_list/?boiler="+uid).then(function (res) {
+            $scope.boiler = res.data[0];
+            console.log($scope.boiler);
+        },function (err) {
+
+        });
+    };
+    $scope.getBoiler();
+
 
     $scope.addTermBind = function (){
-        $scope.terminal.push(NaN);
+        $scope.terminal.push({value:"",bind:false});
     };
 
-    $scope.ok = function () {
-        console.info("ready to bind boiler!");
-        $http.post("/boiler_bind/", {
-            boiler_id: currentData.Uid,
-            terminal_id: $scope.terminal.Uid
+    $scope.ok = function (term) {
+        // console.info("ready to bind boiler!");
+        $http.post("/fast_terminal_combined", {
+            boiler_uid: uid,
+            code: parseInt(term.value)
         }).then(function (res) {
-            console.info("Update boilerBind Resp:", res);
-            $rootScope.getBoilerList();
+            // $rootScope.getBoilerList();
+            term.bind = true;
+            // $scope.getBoiler();
             swal({
                 title: "绑定设备成功",
                 type: "success"
             }).then(function () {
-                $uibModalInstance.close('success');
-                currentData = null;
+                // currentData = null;
             });
         }, function (err) {
             swal({
@@ -309,9 +319,9 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
 
      $scope.unbind = function (index) {
          $scope.terminal.splice(index,1);
-         /*$http.post("/boiler_unbind/", {
-             boiler_id: bInfo.currentData.Uid,
-             terminal_id: terminal.Uid
+         $http.post("/boiler_unbind/", {
+             boiler_id: uid,
+             terminal_id: term[index].value
          }).then(function (res) {
              swal({
                  title: "绑定已解除",
@@ -325,11 +335,12 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
                  text: err.data,
                  type: "error"
              });
-         });*/
+         });
     };
     
     $scope.goNext = function () {
-        $state.go("wizard.term-config");
+        // $rootScope.getBoilerList();
+        $state.go("wizard.term-config",{uid:uid});
     }
     
 });

@@ -958,19 +958,19 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl:"views/wizard/config-wizard.html"+ clientkey
         })
         .state('wizard.boiler', {
-            url: "/wizard-boiler",
+            url: "/wizard-boiler?uid",
             templateUrl: "views/wizard/boiler-config.html" + clientkey,
             data: {pageTitle: '锅炉信息'},
             controller: "wizardBoilerCtrl"
         })
         .state('wizard.term-bind', {
-            url: "/terminal-bind",
+            url: "/terminal-bind?uid",
             templateUrl: "views/wizard/terminal-bind.html" + clientkey,
             data: {pageTitle: '终端绑定'},
             controller: "wizardTermBindCtrl"
         })
         .state('wizard.term-config', {
-            url: "/terminal-config",
+            url: "/terminal-config?uid",
             templateUrl: "views/wizard/terminal-config.html" + clientkey,
             data: {pageTitle: '终端配置'},
             controller: "wizardTermConfCtrl"
