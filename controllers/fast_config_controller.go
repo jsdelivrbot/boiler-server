@@ -113,13 +113,13 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 		}
 	}
 	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
-	ctl.Data["json"] =boiler
+	ctl.Data["json"] =boiler.Uid
 	ctl.ServeJSON()
 	goazure.Info("Updated Boiler:", boiler, info)
-	fmt.Println("hahahhahahahahhahhaha")
 }
 
 func (ctl *FastConfigController) FastTermCombined() {
+	//usr := ctl.GetCurrentUser()
 
 }
 
