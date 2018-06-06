@@ -32,34 +32,48 @@
 <div class="modal-body">
     <div class="row">
         <div class=" col-md-12">
-            <div ng-repeat="term in terminal track by $index" class="form-group">
-                <input type="text" ng-model="term.value" maxlength="6" minlength="6"
-                       class="form-control" style="width: 80%; display: inline-block;" placeholder="请输入六位数字终端编码,如：680001">
-                <button type="button" ng-click="ok(term)"
-                        ng-disabled="!term.value"
-                        ng-class="['btn', {'grey-salsa': !term.value},{'blue': term.value}]" >绑定</button>
+             <div class="form-group">
+                 <input type="text" ng-model="terminal.value" maxlength="6" minlength="6"
+                        class="form-control" style="width: 86%; display: inline-block;" placeholder="请输入六位数字终端编码,如：680001">
+                 <button type="button" ng-click="ok()" ng-if="!terminal.bind"
+                         ng-disabled="!terminal.value || terminal.bind"
+                         ng-class="['btn', {'grey-salsa': !terminal.value || terminal.bind},{'blue': terminal.value && !terminal.bind}]" >绑定</button>
 
-                <button type="button" ng-click="unbind($index) " ng-if="$index!==0"
+                 <button type="button" ng-click="unbind();" ng-if="terminal.bind"
+                         class="btn btn-sm btn-outline btn-circle red delete_btn">
+                     <i class="fa fa-minus" style="font-size: 12px;"></i>
+                 </button>
+             </div>
+
+            <!--<div ng-repeat="term in terminal track by $index" class="form-group">
+                <input type="text" ng-model="term.value" maxlength="6" minlength="6" ng-disabled="term.bind"
+                       class="form-control" style="width: 86%; display: inline-block;" placeholder="请输入六位数字终端编码,如：680001">
+                <button type="button" ng-click="ok(term)" ng-if="!term.bind"
+                        ng-disabled="!term.value || term.bind"
+                        ng-class="['btn', {'grey-salsa': !term.value || term.bind},{'blue': term.value && !term.bind}]" >绑定</button>
+
+                <button type="button" ng-click="unbind($index);" ng-if="term.bind"
                         class="btn btn-sm btn-outline btn-circle red delete_btn">
                     <i class="fa fa-minus" style="font-size: 12px;"></i>
                 </button>
             </div>
 
             <button type="button"
-                    ng-show="terminal.length < 3"
+                    ng-show="terminal.length < 3 && terminal[0].bind"
                     ng-click="addTermBind();"
                     class="btn green"
                     style="width: 100%;">
                 <i class="fa fa-plus-circle"></i>
                 新增绑定终端
-            </button>
+            </button>-->
         </div>
 
     </div>
 </div>
 <div class="modal-footer">
     <button class="btn ladda-button btn-primary" type="button" ng-click="goNext();"
-        ng-disabled="!terminal[0].bind">
+        ng-disabled="!terminal.bind">
         <span class="ladda-label">下一步</span>
     </button>
+    <a ui-sref="wizard.term-config">Go</a>
 </div>

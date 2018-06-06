@@ -220,11 +220,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$rootScope,$state,$stateParams,$http) {
 
     var uid = $stateParams.uid;
-    /*$scope.currentData = currentData;
-    $scope.name = currentData.Name;*/
-    $scope.terminal = [
-        {value:"",bind:false}
-    ];
+    $scope.terminal = {value:"",bind:false}
 
     /*$http.get('/terminal_list/?scope=boiler_bind&boiler=' + uid)
         .then(function (res) {
@@ -275,6 +271,10 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
     $scope.getBoiler = function () {
         $http.get("boiler_list/?boiler="+uid).then(function (res) {
             $scope.boiler = res.data[0];
+            if($scope.boiler.TerminalsCombined){
+                $scope.terminal.value = $scope.boiler.TerminalsCombined[0].TerminalCode;
+                $scope.terminal.bind = true;
+            }
             console.log($scope.boiler);
         },function (err) {
 
@@ -283,19 +283,18 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
     $scope.getBoiler();
 
 
-    $scope.addTermBind = function (){
+    /*$scope.addTermBind = function (){
         $scope.terminal.push({value:"",bind:false});
-    };
+    };*/
 
-    $scope.ok = function (term) {
-        // console.info("ready to bind boiler!");
+    $scope.ok = function () {
+
         $http.post("/fast_terminal_combined", {
             boiler_uid: uid,
-            code: parseInt(term.value)
+            code: parseInt($scope.terminal.value)
         }).then(function (res) {
             // $rootScope.getBoilerList();
-            term.bind = true;
-            // $scope.getBoiler();
+            $scope.terminal.bind = true;
             swal({
                 title: "绑定设备成功",
                 type: "success"
@@ -313,22 +312,22 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
-
         //currentData = null;
     };
 
-     $scope.unbind = function (index) {
-         $scope.terminal.splice(index,1);
-         $http.post("/boiler_unbind/", {
-             boiler_id: uid,
-             terminal_id: term[index].value
+     $scope.unbind = function () {
+         $http.post("/fast_terminal_unbind", {
+             boiler_uid: uid,
+             code: parseInt($scope.terminal.value)
          }).then(function (res) {
+             // $scope.terminal.splice(index,1);
+             $scope.terminal.bind = false;
              swal({
                  title: "绑定已解除",
-                 text: "该锅炉已不再接收 " + terminal.Name + " 相关数据，如需重新接入，请通过终端绑定流程进行再次绑定。",
+                 text: "",
                  type: "success"
              });
-             $rootScope.getBoilerList();
+             // $rootScope.getBoilerList();
          }, function (err) {
              swal({
                  title: "解除绑定失败",
@@ -349,6 +348,14 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
 
 //终端配置
 angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$rootScope,$state,$stateParams,$http) {
+
+    //模拟通道
+    var aNum = 1;
+    $scope.analogueList = [
+        { num:aNum,
+        }
+    ];
+
 
 });
 
