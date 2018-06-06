@@ -1516,7 +1516,7 @@ func (ctl *BoilerController) BoilerBind() {
 
 func (ctl *BoilerController) BoilerUnbind() {
 	goazure.Info("Ready to Unbind Boiler!")
-	usr := ctl.GetCurrentUser()
+	/*usr := ctl.GetCurrentUser()
 
 	if !usr.IsAdmin() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
@@ -1524,7 +1524,7 @@ func (ctl *BoilerController) BoilerUnbind() {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
-	}
+	}*/
 
 	var bind BoilerBind
 	boiler := models.Boiler{}
