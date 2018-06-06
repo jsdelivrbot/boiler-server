@@ -148,8 +148,8 @@ func (ctl *FastConfigController) FastTermCombined() {
 		return
 	}
 
-	sql:="insert into boiler_terminal_combined(boiler_id,terminal_id,terminal_code,terminal_set_id) values(?,?,?,?) on duplicate key update terminal_code = ?"
-	if _,err:=dba.BoilerOrm.Raw(sql,wCombined.BoilerUid,terminal.Uid,terminal.TerminalCode,1,terminal.TerminalCode).Exec();err!=nil{
+	sql:="insert into boiler_terminal_combined(boiler_id,terminal_id,terminal_code,terminal_set_id) values(?,?,?,?) on duplicate key update terminal_id=?,terminal_code = ?"
+	if _,err:=dba.BoilerOrm.Raw(sql,wCombined.BoilerUid,terminal.Uid,terminal.TerminalCode,1,terminal.Uid,terminal.TerminalCode).Exec();err!=nil{
 		goazure.Error("Insert boiler_terminal_combined Error",err)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端绑定失败"))
