@@ -6,7 +6,6 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"encoding/json"
 	"github.com/AzureRelease/boiler-server/dba"
-	"fmt"
 )
 
 type FastConfigController struct {
