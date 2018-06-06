@@ -190,6 +190,8 @@ func init() {
 
 	goazure.Router("/fast_terminal_combined",&controllers.FastConfigController{},"post:FastTermCombined")
 
+	goazure.Router("/fast_terminal_unbind",&controllers.FastConfigController{},"post:FastTermUnbind")
+
 	goazure.Router("/fast_term_channel_config",&controllers.FastConfigController{},"post:FastTermChannelConfig")
 
 	//下发测试按钮

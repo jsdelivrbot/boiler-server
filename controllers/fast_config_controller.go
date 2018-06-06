@@ -6,6 +6,7 @@ import (
 	"github.com/AzureRelease/boiler-server/models"
 	"encoding/json"
 	"github.com/AzureRelease/boiler-server/dba"
+	"fmt"
 )
 
 type FastConfigController struct {
@@ -126,10 +127,10 @@ func (ctl *FastConfigController) FastTermCombined() {
 	usr := ctl.GetCurrentUser()
 	var wCombined termCombined
 	var terminal models.Terminal
-	var combineds []models.BoilerTerminalCombined
 	if err:=json.Unmarshal(ctl.Ctx.Input.RequestBody,&wCombined);err!=nil{
 		goazure.Error("Unmarshal JSON Error",err)
 	}
+	fmt.Println("combined:",wCombined)
 	qs := dba.BoilerOrm.QueryTable("terminal").RelatedSel("Organization")
 	if !usr.IsAdmin() {
 			qs = qs.Filter("Organization",usr.Organization.Uid)
@@ -140,22 +141,44 @@ func (ctl *FastConfigController) FastTermCombined() {
 		ctl.Ctx.Output.Body([]byte("非法终端!"))
 		return
 	}
-	if _,err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Boiler__Uid",wCombined.BoilerUid).OrderBy("TerminalSetId").All(&combineds);err!=nil{
-		goazure.Error("Query boiler_terminal_combined Error",err)
+	fmt.Println("terminal:",terminal)
+	if dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Terminal__Uid",terminal.Uid).Exist(){
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端已被占用!"))
+		return
 	}
-	for _,combined := range combineds {
-		if combined.TerminalCode == wCombined.Code {
-			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("终端已经绑定"))
-			return
-		}
-	}
-	sql:="insert into boiler_terminal_combined(boiler_id,terminal_id,terminal_code,terminal_set_id) values(?,?,?,?)"
-	if _,err:=dba.BoilerOrm.Raw(sql,wCombined.BoilerUid,terminal.Uid,terminal.TerminalCode,len(combineds)+1).Exec();err!=nil{
+
+	sql:="insert into boiler_terminal_combined(boiler_id,terminal_id,terminal_code,terminal_set_id) values(?,?,?,?) on duplicate key update terminal_code = ?"
+	if _,err:=dba.BoilerOrm.Raw(sql,wCombined.BoilerUid,terminal.Uid,terminal.TerminalCode,1,terminal.TerminalCode).Exec();err!=nil{
 		goazure.Error("Insert boiler_terminal_combined Error",err)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端绑定失败"))
 		return
+	}
+}
+
+func (ctl *FastConfigController) FastTermUnbind() {
+	usr := ctl.GetCurrentUser()
+	var termBind termCombined
+	var terminal models.Terminal
+	if err:= json.Unmarshal(ctl.Ctx.Input.RequestBody,&termBind);err!=nil{
+		goazure.Error("Unmarshal JSON Error",err)
+	}
+	qs := dba.BoilerOrm.QueryTable("terminal").RelatedSel("Organization")
+	if !usr.IsAdmin() {
+		qs = qs.Filter("Organization",usr.Organization.Uid)
+	}
+	if err:=qs.Filter("TerminalCode",termBind.Code).Filter("IsDeleted",false).One(&terminal);err!=nil{
+		goazure.Error("UNFind Terminal:",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("非法终端!"))
+		return
+	}
+	if _,err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").
+	Filter("Boiler__Uid",termBind.BoilerUid).Filter("Terminal__Uid",terminal.Uid).Delete();err!=nil{
+		goazure.Error("Unbind Boiler/Terminal Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("解绑失败"))
 	}
 }
 
