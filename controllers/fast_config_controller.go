@@ -315,8 +315,18 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		}
 		cnf.Uid = uuid.New()
 		cnf.Terminal = &terminal
-		cnf.ChannelType = int32(models.CHANNEL_TYPE_TEMPERATURE)
-		cnf.ChannelNumber = int32(analogue.ChannelNumber)
+		if analogue.ChannelNumber <= 12 && analogue.ChannelNumber >=1 {
+			cnf.ChannelType = int32(models.CHANNEL_TYPE_TEMPERATURE)
+			cnf.ChannelNumber = int32(analogue.ChannelNumber)
+		} else if analogue.ChannelNumber <=24 {
+			cnf.ChannelType = int32(models.CHANNEL_TYPE_ANALOG)
+			cnf.ChannelNumber = int32(analogue.ChannelNumber - 12)
+		} else {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("模拟量通道数输入错误"))
+			return
+		}
+
 		cnf.IsDefault = false
 
 		//TODO: Default Signed & Threshold
