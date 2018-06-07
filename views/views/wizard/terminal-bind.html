@@ -33,7 +33,7 @@
     <div class="row">
         <div class=" col-md-12">
              <div class="form-group">
-                 <input type="text" ng-model="terminal.value" maxlength="6" minlength="6"
+                 <input type="text" ng-model="terminal.value" maxlength="6" minlength="6" ng-disabled="terminal.bind"
                         class="form-control" style="width: 86%; display: inline-block;" placeholder="请输入六位数字终端编码,如：680001">
                  <button type="button" ng-click="ok()" ng-if="!terminal.bind"
                          ng-disabled="!terminal.value || terminal.bind"

@@ -3,9 +3,22 @@
 angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$rootScope,$state ,$stateParams,$http) {
 
     var uid = $stateParams.uid;
+
+    $scope.getBoiler = function () {
+        $http.get("boiler_list/?boiler="+uid).then(function (res) {
+            $scope.boiler = res.data[0];
+            console.log($scope.boiler);
+        },function (err) {
+
+        });
+    };
     if(!uid){
         $scope.currentData = null;
+    }else {
+        $scope.getBoiler();
     }
+
+
     $scope.editingCode = true;
 
     $scope.links = [];
@@ -280,7 +293,9 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
 
         });
     };
-    $scope.getBoiler();
+    if(uid){
+        $scope.getBoiler();
+    }
 
 
     /*$scope.addTermBind = function (){
@@ -347,14 +362,379 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
 
 
 //终端配置
-angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$rootScope,$state,$stateParams,$http) {
+angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$rootScope,$state,$stateParams,$http,$uibModal) {
+    var uid = $stateParams.uid;
+    $scope.editing = true;
+    $scope.editingCode = true;
+
+
+
+    $scope.getBoiler = function () {
+        $http.get("boiler_list/?boiler="+uid).then(function (res) {
+            $scope.boiler = res.data[0];
+            console.log($scope.boiler);
+            $scope.terminal = $scope.boiler.TerminalsCombined[0];
+            console.log($scope.terminal);
+        },function (err) {
+
+        });
+    };
+    if(uid){
+        $scope.getBoiler();
+    }
+
+
+
+
+    //功能码
+    $http.get("/term_function_code_list").then(function (res) {
+        $scope.fcode = res.data;
+        $scope.fcode2 = [
+            {Id: 1, Name: "01", Value: 1},
+            {Id: 2, Name: "02", Value: 2},
+            {Id: 3, Name: "03", Value: 3},
+            {Id: 99, Name: "None", Value: 99}
+        ];
+        $scope.fcode1 = [
+            {Id: 3, Name: "03", Value: 3},
+            {Id: 4, Name: "04", Value: 4}
+
+        ];
+    });
+
+    //高低字节
+    $http.get("/term_byte_list").then(function (res) {
+        $scope.hlCodes = res.data;
+    });
+
+    //通信接口地址
+    $http.get("/correspond_type_list").then(function (res) {
+        $scope.communiInterfaces = res.data;
+    });
+    //数据位
+    $http.get("/date_bit_list").then(function (res) {
+        $scope.dataBits = res.data;
+    });
+    //心跳包频率
+    $http.get("/heartbeat_packet_list").then(function (res) {
+        $scope.heartbeats = res.data;
+    });
+    //校验位
+    $http.get("/parity_bit").then(function (res) {
+        $scope.checkDigits = res.data;
+    });
+    //从机地址
+    $http.get("/slave_address_list").then(function (res) {
+        $scope.subAdrs = res.data;
+    });
+    //停止位
+    $http.get("/stop_bit_list").then(function (res) {
+        $scope.stopBits = res.data;
+    });
+    //波特率
+    $http.get("/baud_rate_list").then(function (res) {
+        $scope.BaudRates = res.data;
+    });
+
+    $scope.priorities=[];
+    for(var i = 0; i<48; i++){
+        $scope.priorities.push(i);
+    }
+
+
 
     //模拟通道
     var aNum = 1;
     $scope.analogueList = [
-        { num:aNum,
+        {
+            ChannelNumber:aNum,
+            Parameter:{
+                Name:"",
+                Scale:"",
+                Unit:""
+            },
+            Func:null,
+            Byte:null,
+            Modbus:null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
         }
     ];
+
+    //开关通道
+    var sNum = 2;
+    $scope.switchList = [
+        {
+            ChannelNumber:1,
+            Parameter:{
+                Name:"点火信号",
+            },
+            Func:null,
+            Modbus:null,
+            BitAddress:null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
+        },
+        {
+            ChannelNumber:2,
+            Parameter:{
+                Name:"PLC",
+            },
+            Func:null,
+            Modbus:null,
+            BitAddress:null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
+        }
+    ];
+
+    //状态通道
+    var rNum = 1;
+    $scope.rangeList = [
+        {
+            ChannelNumber:rNum,
+            Parameter:{
+                Name:"",
+            },
+            Func:null,
+            Byte:null,
+            Modbus:null,
+            Ranges: null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
+        }
+    ];
+
+    $scope.infomation = {
+        BaudRate:null,
+        dataBit:null,
+        stopBit:null,
+        checkDigit:null,
+        communiInterface:null,
+        subAdr:null,
+        heartbeat:null,
+    };
+
+
+
+
+    $scope.dataChanged = function (data) {
+        if (!data.Parameter.Name) {
+            data.Parameter = null;
+            data.Status = -1;
+            data.SwitchStatus = 0;
+            data.Ranges = null;
+        } else {
+            if (!data.Status || data.Status === -1) {
+                data.Status = 0;
+            }
+
+            if (!data.SwitchStatus || data.SwitchStatus === 0) {
+                data.SwitchStatus = 1;
+            }
+
+            // console.log(data);
+        }
+
+    };
+
+
+
+    //添加
+    $scope.addAnalogue = function () {
+        aNum++;
+        $scope.analogueList.push({
+            ChannelNumber:aNum,
+            Parameter:{
+                Name:"",
+                Scale:"",
+                Unit:""
+            },
+            Func:null,
+            Byte:null,
+            Modbus:null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
+        });
+    };
+    $scope.addSwitch = function () {
+        sNum++;
+        $scope.switchList.push({
+            ChannelNumber:sNum,
+            Parameter:{
+                Name:"",
+            },
+            Func:null,
+            Modbus:null,
+            BitAddress:null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
+        });
+    };
+    $scope.addRange = function () {
+        rNum++;
+        $scope.rangeList.push({
+            ChannelNumber:rNum,
+            Parameter:{
+                Name:"",
+            },
+            Func:null,
+            Byte:null,
+            Modbus:null,
+            Ranges: null,
+            SequenceNumber: 0,
+            Status: 0,
+            SwitchStatus: 0
+        });
+    };
+
+    //删除
+    $scope.removeAnalogue = function (index) {
+        $scope.analogueList.splice(index,1);
+    };
+    $scope.removeSwitch = function (index) {
+        $scope.switchList.splice(index,1);
+    };
+    $scope.removeRange = function (index) {
+        $scope.rangeList.splice(index,1);
+    };
+
+
+    //位置设置
+    $scope.setStatus = function(data, status, sn) {
+        // console.warn("$scope.setStatus", index, status, sn);
+        data.Status = status;
+        if (status === 1) {
+            data.SequenceNumber = sn;
+        } else {
+            data.SequenceNumber = -1;
+        }
+    };
+
+
+
+
+
+    //状态设置
+    $scope.setSwitchStatus= function(outerIndex, status) {
+        console.warn("$scope.setSwitchStatus", outerIndex, status);
+        $scope.switchList[outerIndex].SwitchStatus = status;
+        console.log($scope.switchList);
+    };
+
+
+    $scope.openRange = function (currentChannel, number, size) {
+        console.log(currentChannel,number);
+        var modalInstance = $uibModal.open({
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: '/directives/modal/terminal_channel_config_range.html',
+            controller: 'ModalWizardRangeCtrl',
+            controllerAs: '$modalRange',
+            size: size,
+            windowClass: 'zindex_sub',
+            resolve: {
+                $modal: function () {
+                    return $scope;
+                },
+                currentChannel: function () {
+                    currentChannel.ChannelNumber = number;
+                    return currentChannel;
+                },
+                editing: function () {
+                    return $scope.editing;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            terminal.selected = selectedItem;
+        }, function () {
+            console.log("Modal dismissed");
+        });
+    };
+
+
+    $scope.back = function () {
+        $state.go("wizard.term-bind",{uid:uid});
+    };
+
+    $scope.ok = function () {
+        /*var analogueList = $scope.analogueList;
+        var aNumList = [];
+        for(var i =0; i<analogueList.length;i++){
+            aNumList.push(analogueList[i].num);
+            if(!analogueList[i].Parameter.Name){
+                swal({
+                    title: "参数名称为空",
+                    text:"模拟通道参数不能为空 ",
+                    type: "error"
+                });
+                return false;
+            }
+        }*/
+
+
+
+        $scope.channel ={
+            analogue:$scope.analogueList,
+            switch:$scope.switchList,
+            range:$scope.rangeList
+        };
+
+
+        var cParam = {
+            // terminal_code:$scope.code,
+            baudRate : $scope.infomation.BaudRate?$scope.infomation.BaudRate.Id:0,
+            dataBit : $scope.infomation.dataBit?$scope.infomation.dataBit.Id:0,
+            stopBit : $scope.infomation.stopBit?$scope.infomation.stopBit.Id:0,
+            checkDigit : $scope.infomation.checkDigit?$scope.infomation.checkDigit.Id:0,
+            communInterface : $scope.infomation.communiInterface?$scope.infomation.communiInterface.Id:0,
+            slaveAddress : $scope.infomation.subAdr?$scope.infomation.subAdr.Id:0,
+            heartbeat:$scope.infomation.heartbeat?$scope.infomation.heartbeat.Id:0
+        };
+        if(!cParam.baudRate||!cParam.dataBit||!cParam.stopBit||!cParam.checkDigit||!cParam.communInterface||!cParam.slaveAddress||!cParam.heartbeat){
+            swal({
+                title: "通道配置更新失败",
+                text:"通信参数不能为空 ",
+                type: "error"
+            });
+            App.stopPageLoading();
+            return false;
+        }
+
+        console.log($scope.channel,cParam);
+
+        if($scope.terminalPass!=="1234567"){
+            swal({
+                title: "终端密码错误",
+                text:" ",
+                type: "error"
+            });
+            return false;
+        }
+
+        $http.post("/fast_term_channel_config",{Chan:$scope.channel,Param:cParam,Code:$scope.terminal.TerminalCode})
+            .then(function (res) {
+
+            },function (err) {
+
+            })
+
+
+    }
+
+
+
+
+
+
 
 
 });
@@ -363,7 +743,130 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
 
 
 
+angular.module('BoilerAdmin').controller('ModalWizardRangeCtrl', function ($uibModalInstance, $rootScope, $http, $filter, $scope, currentChannel,editing) {
+    var $modalRange = this;
+    $modalRange.editing = editing;
 
+    $modalRange.channel = currentChannel;
+    $modalRange.number = currentChannel.num;
+
+    $modalRange.ranges = clone(currentChannel.Ranges);
+    if (!$modalRange.ranges) {
+        $modalRange.ranges = [];
+    }
+
+    $modalRange.isValid = false;
+    $modalRange.comment = "请完善相关信息";
+
+    $modalRange.addNewRange = function () {
+        $modalRange.ranges.push({});
+        console.log($modalRange.ranges);
+    };
+
+    $modalRange.removeRange = function (rg) {
+        for (var i in $modalRange.ranges) {
+            if (rg === $modalRange.ranges[i]) {
+                $modalRange.ranges.splice(i, 1);
+            }
+        }
+    };
+
+    $modalRange.rangeChanged = function () {
+        for (var i in $modalRange.ranges) {
+            var rg = $modalRange.ranges[i];
+            if (!rg.Min && typeof rg.Min !== "number" || rg.Min < 0 || rg.Min > 65535) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的范围低值不可为空，范围是 0-65535。";
+                return;
+            }
+
+            if (!rg.Max && typeof rg.Max !== "number" || rg.Max < 0 || rg.Max > 65535) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的范围高值不可为空，范围是 0-65535。";
+                return;
+            }
+
+            if (rg.Min > rg.Max) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的范围高值需大于或等于范围低值。";
+                return;
+            }
+
+            if (i > 0 && rg.Min <= $modalRange.ranges[i - 1].Max) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态间不可有值的交叉，后一个状态的低值不可小于或等于前一个状态的高值。";
+                return;
+            }
+
+            if (!rg.Name || rg.Name.length <= 0) {
+                $modalRange.isValid = false;
+                $modalRange.comment = "状态的名称不可为空。";
+                return;
+            }
+
+            $modalRange.isValid = true;
+            $modalRange.comment = "配置正确";
+        }
+    };
+
+    if ($modalRange.ranges.length <= 0) {
+        $modalRange.addNewRange();
+    }
+
+    $modalRange.ok = function () {
+
+        $modalRange.channel.Uid = "";
+        $modalRange.channel.Ranges = [];
+        for (var i in $modalRange.ranges) {
+            var rg = $modalRange.ranges[i];
+            $modalRange.channel.Ranges.push(rg);
+        }
+
+        $uibModalInstance.dismiss('success');
+    };
+
+    $modalRange.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $modalRange.rangeChanged();
+});
+
+
+
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null === obj || "object" !== typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
 
 
 
