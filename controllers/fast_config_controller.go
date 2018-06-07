@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"strconv"
 	"github.com/pborman/uuid"
-	"sort"
 	"github.com/AzureTech/goazure/orm"
 )
 
@@ -272,6 +271,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &config); err != nil {
 		goazure.Error("Unmarshal JSON Error", err)
 	}
+	fmt.Println("config:",config)
 	var terminal models.Terminal
 	if err := dba.BoilerOrm.QueryTable("Terminal").Filter("TerminalCode", config.Code).One(&terminal); err != nil {
 		goazure.Error("Query Terminal Error:", err)
@@ -302,11 +302,11 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = analogue.Parameter.Scale
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		param.Organization = ctl.GetCurrentUser().Organization
+		param.Organization = terminal.Organization
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
-		if err := DataCtl.AddData(&param, true); err != nil {
+		if _,err:=dba.BoilerOrm.Insert(&param);err!=nil {
 			e := fmt.Sprintln("Add/Update Parameter Error", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
@@ -369,11 +369,11 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = 1
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		param.Organization = ctl.GetCurrentUser().Organization
+		param.Organization = terminal.Organization
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
-		if err := DataCtl.AddData(&param, true); err != nil {
+		if _,err:=dba.BoilerOrm.Insert(&param);err!=nil {
 			e := fmt.Sprintln("Add/Update Parameter Error", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
@@ -450,11 +450,11 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = 1
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		param.Organization = ctl.GetCurrentUser().Organization
+		param.Organization = terminal.Organization
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
-		if err := DataCtl.AddData(&param, true); err != nil {
+		if _,err:=dba.BoilerOrm.Insert(&param);err!=nil {
 			e := fmt.Sprintln("Add/Update Parameter Error", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
@@ -486,8 +486,6 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 			ctl.Ctx.Output.Body([]byte("添加状态量失败"))
 			return
 		}
-
-		sort.Sort(ByRMin(ran.Ranges))
 		for i, r := range ran.Ranges {
 			var rg models.RuntimeParameterChannelConfigRange
 			if r.Max < r.Min {
@@ -497,13 +495,17 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 				ctl.Ctx.Output.Body([]byte(e))
 				return
 			}
+			rg.Uid = uuid.New()
 			rg.ChannelConfig = &cnf
 			rg.Min = r.Min
 			rg.Max = r.Max
 			rg.Name = r.Name
 			rg.Value = int64(i)
-			if err := DataCtl.AddData(&rg, true); err != nil {
-				goazure.Error("Added ChannelConfig Range Error", rg, err)
+			if _,err:=dba.BoilerOrm.Insert(&rg);err!=nil{
+				goazure.Error("insert channel_config_range error:",err)
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte("添加状态量状态失败"))
+				return
 			}
 		}
 			analoguesql := "insert into issued_analogue_switch(channel_id,create_time,function_id,byte_id,modbus,bit_address) values(?,now(),?,?,?,?)"
