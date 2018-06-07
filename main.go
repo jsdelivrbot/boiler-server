@@ -29,8 +29,8 @@ func main() {
 	//屏蔽错误页详细信息
 	goazure.ErrorController(&controllers.ErrorController{})
 
-	//go controllers.DBCtl.InitMSSQLData()
-	//go controllers.DBCtl.LoadMSSQLData()
+	go controllers.DBCtl.InitMSSQLData()
+	go controllers.DBCtl.LoadMSSQLData()
 
 	//controllers.OrgCtrl.InitOrganizationDefaults()
 	//go initDefaultData()

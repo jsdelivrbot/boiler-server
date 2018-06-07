@@ -23,6 +23,13 @@ type DBController struct {
 
 var DBCtl *DBController = &DBController{}
 
+type BoilerMap struct {
+	Uid			string
+	TableName	string
+}
+
+var bMaps []*BoilerMap = []*BoilerMap{}
+
 var (
 	debug	  = flag.Bool("debug", true, "enable debugging")
 	server    = flag.String("server", "101.231.74.206", "the database server")
@@ -38,6 +45,8 @@ func init() {
 		return
 	}
 
+	bMaps = append(bMaps, &BoilerMap{ Uid: "8a3e47d0-759f-474d-b2e2-a89692f7c496", TableName: "BoilerData_310101C027" })
+	bMaps = append(bMaps, &BoilerMap{ Uid: "fb8c8507-a15e-4fc4-aa12-d6dd0591fdf8", TableName: "BoilerData_QP310118BZ1001" })
 	//defer db.Close()
 }
 
@@ -54,35 +63,46 @@ func (ctl *DBController) GetStringFromMap(m orm.Params, defaults string, col str
 	}
 }
 
-func (ctl *DBController)InitMSSQLData() {
-	ctl.ImportMSSQLData(0, time.Time{})
+func (ctl *DBController) InitMSSQLData() {
+	ctl.ImportData(0, time.Time{})
 }
 
-func (ctl *DBController)LoadMSSQLData() {
+func (ctl *DBController) LoadMSSQLData() {
 	ticker := time.NewTicker(time.Minute * 5)
 	tick := func() {
 		for t := range ticker.C {
-			DBCtl.ImportMSSQLData(1, t)
+			DBCtl.ImportData(1, t)
 		}
 	}
 
 	go tick()
 }
 
-func (ctl *DBController)ImportMSSQLData(offset int, tm time.Time) error {
+func (ctl *DBController) ImportData(offset int, tm time.Time) error {
+	var err error
+	for _, bMap := range bMaps {
+		if e := ctl.ImportMSSQLData(offset, tm, bMap); e != nil {
+			err = e
+		}
+	}
+
+	return err
+}
+
+func (ctl *DBController) ImportMSSQLData(offset int, tm time.Time, boilerMap *BoilerMap) error {
 	if ctl.db == nil {
 		return errors.New("db conn can not be nil!")
 	}
 
 	query :=
 		"SELECT * " +
-		"FROM BoilerData_310101C027 " +
+		"FROM " + boilerMap.TableName + " " +
 		"ORDER BY timestamp ASC; "
 
 	if offset > 0 {
 		query =
 			"SELECT * " +
-			"FROM BoilerData_310101C027 " +
+			"FROM " + boilerMap.TableName + " " +
 			"WHERE [timestamp] > DATEADD(HOUR, -" + strconv.FormatInt(int64(offset), 10) + " , GETDATE()) " +
 			"ORDER BY [timestamp] ASC; "
 	}
@@ -102,7 +122,7 @@ func (ctl *DBController)ImportMSSQLData(offset int, tm time.Time) error {
 	BlrCtl.bWaitGroup.Wait()
 	var boiler *models.Boiler
 	for _, b := range MainCtrl.Boilers {
-		if b.Uid == "8a3e47d0-759f-474d-b2e2-a89692f7c496" {
+		if b.Uid == boilerMap.Uid {
 			boiler = b
 			break
 		}
@@ -158,7 +178,7 @@ func (ctl *DBController)ImportMSSQLData(offset int, tm time.Time) error {
 	return nil
 }
 
-func (ctl *DBController)InitDbConnect() error {
+func (ctl *DBController) InitDbConnect() error {
 	flag.Parse()
 
 	if *debug {
