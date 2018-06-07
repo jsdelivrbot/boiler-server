@@ -71,9 +71,10 @@
     </div>
 </div>
 <div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="back();">上一步</button>
     <button class="btn ladda-button btn-primary" type="button" ng-click="goNext();"
         ng-disabled="!terminal.bind">
         <span class="ladda-label">下一步</span>
     </button>
-    <a ui-sref="wizard.term-config">Go</a>
+    <!--<a ui-sref="wizard.term-config">Go</a>-->
 </div>

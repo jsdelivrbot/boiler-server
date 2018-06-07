@@ -8,15 +8,34 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
         $http.get("boiler_list/?boiler="+uid).then(function (res) {
             $scope.boiler = res.data[0];
             console.log($scope.boiler);
+            $scope.editingCode = false;
+            $scope.data = {
+                uid: $scope.boiler.Uid,
+                name: $scope.boiler.Name,
+                registerCode: $scope.boiler.RegisterCode,
+                deviceCode: $scope.boiler.DeviceCode,
+                factoryNumber: $scope.boiler.FactoryNumber,
+                modelCode: $scope.boiler.ModelCode,
+                certificateNumber: $scope.boiler.CertificateNumber,
+
+                Usage: "工业锅炉",
+                mediumId: $scope.boiler.Medium ? $scope.boiler.Medium.Id : -1,
+                fuelId: $scope.boiler.Fuel ? $scope.boiler.Fuel.Uid : "",
+                formId: $scope.boiler.Form ? $scope.boiler.Form.Id : 0,
+                templateId:$scope.boiler.Template ? $scope.boiler.Template.TemplateId : -1,
+                evaporatingCapacity: $scope.boiler.EvaporatingCapacity,
+
+                RegisterOrg: $scope.boiler.RegisterOrg ? $scope.boiler.RegisterOrg : null,
+                enterpriseId: $scope.boiler.Enterprise ? $scope.boiler.Enterprise.Uid : "",
+                factoryId: $scope.boiler.Factory ? $scope.boiler.Factory.Uid : "",
+                maintainerId: $scope.boiler.Maintainer ? $scope.boiler.Maintainer.Uid : "",
+                supervisorId: $scope.boiler.Supervisor ? $scope.boiler.Supervisor.Uid : ""
+            }
         },function (err) {
 
         });
     };
-    if(!uid){
-        $scope.currentData = null;
-    }else {
-        $scope.getBoiler();
-    }
+
 
 
     $scope.editingCode = true;
@@ -25,7 +44,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 
     $scope.initData = function (uid) {
         if(uid){
-
+            $scope.getBoiler();
         }else {
             $scope.data = {
                 uid: "",
@@ -351,7 +370,12 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
              });
          });
     };
-    
+
+
+
+    $scope.back = function () {
+        $state.go("wizard.boiler",{uid:uid});
+    };
     $scope.goNext = function () {
         // $rootScope.getBoilerList();
         $state.go("wizard.term-config",{uid:uid});
@@ -470,7 +494,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             Parameter:{
                 Name:"点火信号",
             },
-            Func:null,
+            Func:99,
             Modbus:null,
             BitAddress:null,
             SequenceNumber: 0,
@@ -482,7 +506,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             Parameter:{
                 Name:"PLC",
             },
-            Func:null,
+            Func:99,
             Modbus:null,
             BitAddress:null,
             SequenceNumber: 0,
@@ -502,7 +526,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             Func:null,
             Byte:null,
             Modbus:null,
-            Ranges: null,
+            Ranges: [],
             SequenceNumber: 0,
             Status: 0,
             SwitchStatus: 0
@@ -587,7 +611,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             Func:null,
             Byte:null,
             Modbus:null,
-            Ranges: null,
+            Ranges: [],
             SequenceNumber: 0,
             Status: 0,
             SwitchStatus: 0
@@ -603,6 +627,14 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
     };
     $scope.removeRange = function (index) {
         $scope.rangeList.splice(index,1);
+    };
+
+
+
+    $scope.fCodeChange =function (data) {
+        if(data.Func ===1||data.Func ===2){
+            data.BitAddress = 1;
+        }
     };
 
 
@@ -666,31 +698,240 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
     };
 
     $scope.ok = function () {
-        /*var analogueList = $scope.analogueList;
+        //模拟通道
+        var analogueList = [];
         var aNumList = [];
-        for(var i =0; i<analogueList.length;i++){
-            aNumList.push(analogueList[i].num);
-            if(!analogueList[i].Parameter.Name){
+        for(var i =0; i<$scope.analogueList.length;i++){
+            if($scope.analogueList[i].Parameter.Name){
+                aNumList.push($scope.analogueList[i].ChannelNumber);
+                if(!$scope.analogueList[i].Func||!$scope.analogueList[i].Byte||!$scope.analogueList[i].Modbus|| !$scope.analogueList[i].Parameter.Scale){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"模拟通道配置信息不全 ，参数不能为0 "+ i,
+                        type: "error"
+                    });
+                    return false;
+                }
+                if($scope.analogueList[i].Func===3){
+                    if($scope.analogueList[i].Modbus<=40000||$scope.analogueList[i].Modbus>=50000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为03，MODBUS地址范围40001-49999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.analogueList[i].Func===4){
+                    if($scope.analogueList[i].Modbus<=30000||$scope.analogueList[i].Modbus>=40000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为04，MODBUS地址范围30001-39999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                analogueList.push($scope.analogueList[i]);
+            }
+        }
+        aNumList.sort();
+        console.log(aNumList);
+        for(var i = 0; i<aNumList.length; i++){
+            if(aNumList[i]===aNumList[i+1]){
                 swal({
-                    title: "参数名称为空",
-                    text:"模拟通道参数不能为空 ",
+                    title: "通道重复配置",
+                    text:" 模拟量通道数不能相同",
                     type: "error"
                 });
                 return false;
             }
-        }*/
+        }
+
+        //开关通道
+        var switchList = [];
+        var sNumList = [];
+        for(var i =0; i<$scope.switchList.length;i++){
+            if($scope.switchList[i].Parameter.Name){
+                aNumList.push($scope.switchList[i].ChannelNumber);
+                if($scope.switchList[i].Func!==99 &&(!$scope.switchList[i].Func||!$scope.switchList[i].BitAddress||!$scope.switchList[i].Modbus)){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"开关通道配置信息不全 ，参数不能为0 "+ i,
+                        type: "error"
+                    });
+                    return false;
+                }
+                if($scope.switchList[i].Func===1){
+                    if($scope.switchList[i].Modbus<1||$scope.switchList[i].Modbus>=10000){
+                        swal({
+                            title: "开关通道MODBUS地址错误",
+                            text:"功能码为01，MODBUS地址范围00001-09999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                    if($scope.switchList[i].BitAddress!=1){
+                        swal({
+                            title: "位地址错误",
+                            text:"功能码为01，对应位地址为1" ,
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.switchList[i].Func===2){
+                    if($scope.switchList[i].Modbus<=10000||$scope.switchList[i].Modbus>=20000){
+                        swal({
+                            title: "开关通道MODBUS地址错误",
+                            text:"功能码为02，MODBUS地址范围10001-19999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                    if(!$scope.switchList[i].BitAddress!=1){
+                        swal({
+                            title: "位地址错误",
+                            text:"功能码为02，对应位地址为1",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.switchList[i].Func===3){
+                    if($scope.switchList[i].Modbus<=40000||$scope.switchList[i].Modbus>=50000){
+                        swal({
+                            title: "开关通道MODBUS地址错，请修改",
+                            text:"功能码为03，MODBUS地址范围40001-49999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                    if(!$scope.switchList[i].BitAddress<1||!$scope.switchList[i].BitAddress>16){
+                        swal({
+                            title: "位地址错误",
+                            text: "功能码为03，对应位地址范围为1-16",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+
+                switchList.push($scope.switchList[i]);
+            }
+        }
+        sNumList.sort();
+        for(var i = 0; i<sNumList.length; i++){
+            if(sNumList[i]===sNumList[i+1]){
+                swal({
+                    title: "通道重复配置",
+                    text:" 开关量通道数不能相同",
+                    type: "error"
+                });
+                return false;
+            }
+        }
+
+        //状态通道
+        var rangeList = [];
+        var rNumList = [];
+        for(var i =0; i<$scope.rangeList.length;i++){
+            if($scope.rangeList[i].Parameter.Name){
+                aNumList.push($scope.rangeList[i].ChannelNumber);
+                if(!$scope.rangeList[i].Func||!$scope.rangeList[i].Byte||!$scope.rangeList[i].Modbus){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"模拟通道配置信息不全 ，参数不能为0 "+ i,
+                        type: "error"
+                    });
+                    return false;
+                }
+                if($scope.rangeList[i].Func===3){
+                    if($scope.rangeList[i].Modbus<=40000||$scope.rangeList[i].Modbus>=50000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为03，MODBUS地址范围40001-49999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.rangeList[i].Func===4){
+                    if($scope.rangeList[i].Modbus<=30000||$scope.rangeList[i].Modbus>=40000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为04，MODBUS地址范围30001-39999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+
+                rangeList.ranges = [];
+                if ($scope.rangeList[i].Ranges.length <= 0) {
+                    swal({
+                        title: "状态量通道配置错误",
+                        text: "已配置的状态量通道，需要完成其状态值的配置才可提交",
+                        type: "error"
+                    });
+                    return;
+                }
+                for (var n in $scope.rangeList[i].Ranges) {
+                    var r = $scope.rangeList[i].Ranges[n];
+                    var rg = {};
+                    rg.min = r.Min;
+                    rg.max = r.Max;
+                    rg.name = r.Name;
+                    switch (typeof n) {
+                        case "number":
+                            rg.value = n;
+                            break;
+                        case "string":
+                            rg.value = parseInt(n, 10);
+                            break;
+                    }
+
+                    rangeList.ranges.push(rg);
+                }
+
+                rangeList.push($scope.rangeList[i]);
+            }
+        }
+        rNumList.sort();
+        console.log(rNumList);
+        for(var i = 0; i<rNumList.length; i++){
+            if(rNumList[i]===rNumList[i+1]){
+                swal({
+                    title: "通道重复配置",
+                    text:" 状态量通道数不能相同",
+                    type: "error"
+                });
+                return false;
+            }
+        }
+
 
 
 
         $scope.channel ={
-            analogue:$scope.analogueList,
-            switch:$scope.switchList,
-            range:$scope.rangeList
+            Analogue:analogueList,
+            Switch:switchList,
+            Range:rangeList
         };
 
 
+        //通信参数
         var cParam = {
-            // terminal_code:$scope.code,
             baudRate : $scope.infomation.BaudRate?$scope.infomation.BaudRate.Id:0,
             dataBit : $scope.infomation.dataBit?$scope.infomation.dataBit.Id:0,
             stopBit : $scope.infomation.stopBit?$scope.infomation.stopBit.Id:0,
@@ -711,6 +952,8 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
 
         console.log($scope.channel,cParam);
 
+
+
         if($scope.terminalPass!=="1234567"){
             swal({
                 title: "终端密码错误",
@@ -722,9 +965,17 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
 
         $http.post("/fast_term_channel_config",{Chan:$scope.channel,Param:cParam,Code:$scope.terminal.TerminalCode})
             .then(function (res) {
-
+                swal({
+                    title: "终端配置更新成功",
+                    type: "success"
+                });
+                $state.go("monitor.thumb");
             },function (err) {
-
+                swal({
+                    title: "终端配置更新失败",
+                    text: err.data,
+                    type: "error"
+                });
             })
 
 
@@ -748,7 +999,7 @@ angular.module('BoilerAdmin').controller('ModalWizardRangeCtrl', function ($uibM
     $modalRange.editing = editing;
 
     $modalRange.channel = currentChannel;
-    $modalRange.number = currentChannel.num;
+    $modalRange.number = currentChannel.ChannelNumber;
 
     $modalRange.ranges = clone(currentChannel.Ranges);
     if (!$modalRange.ranges) {
