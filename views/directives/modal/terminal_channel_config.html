@@ -1314,4 +1314,29 @@
         </div>
     </div>
 </div>
+<div class="modal-footer">
+    <button class="btn yellow-crusta" type="button" ng-show="$modal.editing && $modal.currentData"
+            ng-click="matrixReset()" style="float: left">恢复默认
+    </button>
+    <button type="button" class="btn btn-info"
+            ng-show="$modal.category === 16"
+            ng-click="$modal.templateSave()"
+            style="float: left">
+        模板另存为
+    </button>
+
+    <button type="button" class="btn btn-primary"
+            ng-show="$modal.category !== 9"
+            ng-click="$modal.categoryChanged($modal.category-1)">上一步</button>
+    <button type="button" class="btn btn-primary"
+            ng-show="$modal.category !== 16"
+            ng-click="$modal.categoryChanged($modal.category+1)">下一步</button>
+
+    <button type="button" id="channel_ok"
+            class="btn ladda-button btn-primary"
+            ng-show="$modal.editing && $modal.category === 16"
+            data-style="expand-right"
+            ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
+    <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
+</div>
 
