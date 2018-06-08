@@ -194,6 +194,8 @@ func init() {
 
 	goazure.Router("/fast_term_channel_config",&controllers.FastConfigController{},"post:FastTermChannelConfig")
 
+	goazure.Router("/fast_template_tocur",&controllers.TemplateController{},"post:FastTemplateToCur")
+
 	//下发测试按钮
 
 
