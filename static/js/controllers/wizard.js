@@ -428,7 +428,7 @@ angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $
 
     $scope.ok = function () {
 
-        $http.post("/fast_template",{code: parseInt($scope.code),template:$scope.template.Uid})
+        $http.post("/fast_template_tocur",{code: parseInt($scope.code),template:$scope.template.Uid})
             .then(function (res) {
                 swal({
                     title: "模板导入成功",
