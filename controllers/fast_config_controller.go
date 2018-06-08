@@ -78,6 +78,7 @@ type Ranges struct {
 	Min int64		`json:"Min"`
 	Max int64		`json:"Max"`
 	Name string     `json:"Name"`
+	Value int64     `json:"Value"`
 }
 
 type CommParam struct {
@@ -323,7 +324,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 			cnf.ChannelNumber = int32(analogue.ChannelNumber - 12)
 		} else {
 			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte("模拟量通道数输入错误"))
+			ctl.Ctx.Output.Body([]byte("模拟量通道数输入m错误"))
 			return
 		}
 
@@ -496,7 +497,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 			ctl.Ctx.Output.Body([]byte("添加状态量失败"))
 			return
 		}
-		for i, r := range ran.Ranges {
+		for _, r := range ran.Ranges {
 			var rg models.RuntimeParameterChannelConfigRange
 			if r.Max < r.Min {
 				e := fmt.Sprintln("状态值范围设定有误！")
@@ -510,7 +511,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 			rg.Min = r.Min
 			rg.Max = r.Max
 			rg.Name = r.Name
-			rg.Value = int64(i)
+			rg.Value = r.Value
 			if _,err:=dba.BoilerOrm.Insert(&rg);err!=nil{
 				goazure.Error("insert channel_config_range error:",err)
 				ctl.Ctx.Output.SetStatus(400)
