@@ -1,0 +1,32 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">终端模板导入 <span>{{code}}</span>   </h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="row">
+            <div class="col-md-12" style="font-size: 18px; font-weight: bold; color: #0b94ea; margin-bottom: 15px;">
+                选择模板
+            </div>
+
+            <div class="col-md-12">
+                <div class="input-group" >
+                    <span class="input-group-addon">通道模板</span>
+                    <ui-select ng-model="template" theme="bootstrap" ng-change="changeTemp(template);">
+                        <ui-select-match placeholder="{{template.Name||'未配置'}}">{{$select.selected.Name}}</ui-select-match>
+                        <ui-select-choices repeat="tem in templates | filter: $select.search">
+                            <span ng-bind-html="tem.Name"></span>
+                        </ui-select-choices>
+                    </ui-select>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">提交</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">取消</button>
+    </div>
+</div>

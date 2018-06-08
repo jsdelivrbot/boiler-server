@@ -249,7 +249,7 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
 
 
 //终端绑定
-angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$rootScope,$state,$stateParams,$http) {
+angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$rootScope,$state,$stateParams,$http,$uibModal) {
 
     var uid = $stateParams.uid;
     $scope.terminal = {value:"",bind:false}
@@ -372,6 +372,35 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
     };
 
 
+     $scope.template = function () {
+
+         var modalInstance = $uibModal.open({
+             templateUrl: '/views/wizard/modal-temp.html',
+             controller: 'ModalTempSetCtrl',
+             size: "",
+             windowClass: 'zindex_sub',
+             resolve: {
+                 code: function () {
+                     return $scope.terminal.value;
+                 },
+                 uid:function () {
+                     return uid;
+                 }
+             }
+         });
+
+
+         modalInstance.result.then(function (selectedItem) {
+             $scope.selected = selectedItem;
+         }, function () {
+
+         });
+         /*$http.post("",{code:parseInt($scope.terminal.value)}).then(function (res) {
+             
+         },function (err) {
+             
+         })*/
+     };
 
     $scope.back = function () {
         $state.go("wizard.boiler",{uid:uid});
@@ -382,6 +411,47 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
     }
     
 });
+
+//导入模板
+angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $uibModalInstance,$http, code,uid) {
+
+    $scope.code = code;
+    $scope.template = "";
+    $http.get("/template_list").then(function (res) {
+        $scope.templates = res.data;
+        // console.log($scope.templates);
+    });
+
+    $scope.changeTemp = function (temp) {
+        $scope.template = temp;
+    };
+
+    $scope.ok = function () {
+
+        $http.post("/fast_template",{code: parseInt($scope.code),template:$scope.template.Uid})
+            .then(function (res) {
+                swal({
+                    title: "模板导入成功",
+                    text: "",
+                    type: "success"
+                });
+                $uibModalInstance.close();
+                $state.go("wizard.term-config",{uid:uid});
+            },function (err) {
+                swal({
+                    title: "模板导入失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
 
 
 

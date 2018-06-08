@@ -849,7 +849,7 @@ angular.module('BoilerAdmin').controller('ModalTerminalChannelCtrl', function ($
         }
 
     };
-
+    $modal.initParam();
 
     //终端快速设置
     $modal.quickSet = function (){
