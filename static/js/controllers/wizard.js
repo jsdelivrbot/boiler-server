@@ -703,6 +703,14 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
         var aNumList = [];
         for(var i =0; i<$scope.analogueList.length;i++){
             if($scope.analogueList[i].Parameter.Name){
+                if($scope.analogueList[i].ChannelNumber>24){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"模拟通道不能超过24",
+                        type: "error"
+                    });
+                    return false;
+                }
                 aNumList.push($scope.analogueList[i].ChannelNumber);
                 if(!$scope.analogueList[i].Func||!$scope.analogueList[i].Byte||!$scope.analogueList[i].Modbus|| !$scope.analogueList[i].Parameter.Scale){
                     swal({
@@ -755,6 +763,14 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
         var sNumList = [];
         for(var i =0; i<$scope.switchList.length;i++){
             if($scope.switchList[i].Parameter.Name){
+                if($scope.switchList[i].ChannelNumber>48){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"开关通道不能超过48",
+                        type: "error"
+                    });
+                    return false;
+                }
                 aNumList.push($scope.switchList[i].ChannelNumber);
                 if($scope.switchList[i].Func!==99 &&(!$scope.switchList[i].Func||!$scope.switchList[i].BitAddress||!$scope.switchList[i].Modbus)){
                     swal({
@@ -776,7 +792,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
                     }
                     if($scope.switchList[i].BitAddress!=1){
                         swal({
-                            title: "位地址错误",
+                            title: "开关通道位地址错误",
                             text:"功能码为01，对应位地址为1" ,
                             type: "error"
                         });
@@ -794,9 +810,9 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
                         App.stopPageLoading();
                         return false;
                     }
-                    if(!$scope.switchList[i].BitAddress!=1){
+                    if($scope.switchList[i].BitAddress!=1){
                         swal({
-                            title: "位地址错误",
+                            title: "开关通道位地址错误",
                             text:"功能码为02，对应位地址为1",
                             type: "error"
                         });
@@ -814,7 +830,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
                         App.stopPageLoading();
                         return false;
                     }
-                    if(!$scope.switchList[i].BitAddress<1||!$scope.switchList[i].BitAddress>16){
+                    if($scope.switchList[i].BitAddress<1||$scope.switchList[i].BitAddress>16){
                         swal({
                             title: "位地址错误",
                             text: "功能码为03，对应位地址范围为1-16",
@@ -844,7 +860,17 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
         var rangeList = [];
         var rNumList = [];
         for(var i =0; i<$scope.rangeList.length;i++){
+            var range = angular.copy($scope.rangeList[i].Ranges);
+            console.log(range);
             if($scope.rangeList[i].Parameter.Name){
+                if($scope.rangeList[i].ChannelNumber>12){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"状态通道不能超过12",
+                        type: "error"
+                    });
+                    return false;
+                }
                 aNumList.push($scope.rangeList[i].ChannelNumber);
                 if(!$scope.rangeList[i].Func||!$scope.rangeList[i].Byte||!$scope.rangeList[i].Modbus){
                     swal({
@@ -877,8 +903,8 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
                     }
                 }
 
-                rangeList.ranges = [];
-                if ($scope.rangeList[i].Ranges.length <= 0) {
+                $scope.rangeList[i].Ranges = [];
+                if (range.length <= 0) {
                     swal({
                         title: "状态量通道配置错误",
                         text: "已配置的状态量通道，需要完成其状态值的配置才可提交",
@@ -886,22 +912,22 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
                     });
                     return;
                 }
-                for (var n in $scope.rangeList[i].Ranges) {
-                    var r = $scope.rangeList[i].Ranges[n];
+                for (var n in range) {
+                    var r = range[n];
                     var rg = {};
-                    rg.min = r.Min;
-                    rg.max = r.Max;
-                    rg.name = r.Name;
+                    rg.Min = r.Min;
+                    rg.Max = r.Max;
+                    rg.Name = r.Name;
                     switch (typeof n) {
                         case "number":
-                            rg.value = n;
+                            rg.Value = n;
                             break;
                         case "string":
-                            rg.value = parseInt(n, 10);
+                            rg.Value = parseInt(n, 10);
                             break;
                     }
 
-                    rangeList.ranges.push(rg);
+                    $scope.rangeList[i].Ranges.push(rg);
                 }
 
                 rangeList.push($scope.rangeList[i]);
