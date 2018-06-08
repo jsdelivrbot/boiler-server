@@ -214,11 +214,40 @@ func (ctl *FastConfigController) FastTermCombined() {
 		ctl.Ctx.Output.Body([]byte("非法终端!"))
 		return
 	}
-	fmt.Println("terminal:",terminal)
 	if dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Terminal__Uid",terminal.Uid).Exist(){
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端已被占用!"))
 		return
+	}
+	boiler := models.Boiler{}
+	boiler.Uid = wCombined.BoilerUid
+	errB := DataCtl.ReadData(&boiler)
+	if errB != nil {
+		e := fmt.Sprintln("Read Boiler Error:", errB)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	if boiler.Terminal == nil {
+		boiler.Terminal = &terminal
+
+		code := strconv.FormatInt(terminal.TerminalCode, 10)
+		if len(code) < 6 {
+			for l := len(code); l < 6; l++ {
+				code = "0" + code
+			}
+		}
+		boiler.TerminalCode = code
+		boiler.TerminalSetId = 1
+
+		if err := DataCtl.UpdateData(&boiler); err != nil {
+			e := fmt.Sprintln("Boiler Bind Error:", err, boiler, terminal)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+			return
+		}
 	}
 	var sql string =""
 	if dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Boiler__Uid",wCombined.BoilerUid).Filter("TerminalSetId",1).Exist() {
@@ -238,6 +267,7 @@ func (ctl *FastConfigController) FastTermCombined() {
 			return
 		}
 	}
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 func (ctl *FastConfigController) FastTermUnbind() {
@@ -257,6 +287,28 @@ func (ctl *FastConfigController) FastTermUnbind() {
 		ctl.Ctx.Output.Body([]byte("非法终端!"))
 		return
 	}
+	boiler := models.Boiler{}
+	boiler.Uid = termBind.BoilerUid
+	errB := DataCtl.ReadData(&boiler)
+	if errB != nil {
+		e := fmt.Sprintln("Read Unbind Data Error:", errB)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	if boiler.Terminal.Uid == terminal.Uid {
+		boiler.Terminal = nil
+		boiler.TerminalCode = ""
+		boiler.TerminalSetId = 0
+
+		if err := DataCtl.UpdateData(&boiler); err != nil {
+			e := fmt.Sprintln("Boiler Unbind Error:", err, boiler, terminal)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+		}
+	}
 	if _,err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").
 	Filter("Boiler__Uid",termBind.BoilerUid).Filter("Terminal__Uid",terminal.Uid).Delete();err!=nil{
 		goazure.Error("Unbind Boiler/Terminal Error",err)
@@ -264,6 +316,7 @@ func (ctl *FastConfigController) FastTermUnbind() {
 		ctl.Ctx.Output.Body([]byte("解绑失败"))
 		return
 	}
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 func (ctl *FastConfigController) FastTermChannelConfig() {
