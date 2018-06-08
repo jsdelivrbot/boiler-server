@@ -21,7 +21,6 @@ import (
 
 	"github.com/pborman/uuid"
 	"github.com/AzureRelease/boiler-server/models/logs"
-	"math/rand"
 )
 
 type ParameterController struct {
@@ -336,7 +335,7 @@ func (ctl *ParameterController) RuntimeParameterList() {
 	ctl.ServeJSON()
 }*/
 
-func (ctl *ParameterController) ChannelDataReload(t time.Time) {
+func (ctl *ParameterController) ChannelDataReload(t time.Time,start string,end string) {
 	defer func() {
 		if r := recover(); r != nil {
 			goazure.Error("Recovered in ParamCtl.ChannelDataReload()", r)
@@ -345,13 +344,13 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	}()
 
 	var lgIn	logs.BoilerRuntimeLog
-	nonce := rand.Intn(254)
+	//nonce := rand.Intn(254)
 	lgIn.Name = "ChannelDataReload()"
 	lgIn.CreatedDate = t
 	lgIn.Status = logs.BOILER_RUNTIME_LOG_STATUS_INIT
 	LogCtl.AddReloadLog(&lgIn)
 
-	data := ctl.DataListNeedReload(nonce)
+	data := ctl.DataListNeedReload(start,end)
 
 	var lgRd	logs.BoilerRuntimeLog
 	lgRd.Name = "DataListNeedReload()"
@@ -545,7 +544,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time) {
 	*/
 }
 
-func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
+func (ctl *ParameterController) DataListNeedReload(start string,end string) []orm.Params {
 	var data 	[]orm.Params
 
 	/*
@@ -567,10 +566,10 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 		"SELECT *" +
 		"FROM	`boiler_m163` "  +
 		//"WHERE	`need_reload` = " + strconv.FormatInt(int64(nonce), 10) + ";"
-		"WHERE	`need_reload` = 1;"
+		"WHERE	`need_reload` = 1 and `Boiler_term_id` BETWEEN %s AND %s ;"
 		//"WHERE	`TS` > '2018-03-27 00:00:00';"
 		//"ORDER BY `TS` DESC; "
-
+    sql := fmt.Sprintf(raw,start,end)
 	var lg logs.BoilerRuntimeLog
 	lg.Name = "DataListNeedReload()"
 	lg.TableName = "boiler_163m"
@@ -586,7 +585,7 @@ func (ctl *ParameterController) DataListNeedReload(nonce int) []orm.Params {
 	}
 	*/
 
-	if  num, err := dba.BoilerOrm.Raw(raw).Values(&data); err != nil {
+	if  num, err := dba.BoilerOrm.Raw(sql).Values(&data); err != nil {
 		goazure.Error("Get DataListNeedReload Error", err, num)
 	}
 
@@ -967,6 +966,13 @@ func (ctl *ParameterController) ChannelConfigMatrix() {
 		}
 	}
 	goazure.Info("ChannelConfig Matrix:", matrix)
+	if matrix[0][2].AnalogueSwitch.Function == nil {
+		var noneFunc models.IssuedFunctionCode
+		if err:=dba.BoilerOrm.QueryTable("issued_function_code").Filter("Id",99).One(&noneFunc);err!=nil{
+			goazure.Error("Query issued_function_code Error",err)
+		}
+		matrix[0][2].AnalogueSwitch.Function = &noneFunc
+	}
 	ctl.Data["json"] = matrix
 	ctl.ServeJSON()
 }
@@ -979,7 +985,6 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-
 	for i, c := range aCnfs {
 		goazure.Warn("[", i, "]ChannelConfigUpdate: ", c)
 		var cnf models.RuntimeParameterChannelConfig
@@ -1347,14 +1352,14 @@ func generateDefaultChannelConfig() error {
 	return err
 }
 
-func (ctl *ParameterController) InitParameterChannelConfig() {
+func (ctl *ParameterController) InitParameterChannelConfig(start string,end string) {
 	// generateDefaultChannelConfig()
 	interval := time.Second * 3
 	ticker := time.NewTicker(interval)
 	tick := func() {
 		for t := range ticker.C {
 			goazure.Info("处理ChannelDataReload:", t)
-			go ParamCtrl.ChannelDataReload(t)
+			go ParamCtrl.ChannelDataReload(t,start,end)
 		}
 	}
 

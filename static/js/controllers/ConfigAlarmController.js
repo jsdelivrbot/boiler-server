@@ -23,8 +23,7 @@ angular.module('BoilerAdmin').controller('ConfigAlarmController', function($root
         DTColumnDefBuilder.newColumnDef(3),
         DTColumnDefBuilder.newColumnDef(4),
         DTColumnDefBuilder.newColumnDef(5),
-        DTColumnDefBuilder.newColumnDef(6),
-        DTColumnDefBuilder.newColumnDef(7).notSortable()
+        DTColumnDefBuilder.newColumnDef(6).notSortable()
     ];
 
     confAlarm.refreshDataTables = function () {
@@ -157,6 +156,9 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
 
     $modal.priority = 1;
 
+
+    $modal.compares = ["＞","＜"];
+
     $http.get("/runtime_parameter_list").then(function (res){
         $modal.parameterData = [];
         var parameterData = res.data;
@@ -188,7 +190,24 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
 
         $modal.org = currentData.Organization;
         $modal.description = currentData.Description;
+
+        $modal.compareValue = $modal.warningValue > $modal.normalValue ? "＞"  : "＜";
+
+
     }
+
+    // $modal.compareChange = function () {
+    //     switch ($modal.compares){
+    //         case "＞":
+    //             $modal.normalValue = parseFloat($modal.warningValue) + 1;
+    //             break;
+    //         case "＜":
+    //             $modal.normalValue = parseFloat($modal.warningValue) - 1;
+    //             break;
+    //     }
+    //     console.log($modal.normalValue);
+    // };
+
 
     /*
      BoilerForm		*BoilerTypeForm			`orm:"rel(fk);null;index"`
@@ -246,6 +265,14 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
         var uid = null;
         if (currentData) {
             uid = currentData.Uid;
+        }
+        switch ($modal.compareValue){
+            case "＞":
+                $modal.normalValue = parseFloat($modal.warningValue) - 1;
+                break;
+            case "＜":
+                $modal.normalValue = parseFloat($modal.warningValue) + 1;
+                break;
         }
         $http.post("/alarm_rule_update/", {
             uid: uid,

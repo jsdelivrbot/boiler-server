@@ -1,0 +1,295 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title" style="display: inline-block;">锅炉基本信息设置</h3>
+    <span class="ticket-id bold font-blue font-lg" style="display: inline-block; margin-left: 12px">{{ name }}</span>
+</div>
+<style type="text/css">
+    div.input-group.form-group,
+    div.btn-group.form-group {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    div.form-group.form-selector .control-label {
+        width: 26%;
+        margin-top: 6px;
+        text-align: left;
+    }
+
+    div.form-group.form-selector select,
+    div.form-group.form-selector input {
+        width: 74%;
+        float: right;
+    }
+
+    .modal-body .input-group span.unit {
+        position: absolute;
+        left:auto;
+        right:16px;
+        top:8px;
+        float:right;
+        z-index: 10;
+        color: grey;
+    }
+
+    .modal-body h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .modal-body hr {
+        margin-top: 4px;
+        margin-bottom: 12px;
+    }
+
+    div#boiler-organization .input-group {
+        margin-bottom: 15px;
+    }
+
+</style>
+
+<form name="infoBasicForm">
+    <div class="modal-body" id="modal-body">
+        <h5 class="text-danger">必填信息</h5>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group col-md-6">
+                    <div class="input-group input-icon right">
+                        <span class="input-group-addon">锅炉名称</span>
+                        <i class="fa tooltips"
+                           ng-class="[{'fa-exclamation font-red-pink': !data.name || data.name.length < 4}, {'fa-check font-green': data.name.length >= 4}]"
+                           data-container="body"></i>
+                        <input type="text"
+                               ng-model="data.name"
+                               class="form-control"
+                               placeholder="输入锅炉名称" required>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">锅炉介质</span>
+                        <select ng-model="data.mediumId"
+                                ng-options="med.Id as med.Name for med in mediums"
+                                class="form-control" required>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">锅炉燃料</span>
+                        <select ng-model="data.fuelId"
+                                ng-options="fl.Uid as fl.Name group by fl.Type.Name for fl in fuels"
+                                class="form-control" required>
+                        </select>
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">锅炉型态</span>
+                        <select ng-model="data.templateId"
+                                ng-options="tm.TemplateId as tm.Name for tm in templates"
+                                class="form-control" required>
+                        </select>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="font-blue-hoki">选填信息</h5>
+                <hr>
+
+
+                <div class="form-group col-md-6">
+                    <div class="input-group input-icon right">
+                        <span class="input-group-addon">锅炉型号</span>
+                        <input type="text"
+                               ng-model="data.modelCode"
+                               class="form-control"
+                               placeholder="输入锅炉型号" >
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div class="input-group input-icon right">
+                        <span class="input-group-addon">额定蒸发量</span>
+
+                        <span class="unit" style="right: 30px;">t/h</span>
+                        <input type="number" step="0.0001"
+                               ng-model="data.evaporatingCapacity"
+                               class="form-control"
+                               placeholder="输入额定蒸发量">
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div class="input-group input-icon right">
+                        <span class="input-group-addon">注册编码</span>
+                        <input type="text"
+                               ng-model="data.registerCode"
+                               class="form-control"
+                               placeholder="输入注册编码">
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">使用证号</span>
+                        <input type="text"
+                               ng-model="data.certificateNumber"
+                               class="form-control ng-pristine ng-valid ng-touched has-success"
+                               placeholder="输入使用证号">
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">出厂编号</span>
+                        <input type="text"
+                               ng-model="data.factoryNumber"
+                               class="form-control"
+                               placeholder="输入出厂编号">
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">登记机构</span>
+                        <input type="text"
+                               ng-model="data.RegisterOrg.Name"
+                               class="form-control"
+                               placeholder="输入登记机构">
+                    </div>
+                </div>
+            </div>
+
+            <div id="boiler-organization" class="col-md-12">
+                <h5 class="font-blue-hoki">关联企业信息</h5>
+                <hr>
+                <div class="form-group col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">使用企业</span>
+
+                        <ui-select ng-model="data.enterpriseId" theme="bootstrap">
+                            <ui-select-match
+                                    placeholder="输入使用企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="'type'"
+                                               repeat="org.Uid as org in enterprises | filter: $select.search">
+                                <span ng-bind-html="org.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">制造企业</span>
+                        <ui-select ng-model="data.factoryId" theme="bootstrap">
+                            <ui-select-match
+                                    placeholder="输入制造企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="'type'"
+                                               repeat="org.Uid as org in factories | filter: $select.search">
+                                <span ng-bind-html="org.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">维保企业</span>
+                        <ui-select ng-model="data.maintainerId" theme="bootstrap">
+                            <ui-select-match
+                                    placeholder="输入维保企业名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="'type'"
+                                               repeat="org.Uid as org in maintainers | filter: $select.search">
+                                <span ng-bind-html="org.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">监管部门</span>
+                        <ui-select ng-model="data.supervisorId" theme="bootstrap">
+                            <ui-select-match
+                                    placeholder="输入监管部门名称或在列表中选择...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="'type'"
+                                               repeat="org.Uid as org in supervisors | filter: $select.search">
+                                <span ng-bind-html="org.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div ng-repeat="link in links"
+                         class="input-group" style="width: 100%;">
+                        <span class="input-group-addon">企业关联</span>
+                        <ui-select ng-model="link.type"
+                                   ng-change="linkTypeChanged(link)"
+                                   theme="bootstrap"
+                                   style="display: table-cell; width: 30%;">
+                            <ui-select-match placeholder="企业类型...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="'type'"
+                                               repeat="tp.id as tp in orgTypes | filter: $select.search">
+                                <span ng-bind-html="tp.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                        <ui-select ng-model="link.uid"
+                                   theme="bootstrap"
+                                   style="display: table-cell; width: 55%; overflow: hidden;">
+                            <ui-select-match placeholder="企业名称...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="'type'"
+                                               repeat="og.Uid as og in link.orgs | filter: $select.search">
+                                <span ng-bind-html="og.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                        <a ng-click="removeLink(link);"
+                           class="form-control addon btn btn-outline btn-circle red" style="width: 22px; height: 22px; margin: 0 0 6px 6px; padding: 0px;">
+                            <i class="fa fa-minus" style="font-size: 12px;"></i>
+                        </a>
+                    </div>
+                    <button type="button"
+                            ng-show="links.length < 4"
+                            ng-click="addNewLink();"
+                            class="btn green"
+                            style="width: 100%;">
+                        <i class="fa fa-plus-circle"></i>
+                        新增企业关联
+                    </button>
+                </div>
+
+                <!--<div class="form-group col-md-6">-->
+
+                <!--</div>-->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button id="boiler_basic_submit" ng-click="save();"
+                data-style="expand-right"
+                class="btn ladda-button"
+                ng-disabled="data.name.length < 4 ||
+                        data.mediumId < 0 ||
+                        data.fuelId.length <= 0 ||
+                        data.templateId < 0"
+                ng-class="data.name.length >= 4 &&
+                      data.mediumId >= 0 &&
+                      data.fuelId.length > 0 &&
+                      data.templateId >= 0  ? 'btn-primary' : 'grey'"
+                type="submit">
+            <span class="ladda-label">下一步</span>
+        </button>
+        <!--<a ui-sref="wizard.term-bind">Go</a>-->
+        <!--<button class="btn btn-default" type="button" ng-click="cancel()">取消</button>-->
+    </div>
+</form>

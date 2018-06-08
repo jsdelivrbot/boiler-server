@@ -7,8 +7,6 @@ import (
 
 func init() {
 
-
-
 	goazure.Router("/", &controllers.MainController{})
 	goazure.Router("/login/", &controllers.MainController{})
 	goazure.Router("/login_xn/", &controllers.MainController{})
@@ -185,6 +183,16 @@ func init() {
 	goazure.Router("/template_group_config",&controllers.TemplateController{},"post:TemplateGroupConfig")
 	//终端错误回显
 	goazure.Router("/terminal_error_list",&controllers.IssuedController{},"post:TerminalErrorList")
+	//终端跟锅炉在线状态
+	goazure.Router("/terminal_boiler_status",&controllers.BoilerController{},"get:TerminalBoilerStatus")
+
+	goazure.Router("/fast_boiler_add",&controllers.FastConfigController{},"post:FastBoilerAdd")
+
+	goazure.Router("/fast_terminal_combined",&controllers.FastConfigController{},"post:FastTermCombined")
+
+	goazure.Router("/fast_terminal_unbind",&controllers.FastConfigController{},"post:FastTermUnbind")
+
+	goazure.Router("/fast_term_channel_config",&controllers.FastConfigController{},"post:FastTermChannelConfig")
 
 	//下发测试按钮
 

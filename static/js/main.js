@@ -740,7 +740,8 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             '../assets/boiler/global/plugins/fullcalendar/fullcalendar.js' + clientkey,
 
                             'js/controllers/BoilerInfoController.js' + clientkey,
-                            'js/directives/table_boiler-info.js' + clientkey
+                            'js/directives/table_boiler-info.js' + clientkey,
+                            'js/controllers/TerminalController.js' + clientkey,
                         ]
                     });
                 }]
@@ -934,20 +935,45 @@ boilerAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
+
+        //配置向导
         .state("wizard",{
-            url:"/config-wizard",
-            templateUrl:"views/config-wizard.html",
+            url:"/wizard",
+            templateUrl:"views/wizard/main.html",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'BoilerAdmin',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            'js/controllers/configWizardController.js' + clientkey
+                            'js/controllers/configWizardController.js' + clientkey,
+                            'js/controllers/wizard.js' + clientkey
                         ]
                     });
                 }]
             }
+        })
+        .state("wizard.config",{
+            url:"/config",
+            templateUrl:"views/wizard/config-wizard.html"+ clientkey
+        })
+        .state('wizard.boiler', {
+            url: "/wizard-boiler?uid",
+            templateUrl: "views/wizard/boiler-config.html" + clientkey,
+            data: {pageTitle: '锅炉信息'},
+            controller: "wizardBoilerCtrl"
+        })
+        .state('wizard.term-bind', {
+            url: "/terminal-bind?uid",
+            templateUrl: "views/wizard/terminal-bind.html" + clientkey,
+            data: {pageTitle: '终端绑定'},
+            controller: "wizardTermBindCtrl"
+        })
+        .state('wizard.term-config', {
+            url: "/terminal-config?uid",
+            templateUrl: "views/wizard/terminal-config.html" + clientkey,
+            data: {pageTitle: '终端配置'},
+            controller: "wizardTermConfCtrl"
         })
 
 }]);
