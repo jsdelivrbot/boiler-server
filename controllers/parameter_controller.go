@@ -985,7 +985,6 @@ func (ctl *ParameterController) ChannelConfigUpdate() {
 		goazure.Error("Unmarshal Error", err)
 		return
 	}
-
 	for i, c := range aCnfs {
 		goazure.Warn("[", i, "]ChannelConfigUpdate: ", c)
 		var cnf models.RuntimeParameterChannelConfig
