@@ -1552,16 +1552,18 @@ func (ctl *BoilerController) BoilerUnbind() {
 		return
 	}
 
-	if boiler.Terminal.Uid == bind.TerminalId {
-		boiler.Terminal = nil
-		boiler.TerminalCode = ""
-		boiler.TerminalSetId = 0
+	if boiler.Terminal != nil {
+		if boiler.Terminal.Uid == bind.TerminalId {
+			boiler.Terminal = nil
+			boiler.TerminalCode = ""
+			boiler.TerminalSetId = 0
 
-		if err := DataCtl.UpdateData(&boiler); err != nil {
-			e := fmt.Sprintln("Boiler Unbind Error:", err, boiler, terminal)
-			goazure.Error(e)
-			ctl.Ctx.Output.SetStatus(400)
-			ctl.Ctx.Output.Body([]byte(e))
+			if err := DataCtl.UpdateData(&boiler); err != nil {
+				e := fmt.Sprintln("Boiler Unbind Error:", err, boiler, terminal)
+				goazure.Error(e)
+				ctl.Ctx.Output.SetStatus(400)
+				ctl.Ctx.Output.Body([]byte(e))
+			}
 		}
 	}
 

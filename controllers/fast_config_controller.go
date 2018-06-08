@@ -16,6 +16,11 @@ type FastConfigController struct {
 	MainController
 }
 
+type TempToCur struct {
+	TemplateUid string `json:"template"`
+	Code  int  `json:"code""`
+}
+
 type termCombined struct {
 	BoilerUid  string    `json:"boiler_uid"`
 	Code       int64    `json:"code"`
@@ -104,6 +109,9 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &info); err != nil {
 		goazure.Error("Unmarshal BoilerInfo JSON Error", err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 
 	if len(info.Uid) > 0 {
@@ -202,6 +210,9 @@ func (ctl *FastConfigController) FastTermCombined() {
 	var terminal models.Terminal
 	if err:=json.Unmarshal(ctl.Ctx.Input.RequestBody,&wCombined);err!=nil{
 		goazure.Error("Unmarshal JSON Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 	fmt.Println("combined:",wCombined)
 	qs := dba.BoilerOrm.QueryTable("terminal").RelatedSel("Organization")
@@ -214,11 +225,40 @@ func (ctl *FastConfigController) FastTermCombined() {
 		ctl.Ctx.Output.Body([]byte("非法终端!"))
 		return
 	}
-	fmt.Println("terminal:",terminal)
 	if dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Terminal__Uid",terminal.Uid).Exist(){
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("终端已被占用!"))
 		return
+	}
+	boiler := models.Boiler{}
+	boiler.Uid = wCombined.BoilerUid
+	errB := DataCtl.ReadData(&boiler)
+	if errB != nil {
+		e := fmt.Sprintln("Read Boiler Error:", errB)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	if boiler.Terminal == nil {
+		boiler.Terminal = &terminal
+
+		code := strconv.FormatInt(terminal.TerminalCode, 10)
+		if len(code) < 6 {
+			for l := len(code); l < 6; l++ {
+				code = "0" + code
+			}
+		}
+		boiler.TerminalCode = code
+		boiler.TerminalSetId = 1
+
+		if err := DataCtl.UpdateData(&boiler); err != nil {
+			e := fmt.Sprintln("Boiler Bind Error:", err, boiler, terminal)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+			return
+		}
 	}
 	var sql string =""
 	if dba.BoilerOrm.QueryTable("boiler_terminal_combined").Filter("Boiler__Uid",wCombined.BoilerUid).Filter("TerminalSetId",1).Exist() {
@@ -238,6 +278,7 @@ func (ctl *FastConfigController) FastTermCombined() {
 			return
 		}
 	}
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 func (ctl *FastConfigController) FastTermUnbind() {
@@ -246,6 +287,9 @@ func (ctl *FastConfigController) FastTermUnbind() {
 	var terminal models.Terminal
 	if err:= json.Unmarshal(ctl.Ctx.Input.RequestBody,&termBind);err!=nil{
 		goazure.Error("Unmarshal JSON Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 	qs := dba.BoilerOrm.QueryTable("terminal").RelatedSel("Organization")
 	if !usr.IsAdmin() {
@@ -257,6 +301,28 @@ func (ctl *FastConfigController) FastTermUnbind() {
 		ctl.Ctx.Output.Body([]byte("非法终端!"))
 		return
 	}
+	boiler := models.Boiler{}
+	boiler.Uid = termBind.BoilerUid
+	errB := DataCtl.ReadData(&boiler)
+	if errB != nil {
+		e := fmt.Sprintln("Read Unbind Data Error:", errB)
+		goazure.Error(e)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte(e))
+		return
+	}
+	if boiler.Terminal.Uid == terminal.Uid {
+		boiler.Terminal = nil
+		boiler.TerminalCode = ""
+		boiler.TerminalSetId = 0
+
+		if err := DataCtl.UpdateData(&boiler); err != nil {
+			e := fmt.Sprintln("Boiler Unbind Error:", err, boiler, terminal)
+			goazure.Error(e)
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte(e))
+		}
+	}
 	if _,err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").
 	Filter("Boiler__Uid",termBind.BoilerUid).Filter("Terminal__Uid",terminal.Uid).Delete();err!=nil{
 		goazure.Error("Unbind Boiler/Terminal Error",err)
@@ -264,6 +330,7 @@ func (ctl *FastConfigController) FastTermUnbind() {
 		ctl.Ctx.Output.Body([]byte("解绑失败"))
 		return
 	}
+	go BlrCtl.RefreshGlobalBoilerList()
 }
 
 func (ctl *FastConfigController) FastTermChannelConfig() {
@@ -271,6 +338,9 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &config); err != nil {
 		goazure.Error("Unmarshal JSON Error", err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 	fmt.Println("config:",config)
 	var terminal models.Terminal

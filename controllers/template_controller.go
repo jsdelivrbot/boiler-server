@@ -67,6 +67,37 @@ type TempReturnErr struct {
 	TerminalCode string
 	MsgErr string
 }
+
+func (ctl *TemplateController) FastTemplateToCur() {
+	usr := ctl.GetCurrentUser()
+	var wTempl TempToCur
+	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &wTempl); err != nil {
+		goazure.Error("Unmarshal JSON Error", err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
+	}
+	var tempConfig TemplateConfig
+	var terminal models.Terminal
+	qs := dba.BoilerOrm.QueryTable("terminal")
+	if usr.IsOrganizationUser() {
+		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
+	}
+	if err:=qs.Filter("IsDeleted", false).Filter("TerminalCode",wTempl.Code).One(&terminal);err!=nil{
+		goazure.Error("Query TerminalCode Error:",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("非法终端"))
+		return
+	}
+	var terminals []models.Terminal
+	terminals = append(terminals,terminal )
+	tempConfig.Terminals = terminals
+	tempConfig.TemplateUid = wTempl.TemplateUid
+	fmt.Println("cccccc:",tempConfig.Terminals[0].TerminalCode)
+	fmt.Println("tempalteUid:",tempConfig.TemplateUid)
+	go ctl.IssuedTemplateToCurr(tempConfig)
+}
+
 func (ctl *TemplateController) TemplateGroupConfig() {
 	usr:=ctl.GetCurrentUser()
 	var terminals []models.Terminal

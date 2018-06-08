@@ -34,13 +34,13 @@
         <div class=" col-md-12">
              <div class="form-group">
                  <input type="text" ng-model="terminal.value" maxlength="6" minlength="6" ng-disabled="terminal.bind"
-                        class="form-control" style="width: 86%; display: inline-block;" placeholder="请输入六位数字终端编码,如：680001">
+                        class="form-control pull-left" style="width: 86%; margin-right: 5px;" placeholder="请输入六位数字终端编码,如：680001">
                  <button type="button" ng-click="ok()" ng-if="!terminal.bind"
-                         ng-disabled="!terminal.value || terminal.bind"
+                         ng-disabled="!terminal.value || terminal.bind" class="pull-left"
                          ng-class="['btn', {'grey-salsa': !terminal.value || terminal.bind},{'blue': terminal.value && !terminal.bind}]" >绑定</button>
 
                  <button type="button" ng-click="unbind();" ng-if="terminal.bind"
-                         class="btn btn-sm btn-outline btn-circle red delete_btn">
+                         class="btn btn-sm btn-outline btn-circle red delete_btn pull-left">
                      <i class="fa fa-minus" style="font-size: 12px;"></i>
                  </button>
              </div>
@@ -71,6 +71,7 @@
     </div>
 </div>
 <div class="modal-footer">
+    <button class="btn green" ng-click="template();" ng-disabled="!terminal.bind">导入模板</button>
     <button type="button" class="btn btn-primary" ng-click="back();">上一步</button>
     <button class="btn ladda-button btn-primary" type="button" ng-click="goNext();"
         ng-disabled="!terminal.bind">

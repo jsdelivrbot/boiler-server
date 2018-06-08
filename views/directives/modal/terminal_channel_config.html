@@ -871,7 +871,7 @@
             <!--RANGE TABLE END-->
 
             <!--Communication TABLE BEGIN-->
-            <table ng-if="$modal.category === 15" ng-init="$modal.initParam();"
+            <table ng-if="$modal.category === 15"
                    class="table table-striped table-hover table-checkable order-column table-boiler">
                 <thead>
                 <tr>
@@ -1319,7 +1319,6 @@
             ng-click="matrixReset()" style="float: left">恢复默认
     </button>
     <button type="button" class="btn btn-info"
-            ng-show="$modal.category === 16"
             ng-click="$modal.templateSave()"
             style="float: left">
         模板另存为
