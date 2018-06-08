@@ -382,9 +382,6 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
              resolve: {
                  code: function () {
                      return $scope.terminal.value;
-                 },
-                 uid:function () {
-                     return uid;
                  }
              }
          });
@@ -413,7 +410,7 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
 });
 
 //导入模板
-angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $uibModalInstance,$http, code,uid) {
+angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $uibModalInstance,$http, code) {
 
     $scope.code = code;
     $scope.template = "";
@@ -436,7 +433,7 @@ angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $
                     type: "success"
                 });
                 $uibModalInstance.close();
-                $state.go("wizard.term-config",{uid:uid});
+                $state.go("monitor.thumb");
             },function (err) {
                 swal({
                     title: "模板导入失败",
