@@ -257,7 +257,7 @@
         <button type="button"
                 ng-show="analogueList.length < 24 "
                 ng-click="addAnalogue();"
-                class="btn green"
+                class="btn blue"
                 style="width: 100%;">
             <i class="fa fa-plus-circle"></i>
             新增模拟通道
@@ -321,7 +321,9 @@
                                 <li role="menuitem"><a href ng-click="setStatus(data, 0)"><i class="fa fa-ellipsis-h"></i> 默认</a></li>
                             </ul>
                         </div>
-                        <input type="text" ng-model="data.Parameter.Name" ng-change="dataChanged(data);" style=" width: 78%; float: left;" class="form-control" placeholder="未配置">
+                        <input type="text" ng-model="data.Parameter.Name" ng-change="dataChanged(data);"
+                               style=" width: 78%; float: left;" class="form-control" placeholder="未配置"
+                                ng-disabled="$index===0||$index===1">
 
                         <div uib-dropdown class="dropdown-group" style="width:10%;">
                             <button type="button" uib-dropdown-toggle
@@ -340,10 +342,10 @@
                 </td>
                 <td>
                     <ui-select ng-model="data.Func"
-                               theme="bootstrap" ng-disabled="!data.Parameter||!data.Parameter.Name"
-                               ng-change="fCodeChange1(data.Func,outerIndex,1)"
+                               theme="bootstrap" ng-disabled="!data.Parameter||!data.Parameter.Name || $index===1"
+                               ng-change="fCodeChange(data)"
                                style="width: 100%;">
-                        <ui-select-match placeholder="{{data.Func.Name||'默认(未配置)'}}">
+                        <ui-select-match placeholder="{{data.Func||'默认(未配置)'}}">
                             {{$select.selected.Name}}
                         </ui-select-match>
                         <ui-select-choices
@@ -354,12 +356,12 @@
                 </td>
                 <td>
                     <input type="number" ng-model="data.Modbus" placeholder="默认（未配置）"
-                           ng-disabled="!data.Parameter||!data.Parameter.Name"
+                           ng-disabled="!data.Parameter||!data.Parameter.Name || $index===1"
                            uib-tooltip-template="'modbusTips2.html'" class="form-control">
                 </td>
                 <td>
                     <input type="number" ng-model="data.BitAddress" placeholder="默认（未配置）"
-                           ng-disabled="!data.Parameter||!data.Parameter.Name"
+                           ng-disabled="!data.Parameter||!data.Parameter.Name || $index===1"
                            uib-tooltip-template="'bitAddressTips.html'" class="form-control">
                 </td>
                 <td>
@@ -367,6 +369,8 @@
                         <i class="fa fa-minus" style="font-size: 12px;"></i>
                     </button>
                 </td>
+
+
             </tr>
 
 
@@ -375,7 +379,7 @@
         <button type="button"
                 ng-show="switchList.length < 48 "
                 ng-click="addSwitch();"
-                class="btn green"
+                class="btn blue"
                 style="width: 100%;">
             <i class="fa fa-plus-circle"></i>
             新增开关通道
@@ -435,7 +439,7 @@
                         <button type="button"
                                 ng-disabled="!data.Parameter || !data.Parameter.Name || data.Status === -1"
                                 ng-class="['btn', 'btn-cell', {'default': data.Ranges.length <= 0}, {'blue-sharp': data.Ranges.length > 0}]"
-                                ng-click="openRange(data, outerIndex)"
+                                ng-click="openRange(data, data.ChannelNumber)"
                                 style="width: 10%;">
                             <i ng-class="['fa', {'fa-calendar-plus-o': data.Ranges.length <= 0}, {'fa-calendar-check-o': data.Ranges.length > 0}]"></i>
                         </button>
@@ -484,7 +488,7 @@
         <button type="button"
                 ng-show="rangeList.length < 12 "
                 ng-click="addRange();"
-                class="btn green"
+                class="btn blue"
                 style="width: 100%;">
             <i class="fa fa-plus-circle"></i>
             新增状态通道
@@ -652,11 +656,11 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-info"
+    <!--<button type="button" class="btn btn-info"
             ng-click="templateSave()"
             style="float: left">
         模板另存为
-    </button>
+    </button>-->
 
     <button type="button" class="btn btn-primary" ng-click="back();">上一步</button>
 
