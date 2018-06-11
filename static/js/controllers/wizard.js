@@ -387,16 +387,12 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
          });
 
 
-         modalInstance.result.then(function (selectedItem) {
-             $scope.selected = selectedItem;
+         modalInstance.result.then(function (info) {
+             $state.go("monitor.thumb");
          }, function () {
 
          });
-         /*$http.post("",{code:parseInt($scope.terminal.value)}).then(function (res) {
-             
-         },function (err) {
-             
-         })*/
+
      };
 
     $scope.back = function () {
@@ -432,8 +428,8 @@ angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $
                     text: "",
                     type: "success"
                 });
-                $uibModalInstance.close();
-                $state.go("monitor.thumb");
+                $uibModalInstance.close('success');
+
             },function (err) {
                 swal({
                     title: "模板导入失败",
