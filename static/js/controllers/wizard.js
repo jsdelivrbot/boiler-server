@@ -387,16 +387,12 @@ angular.module('BoilerAdmin').controller("wizardTermBindCtrl",function ($scope,$
          });
 
 
-         modalInstance.result.then(function (selectedItem) {
-             $scope.selected = selectedItem;
+         modalInstance.result.then(function (info) {
+             $state.go("monitor.thumb");
          }, function () {
 
          });
-         /*$http.post("",{code:parseInt($scope.terminal.value)}).then(function (res) {
-             
-         },function (err) {
-             
-         })*/
+
      };
 
     $scope.back = function () {
@@ -432,8 +428,8 @@ angular.module('BoilerAdmin').controller('ModalTempSetCtrl', function ($scope, $
                     text: "",
                     type: "success"
                 });
-                $uibModalInstance.close();
-                $state.go("monitor.thumb");
+                $uibModalInstance.close('success');
+
             },function (err) {
                 swal({
                     title: "模板导入失败",
@@ -615,7 +611,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
 
     $scope.dataChanged = function (data) {
         if (!data.Parameter.Name) {
-            data.Parameter = null;
+            data.Parameter = {};
             data.Status = -1;
             data.SwitchStatus = 0;
             data.Ranges = null;
@@ -764,7 +760,11 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
         $state.go("wizard.term-bind",{uid:uid});
     };
 
+
+
+    //提交
     $scope.ok = function () {
+
         //模拟通道
         var analogueList = [];
         var aNumList = [];
@@ -1044,6 +1044,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
         }
 
         console.log($scope.channel,cParam);
+        $scope.cParam = cParam;
 
 
 
@@ -1056,7 +1057,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             return false;
         }
 
-        $http.post("/fast_term_channel_config",{Chan:$scope.channel,Param:cParam,Code:$scope.terminal.TerminalCode})
+        $http.post("/fast_term_channel_config",{Chan:$scope.channel, Param:$scope.cParam, Code:$scope.terminal.TerminalCode})
             .then(function (res) {
                 swal({
                     title: "终端配置更新成功",
@@ -1077,12 +1078,372 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
 
 
 
+//    模板另存为
+    $scope.templateSave = function () {
+        //模拟通道
+        var analogueList = [];
+        var aNumList = [];
+        for(var i =0; i<$scope.analogueList.length;i++){
+            if($scope.analogueList[i].Parameter.Name){
+                if($scope.analogueList[i].ChannelNumber>24){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"模拟通道不能超过24",
+                        type: "error"
+                    });
+                    return false;
+                }
+                aNumList.push($scope.analogueList[i].ChannelNumber);
+                if(!$scope.analogueList[i].Func||!$scope.analogueList[i].Byte||!$scope.analogueList[i].Modbus|| !$scope.analogueList[i].Parameter.Scale){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"模拟通道配置信息不全 ，参数不能为0 "+ i,
+                        type: "error"
+                    });
+                    return false;
+                }
+                if($scope.analogueList[i].Func===3){
+                    if($scope.analogueList[i].Modbus<=40000||$scope.analogueList[i].Modbus>=50000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为03，MODBUS地址范围40001-49999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.analogueList[i].Func===4){
+                    if($scope.analogueList[i].Modbus<=30000||$scope.analogueList[i].Modbus>=40000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为04，MODBUS地址范围30001-39999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                analogueList.push($scope.analogueList[i]);
+            }
+        }
+        aNumList.sort();
+        console.log(aNumList);
+        for(var i = 0; i<aNumList.length; i++){
+            if(aNumList[i]===aNumList[i+1]){
+                swal({
+                    title: "通道重复配置",
+                    text:" 模拟量通道数不能相同",
+                    type: "error"
+                });
+                return false;
+            }
+        }
+
+        //开关通道
+        var switchList = [];
+        var sNumList = [];
+        for(var i =0; i<$scope.switchList.length;i++){
+            if($scope.switchList[i].Parameter.Name){
+                if($scope.switchList[i].ChannelNumber>48){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"开关通道不能超过48",
+                        type: "error"
+                    });
+                    return false;
+                }
+                aNumList.push($scope.switchList[i].ChannelNumber);
+                if($scope.switchList[i].Func!==99 &&(!$scope.switchList[i].Func||!$scope.switchList[i].BitAddress||!$scope.switchList[i].Modbus)){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"开关通道配置信息不全 ，参数不能为0 "+ i,
+                        type: "error"
+                    });
+                    return false;
+                }
+                if($scope.switchList[i].Func===1){
+                    if($scope.switchList[i].Modbus<1||$scope.switchList[i].Modbus>=10000){
+                        swal({
+                            title: "开关通道MODBUS地址错误",
+                            text:"功能码为01，MODBUS地址范围00001-09999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                    if($scope.switchList[i].BitAddress!=1){
+                        swal({
+                            title: "开关通道位地址错误",
+                            text:"功能码为01，对应位地址为1" ,
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.switchList[i].Func===2){
+                    if($scope.switchList[i].Modbus<=10000||$scope.switchList[i].Modbus>=20000){
+                        swal({
+                            title: "开关通道MODBUS地址错误",
+                            text:"功能码为02，MODBUS地址范围10001-19999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                    if($scope.switchList[i].BitAddress!=1){
+                        swal({
+                            title: "开关通道位地址错误",
+                            text:"功能码为02，对应位地址为1",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.switchList[i].Func===3){
+                    if($scope.switchList[i].Modbus<=40000||$scope.switchList[i].Modbus>=50000){
+                        swal({
+                            title: "开关通道MODBUS地址错，请修改",
+                            text:"功能码为03，MODBUS地址范围40001-49999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                    if($scope.switchList[i].BitAddress<1||$scope.switchList[i].BitAddress>16){
+                        swal({
+                            title: "位地址错误",
+                            text: "功能码为03，对应位地址范围为1-16",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+
+                switchList.push($scope.switchList[i]);
+            }
+        }
+        sNumList.sort();
+        for(var i = 0; i<sNumList.length; i++){
+            if(sNumList[i]===sNumList[i+1]){
+                swal({
+                    title: "通道重复配置",
+                    text:" 开关量通道数不能相同",
+                    type: "error"
+                });
+                return false;
+            }
+        }
+
+        //状态通道
+        var rangeList = [];
+        var rNumList = [];
+        for(var i =0; i<$scope.rangeList.length;i++){
+            var range = angular.copy($scope.rangeList[i].Ranges);
+            console.log(range);
+            if($scope.rangeList[i].Parameter.Name){
+                if($scope.rangeList[i].ChannelNumber>12){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"状态通道不能超过12",
+                        type: "error"
+                    });
+                    return false;
+                }
+                aNumList.push($scope.rangeList[i].ChannelNumber);
+                if(!$scope.rangeList[i].Func||!$scope.rangeList[i].Byte||!$scope.rangeList[i].Modbus){
+                    swal({
+                        title: "通道配置更新失败",
+                        text:"模拟通道配置信息不全 ，参数不能为0 "+ i,
+                        type: "error"
+                    });
+                    return false;
+                }
+                if($scope.rangeList[i].Func===3){
+                    if($scope.rangeList[i].Modbus<=40000||$scope.rangeList[i].Modbus>=50000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为03，MODBUS地址范围40001-49999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+                if($scope.rangeList[i].Func===4){
+                    if($scope.rangeList[i].Modbus<=30000||$scope.rangeList[i].Modbus>=40000){
+                        swal({
+                            title: "MODBUS地址错误",
+                            text:"功能码为04，MODBUS地址范围30001-39999",
+                            type: "error"
+                        });
+                        App.stopPageLoading();
+                        return false;
+                    }
+                }
+
+                $scope.rangeList[i].Ranges = [];
+                if (range.length <= 0) {
+                    swal({
+                        title: "状态量通道配置错误",
+                        text: "已配置的状态量通道，需要完成其状态值的配置才可提交",
+                        type: "error"
+                    });
+                    return;
+                }
+                for (var n in range) {
+                    var r = range[n];
+                    var rg = {};
+                    rg.Min = r.Min;
+                    rg.Max = r.Max;
+                    rg.Name = r.Name;
+                    switch (typeof n) {
+                        case "number":
+                            rg.Value = n;
+                            break;
+                        case "string":
+                            rg.Value = parseInt(n, 10);
+                            break;
+                    }
+
+                    $scope.rangeList[i].Ranges.push(rg);
+                }
+
+                rangeList.push($scope.rangeList[i]);
+            }
+        }
+        rNumList.sort();
+        console.log(rNumList);
+        for(var i = 0; i<rNumList.length; i++){
+            if(rNumList[i]===rNumList[i+1]){
+                swal({
+                    title: "通道重复配置",
+                    text:" 状态量通道数不能相同",
+                    type: "error"
+                });
+                return false;
+            }
+        }
+
+
+
+
+        $scope.channel ={
+            Analogue:analogueList,
+            Switch:switchList,
+            Range:rangeList
+        };
+
+
+        //通信参数
+        var cParam = {
+            baudRate : $scope.infomation.BaudRate?$scope.infomation.BaudRate.Id:0,
+            dataBit : $scope.infomation.dataBit?$scope.infomation.dataBit.Id:0,
+            stopBit : $scope.infomation.stopBit?$scope.infomation.stopBit.Id:0,
+            checkDigit : $scope.infomation.checkDigit?$scope.infomation.checkDigit.Id:0,
+            communInterface : $scope.infomation.communiInterface?$scope.infomation.communiInterface.Id:0,
+            slaveAddress : $scope.infomation.subAdr?$scope.infomation.subAdr.Id:0,
+            heartbeat:$scope.infomation.heartbeat?$scope.infomation.heartbeat.Id:0
+        };
+        if(!cParam.baudRate||!cParam.dataBit||!cParam.stopBit||!cParam.checkDigit||!cParam.communInterface||!cParam.slaveAddress||!cParam.heartbeat){
+            swal({
+                title: "通道配置更新失败",
+                text:"通信参数不能为空 ",
+                type: "error"
+            });
+            App.stopPageLoading();
+            return false;
+        }
+
+        console.log($scope.channel,cParam);
+        $scope.cParam = cParam;
+
+
+
+        if($scope.terminalPass!=="1234567"){
+            swal({
+                title: "终端密码错误",
+                text:" ",
+                type: "error"
+            });
+            return false;
+        }
+
+        var modalInstance = $uibModal.open({
+            templateUrl: '/directives/modal/terminal_channel_template.html',
+            controller: 'ModalTemplateSaveCtrl',
+            size: " ",
+            windowClass: 'zindex_sub',
+            resolve: {
+                cParam: function () {
+                    return $scope.cParam;
+                },
+                configUpload: function () {
+                    return $scope.channel;
+                }
+            }
+        });
+
+
+        modalInstance.result.then(function (selectedItem) {
+            // $scope.selected = selectedItem;
+        }, function () {
+
+        });
+    }
 
 
 
 
 });
 
+
+//模板另存为
+angular.module('BoilerAdmin').controller('ModalTemplateSaveCtrl', function ($scope, $http, $uibModalInstance,cParam,configUpload) {
+
+    console.log("cParam:",cParam,"configUpload:",configUpload);
+
+    $scope.templateName = "";
+    $scope.ok = function () {
+
+        if(!$scope.templateName){
+            swal({
+                title: "模板未命名",
+                text: "请填写需要保存的模板名称" ,
+                type: "error"
+            });
+            return;
+        }
+        App.startPageLoading({message: '正在加载数据...'});
+        $http.post("/fast_template", {Name:$scope.templateName,Chan:configUpload,Param:cParam})
+            .then(function (res) {
+                App.stopPageLoading();
+                swal({
+                    title: "模板保存成功",
+                    text: res.data,
+                    type: "success"
+                }).then(function() {
+                    $uibModalInstance.close('success');
+                })
+            }, function (err) {
+                App.stopPageLoading();
+                swal({
+                    title: "模板保存失败",
+                    text: err.data,
+                    type: "error"
+                });
+            });
+
+    };
+
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
 
 
 
