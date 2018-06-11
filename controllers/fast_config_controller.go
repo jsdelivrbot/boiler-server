@@ -16,6 +16,11 @@ type FastConfigController struct {
 	MainController
 }
 
+type TempToCur struct {
+	TemplateUid string `json:"template"`
+	Code  int  `json:"code""`
+}
+
 type termCombined struct {
 	BoilerUid  string    `json:"boiler_uid"`
 	Code       int64    `json:"code"`
@@ -104,6 +109,9 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &info); err != nil {
 		goazure.Error("Unmarshal BoilerInfo JSON Error", err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 
 	if len(info.Uid) > 0 {
@@ -202,6 +210,9 @@ func (ctl *FastConfigController) FastTermCombined() {
 	var terminal models.Terminal
 	if err:=json.Unmarshal(ctl.Ctx.Input.RequestBody,&wCombined);err!=nil{
 		goazure.Error("Unmarshal JSON Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 	fmt.Println("combined:",wCombined)
 	qs := dba.BoilerOrm.QueryTable("terminal").RelatedSel("Organization")
@@ -276,6 +287,9 @@ func (ctl *FastConfigController) FastTermUnbind() {
 	var terminal models.Terminal
 	if err:= json.Unmarshal(ctl.Ctx.Input.RequestBody,&termBind);err!=nil{
 		goazure.Error("Unmarshal JSON Error",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 	qs := dba.BoilerOrm.QueryTable("terminal").RelatedSel("Organization")
 	if !usr.IsAdmin() {
@@ -324,6 +338,9 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &config); err != nil {
 		goazure.Error("Unmarshal JSON Error", err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
+		return
 	}
 	fmt.Println("config:",config)
 	var terminal models.Terminal
