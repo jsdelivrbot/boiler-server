@@ -27,7 +27,7 @@ var DbConnection string
 
 func init() {
 	if IsRelease {
-		DbConnection = "holder2025:hold+123456789@tcp(rm-uf69j976q29a5tiqtpo.mysql.rds.aliyuncs.com:3306)/boiler_main_1?charset=utf8&loc=" + url.QueryEscape("PRC")
+		DbConnection = "holder2025:hold+123456789@tcp(rm-uf69j976q29a5tiqtpo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 		Server = "47.100.0.27:18887"
 		goazure.Warning("数据库连接到压力服")
 	} else {
