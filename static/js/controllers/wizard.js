@@ -537,7 +537,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             ChannelNumber:aNum,
             Parameter:{
                 Name:"",
-                Scale:"",
+                Scale:null,
                 Unit:""
             },
             Func:null,
@@ -638,7 +638,7 @@ angular.module('BoilerAdmin').controller("wizardTermConfCtrl",function ($scope,$
             ChannelNumber:aNum,
             Parameter:{
                 Name:"",
-                Scale:"",
+                Scale:null,
                 Unit:""
             },
             Func:null,

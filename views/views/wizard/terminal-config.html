@@ -205,7 +205,7 @@
                     </div>
                 </td>
                 <td>
-                    <input type="text" ng-model="data.Parameter.Scale" class="form-control"
+                    <input type="number" ng-model="data.Parameter.Scale" class="form-control"
                            placeholder="未配置" ng-disabled="!data.Parameter||!data.Parameter.Name">
                 </td>
                 <td>
@@ -283,7 +283,7 @@
                 <td width="10%"
                     style="color: #555; text-align: center; border: 1px solid #ccc; ">
                     通道
-                    <input type="number" ng-model="data.ChannelNumber"
+                    <input type="number" ng-model="data.ChannelNumber" ng-disabled="$index===0||$index===1"
                            style="display: inline-block; width: 50%;" class="form-control"
                            uib-tooltip="开关通道最大48">
                 </td>
