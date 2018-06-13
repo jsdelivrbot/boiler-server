@@ -811,9 +811,9 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
 
         items = bMonitor.filterTemplate(items);
         // console.warn("items_medium:", items.length);
-        items = bMonitor.filterFuel(items);
+        // items = bMonitor.filterFuel(items);
         // console.warn("items_form:", items.length);
-        items = bMonitor.filterEvaporate(items);
+        // items = bMonitor.filterEvaporate(items);
         // console.warn("items_form:", items.length);
         items = bMonitor.filterQuery(items);
         // console.warn("items_query:", items.length);
@@ -912,7 +912,7 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
         var locationId = !bMonitor.aLocation ? 0 : bMonitor.aLocation.LocationId;
         var items = $filter('filter')(boilers, function (item) {
             //alert('Item: ' + Object.keys(item));
-            if (!item.Address ||
+            if (!item.Address || !item.Address.Location ||
                 item.Address.Location.LocationId === locationId ||
                 Math.floor(item.Address.Location.LocationId / 100) === locationId ||
                 Math.floor(item.Address.Location.LocationId / 10000) === locationId ||
