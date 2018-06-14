@@ -350,6 +350,19 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		ctl.Ctx.Output.Body([]byte("找不到终端"))
 		return
 	}
+	var aCnf []models.RuntimeParameterChannelConfig
+	if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
+		Filter("Terminal__Uid", terminal.Uid).Filter("IsDefault", false).
+		All(&aCnf); err != nil {
+		goazure.Error("Get ChannelConfig To Delete Error:", err)
+	}
+	for _, a := range aCnf {
+		TempCtrl.TemplateChannelConfigDelete(&a, terminal.Uid)
+	}
+	if num, err := dba.BoilerOrm.QueryTable("issued_switch_default").Filter("Terminal__Uid", terminal.Uid).Delete(); err != nil {
+		goazure.Error("Delete issued switch Error:", err, num)
+	}
+
 	for _, analogue := range config.Chan.Analogue {
 		var param models.RuntimeParameter
 		var cnf models.RuntimeParameterChannelConfig
