@@ -509,7 +509,7 @@ angular.module('BoilerAdmin').controller('ModalOrgAccountCtrl', function ($uibMo
         $modal.data.uid = "";
         $http.post("/user_update/", $modal.data)
             .then(function (res) {
-                bAccount.refreshDataTables();
+
                 swal({
                     title: "用户" + $modal.data.username + "添加成功",
                     type: "success"
