@@ -147,10 +147,24 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 	if err := DataCtl.ReadData(&form); err == nil { boiler.Form = &form }
 	if err :=dba.BoilerOrm.QueryTable("boiler_template").Filter("TemplateId",info.TemplateId).One(&template);err == nil {boiler.Template = &template}
 	var enterprise, factory, maintainer, supervisor models.Organization
-	enterprise.Uid = info.EnterpriseId
-	factory.Uid = info.FactoryId
-	maintainer.Uid = info.MaintainerId
-	supervisor.Uid = info.SupervisorId
+	if usr.IsAdmin() {
+		enterprise.Uid = info.EnterpriseId
+		factory.Uid = info.FactoryId
+		maintainer.Uid = info.MaintainerId
+		supervisor.Uid = info.SupervisorId
+	} else {
+		maintainer.Uid = info.MaintainerId
+		supervisor.Uid = info.SupervisorId
+		switch usr.Organization.Type.TypeId {
+		case 1:
+			factory.Uid = usr.Organization.Uid
+			enterprise.Uid = info.EnterpriseId
+		case 2:
+			enterprise.Uid = usr.Organization.Uid
+			factory.Uid = info.FactoryId
+		}
+	}
+
 	if err := DataCtl.ReadData(&enterprise); err == nil { boiler.Enterprise = &enterprise }
 	if err := DataCtl.ReadData(&factory); err == nil { boiler.Factory = &factory }
 	if err := DataCtl.ReadData(&maintainer); err == nil { boiler.Maintainer = &maintainer }
