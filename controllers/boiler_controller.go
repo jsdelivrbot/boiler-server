@@ -65,7 +65,8 @@ func (ctl *BoilerController) BoilerTemplateList() {
 	var boilerTemplate []models.BoilerTemplate
 	qs := dba.BoilerOrm.QueryTable("boiler_template").RelatedSel("Organization")
 	if !usr.IsAdmin() {
-		qs = qs.Filter("Organization__Uid",usr.Organization.Uid)
+		cond := orm.NewCondition().And("Organization__Uid",usr.Organization.Uid).Or("Organization__isnull",true)
+		qs = qs.SetCond(cond)
 	}
 	if _,err:=qs.All(&boilerTemplate); err!=nil{
 		goazure.Error("Query boiler_template Error",err)
