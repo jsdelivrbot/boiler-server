@@ -740,6 +740,7 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary ladda-button" data-style="zoom-out" type="button" id="boiler_ok"
+            ng-disabled="!$modal.boilerId"
             ng-click="$modal.ok()"><span class="ladda-label">提交</span></button>
     <button class="btn btn-default" type="button" ng-click="$modal.cancel()">取消</button>
 </div>
