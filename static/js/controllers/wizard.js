@@ -46,6 +46,14 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
         if(uid){
             $scope.getBoiler();
         }else {
+            var enterprise ;
+            var factory;
+            if($rootScope.currentUser.Organization && $rootScope.currentUser.Organization.Type.TypeId===1){
+                factory = $rootScope.currentUser.Organization.Uid;
+            }
+            if($rootScope.currentUser.Organization && $rootScope.currentUser.Organization.Type.TypeId===2){
+                enterprise = $rootScope.currentUser.Organization.Uid;
+            }
             $scope.data = {
                 uid: "",
                 name: "",
@@ -64,8 +72,8 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
                 evaporatingCapacity: NaN,
 
                 RegisterOrg: null,
-                // enterpriseId: "",
-                // factoryId: "",
+                enterpriseId:enterprise? enterprise:"",
+                factoryId:factory? factory:"",
                 installedId: "",
 
                 links: []
