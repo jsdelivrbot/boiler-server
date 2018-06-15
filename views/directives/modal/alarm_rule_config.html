@@ -110,7 +110,7 @@
 
     <div class="form-group input-group col-md-12">
             <span class="input-group-addon" style="width: 22%">所属企业</span>
-            <ui-select ng-model="$modal.org"
+            <ui-select ng-model="$modal.org" ng-disabled="true"
                        theme="bootstrap">
                 <ui-select-match placeholder="输入企业名称或在列表中选择...">{{$select.selected.Name}}</ui-select-match>
                 <ui-select-choices group-by="'type'" repeat="org in organizations | filter: $select.search">
