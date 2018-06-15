@@ -32,11 +32,12 @@
         <ui-select ng-model="$modal.paramId"
                    theme="bootstrap"
                    ng-disabled="$modal.editing">
-            <ui-select-match>{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }}</small></ui-select-match>
+            <ui-select-match>{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }} [ {{ $select.selected.Scale}} {{ $select.selected.Unit }} ]</small></ui-select-match>
             <ui-select-choices
                     repeat="param.Id as param in $modal.parameterData | filter: $select.search">
                 <span ng-bind-html="param.Name | highlight: $select.search"></span>
                 <small ng-bind-html="param.Id | highlight: $select.search"></small>
+                <small> [ {{ param.Scale}} {{ param.Unit }} ] </small>
             </ui-select-choices>
         </ui-select>
 
