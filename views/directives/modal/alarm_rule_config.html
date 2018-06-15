@@ -29,7 +29,7 @@
                 <!--class="form-control ng-pristine ng-valid ng-not-empty ng-touched">-->
 
         <!--</select>-->
-        <ui-select ng-model="$modal.paramId"
+        <ui-select ng-model="$modal.paramId" ng-change="$modal.paramChange($modal.paramId);"
                    theme="bootstrap"
                    ng-disabled="$modal.editing">
             <ui-select-match>{{$select.selected.Name}} <small class="font-blue-oleo">{{ $select.selected.Id }} [ {{ $select.selected.Scale}} {{ $select.selected.Unit }} ]</small></ui-select-match>
