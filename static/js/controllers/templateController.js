@@ -23,14 +23,15 @@ angular.module('BoilerAdmin').controller("templateCtrl",function ($rootScope,$sc
         $http.get("/template_list").then(function (res) {
             var datasource = res.data;
 
-            template.datasource = $filter("filter")(datasource,function (data) {
+            /*template.datasource = $filter("filter")(datasource,function (data) {
                 if(!$rootScope.currentUser.Organization){
                     return true;
                 }
                if(data.Organization.Uid === $rootScope.currentUser.Organization.Uid){
                    return true;
                }
-            });
+            });*/
+            template.datasource = datasource;
             for(var i = 0; i<template.datasource.length; i++){
                 template.datasource[i].num = i+1;
             }
