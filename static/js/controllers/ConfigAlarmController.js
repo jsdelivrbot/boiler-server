@@ -171,6 +171,14 @@ angular.module('BoilerAdmin').controller('ModalAlarmRuleCtrl', function ($uibMod
     });
 
 
+    $modal.paramChange = function (id) {
+        for(var i =0; i<$modal.parameterData.length; i++){
+            if($modal.parameterData[i].Id === id){
+                $modal.org = $modal.parameterData[i].Organization;
+            }
+        }
+    };
+
     if (currentData) {
         $modal.editing = true;
         $modal.title = "编辑告警规则";
