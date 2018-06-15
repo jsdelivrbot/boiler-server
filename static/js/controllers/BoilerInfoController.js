@@ -661,6 +661,14 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
             }
 
         } else {
+            var enterprise ;
+            var factory;
+            if($rootScope.currentUser.Organization && $rootScope.currentUser.Organization.Type.TypeId===1){
+                factory = $rootScope.currentUser.Organization.Uid;
+            }
+            if($rootScope.currentUser.Organization && $rootScope.currentUser.Organization.Type.TypeId===2){
+                enterprise = $rootScope.currentUser.Organization.Uid;
+            }
             $modal.data = {
                 uid: "",
                 name: "",
@@ -679,8 +687,8 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
                 evaporatingCapacity: NaN,
 
                 RegisterOrg: null,
-                // enterpriseId: "",
-                // factoryId: "",
+                enterpriseId:enterprise? enterprise:"",
+                factoryId:factory? factory:"",
                 installedId: "",
 
                 links: []
