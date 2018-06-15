@@ -663,14 +663,11 @@ angular.module('BoilerAdmin').controller('ModalBoilerInfoBasicCtrl', function ($
         } else {
             var enterprise ;
             var factory;
-            console.log();
-            if($rootScope.currentUser.Organization.Type.TypeId===1){
+            if($rootScope.currentUser.Organization && $rootScope.currentUser.Organization.Type.TypeId===1){
                 factory = $rootScope.currentUser.Organization.Uid;
-                console.log(factory);
             }
-            if($rootScope.currentUser.Organization.Type.TypeId===2){
+            if($rootScope.currentUser.Organization && $rootScope.currentUser.Organization.Type.TypeId===2){
                 enterprise = $rootScope.currentUser.Organization.Uid;
-                console.log(enterprise);
             }
             $modal.data = {
                 uid: "",
