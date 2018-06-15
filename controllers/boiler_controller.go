@@ -1342,7 +1342,7 @@ func (ctl *BoilerController) BoilerDelete()  {
 	goazure.Info("Ready to Delete Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	if !usr.IsAllowCreateOrganization() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(403)
