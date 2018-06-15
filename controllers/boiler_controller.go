@@ -1407,7 +1407,7 @@ type BoilerBind struct {
 func (ctl *BoilerController) BoilerBind() {
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	if !usr.IsAllowCreateOrganization() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)
