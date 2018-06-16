@@ -328,7 +328,8 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due f
 func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, val interface{}) (*models.BoilerAlarm, error) {
 	var alarm 	models.BoilerAlarm
 	var rule 	models.RuntimeAlarmRule
-
+	fmt.Println("ccccccccccccccc:",rtm.Parameter)
+	fmt.Println("ddddddddddddddddd:",rtm.Boiler.Uid)
 	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
 	if boiler == nil {
 		return nil, errors.New("boiler can not be nil")
@@ -361,6 +362,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
 		return nil, err
 	}
+	fmt.Println("dffffffffffffff,rule:",rule)
 	var alarmDesc string
 	var alarmLevel int32 = models.RUNTIME_ALARM_LEVEL_UNDEFINED
 	if rule.Warning > rule.Normal && val.(float64) > float64(rule.Warning) {
