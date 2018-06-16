@@ -474,6 +474,7 @@ func (ctl *ParameterController) ChannelDataReload(t time.Time,start string,end s
 		code := d["Boiler_term_id"].(string)
 		set := d["Boiler_boiler_id"].(string)
 		t := d["TS"].(string)
+		fmt.Println("teminalcode:",code)
 		//ver := d["Boiler_data_fmt_ver"].(string)
 		//sn := d["Boiler_sn"].(string)
 		tm, _ = time.ParseInLocation("2006-01-02 15:04:05", t, time.Local)
