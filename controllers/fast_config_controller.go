@@ -213,6 +213,7 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 		}
 	}
 	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
+	go BlrCtl.RefreshGlobalBoilerList()
 	ctl.Data["json"] =boiler.Uid
 	ctl.ServeJSON()
 	goazure.Info("Updated Boiler:", boiler, info)
