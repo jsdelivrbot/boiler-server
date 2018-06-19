@@ -181,7 +181,7 @@ angular.module('BoilerAdmin').controller('OrganizationController', function($roo
             size: "",
             windowClass: 'zindex',
             resolve: {
-                currentData: function () {
+                data: function () {
                     return data;
                 }
             }
@@ -430,12 +430,12 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
 });
 
 
-angular.module('BoilerAdmin').controller('ModalOrgAccountCtrl', function ($uibModalInstance, $rootScope,$state, $http, $log, currentData) {
+angular.module('BoilerAdmin').controller('ModalOrgAccountCtrl', function ($uibModalInstance, $rootScope,$state, $http, $log, data) {
     var $modal = this;
 
     $modal.isValid = false;
     $modal.data = {
-        org : currentData.Uid
+        org : data.Uid
     };
     $modal.hasOrg = true;
 
@@ -481,9 +481,6 @@ angular.module('BoilerAdmin').controller('ModalOrgAccountCtrl', function ($uibMo
     };
 
 
-    if ($rootScope.currentUser.Role.RoleId > 1) {
-        $modal.data.org = $rootScope.currentUser.Organization.Uid;
-    }
 
 
     $modal.dataChanged = function () {
