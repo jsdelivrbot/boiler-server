@@ -328,7 +328,12 @@ func (ctl *OrganizationController) OrganizationDelete() {
 	if err := json.Unmarshal(ctl.Ctx.Input.RequestBody, &o); err != nil {
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
-		fmt.Println("Unmarshal Error", err)
+		return
+	}
+
+	if o.Uid == usr.Organization.Uid {
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("你没有权利删除自己的组织!"))
 		return
 	}
 

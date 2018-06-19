@@ -67,10 +67,12 @@ func (ctl *BoilerController) BoilerTemplateList() {
 	if !usr.IsAdmin() {
 		cond := orm.NewCondition().And("Organization__Uid",usr.Organization.Uid).Or("Organization__isnull",true)
 		qs = qs.SetCond(cond)
+
 	}
 	if _,err:=qs.All(&boilerTemplate); err!=nil{
 		goazure.Error("Query boiler_template Error",err)
 	}
+
 	ctl.Data["json"] = boilerTemplate
 	ctl.ServeJSON()
 }

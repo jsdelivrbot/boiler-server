@@ -11,6 +11,7 @@ import (
 	"github.com/AzureRelease/boiler-server/common"
 
 	"github.com/AzureRelease/boiler-server/conf"
+	"fmt"
 )
 
 var MyORM 		orm.Ormer
@@ -20,6 +21,7 @@ func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
 	orm.RegisterDataBase("default", "mysql", conf.DbConnection)
+	fmt.Println("dbconfig:",conf.DbConnection)
 
 	orm.RegisterModel(
 		new(models.IssuedBinUpload),

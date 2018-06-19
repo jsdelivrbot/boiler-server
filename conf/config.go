@@ -30,6 +30,7 @@ func init() {
 		DbConnection = "holder2025:hold+123456789@tcp(rm-uf69j976q29a5tiqtpo.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 		Server = "47.100.0.27:18887"
 		goazure.Warning("数据库连接到压力服")
+		goazure.Warn("dbconnection:",DbConnection)
 	} else {
 		DbConnection = "azureadmin:azure%2016@tcp(rm-a0z2ur23e09te04c8h4n.mysql.rds.aliyuncs.com:3306)/boiler_main?charset=utf8&loc=" + url.QueryEscape("PRC")
 		Server = "139.196.152.127:12000"
