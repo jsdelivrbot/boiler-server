@@ -825,9 +825,10 @@ func (ctl *RuntimeController) BoilerRuntimeList() {
 
 	alarmRules := func(boiler *models.Boiler) []*models.RuntimeAlarmRule {
 		var rules []*models.RuntimeAlarmRule
+		fmt.Println("boilerForm:",boiler.Form)
 		q := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
 		q = q.RelatedSel("Parameter__Category").RelatedSel("BoilerForm").RelatedSel("BoilerMedium").RelatedSel("BoilerFuelType")
-		orCond := orm.NewCondition().Or("BoilerForm", boiler.Form).Or("BoilerForm__Id", 0).
+		orCond := orm.NewCondition().Or("BoilerForm__Id", 0).
 			Or("BoilerMedium", boiler.Medium).Or("BoilerMedium__Id", 0).
 			Or("BoilerFuelType", boiler.Fuel.Type).Or("BoilerFuelType__Id", 0)
 		cond := orm.NewCondition().AndCond(orCond)
