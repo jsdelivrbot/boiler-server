@@ -127,6 +127,13 @@ boilerAdmin.directive('boilerModule', function () {
             case 1007:
                 bModule.moduleId = BOILE_MODULE_GAS;
                 break;
+            case 1008:
+                bModule.moduleId = BOILE_MODULE_DEMING_STEAM;
+                break;
+            case 1009:
+                bModule.moduleId = BOILE_MODULE_DEMING_CYCLE;
+                break;
+
 
 
         }
@@ -194,6 +201,16 @@ boilerAdmin.directive('boilerModule', function () {
                 break;
             case BOILE_MODULE_IRON:
                 svgName = "/img/zhutie.svg";
+                break;
+            case BOILE_MODULE_DEMING_STEAM:
+                if (!bModule.isBoilerBurning || !bModule.isOnline) {
+                    svgName = "/img/aa0.svg";
+                }else {
+                    svgName = "/img/aa1.svg";
+                }
+                break;
+            case BOILE_MODULE_DEMING_CYCLE:
+                svgName = "/img/ab.svg";
                 break;
             default:
                 svgName = "/img/boiler_coal_double.svg";
@@ -1697,6 +1714,16 @@ boilerAdmin.directive('boilerModule', function () {
         }, sec);
     };
 
+
+
+
+
+
+
+
+
+
+
     bModule.updateStatusLabels = function () {
         if (!bModule.boiler) {
             if (!$rootScope.boiler) {
@@ -1783,3 +1810,5 @@ const BOILE_MODULE_HEAT_WATER_SYSTEM = 11;
 const BOILE_MODULE_LV = 12;
 const BOILE_MODULE_IRON = 13;
 const BOILE_MODULE_HEAT_STEAM_SYSTEM = 14;
+const BOILE_MODULE_DEMING_STEAM = 15;
+const BOILE_MODULE_DEMING_CYCLE = 16;

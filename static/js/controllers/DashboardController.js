@@ -660,6 +660,12 @@ angular.module('BoilerAdmin').controller('DashboardController', function($rootSc
                     case 1007:
                         imgName = 'gasboiler';
                         break;
+                    case 1008:
+                        imgName = 'aa';
+                        break;
+                    case 1009:
+                        imgName = 'ab';
+                        break;
 
 
                 }
