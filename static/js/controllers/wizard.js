@@ -218,6 +218,15 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
             });
         }
 
+        if(!$scope.data.enterpriseId  && !$scope.data.factoryId && !$scope.data.maintainerId && !$scope.data.supervisorId && $scope.links.length===0){
+            swal({
+                title: "请添加关联企业",
+                // text: err.data,
+                type: "error"
+            });
+            return;
+        }
+
 
         $http.post("/fast_boiler_add", $scope.data)
             .then(function (res) {

@@ -330,13 +330,16 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	var rule 	models.RuntimeAlarmRule
 	goazure.Error("处理的运行参数：",rtm.Parameter)
 	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
-	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s,锅炉使用企业：,%s",rtm.Boiler.Name,boiler.Enterprise.Name))
+	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s",rtm.Boiler.Name))
 	if boiler == nil {
+		goazure.Error("运行参数的锅炉为空")
 		return nil, errors.New("boiler can not be nil")
 	}
-	if boiler.Enterprise == nil{
-		return nil,errors.New("boiler Enterprise can not be nil")
+	if boiler.Enterprise == nil {
+		goazure.Error("锅炉的使用企业为空")
+		return nil, errors.New("boiler Enterprise can not be nil")
 	}
+	goazure.Error("锅炉使用企业：",boiler.Enterprise.Name)
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization")
 	cond := orm.NewCondition()
 	if boiler.Form != nil {
