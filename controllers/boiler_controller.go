@@ -67,10 +67,12 @@ func (ctl *BoilerController) BoilerTemplateList() {
 	if !usr.IsAdmin() {
 		cond := orm.NewCondition().And("Organization__Uid",usr.Organization.Uid).Or("Organization__isnull",true)
 		qs = qs.SetCond(cond)
+
 	}
 	if _,err:=qs.All(&boilerTemplate); err!=nil{
 		goazure.Error("Query boiler_template Error",err)
 	}
+
 	ctl.Data["json"] = boilerTemplate
 	ctl.ServeJSON()
 }
@@ -1342,7 +1344,7 @@ func (ctl *BoilerController) BoilerDelete()  {
 	goazure.Info("Ready to Delete Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	if !usr.IsAllowCreateOrganization() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(403)
@@ -1407,7 +1409,7 @@ type BoilerBind struct {
 func (ctl *BoilerController) BoilerBind() {
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAdmin() {
+	if !usr.IsAllowCreateOrganization() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(400)

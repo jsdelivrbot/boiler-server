@@ -328,8 +328,9 @@ func (ctl *RuntimeController) RuntimeDataReload(rtm *models.BoilerRuntime, due f
 func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, val interface{}) (*models.BoilerAlarm, error) {
 	var alarm 	models.BoilerAlarm
 	var rule 	models.RuntimeAlarmRule
-
+	goazure.Error("处理的运行参数：",rtm.Parameter)
 	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
+	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s,锅炉使用企业：,%s",rtm.Boiler.Name,boiler.Enterprise.Name))
 	if boiler == nil {
 		return nil, errors.New("boiler can not be nil")
 	}
@@ -361,6 +362,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
 		return nil, err
 	}
+	goazure.Error("查询出来的告警规则:",rule)
 	var alarmDesc string
 	var alarmLevel int32 = models.RUNTIME_ALARM_LEVEL_UNDEFINED
 	if rule.Warning > rule.Normal && val.(float64) > float64(rule.Warning) {
@@ -823,9 +825,10 @@ func (ctl *RuntimeController) BoilerRuntimeList() {
 
 	alarmRules := func(boiler *models.Boiler) []*models.RuntimeAlarmRule {
 		var rules []*models.RuntimeAlarmRule
+		fmt.Println("boilerForm:",boiler.Form)
 		q := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
 		q = q.RelatedSel("Parameter__Category").RelatedSel("BoilerForm").RelatedSel("BoilerMedium").RelatedSel("BoilerFuelType")
-		orCond := orm.NewCondition().Or("BoilerForm", boiler.Form).Or("BoilerForm__Id", 0).
+		orCond := orm.NewCondition().Or("BoilerForm__Id", 0).
 			Or("BoilerMedium", boiler.Medium).Or("BoilerMedium__Id", 0).
 			Or("BoilerFuelType", boiler.Fuel.Type).Or("BoilerFuelType__Id", 0)
 		cond := orm.NewCondition().AndCond(orCond)

@@ -747,7 +747,7 @@ func (ctl *TemplateController) TemplateList() {
 	qs := dba.BoilerOrm.QueryTable("issued_template")
 	qs = qs.RelatedSel("Organization")
 	if usr.IsOrganizationUser() {
-		qs.Filter("Organization__Uid", usr.Organization.Uid)
+		qs = qs.Filter("Organization__Uid", usr.Organization.Uid)
 	}
 	if num, err := qs.Filter("IsDeleted", false).OrderBy("-UpdateTime").All(&template); err != nil {
 		fmt.Printf("Returned Rows Num: %d, %s", num, err)
