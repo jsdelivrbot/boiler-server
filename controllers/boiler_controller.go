@@ -1181,6 +1181,20 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
 
 	boiler.UpdatedBy = usr
+
+	if info.FactoryId == "" {
+		boiler.Factory = nil
+	}
+	if info.EnterpriseId == "" {
+		boiler.Enterprise = nil
+	}
+	if info.MaintainerId == "" {
+		boiler.Maintainer = nil
+	}
+	if info.SupervisorId == "" {
+		boiler.Supervisor = nil
+	}
+
 	if err := DataCtl.AddData(&boiler, true); err != nil {
 		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
 		return nil, errors.New(e)
