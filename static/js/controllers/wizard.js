@@ -75,6 +75,8 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
                 enterpriseId:enterprise? enterprise:"",
                 factoryId:factory? factory:"",
                 installedId: "",
+                maintainerId:"",
+                supervisorId:"",
 
                 links: []
             }
@@ -218,9 +220,9 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
             });
         }
 
-        if(!$scope.data.enterpriseId  && !$scope.data.factoryId && !$scope.data.maintainerId && !$scope.data.supervisorId && $scope.links.length===0){
+        if(!$scope.data.enterpriseId){
             swal({
-                title: "请添加关联企业",
+                title: "请添加使用企业",
                 // text: err.data,
                 type: "error"
             });

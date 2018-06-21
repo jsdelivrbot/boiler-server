@@ -42,7 +42,7 @@
                         <span class="caption-subject bold uppercase"> 告警列表 </span>
                     </div>
 
-                    <div class="pull-right">
+                    <div class="pull-right" ng-show="currentUser.Role.RoleId <= 11">
                         <a class="btn green" ui-sref="config-runtime-alarm">
                             告警规则
                         </a>

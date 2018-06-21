@@ -147,24 +147,10 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 	if err := DataCtl.ReadData(&form); err == nil { boiler.Form = &form }
 	if err :=dba.BoilerOrm.QueryTable("boiler_template").Filter("TemplateId",info.TemplateId).One(&template);err == nil {boiler.Template = &template}
 	var enterprise, factory, maintainer, supervisor models.Organization
-	if usr.IsAdmin() {
-		enterprise.Uid = info.EnterpriseId
-		factory.Uid = info.FactoryId
-		maintainer.Uid = info.MaintainerId
-		supervisor.Uid = info.SupervisorId
-	} else {
-		maintainer.Uid = info.MaintainerId
-		supervisor.Uid = info.SupervisorId
-		switch usr.Organization.Type.TypeId {
-		case 1:
-			factory.Uid = usr.Organization.Uid
-			enterprise.Uid = info.EnterpriseId
-		case 2:
-			enterprise.Uid = usr.Organization.Uid
-			factory.Uid = info.FactoryId
-		}
-	}
-
+	enterprise.Uid = info.EnterpriseId
+	factory.Uid = info.FactoryId
+	maintainer.Uid = info.MaintainerId
+	supervisor.Uid = info.SupervisorId
 	if err := DataCtl.ReadData(&enterprise); err == nil { boiler.Enterprise = &enterprise }
 	if err := DataCtl.ReadData(&factory); err == nil { boiler.Factory = &factory }
 	if err := DataCtl.ReadData(&maintainer); err == nil { boiler.Maintainer = &maintainer }
@@ -213,6 +199,7 @@ func (ctl *FastConfigController) FastBoilerAdd() {
 		}
 	}
 	go CalcCtl.InitBoilerCalculateParameter([]*models.Boiler{&boiler})
+	go BlrCtl.RefreshGlobalBoilerList()
 	ctl.Data["json"] =boiler.Uid
 	ctl.ServeJSON()
 	goazure.Info("Updated Boiler:", boiler, info)
@@ -358,12 +345,20 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 	}
 	fmt.Println("config:",config)
 	var terminal models.Terminal
-	if err := dba.BoilerOrm.QueryTable("Terminal").Filter("TerminalCode", config.Code).One(&terminal); err != nil {
+	if err := dba.BoilerOrm.QueryTable("terminal").Filter("TerminalCode", config.Code).One(&terminal); err != nil {
 		goazure.Error("Query Terminal Error:", err)
 		ctl.Ctx.Output.SetStatus(400)
 		ctl.Ctx.Output.Body([]byte("找不到终端"))
 		return
 	}
+	var combined models.BoilerTerminalCombined
+	if err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Boiler").Filter("Terminal__Uid",terminal.Uid).Filter("TerminalSetId",1).One(&combined);err!=nil{
+		goazure.Error("Terminal Combined Error:",err)
+		ctl.Ctx.Output.SetStatus(400)
+		ctl.Ctx.Output.Body([]byte("终端未绑定锅炉"))
+		return
+	}
+	boiler:=BlrCtl.Boiler(combined.Boiler.Uid)
 	var aCnf []models.RuntimeParameterChannelConfig
 	if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 		Filter("Terminal__Uid", terminal.Uid).Filter("IsDefault", false).
@@ -400,11 +395,13 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = analogue.Parameter.Scale
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		param.Organization = terminal.Organization
+		if boiler !=nil && boiler.Enterprise!= nil {
+			param.Organization = boiler.Enterprise
+		}
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
-		if _,err:=dba.BoilerOrm.Insert(&param);err!=nil {
+		if err:=DataCtl.AddData(&param,true);err!=nil{
 			e := fmt.Sprintln("Add/Update Parameter Error", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
@@ -455,6 +452,10 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		}
 	}
 	for _, swi := range config.Chan.Switch {
+		if swi.ChannelNumber == 1 || swi.ChannelNumber == 2 {
+			goazure.Warning("开关点火位和PLC")
+			continue
+		}
 		var max int32
 		var param models.RuntimeParameter
 		var cnf models.RuntimeParameterChannelConfig
@@ -477,11 +478,13 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = 1
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		param.Organization = terminal.Organization
+		if boiler !=nil && boiler.Enterprise!= nil {
+			param.Organization = boiler.Enterprise
+		}
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
-		if _,err:=dba.BoilerOrm.Insert(&param);err!=nil {
+		if err:=DataCtl.AddData(&param,true);err!=nil{
 			e := fmt.Sprintln("Add/Update Parameter Error", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
@@ -558,11 +561,13 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = 1
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		param.Organization = terminal.Organization
+		if boiler !=nil && boiler.Enterprise!= nil {
+			param.Organization = boiler.Enterprise
+		}
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
-		if _,err:=dba.BoilerOrm.Insert(&param);err!=nil {
+		if err:=DataCtl.AddData(&param,true);err!=nil {
 			e := fmt.Sprintln("Add/Update Parameter Error", err)
 			goazure.Error(e)
 			ctl.Ctx.Output.SetStatus(400)
