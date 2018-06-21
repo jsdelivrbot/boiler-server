@@ -55,7 +55,7 @@
     }
 </style>
 
-<div id="info" ng-init="info.refreshDataTables();" class="panel-group">
+<div id="info" ng-init="info.refreshDataTables(); info.initEditRole(); " class="panel-group">
     <div class="panel panel-info">
         <div class="panel-heading">
             <!--
@@ -202,7 +202,7 @@
                             </td>
                         </tr>
 
-                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11">
+                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11 && info.editRole">
                             <td colspan="4" align="center">
                                 <button ng-click="info.edit('basic')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
@@ -223,7 +223,7 @@
                    data-toggle="collapse" href
                    data-target="#info_terminal"> 终端信息 {{ info.currentData.Terminal ? "" : "（未配置）" }}</a>
                 <span class="accordion-toggle" ng-show="!info.currentData.Terminal"> 终端信息（未配置）</span>
-                <a ng-click="info.bindSet()"
+                <a ng-click="info.bindSet()" ng-show="currentUser.Role.RoleId < 11"
                    class="addon btn btn-outline btn-circle green pull-right">
                     <i class="fa fa-plus"></i>
                 </a>
@@ -239,7 +239,7 @@
                             <!--<th>终端状态</th>-->
                             <th>终端名称</th>
                             <!--<th>机组番号</th>-->
-                            <th>操作</th>
+                            <th ng-show="currentUser.Role.RoleId < 11">操作</th>
                         </tr>
                         <tr ng-repeat="terminal in info.currentData.TerminalsCombined">
                             <td>{{ terminal.tid }}</td>
@@ -250,7 +250,7 @@
                             <!--</td>-->
                             <td>{{ terminal.Name }}</td>
                             <!--<td>{{ terminal.setId }}</td>-->
-                            <td>
+                            <td ng-show="currentUser.Role.RoleId < 11">
                                 <a ng-click="info.unbind(terminal) " ng-show="currentUser.Role.RoleId <= 11"
                                    class="btn btn-sm btn-outline btn-circle red delete_btn">
                                     解绑
@@ -307,7 +307,7 @@
                             <th>纬度</th>
                             <td>{{ info.currentData.Address.Latitude }}</td>
                         </tr>
-                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11">
+                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11 && info.editRole">
                             <td colspan="4" align="center">
                                 <button ng-click="info.edit('location')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑
@@ -392,7 +392,7 @@
                             <td>{{ info.currentData.Remark }}</td>
                         </tr>
                         -->
-                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11">
+                        <tr ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11 && info.editRole">
                             <td colspan="4" align="center">
                                 <button ng-click="info.edit('maintain')" class="btn btn-outline btn-circle blue edit_btn">
                                     <i class="fa fa-edit"></i> 编辑

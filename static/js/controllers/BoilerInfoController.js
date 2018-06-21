@@ -139,12 +139,24 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
 
         //$state.go("boiler.info", {boiler: info.Uid, from: 'boiler-list'});
         someClickHandler(bInfo.currentData);
+
     };
+
+    bInfo.initEditRole = function () {
+        bInfo.editRole = false;
+        if( bInfo.currentData.CreatedBy.Uid === $rootScope.currentUser.Uid || (bInfo.currentData.Enterprise && bInfo.currentData.Enterprise === $rootScope.currentUser.Uid) ){
+            bInfo.editRole = true;
+        }
+    };
+
+
 
     bInfo.setMode = function (mode) {
         bInfo.dataMode = mode;
     };
 
+
+    aa =0;
     bInfo.refreshDataTables = function () {
         var p = $location.search()['boiler'];
 
@@ -589,6 +601,9 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
         });
 
     };
+
+
+
 
 
 
