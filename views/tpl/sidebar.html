@@ -82,7 +82,7 @@
                     <!--</a>-->
                 <!--</li>-->
 
-                <li class="start nav-item">
+                <li class="start nav-item" ng-show="currentUser.Role.RoleId < 11">
                     <a ui-sref="wizard.config">
                         <i class="fa fa-cogs"></i>
                         <span class="title">配置向导</span>
@@ -190,7 +190,7 @@
                         <span class="title">锅炉信息</span>
                     </a>
                 </li>
-                <li ng-show="currentUser.Role.RoleId <= 11"
+                <li ng-show="currentUser.Role.RoleId < 11"
                     class="start nav-item">
                     <a ui-sref="terminal.dashboard">
                         <i class="fa fa-terminal"></i>
