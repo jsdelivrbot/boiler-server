@@ -94,6 +94,7 @@
         <!--<th ng-show="param.category !== 11 && param.category !== 13">长度</th>
         <th>使用锅炉</th>-->
         <th>所属企业</th>
+        <th>锅炉</th>
         <th>备注</th>
         <th>操作</th>
     </tr>
@@ -119,6 +120,7 @@
             </span>
         </td>-->
         <td> {{ data.Organization.Name}} </td>
+        <td> {{ data.Boiler.Name }} </td>
         <td>{{ data.Remark }}</td>
         <td>
             <a ng-show="data.ParamId < 100"
