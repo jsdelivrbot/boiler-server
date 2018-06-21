@@ -329,18 +329,23 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	var alarm 	models.BoilerAlarm
 	var rule 	models.RuntimeAlarmRule
 	goazure.Error("处理的运行参数：",rtm.Parameter)
-	goazure.Error("rtmBoiler:",rtm.Boiler.Name)
-	goazure.Error("boilerUid:",rtm.Boiler.Uid)
-	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
-	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s",rtm.Boiler.Name))
-	if boiler == nil {
-		goazure.Error("运行参数的锅炉为空")
-		for _,b:=range MainCtrl.Boilers {
-			fmt.Println("bUid:",b.Uid)
-			fmt.Println("boilerName:",b.Name)
-		}
+	var boiler models.Boiler
+	//var bMap []orm.Params
+	qs := dba.BoilerOrm.QueryTable("boiler")
+	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
+		RelatedSel("Fuel__Type").RelatedSel("Template").
+		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").RelatedSel("Supervisor").
+		RelatedSel("RegisterOrg").
+		RelatedSel("Terminal").
+		RelatedSel("Contact").
+		RelatedSel("Address__Location")
+	if err:=qs.Filter("IsDeleted",false).Filter("Uid",rtm.Boiler.Uid).One(&boiler);err!=nil{
+		goazure.Error("rtm Boiler is Nil")
 		return nil, errors.New("boiler can not be nil")
 	}
+	//boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
+	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s",rtm.Boiler.Name))
+
 	if boiler.Enterprise == nil {
 		goazure.Error("锅炉的使用企业为空")
 		return nil, errors.New("boiler Enterprise can not be nil")
@@ -393,7 +398,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		Filter("IsDeleted", false)
 	if err := qa.One(&alarm); err != nil {
 		alarm.Uid = uuid.New()
-		alarm.Boiler = boiler
+		alarm.Boiler = &boiler
 		alarm.Parameter = rule.Parameter
 		alarm.TriggerRule = &rule
 		alarm.Description = alarmDesc
