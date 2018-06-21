@@ -144,9 +144,10 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
 
     bInfo.initEditRole = function () {
         bInfo.editRole = false;
-        if( bInfo.currentData.CreatedBy.Uid === $rootScope.currentUser.Uid || (bInfo.currentData.Enterprise && bInfo.currentData.Enterprise === $rootScope.currentUser.Uid) ){
+        if( bInfo.currentData.CreatedBy.Uid === $rootScope.currentUser.Uid || (bInfo.currentData.Enterprise && bInfo.currentData.Enterprise.Uid === $rootScope.currentUser.Organization.Uid) ){
             bInfo.editRole = true;
         }
+        // console.log(bInfo.editRole,bInfo.currentData.Enterprise,$rootScope.currentUser);
     };
 
 
@@ -156,7 +157,7 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
     };
 
 
-    aa =0;
+
     bInfo.refreshDataTables = function () {
         var p = $location.search()['boiler'];
 
