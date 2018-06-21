@@ -58,6 +58,13 @@ func (ctl *AlarmController) AlarmRuleList() {
 	if _, err := qs.Filter("IsDeleted", false).OrderBy("Parameter").All(&alarmRules);err!=nil{
 		goazure.Error("Query runtime_alarm_rule Error",err)
 	}
+	for i,a:= range alarmRules {
+		for _,p:=range ParamCtrl.Parameters {
+			if a.Parameter.Id == p.Id {
+				alarmRules[i].Parameter=p
+			}
+		}
+	}
 	goazure.Error("alarmRules:",alarmRules)
 	ctl.Data["json"] = alarmRules
 	ctl.ServeJSON()

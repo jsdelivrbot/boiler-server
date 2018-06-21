@@ -268,6 +268,7 @@ func (ctl *ParameterController) RefreshParameters() {
 
 	go func() {
 		for i, v := range params {
+
 			if num, err := dba.BoilerOrm.LoadRelated(v, "BoilerMediums"); err != nil && num == 0 {
 				goazure.Error("[", i, "]", v, num, err)
 			}
@@ -275,6 +276,18 @@ func (ctl *ParameterController) RefreshParameters() {
 			for _, b := range v.BoilerMediums {
 				b.Name = strings.TrimSuffix(b.Name, "锅炉")
 			}
+
+			var channel models.RuntimeParameterChannelConfig
+			var combined models.BoilerTerminalCombined
+			if err:=dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").RelatedSel("Terminal").Filter("Parameter__Id",v.Id).One(&channel);err!=nil{
+				goazure.Error("通道没有被配置终端：",v)
+				continue
+			}
+			if err:=dba.BoilerOrm.QueryTable("boiler_terminal_combined").RelatedSel("Boiler").Filter("Terminal__Uid",channel.Terminal.Uid).Filter("TerminalSetId",1).One(&combined);err!=nil{
+				goazure.Error("通道的终端没有绑定锅炉：",channel.Terminal)
+				continue
+			}
+			v.Boiler= combined.Boiler
 		}
 	}()
 
