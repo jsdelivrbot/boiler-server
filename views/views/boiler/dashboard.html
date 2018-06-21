@@ -47,7 +47,7 @@
     <tr>
         <th>序号</th>
         <th>锅炉名称</th>
-        <th>从属机构</th>
+        <th>使用企业</th>
         <th>关联终端号</th>
         <!--<th>型号</th>-->
         <!--<th>燃料</th>-->
@@ -64,7 +64,7 @@
                 {{ data.Enterprise.Name }}
             </span>-->
         </td>
-        <td>{{ data.Factory.Name }}</td>
+        <td>{{ data.Enterprise.Name }}</td>
         <td><span style="display: block;" ng-repeat="term in data.TerminalsCombined"> {{ term.TerminalCode }} </span></td>
         <!--<td>{{ data.ModelCode }}</td>
         <td>{{ data.Fuel.Name }}</td>-->
