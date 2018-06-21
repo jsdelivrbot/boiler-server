@@ -120,6 +120,7 @@
                             <th>告警延迟(分)</th>
                             <th>告警等级</th>
                             <th>所属企业</th>
+                            <th>锅炉</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -163,6 +164,9 @@
                             <!--</td>-->
                             <td>
                                 {{ data.Organization.Name }}
+                            </td>
+                            <td>
+                                {{ data.Boiler.Name }}
                             </td>
                             <td>
                                 <a ng-click="" class="btn view btn-outline btn-circle blue view_btn">
