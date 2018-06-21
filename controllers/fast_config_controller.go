@@ -456,6 +456,10 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		}
 	}
 	for _, swi := range config.Chan.Switch {
+		if swi.ChannelNumber == 1 || swi.ChannelNumber == 2 {
+			goazure.Warning("开关点火位和PLC")
+			continue
+		}
 		var max int32
 		var param models.RuntimeParameter
 		var cnf models.RuntimeParameterChannelConfig
