@@ -329,14 +329,28 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	var alarm 	models.BoilerAlarm
 	var rule 	models.RuntimeAlarmRule
 	goazure.Error("处理的运行参数：",rtm.Parameter)
-	boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
-	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s,锅炉使用企业：,%s",rtm.Boiler.Name,boiler.Enterprise.Name))
-	if boiler == nil {
+	var boiler models.Boiler
+	//var bMap []orm.Params
+	qs := dba.BoilerOrm.QueryTable("boiler")
+	qs = qs.RelatedSel("Form__Type").RelatedSel("Medium").RelatedSel("Usage").
+		RelatedSel("Fuel__Type").RelatedSel("Template").
+		RelatedSel("Factory").RelatedSel("Enterprise").RelatedSel("Maintainer").RelatedSel("Supervisor").
+		RelatedSel("RegisterOrg").
+		RelatedSel("Terminal").
+		RelatedSel("Contact").
+		RelatedSel("Address__Location")
+	if err:=qs.Filter("IsDeleted",false).Filter("Uid",rtm.Boiler.Uid).One(&boiler);err!=nil{
+		goazure.Error("rtm Boiler is Nil")
 		return nil, errors.New("boiler can not be nil")
 	}
-	if boiler.Enterprise == nil{
-		return nil,errors.New("boiler Enterprise can not be nil")
+	//boiler := BlrCtl.Boiler(rtm.Boiler.Uid)
+	goazure.Error(fmt.Sprintf("运行参数的锅炉：%s",rtm.Boiler.Name))
+
+	if boiler.Enterprise == nil {
+		goazure.Error("锅炉的使用企业为空")
+		return nil, errors.New("boiler Enterprise can not be nil")
 	}
+	goazure.Error("锅炉使用企业：",boiler.Enterprise.Name)
 	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization")
 	cond := orm.NewCondition()
 	if boiler.Form != nil {
@@ -384,7 +398,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		Filter("IsDeleted", false)
 	if err := qa.One(&alarm); err != nil {
 		alarm.Uid = uuid.New()
-		alarm.Boiler = boiler
+		alarm.Boiler = &boiler
 		alarm.Parameter = rule.Parameter
 		alarm.TriggerRule = &rule
 		alarm.Description = alarmDesc

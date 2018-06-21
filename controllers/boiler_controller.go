@@ -1181,6 +1181,20 @@ func (ctl *BoilerController) BoilerUpdateBasic() (*models.Boiler, error) {
 	if boiler.InspectGaugeDateNext.IsZero() { boiler.InspectGaugeDateNext = time.Now().Add(time.Hour * 24 * 30) }
 
 	boiler.UpdatedBy = usr
+
+	if info.FactoryId == "" {
+		boiler.Factory = nil
+	}
+	if info.EnterpriseId == "" {
+		boiler.Enterprise = nil
+	}
+	if info.MaintainerId == "" {
+		boiler.Maintainer = nil
+	}
+	if info.SupervisorId == "" {
+		boiler.Supervisor = nil
+	}
+
 	if err := DataCtl.AddData(&boiler, true); err != nil {
 		e := fmt.Sprintln("Insert/Update Boiler Error!", err)
 		return nil, errors.New(e)
@@ -1344,13 +1358,13 @@ func (ctl *BoilerController) BoilerDelete()  {
 	goazure.Info("Ready to Delete Boiler!")
 	usr := ctl.GetCurrentUser()
 
-	if !usr.IsAllowCreateOrganization() {
+	/*if !usr.IsAllowCreateOrganization() {
 		e := fmt.Sprintln("Permission Denied, Only Admin Access!")
 		goazure.Error(e)
 		ctl.Ctx.Output.SetStatus(403)
 		ctl.Ctx.Output.Body([]byte(e))
 		return
-	}
+	}*/
 
 	var info BoilerInfo
 	boiler := models.Boiler{}
