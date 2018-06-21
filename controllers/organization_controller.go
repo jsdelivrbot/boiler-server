@@ -330,13 +330,13 @@ func (ctl *OrganizationController) OrganizationDelete() {
 		ctl.Ctx.Output.Body([]byte("Updated Json Error!"))
 		return
 	}
-
-	if o.Uid == usr.Organization.Uid {
-		ctl.Ctx.Output.SetStatus(400)
-		ctl.Ctx.Output.Body([]byte("你没有权利删除自己的组织!"))
-		return
+	if !usr.IsAdmin(){
+		if o.Uid == usr.Organization.Uid {
+			ctl.Ctx.Output.SetStatus(400)
+			ctl.Ctx.Output.Body([]byte("你没有权利删除自己的组织!"))
+			return
+		}
 	}
-
 	if err := dba.BoilerOrm.QueryTable("organization").RelatedSel("Address__Location").RelatedSel("Contact").Filter("Uid", o.Uid).One(&organization); err != nil {
 		e := fmt.Sprintf("Read Organization for Delete Error: %v", err)
 		goazure.Error(e)
