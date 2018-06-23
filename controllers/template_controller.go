@@ -529,6 +529,10 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 			}
 		}
 		for _, c := range confSwitchTemps {
+			c.Parameter.Id,c.Parameter.ParamId = ParamCtrl.GetParameterId(c.Parameter.Category.Id)
+			if err:=DataCtl.AddData(c.Parameter,true);err!=nil{
+				goazure.Error("fast config add parameter error:",err)
+			}
 			cnf.Terminal = &t
 			cnf.ChannelType = c.ChannelType
 			cnf.ChannelNumber = c.ChannelNumber
