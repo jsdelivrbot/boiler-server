@@ -1121,6 +1121,23 @@ func (ctl *ParameterController) ChannelConfigDelete(cnf *models.RuntimeParameter
 	return nil
 }
 
+func (ctl *ParameterController) GetParameterId(CategoryId int64)(int64,int32) {
+	var max int32
+	var ParamId int32
+	sql:="select max(param_id) as param_id from runtime_parameter where category_id=? and is_deleted =false"
+	if err:=dba.BoilerOrm.Raw(sql,CategoryId).QueryRow(&max);err!=nil {
+		goazure.Error("Query runtime_parameter Error",err)
+	}
+	if max >= 100000 {
+		ParamId = max + 1
+	} else {
+		ParamId = 100000
+	}
+	a := fmt.Sprintf("%d%d",CategoryId,ParamId)
+	Id ,_ := strconv.ParseInt(a,10,64)
+	return Id,ParamId
+}
+
 func (ctl *ParameterController) RuntimeParameterUpdate() {
 	var p models.RuntimeParameter
 	var param models.RuntimeParameter
@@ -1132,19 +1149,7 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		return
 	}
 	if p.Id == 0 {
-		var max int32
-		sql:="select max(param_id) as param_id from runtime_parameter where category_id=? and is_deleted =false"
-		if err:=dba.BoilerOrm.Raw(sql,p.Category.Id).QueryRow(&max);err!=nil {
-			goazure.Error("Query runtime_parameter Error",err)
-		}
-		if max >= 100 {
-			p.ParamId = max + 1
-		} else {
-			p.ParamId = 100
-		}
-		a := fmt.Sprintf("%d%d",p.Category.Id,p.ParamId)
-		p.Id ,_ = strconv.ParseInt(a,10,64)
-		goazure.Info("Add param_id:",p.Id)
+		p.Id,p.ParamId = ctl.GetParameterId(p.Category.Id)
 	}
 	if err := dba.BoilerOrm.QueryTable("runtime_parameter").Filter("Id", p.Id).One(&param); err != nil {
 		e := fmt.Sprintln("Read Parameter Error", err)
@@ -1153,7 +1158,6 @@ func (ctl *ParameterController) RuntimeParameterUpdate() {
 		param.ParamId = p.ParamId
 		param.Length = p.Length
 		param.Fix = p.Fix
-
 		param.Category = runtimeParameterCategory(p.Category.Id)
 
 		param.Medium = runtimeParameterMedium(0)
