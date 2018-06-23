@@ -20,7 +20,7 @@ type RuntimeParameter struct {
 	Fix					int32							`orm:"default(2)"`
 	Unit          		string
 	IsDefault           bool		                    `orm:"index"`
-	Boiler             *Boiler						`orm:"rel(fk);null;index"`
+	Boiler             *Boiler							`orm:"-"`
 }
 
 func (param *RuntimeParameter)AddBoilerMedium(medId int64) error {
