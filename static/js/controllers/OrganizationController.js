@@ -355,7 +355,7 @@ angular.module('BoilerAdmin').controller('ModalOrganizationCtrl', function ($uib
             postData.brand_name = $modal.brandName;
 
             postData.is_super = $modal.isSuper;
-            postData.supervisor = $modal.supervisor;
+            // postData.supervisor = $modal.supervisor;
         }
 
         /*if (!currentData && (postData.type_id === 1 || postData.type_id === 2)) {
