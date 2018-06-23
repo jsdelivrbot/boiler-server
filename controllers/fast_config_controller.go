@@ -375,18 +375,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 	for _, analogue := range config.Chan.Analogue {
 		var param models.RuntimeParameter
 		var cnf models.RuntimeParameterChannelConfig
-		var max int32
-		sql := "select max(param_id) as param_id from runtime_parameter where category_id=? and is_deleted =false"
-		if err := dba.BoilerOrm.Raw(sql, models.RUNTIME_PARAMETER_CATEGORY_ANALOG).QueryRow(&max); err != nil {
-			goazure.Error("Query runtime_parameter Error", err)
-		}
-		if max >= 100 {
-			param.ParamId = max + 1
-		} else {
-			param.ParamId = 100
-		}
-		a := fmt.Sprintf("%d%d", models.RUNTIME_PARAMETER_CATEGORY_ANALOG, param.ParamId)
-		param.Id, _ = strconv.ParseInt(a, 10, 64)
+		param.Id,param.ParamId = ParamCtrl.GetParameterId(models.RUNTIME_PARAMETER_CATEGORY_ANALOG)
 		param.Length = 2
 		param.Fix = 2
 		param.Category = runtimeParameterCategory(models.RUNTIME_PARAMETER_CATEGORY_ANALOG)
@@ -456,20 +445,9 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 			goazure.Warning("开关点火位和PLC")
 			continue
 		}
-		var max int32
 		var param models.RuntimeParameter
 		var cnf models.RuntimeParameterChannelConfig
-		sql := "select max(param_id) as param_id from runtime_parameter where category_id=? and is_deleted =false"
-		if err := dba.BoilerOrm.Raw(sql, models.RUNTIME_PARAMETER_CATEGORY_SWITCH).QueryRow(&max); err != nil {
-			goazure.Error("Query runtime_parameter Error", err)
-		}
-		if max >= 100 {
-			param.ParamId = max + 1
-		} else {
-			param.ParamId = 100
-		}
-		a := fmt.Sprintf("%d%d", models.RUNTIME_PARAMETER_CATEGORY_SWITCH, param.ParamId)
-		param.Id, _ = strconv.ParseInt(a, 10, 64)
+		param.Id,param.ParamId = ParamCtrl.GetParameterId(models.RUNTIME_PARAMETER_CATEGORY_SWITCH)
 		param.Length = 1
 		param.Fix = 0
 		param.Category = runtimeParameterCategory(models.RUNTIME_PARAMETER_CATEGORY_SWITCH)
@@ -539,20 +517,9 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		}
 	}
 	for _, ran := range config.Chan.Range {
-		var max int32
 		var param models.RuntimeParameter
 		var cnf models.RuntimeParameterChannelConfig
-		sql := "select max(param_id) as param_id from runtime_parameter where category_id=? and is_deleted =false"
-		if err := dba.BoilerOrm.Raw(sql, models.RUNTIME_PARAMETER_CATEGORY_RANGE).QueryRow(&max); err != nil {
-			goazure.Error("Query runtime_parameter Error", err)
-		}
-		if max >= 100 {
-			param.ParamId = max + 1
-		} else {
-			param.ParamId = 100
-		}
-		a := fmt.Sprintf("%d%d", models.RUNTIME_PARAMETER_CATEGORY_RANGE, param.ParamId)
-		param.Id, _ = strconv.ParseInt(a, 10, 64)
+		param.Id,param.ParamId = ParamCtrl.GetParameterId(models.RUNTIME_PARAMETER_CATEGORY_RANGE)
 		param.Length = 1
 		param.Fix = 0
 		param.Category = runtimeParameterCategory(models.RUNTIME_PARAMETER_CATEGORY_RANGE)
