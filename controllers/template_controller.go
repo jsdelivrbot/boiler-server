@@ -571,6 +571,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 				}
 			}
 		}
+		go ParamCtrl.RefreshParameters()
 		//插入通信参数
 		commSql:="replace into issued_communication(terminal_id,baud_rate_id,data_bit_id,stop_bit_id,check_bit_id,correspond_type_id,sub_address_id,heart_beat_id) values(?,?,?,?,?,?,?,?)"
 		if _, er := dba.BoilerOrm.Raw(commSql, t.Uid, commTemp.BaudRate.Id, commTemp.DataBit.Id, commTemp.StopBit.Id, commTemp.CheckBit.Id, commTemp.CorrespondType.Id, commTemp.SubAddress.Id, commTemp.HeartBeat.Id).Exec(); er != nil {
