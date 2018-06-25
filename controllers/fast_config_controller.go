@@ -358,7 +358,6 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		ctl.Ctx.Output.Body([]byte("终端未绑定锅炉"))
 		return
 	}
-	boiler:=BlrCtl.Boiler(combined.Boiler.Uid)
 	var aCnf []models.RuntimeParameterChannelConfig
 	if _, err := dba.BoilerOrm.QueryTable("runtime_parameter_channel_config").
 		Filter("Terminal__Uid", terminal.Uid).Filter("IsDefault", false).
@@ -384,9 +383,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = analogue.Parameter.Scale
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		if boiler !=nil && boiler.Enterprise!= nil {
-			param.Organization = boiler.Enterprise
-		}
+		param.Organization = terminal.Organization
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
@@ -456,9 +453,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = 1
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		if boiler !=nil && boiler.Enterprise!= nil {
-			param.Organization = boiler.Enterprise
-		}
+		param.Organization = terminal.Organization
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false
@@ -528,9 +523,7 @@ func (ctl *FastConfigController) FastTermChannelConfig() {
 		param.Scale = 1
 		param.Medium = runtimeParameterMedium(0)
 		param.AddBoilerMedium(0)
-		if boiler !=nil && boiler.Enterprise!= nil {
-			param.Organization = boiler.Enterprise
-		}
+		param.Organization = terminal.Organization
 		param.CreatedBy = ctl.GetCurrentUser()
 		param.UpdatedBy = ctl.GetCurrentUser()
 		param.IsDeleted = false

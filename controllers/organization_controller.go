@@ -176,6 +176,10 @@ func (ctl *OrganizationController) OrganizationUpdate() {
 	if isCreated {
 		organization.CreatedBy = usr
 		organization.SuperOrganization = usr.Organization
+		if usr.Organization != nil{
+			organization.ShowBrand = usr.Organization.ShowBrand
+			organization.BrandName = usr.Organization.BrandName
+		}
 	}
 
 	if usr.IsAdmin() {

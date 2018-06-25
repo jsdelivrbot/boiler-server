@@ -460,6 +460,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 		var cnf models.RuntimeParameterChannelConfig
 		for _, c := range configTemp {
 			c.Parameter.Id,c.Parameter.ParamId = ParamCtrl.GetParameterId(c.Parameter.Category.Id)
+			c.Parameter.Organization = t.Organization
 			if err:=DataCtl.AddData(c.Parameter,true);err!=nil{
 				goazure.Error("fast config add parameter error:",err)
 			}
@@ -530,6 +531,7 @@ func (ctl *TemplateController) IssuedTemplateToCurr(temp TemplateConfig) {
 		}
 		for _, c := range confSwitchTemps {
 			c.Parameter.Id,c.Parameter.ParamId = ParamCtrl.GetParameterId(c.Parameter.Category.Id)
+			c.Parameter.Organization = t.Organization
 			if err:=DataCtl.AddData(c.Parameter,true);err!=nil{
 				goazure.Error("fast config add parameter error:",err)
 			}
