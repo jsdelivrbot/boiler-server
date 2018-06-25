@@ -220,14 +220,14 @@ angular.module('BoilerAdmin').controller("wizardBoilerCtrl",function ($scope,$ro
             });
         }
 
-        if(!$scope.data.enterpriseId){
+        /*if(!$scope.data.enterpriseId){
             swal({
                 title: "请添加使用企业",
                 // text: err.data,
                 type: "error"
             });
             return;
-        }
+        }*/
 
 
         $http.post("/fast_boiler_add", $scope.data)
