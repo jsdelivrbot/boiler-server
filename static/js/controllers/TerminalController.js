@@ -26,7 +26,8 @@ angular.module('BoilerAdmin').controller('TerminalController', function($rootSco
         DTColumnDefBuilder.newColumnDef(5),
         DTColumnDefBuilder.newColumnDef(6),
         DTColumnDefBuilder.newColumnDef(7),
-        DTColumnDefBuilder.newColumnDef(8).notSortable()
+        DTColumnDefBuilder.newColumnDef(8),
+        DTColumnDefBuilder.newColumnDef(9).notSortable()
     ];
 
     terminal.refreshDataTables = function (callback) {
