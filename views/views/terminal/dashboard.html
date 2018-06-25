@@ -57,6 +57,7 @@
         <th>序号</th>
         <th>终端名称</th>
         <th>终端编码</th>
+        <th>从属企业</th>
         <th>状态</th>
         <!--<th>监测锅炉</th>-->
         <!--<th>物联网卡号</th>-->
@@ -79,6 +80,7 @@
             </span>-->
         </td>
         <td> {{ data.Terminal.code }} </td>
+        <td> {{ data.Terminal.Organization.Name }} </td>
         <td>
             <span ng-class="['label', {'label-success': data.IsOnline}, {'label-default': !data.IsOnline}]">{{ data.Terminal.online }}</span>
         </td>
