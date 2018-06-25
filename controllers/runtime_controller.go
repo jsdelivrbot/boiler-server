@@ -351,7 +351,7 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 		return nil, errors.New("boiler Enterprise can not be nil")
 	}
 	goazure.Error("锅炉使用企业：",boiler.Enterprise.Name)
-	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule").RelatedSel("Organization")
+	qr := dba.BoilerOrm.QueryTable("runtime_alarm_rule")
 	cond := orm.NewCondition()
 	if boiler.Form != nil {
 		condFm := orm.NewCondition().Or("BoilerForm__Id", boiler.Form.Id).Or("BoilerForm__Id", 0)
@@ -369,9 +369,8 @@ func (ctl *RuntimeController) ReloadAlarmWithRuntime(rtm *models.BoilerRuntime, 
 	condEvaValid := orm.NewCondition().And("BoilerCapacityMin__lte", boiler.EvaporatingCapacity).And("BoilerCapacityMax__gte", boiler.EvaporatingCapacity)
 	condEva := orm.NewCondition().OrCond(condEvaDummy).OrCond(condEvaValid)
 	cond = cond.AndCond(condEva)
-
 	qr = qr.SetCond(cond)
-	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false).Filter("Organization",boiler.Enterprise.Uid)
+	qr = qr.Filter("Parameter__Id", rtm.Parameter.Id).Filter("IsDeleted", false)
 	if err := qr.One(&rule); err != nil {
 		goazure.Warning("Get AlarmRule Error:", err, "\n", rtm.Boiler)
 		return nil, err
