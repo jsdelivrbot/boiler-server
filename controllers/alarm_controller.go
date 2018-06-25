@@ -88,7 +88,7 @@ func (ctl *AlarmController) BoilerAlarmList() {
 			usr.Status == models.USER_STATUS_NEW {
 			qs = qs.Filter("IsDemo", true)
 		} else if usr.IsOrganizationUser() {
-			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Factory__Uid", usr.Organization.Uid).Or("Maintainer__Uid", usr.Organization.Uid)
+			orgCond := orm.NewCondition().Or("Enterprise__Uid", usr.Organization.Uid).Or("Maintainer",usr.Organization.Uid).Or("CreatedBy",usr.Uid)
 			cond := orm.NewCondition().AndCond(orgCond)
 			qs = qs.SetCond(cond).Filter("IsDemo", false)
 		}
