@@ -144,8 +144,12 @@ angular.module('BoilerAdmin').controller('BoilerInfoController', function($rootS
 
     bInfo.initEditRole = function () {
         bInfo.editRole = false;
+        bInfo.deleRole = false
         if( bInfo.currentData.CreatedBy.Uid === $rootScope.currentUser.Uid || (bInfo.currentData.Enterprise && bInfo.currentData.Enterprise.Uid === $rootScope.currentUser.Organization.Uid) ){
             bInfo.editRole = true;
+        }
+        if( bInfo.currentData.CreatedBy.Uid === $rootScope.currentUser.Uid ){
+            bInfo.deleRole = true;
         }
         // console.log(bInfo.editRole,bInfo.currentData.Enterprise,$rootScope.currentUser);
     };

@@ -550,7 +550,7 @@
                     class="btn btn-circle grey-gallery back_btn">
                 <i class="fa fa-reply"></i> 返回
             </button>
-            <button ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId <= 11 && info.editRole"
+            <button ng-show="info.dataMode == 'edit' && currentUser.Role.RoleId < 11 && info.deleRole"
                     id="boiler_delete"
                     data-style="expand-right"
                     ng-click="info.delete()"
