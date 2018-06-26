@@ -4,7 +4,6 @@ type Organization struct {
 	MyUidObject
 
 	Type				*OrganizationType	`orm:"rel(fk);index"`
-
 	IsSupervisor		bool
 	SuperOrganization	*Organization		`orm:"rel(fk);null;index"`
 	SubOrganizations	[]*Organization		`orm:"reverse(many)"`

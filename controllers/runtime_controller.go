@@ -589,13 +589,20 @@ func (ctl *RuntimeController) ReloadHistoryWithArchived(startDate time.Time, end
 		}
 
 		if !isMatched {
-			boiler := BlrCtl.Boiler(arch.Boiler.Uid)
-			if boiler == nil {
+			var boiler models.Boiler
+			//var bMap []orm.Params
+			qs := dba.BoilerOrm.QueryTable("boiler")
+			if err:=qs.Filter("IsDeleted",false).Filter("Uid",arch.Boiler.Uid).One(&boiler);err!=nil{
+				goazure.Error("rtm Boiler is Nil")
 				continue
 			}
+			/*boiler := BlrCtl.Boiler(arch.Boiler.Uid)
+			if boiler == nil {
+				continue
+			}*/
 
 			history = &caches.BoilerRuntimeHistory{}
-			history.Boiler = boiler
+			history.Boiler = &boiler
 			history.Name = boiler.Name
 			history.CreatedDate = arch.CreatedDate
 			history.Histories = []*caches.History{}
