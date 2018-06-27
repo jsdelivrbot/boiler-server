@@ -53,12 +53,10 @@ func (ctl *UserController) GetCurrentUser() *models.User {
 	if ctl == nil {
 		//goazure.Warning("UserCtl is Nil!")
 		//return ctl.getSysUser()
-		fmt.Println("ctlllllllllllllllll")
 		return nil
 	}
 	usrSession := ctl.GetSession(SESSION_CURRENT_USER)
 	if usrSession == nil {
-		fmt.Println("usersssssssssess")
 		//ctl.SetSession(SESSION_CURRENT_USER, ctl.getSysUser())
 		return nil
 	}

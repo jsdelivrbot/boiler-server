@@ -307,10 +307,11 @@ func (ctl *ParameterController) RuntimeParameterList() {
 		for _, p := range ParamCtrl.Parameters {
 			goazure.Error("usrOrganization:",usr.Organization)
 			goazure.Error("pOrganization:",p.Organization)
+			fmt.Println("ppppppppppp:",p)
 			//goazure.Error("Param_Org:", p.Organization)
 			if  p.Organization == nil ||
 				len(p.Organization.Uid) != 36 ||
-				p.Organization.Uid == usr.Organization.Uid || (p.Boiler!=nil && p.Boiler.Enterprise.Uid == usr.Organization.Uid){
+				p.Organization.Uid == usr.Organization.Uid || (p.Boiler!=nil && p.Boiler.Enterprise !=nil &&p.Boiler.Enterprise.Uid == usr.Organization.Uid){
 				params = append(params, p)
 			}
 		}
